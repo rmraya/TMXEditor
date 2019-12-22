@@ -18,7 +18,7 @@ Ready to use commercial installers are available at [TMXEditor Home Page](https:
 
 Commercial versions of TMXEditor can be installed in as many computers as desired. TMXEditor licenses are designed for use in one computer at a time and can be transferred from one computer to another in just a few seconds.
 
-You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version. 
+You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version there. 
 
 Commercial version includes unlimited email support at tech@maxprograms.com 
 
