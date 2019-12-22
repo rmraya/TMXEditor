@@ -1,0 +1,15 @@
+/bin/
+/conf/
+/include/
+/legal/
+/lib/
+/out/
+/dist/
+.DS_Store
+docs/out/
+/node_modules/
+/TMXEditor-darwin-x64/
+release
+server.sh
+server.bat
+package-lock.json

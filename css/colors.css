@@ -1,0 +1,7 @@
+
+.divider {
+    background:#1976d2;
+    width:2px; 
+    position: relative; 
+    cursor: col-resize;
+}

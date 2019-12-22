@@ -1,0 +1,19 @@
+{
+    "name": "tmxeditor",
+    "productName": "TMXEditor",
+    "version": "2.0.0",
+    "description": "TMX Editor",
+    "main": "app.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "author": {
+        "name": "Rodolfo M. Raya",
+        "email": "rmraya@maxprograms.com",
+        "url": "https://www.maxprograms.com"
+    },
+    "devDependencies": {
+        "electron": "^7.1.2"
+    },
+    "dependencies": {}
+}

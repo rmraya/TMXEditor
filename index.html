@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TMXEditor - Main</title>
+    <link rel="stylesheet" type="text/css" href="css/layout.css">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
+    <link rel="stylesheet" type="text/css" href="css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="css/colors.css">
+</head>
+
+<body id="body">
+    <header>
+        <div style="padding-top:0px; display:flex;">
+            <a><img src="images/baseline-create_new_folder-24px.svg"></a>
+            <a id="open"><img src="images/baseline-folder_open-24px.svg" title="Open File"></a>
+            <a><img src="images/baseline-save-24px.svg"></a>
+            <a><img src="images/outline-info-24px.svg"></a>
+            <a><img src="images/outline-check_circle-24px.svg"></a>
+            <a><img src="images/outline-cancel-24px.svg"></a>
+            <a><img src="images/outline-find_replace-24px.svg"></a>
+            <a><img src="images/outline-add_circle_outline-24px.svg"></a>
+            <a><img src="images/outline-remove_circle_outline-24px.svg"></a>
+            <a><img src="images/outline-sort_by_alpha-24px.svg"></a>
+            <a><img src="images/outline-filter_list-24px.svg"></a>
+            <a><img src="images/outline-apps-24px.svg"></a>
+            <span class="fill">&nbsp;</span>
+            <a><img src="images/outline-comment-24px.svg"></a>
+            <a id="help"><img src="images/outline-help_outline-24px.svg" title="User Guide"></a>
+        </div>
+    </header>
+
+    <div id="main">
+        <div style="position: absolute; top: 30px; bottom: 30px; display:flex; width: 100%;">
+            <div id="left-pane" style="width:80vw; overflow-y: scroll;">
+                <table id="mainTable">
+                    <thead id='tableHeader'>
+                        <tr class="dark_background">
+                            <th class="fixed dark_background">&#x2713;</th>
+                            <th class="fixed dark_background">#</th>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="divider" draggable="true" ondragend="dragEnd(event)" ondrag="drag(event)" class="divider"></div>
+
+            <div id="right-pane" style="width:20vw; min-width: 200px;">
+
+                <div style="height: 34%; width: 100%;">
+                    <div class="dark_background" style=" width: 100%; height: 24px;">
+                        TU Attributes
+                        <a class="right"><img src="images/edit.svg" title="Edit"></a>
+                    </div>
+                    <table id="attributesTable" style="overflow-y: scroll; ">
+                        <tr></tr>
+                    </table>
+                </div>
+
+                <div style="height: 33%; width: 100%;">
+                    <div class="dark_background" style="width: 100%; height: 25px;">
+                        TU Properties
+                        <a class="right"><img src="images/edit.svg" title="Edit"></a>
+                    </div>
+                    <table id="propertiesTable" style="overflow-y: scroll; ">
+                        <tr></tr>
+                    </table>
+                </div>
+
+                <div style="height: 33%; width: 100%;">
+                    <div class="dark_background" style="width: 100%; height: 24px;">
+                        TU Notes
+                        <a class="right"><img src="images/edit.svg" title="Edit"></a>
+                    </div>
+                    <table id="notesTable" style="overflow-y: scroll;">
+                        <tr></tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div style="display: flex;">
+            <a id="first"><img src="images/first.svg" title="First Page"></a>
+            <a id="previous"><img src="images/previous.svg" title="Previous Page"></a>
+            <span style="margin-left: 10px; margin-top:2px;">Page</span>
+            <input id="page" type="number" style="margin-left: 10px; margin-top:2px;">
+            <span style="margin-left: 10px; margin-top:2px;">of </span>
+            <span id="pages" style="width: 60px; margin-left: 10px; margin-top:2px;">0</span>
+            <a id="next"><img src="images/next.svg" title="Next Page"></a>
+            <a id="last"><img src="images/last.svg" title="Last Page"></a>
+            <span style="margin-left: 10px; margin-top:2px;">Units Page</span>
+            <input id="units_page" type="number" style="margin-left: 10px; margin-top:2px;" value="200">
+            <span style="margin-left: 10px; margin-top:2px;">Units: </span>
+            <span id="units" style="margin-left: 10px; margin-top:2px;"></span>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        function drag(ev) {
+            var leftPane = document.getElementById('left-pane');
+            var paneSep = document.getElementById('divider');
+            var rightPane = document.getElementById('right-pane');
+
+            var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
+            var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
+            var right = 100 - left;
+            if (left > 10 && right > 10) {
+                leftPane.style.width = left + 'vw';
+                rightPane.style.width = right + 'vw';
+            }
+        }
+
+        function dragEnd(ev) {
+            var leftPane = document.getElementById('left-pane');
+            var paneSep = document.getElementById('divider');
+            var rightPane = document.getElementById('right-pane');
+
+            var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
+            var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
+            var right = 100 - left;
+            leftPane.style.width = left + 'vw';
+            rightPane.style.width = right + 'vw';
+
+            leftPane.style.minWidth = '20px';
+            rightPane.style.minWidth = '20px';
+        }
+    </script>
+</body>
+
+</html>

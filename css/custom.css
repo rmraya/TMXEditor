@@ -1,0 +1,255 @@
+:root {
+	--dark-background: #515151;
+	--dark-color: #fefefe;
+}
+
+.dark_background {
+	background: var(--dark-background);
+	color: var(--dark-color);
+}
+
+.wait { 
+	cursor: wait !important; 
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+a img {
+	padding-right: 8px;
+	padding-left: 8px;
+}
+
+a:hover {
+	background: #64b5f6;
+}
+
+thead {
+	height: 24px;
+}
+
+td {
+	padding: 4px;
+	vertical-align: top;
+	font-size: medium;
+}
+
+td.fixed {
+	text-align: center;
+	vertical-align: middle;
+	background: #777e85;
+}
+
+
+table th {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	font-weight: lighter;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+textarea {
+	padding: 0px;
+	font-size: medium;
+}
+
+.fixed {
+	width: 1px;
+	text-align: center;
+}
+
+.right {
+	float: right;
+}
+
+.hidden {
+	display: none;
+}
+
+.center {
+	text-align: center;
+}
+
+input[type=text] {
+	font-size: 0.8em;
+}
+
+input[type=password] {
+	font-size: 0.8em;
+}
+
+input[type=number] {
+	font-size: 0.8em;
+	width: 40px;
+	height: 18px;
+	margin: 0px;
+	padding: 0px;
+}
+
+input[type=checkbox] {
+	position: relative;
+	cursor: pointer;
+}
+
+input[type=checkbox]:before {
+	content: "";
+	display: block;
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	top: 0;
+	left: 0;
+	border: 1px solid #444444;
+	background-color: #eeeeee;
+}
+
+input[type=checkbox]:checked:after {
+	content: "";
+	display: block;
+	width: 4px;
+	height: 8px;
+	border: solid black;
+	border-width: 0 1px 1px 0;
+	transform: rotate(45deg);
+	position: absolute;
+	top: 2px;
+	left: 5px;
+}
+
+button {
+	color: white;
+	background: #1565c0;
+	border: 1px solid #1565c0;
+	border-radius: 2px;
+	font-size: 1em;
+	text-align: center;
+	margin: 3px;
+	padding-left: 4px;
+	padding-right: 4px;
+	box-shadow: 2px 2px 3px #aaaaaa;
+	white-space: nowrap;
+}
+
+button:hover {
+	background: #0d47a1;
+	border: 1px solid #0d47a1;
+}
+
+button.primary {
+	color: white;
+	background: #00695c;
+	border: 1px solid #00695c;
+	border-radius: 2px;
+	font-size: 1em;
+	text-align: center;
+	margin: 3px;
+	padding-left: 4px;
+	padding-right: 4px;
+	box-shadow: 2px 2px 3px #aaaaaa;
+	white-space: nowrap;
+}
+
+button.primary:hover {
+	background: #004d40;
+	border: 1px solid #004d40;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	padding: 3px;
+	padding-bottom: 0px;
+}
+
+.column {
+	display: flex;
+	flex-direction: column;
+}
+
+.fill {
+	width: 100%;
+}
+
+.buttonArea {
+	display: flex;
+	flex-direction: row;
+	padding: 10px;
+	padding-left: 16px;
+	padding-right: 16px;
+	justify-content: flex-end;
+}
+
+.toolbar {
+	display: flex;
+	flex-direction: row;
+	background: #94aebb;
+	color: white;
+	padding: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+	justify-content: flex-start;
+}
+
+.toolbar button {
+	padding: 5px;
+	background: inherit;
+	border: none;
+	outline: none;
+	color: inherit;
+	text-align: left;
+	font-size: 0.8em;
+	vertical-align: middle;
+	box-shadow: none;
+}
+
+.toolbar button img {
+	padding: 5px;
+}
+
+button.toolbar:hover {
+	background: #455a64;
+}
+
+/* Style the tab */
+.tab {
+	overflow: hidden;
+}
+
+/* Style the buttons that are used to open the tab content */
+.column button {
+	background: inherit;
+	color: white;
+	outline: none;
+	border: none;
+	padding: 5px;
+	cursor: pointer;
+	font-size: 0.8em;
+	transition: 0.3s;
+	box-shadow: none;
+}
+
+.column button img {
+	padding: 4px;
+}
+
+/* Change background color of buttons on hover */
+.column button:hover {
+	background-color: #37474f;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+	background-color: #777777;
+}
+
+/* Style the tab content */
+.tabcontent {
+	display: none;
+}

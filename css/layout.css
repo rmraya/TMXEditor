@@ -1,0 +1,56 @@
+body {
+	height: 100vh;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+header {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    height: 29px;
+    width:100%;
+    background: #eeeeee;
+    color: #111111;
+    border-bottom: solid 2px #1565c0;
+}
+footer {
+    position: absolute;
+    height: 29px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: #eeeeee;
+    color: #111111;
+    border-top: 2px solid #1976d2;
+    vertical-align: bottom;
+}
+.divContainer {
+    width: 100vh;
+    height: 100%;
+}
+.divContentArea {
+    position: absolute;
+    left: 0px;
+    top: 31px;
+    right: 0px;
+    bottom: 29px;
+    width: 100%;
+    overflow-y: scroll;
+}
+.divContentLeft {
+    position: absolute;
+    top: 70px;
+    left: 0px;
+    width: 80px;
+	bottom: 0px;
+}
+.divContentRight {
+    position: absolute;
+    top: 70px;
+    left: calc(100% - 100px);
+    right: 0px;
+    bottom: 0px;
+    border-left: 1px solid teal;
+}
