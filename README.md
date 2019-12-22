@@ -12,7 +12,7 @@ TMXEditor is available in two modes:
 - Personal Use of Source Code
 - Commercial Installers
 
-Source code of TMXEditor is available for free personal use. You can download the source code and compile it for unlimited editing of TMX files in the computer where it was downloaded and compiled. Ypu cannot redistribute a version that you compiled or your modifications to the code.
+Source code of TMXEditor is free for personal use. You can download the source code, modify, compile and use it without limitations in the computer where it was downloaded and compiled. You cannot redistribute a version that you compiled or your modifications to the code.
 
 Ready to use commercial installers are available at [TMXEditor Home Page](https://www.maxprograms.com/products/tmxeditor.html). You can try the commercial version for 30 days at no cost.
 
