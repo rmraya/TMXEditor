@@ -40,6 +40,7 @@ td.fixed {
 	text-align: center;
 	vertical-align: middle;
 	background: #777e85;
+	cursor: default !important;
 }
 
 
