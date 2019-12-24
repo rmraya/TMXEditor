@@ -249,7 +249,7 @@ function createWindow() {
                 template[0].submenu.push({ type: 'separator' });
             }
             for (let i = 0; i < files.length; i++) {
-                var file = files[i];
+                let file = files[i];
                 if (fs.existsSync(url.pathToFileURL(file))) {
                     if (process.platform === 'darwin') {
                         template[1].submenu.push({ label: file, click: function () { openFile(files[i]) } });
@@ -273,41 +273,15 @@ function createWindow() {
 }
 
 function sendCommand(command) {
-    json = { command: command };
-    const postData = JSON.stringify(json);
-    const options = {
-        hostname: '127.0.0.1',
-        port: 8050,
-        path: '/TMXServer',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(postData)
+    let json = { command: command };
+    sendRequest(json, 
+        function success() {
+            // do nothing
+        },
+        function error() {
+            dialog.showErrorBox('Send "' + command + '" failed');
         }
-    }
-    const req = http.request(options);
-    req.on('response', (res) => {
-        res.setEncoding('utf-8');
-        if (res.statusCode != 200) {
-            console.log(postData)
-            console.log(`response: ${res.statusCode}`)
-        }
-        let rawData = '';
-        res.on('data', (chunk) => {
-            rawData += chunk;
-        });
-        res.on('end', () => {
-            try {
-                var result = JSON.parse(rawData);
-                if (result.status !== SUCCESS) {
-                    console.log(json.command + ' failed. Reason: ' + result.reason);
-                }
-            } catch (e) {
-                error(e.message);
-            }
-        });
-    });
-    req.write(postData)
-    req.end()
+    );
 }
 
 function sendRequest(json, success, error) {
@@ -384,7 +358,6 @@ ipcMain.on('openFile', () => {
 });
 
 function openFileDialog() {
-
     dialog.showOpenDialog({
         title: 'Open TMX File',
         openFile: true,
@@ -447,8 +420,10 @@ function getLoadingProgress() {
 }
 
 function closeFile() {
+    mainWindow.webContents.send('start-waiting');
     sendRequest('closeFile',
         function success(json) {
+            mainWindow.webContents.send('end-waiting');
             if (json.status === SUCCESS) {
                 mainWindow.webContents.send('file-closed');
             } else {
@@ -456,10 +431,10 @@ function closeFile() {
             }
         },
         function error(data) {
+            mainWindow.webContents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
         }
     );
-
 }
 
 function getFileLanguages() {
@@ -534,8 +509,10 @@ function saveRecent(file) {
 
 ipcMain.on('get-segments', (event, arg) => {
     arg.command = 'getSegments';
+    mainWindow.webContents.send('start-waiting');
     sendRequest(arg,
         function success(json) {
+            mainWindow.webContents.send('end-waiting');
             if (json.status === SUCCESS) {
                 event.sender.send('update-segments', json);
             } else {
@@ -543,6 +520,7 @@ ipcMain.on('get-segments', (event, arg) => {
             }
         },
         function error(data) {
+            mainWindow.webContents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
         }
     );
