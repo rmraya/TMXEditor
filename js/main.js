@@ -44,6 +44,10 @@ ipcRenderer.on('end-waiting', () => {
     document.getElementById('body').classList.remove("wait");
 });
 
+ipcRenderer.on('set-status', (event, arg) => {
+    document.getElementById('status').innerHTML = arg;
+})
+
 ipcRenderer.on('update-status', (event, arg) => {
     if (arg.status === 'Success') {
         if (arg.count != undefined) {

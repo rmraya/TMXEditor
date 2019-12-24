@@ -379,6 +379,7 @@ function openFileDialog() {
 
 function openFile(file) {
     mainWindow.webContents.send('start-waiting');
+    mainWindow.webContents.send('set-status', 'Opening file');
     sendRequest({ command: 'openFile', file: file },
         function success(json) {
             status = json;
@@ -420,6 +421,7 @@ function getLoadingProgress() {
 }
 
 function closeFile() {
+    mainWindow.webContents.send('set-status', 'Closing file');
     mainWindow.webContents.send('start-waiting');
     sendRequest('closeFile',
         function success(json) {
@@ -438,6 +440,7 @@ function closeFile() {
 }
 
 function getFileLanguages() {
+    mainWindow.webContents.send('set-status', 'Getting languages');
     sendRequest({ command: 'getLanguages' },
         function success(json) {
             if (json.status === SUCCESS) {
@@ -510,8 +513,10 @@ function saveRecent(file) {
 ipcMain.on('get-segments', (event, arg) => {
     arg.command = 'getSegments';
     mainWindow.webContents.send('start-waiting');
+    mainWindow.webContents.send('set-status', 'Loading segments');
     sendRequest(arg,
         function success(json) {
+            mainWindow.webContents.send('set-status', '');
             mainWindow.webContents.send('end-waiting');
             if (json.status === SUCCESS) {
                 event.sender.send('update-segments', json);

@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="css/layout.css">
     <link rel="stylesheet" type="text/css" href="css/custom.css">
     <link rel="stylesheet" type="text/css" href="css/fonts.css">
-    <link rel="stylesheet" type="text/css" href="css/colors.css">
 </head>
 
 <body id="body">
@@ -48,7 +47,8 @@
                 </table>
             </div>
 
-            <div id="divider" draggable="true" ondragend="dragEnd(event)" ondrag="drag(event)" class="divider"></div>
+            <div id="divider" class="divider" draggable="true" ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
+                ondrag="hdrag(event, 'divider', 'left-pane', 'right-pane')" ></div>
 
             <div id="right-pane" style="width:20vw; min-width: 200px;">
 
@@ -100,40 +100,12 @@
             <input id="units_page" type="number" style="margin-left: 10px; margin-top:2px;" value="200">
             <span style="margin-left: 10px; margin-top:2px;">Units: </span>
             <span id="units" style="margin-left: 10px; margin-top:2px;"></span>
+            <span id="status" style="margin-left: 100px; margin-top:2px;">&nbsp;</span>
         </div>
     </footer>
 
     <script src="js/main.js"></script>
-    <script>
-        function drag(ev) {
-            var leftPane = document.getElementById('left-pane');
-            var paneSep = document.getElementById('divider');
-            var rightPane = document.getElementById('right-pane');
-
-            var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
-            var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
-            var right = 100 - left;
-            if (left > 10 && right > 10) {
-                leftPane.style.width = left + 'vw';
-                rightPane.style.width = right + 'vw';
-            }
-        }
-
-        function dragEnd(ev) {
-            var leftPane = document.getElementById('left-pane');
-            var paneSep = document.getElementById('divider');
-            var rightPane = document.getElementById('right-pane');
-
-            var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
-            var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
-            var right = 100 - left;
-            leftPane.style.width = left + 'vw';
-            rightPane.style.width = right + 'vw';
-
-            leftPane.style.minWidth = '20px';
-            rightPane.style.minWidth = '20px';
-        }
-    </script>
+    <script src="js/divider.js"></script>
 </body>
 
 </html>

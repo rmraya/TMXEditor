@@ -1,6 +1,9 @@
 :root {
-	--dark-background: #515151;
+	--darker-background: #002050;
+	--dark-background: #124078;
 	--dark-color: #fefefe;
+	--light-background: #3c65a4;
+	--lighter-background: #7da3c6;
 }
 
 .dark_background {
@@ -8,8 +11,27 @@
 	color: var(--dark-color);
 }
 
-.wait { 
-	cursor: wait !important; 
+.divider {
+	background: var(--darker-background);
+	width: 2px;
+	position: relative;
+	cursor: col-resize;
+}
+
+.wait {
+	cursor: wait !important;
+}
+
+header {
+	background: var(--dark-color);
+	color: var(--darker-background);
+	border-bottom: solid 2px var(--darker-background);
+}
+
+footer {
+	background: var(--dark-color);
+	color: var(--darker-background);
+	border-top: 2px solid var(--darker-background);
 }
 
 table {
@@ -23,7 +45,7 @@ a img {
 }
 
 a:hover {
-	background: #64b5f6;
+	background: var(--lighter-background);
 }
 
 thead {
@@ -39,7 +61,7 @@ td {
 td.fixed {
 	text-align: center;
 	vertical-align: middle;
-	background: #777e85;
+	background: var(--lighter-background);
 	cursor: default !important;
 }
 
@@ -106,8 +128,8 @@ input[type=checkbox]:before {
 	height: 12px;
 	top: 0;
 	left: 0;
-	border: 1px solid #444444;
-	background-color: #eeeeee;
+	border: 1px solid var(--dark-background);
+	background-color: var(--dark-color);
 }
 
 input[type=checkbox]:checked:after {
@@ -115,7 +137,7 @@ input[type=checkbox]:checked:after {
 	display: block;
 	width: 4px;
 	height: 8px;
-	border: solid black;
+	border: solid var(--darker-background);
 	border-width: 0 1px 1px 0;
 	transform: rotate(45deg);
 	position: absolute;
