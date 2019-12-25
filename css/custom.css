@@ -147,8 +147,8 @@ input[type=checkbox]:checked:after {
 
 button {
 	color: white;
-	background: #1565c0;
-	border: 1px solid #1565c0;
+	background: var(--dark-background);
+	border: 1px solid var(--dark-background);
 	border-radius: 2px;
 	font-size: 1em;
 	text-align: center;
@@ -160,27 +160,8 @@ button {
 }
 
 button:hover {
-	background: #0d47a1;
+	background: var(--darker-background);
 	border: 1px solid #0d47a1;
-}
-
-button.primary {
-	color: white;
-	background: #00695c;
-	border: 1px solid #00695c;
-	border-radius: 2px;
-	font-size: 1em;
-	text-align: center;
-	margin: 3px;
-	padding-left: 4px;
-	padding-right: 4px;
-	box-shadow: 2px 2px 3px #aaaaaa;
-	white-space: nowrap;
-}
-
-button.primary:hover {
-	background: #004d40;
-	border: 1px solid #004d40;
 }
 
 .row {

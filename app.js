@@ -203,7 +203,7 @@ function createWindow() {
                 { label: 'About...', click: function () { showAbout() } },
                 {
                     label: 'Preferences...', submenu: [
-                        { label: 'Default Indentation', accelerator: 'Cmd+,', click: function () { sendCommand('indentation') } }
+                        { label: 'Settings', accelerator: 'Cmd+,', click: function () { sendCommand('settings') } }
                     ]
                 },
                 { type: 'separator' },
@@ -221,7 +221,7 @@ function createWindow() {
         template.push(
             {
                 label: 'Settings', submenu: [
-                    { label: 'Default Indentation', click: function () { sendCommand('indentation') } }
+                    { label: 'Preferences', click: function () { sendCommand('settings') } }
                 ]
             }
         );
