@@ -47,12 +47,12 @@
                 </table>
             </div>
 
-            <div id="divider" class="divider" draggable="true" ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
+            <div id="divider" class="hdivider" draggable="true" ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
                 ondrag="hdrag(event, 'divider', 'left-pane', 'right-pane')" ></div>
 
             <div id="right-pane" style="width:20vw; min-width: 200px;">
 
-                <div style="height: 34%; width: 100%;">
+                <div id="topPanel" style="height: 34%; width: 100%;">
                     <div class="dark_background" style=" width: 100%; height: 24px;">
                         TU Attributes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
@@ -62,7 +62,10 @@
                     </table>
                 </div>
 
-                <div style="height: 33%; width: 100%;">
+                <div id="topDivider" class="vdivider" draggable="true" ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel')"
+                ondrag="vdrag(event, 'topDivider', 'topPanel', 'centerPanel')" ></div>
+
+                <div id="centerPanel" style="height: 33%; width: 100%;">
                     <div class="dark_background" style="width: 100%; height: 25px;">
                         TU Properties
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
@@ -72,7 +75,10 @@
                     </table>
                 </div>
 
-                <div style="height: 33%; width: 100%;">
+                <div id="bottomDivider" class="vdivider" draggable="true" ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"
+                ondrag="vdrag(event, 'bottomDivider', 'centerPanel', 'bottomPanel')" ></div>
+
+                <div id="bottomPanel" style="height: 33%; width: 100%;">
                     <div class="dark_background" style="width: 100%; height: 24px;">
                         TU Notes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>

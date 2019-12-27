@@ -1,28 +1,59 @@
 function hdrag(ev, dividerId, leftId, rightId) {
-    var leftPane = document.getElementById(leftId);
-    var paneSep = document.getElementById(dividerId);
-    var rightPane = document.getElementById(rightId);
+    var leftPanel = document.getElementById(leftId);
+    var divider = document.getElementById(dividerId);
+    var rightPanel = document.getElementById(rightId);
 
-    var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
-    var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
-    var right = 100 - left;
+    var sum = leftPanel.clientWidth + divider.clientWidth + rightPanel.clientWidth;
+    var left = leftPanel.clientWidth + ev.offsetX;
+    var right = sum - left - divider.clientWidth;
     if (left > 10 && right > 10) {
-        leftPane.style.width = left + 'vw';
-        rightPane.style.width = right + 'vw';
+        leftPanel.style.width = left + 'px';
+        rightPanel.style.width = right + 'px';
     }
 }
 
 function hDragEnd(ev, dividerId, leftId, rightId) {
-    var leftPane = document.getElementById(leftId);
-    var paneSep = document.getElementById(dividerId);
-    var rightPane = document.getElementById(rightId);
+    var leftPanel = document.getElementById(leftId);
+    var divider = document.getElementById(dividerId);
+    var rightPanel = document.getElementById(rightId);
 
-    var sum = leftPane.clientWidth + paneSep.clientWidth + rightPane.clientWidth;
-    var left = Math.round((leftPane.clientWidth + ev.offsetX) / sum * 100);
-    var right = 100 - left;
-    leftPane.style.width = left + 'vw';
-    rightPane.style.width = right + 'vw';
+    var sum = leftPanel.clientWidth + divider.clientWidth + rightPanel.clientWidth;
+    var left = leftPanel.clientWidth + ev.offsetX;
+    var right = sum - left - divider.clientWidth;
+    leftPanel.style.width = left + 'px';
+    rightPanel.style.width = right + 'px';
 
-    leftPane.style.minWidth = '20px';
-    rightPane.style.minWidth = '20px';
+    leftPanel.style.minWidth = '20px';
+    rightPanel.style.minWidth = '20px';
+}
+
+function vdrag(ev, dividerId, topId, bottomId) {
+    var topPanel = document.getElementById(topId);
+    var divider = document.getElementById(dividerId);
+    var bottomPanel = document.getElementById(bottomId);
+
+    var sum = topPanel.clientHeight + divider.clientHeight + bottomPanel.clientHeight;
+    var top = topPanel.clientHeight + ev.offsetY;
+    var bottom = sum - top - divider.clientHeight;
+    
+    if (top > 10 && bottom > 10) {
+        topPanel.style.height = top + 'px';
+        bottomPanel.style.height = bottom + 'px';
+    }
+    
+}
+
+function vDragEnd(ev, dividerId, leftId, rightId) {
+    var topPanel = document.getElementById(leftId);
+    var divider = document.getElementById(dividerId);
+    var bottomPanel = document.getElementById(rightId);
+
+    var sum = topPanel.clientHeight + divider.clientHeight + bottomPanel.clientHeight;
+    var top = topPanel.clientHeight + ev.offsetY;
+    var bottom = sum - top - divider.clientHeight;
+    topPanel.style.height = top + 'px';
+    bottomPanel.style.height = bottom + 'px';
+
+    topPanel.style.minHeight = '20px';
+    bottomPanel.style.minHeight = '20px';
 }
