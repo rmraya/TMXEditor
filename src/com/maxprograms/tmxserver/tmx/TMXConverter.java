@@ -33,6 +33,10 @@ public class TMXConverter {
 
 	private static FileOutputStream output;
 
+	private TMXConverter() {
+		// empty for security
+	}
+
 	public static void csv2tmx(String csvFile, String tmxFile, List<String> languages, String charSet,
 			String columsSeparator, String textDelimiter) throws IOException {
 		

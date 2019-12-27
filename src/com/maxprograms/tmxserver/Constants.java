@@ -25,7 +25,7 @@ public class Constants {
 	}
 
 	public static final String VERSION = "2.0.0";
-	public static final String BUILD = "20191222_1550";
+	public static final String BUILD = "20191227_0751";
 
 	public static final String MAC = "Mac";
 	public static final String WINDOWS = "Windows";

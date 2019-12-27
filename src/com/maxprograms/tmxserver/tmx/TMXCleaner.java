@@ -54,8 +54,8 @@ public class TMXCleaner {
 			}
 		}
 		String backup = name + ".bak";
-		if (name.indexOf(".") != -1 && name.lastIndexOf(".") < name.length()) {
-			backup = name.substring(0, name.lastIndexOf(".")) + ".~" + name.substring(name.lastIndexOf(".") + 1);
+		if (name.indexOf('.') != -1 && name.lastIndexOf('.') < name.length()) {
+			backup = name.substring(0, name.lastIndexOf('.')) + ".~" + name.substring(name.lastIndexOf('.') + 1);
 		}
 		File f = new File(backup);
 		if (f.exists()) {

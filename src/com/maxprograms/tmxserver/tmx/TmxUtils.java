@@ -37,14 +37,14 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Attribute;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.TextNode;
 import com.maxprograms.xml.XMLNode;
+
+import org.xml.sax.SAXException;
 
 public class TmxUtils {
 
@@ -176,8 +176,6 @@ public class TmxUtils {
 				}
 			}
 		}
-		it = null;
-		list = null;
 		return text.toString();
 	}
 
@@ -253,9 +251,9 @@ public class TmxUtils {
 	}
 
 	private static String cleanAngles(String string) {
-		String res = string.replaceAll("&", "&amp;");
-		res = res.replaceAll("<", "\u200B\u2039");
-		res = res.replaceAll(">", "\u200B\u203A");
+		String res = string.replace("&", "&amp;");
+		res = res.replace("<", "\u200B\u2039");
+		res = res.replace(">", "\u200B\u203A");
 		return res;
 	}
 
@@ -322,10 +320,8 @@ public class TmxUtils {
 		} else {
 			workDir = new File(System.getProperty("user.home") + "/.tmxeditor/");
 		}
-		if (!workDir.exists()) {
-			if (!workDir.mkdirs()) {
-				throw new IOException("Error creating data folder");
-			}
+		if (!workDir.exists() && !workDir.mkdirs()) {
+			throw new IOException("Error creating data folder");
 		}
 		return workDir;
 	}

@@ -730,8 +730,6 @@ public class MapDbStore implements StoreInterface {
 			}
 			processed++;
 		}
-		pairs.clear();
-		pairs = null;
 		removeUntranslated(language);
 	}
 

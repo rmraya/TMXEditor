@@ -1174,7 +1174,6 @@ public class TMXService implements TMXServiceInterface {
 					splitStore = new SplitStore(f, l);
 					getIndentation();
 					splitStore.setIndentation(indentation);
-					reader = null;
 					countStore = null;
 					reader = new TMXReader(splitStore);
 					reader.parse(f);

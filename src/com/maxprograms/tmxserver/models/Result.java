@@ -21,7 +21,7 @@ package com.maxprograms.tmxserver.models;
 import java.io.Serializable;
 import java.util.List;
 
-public class Result<D> implements Serializable {
+public class Result<D extends Serializable> implements Serializable {
 
 	private static final long serialVersionUID = -6274351278821214205L;
 

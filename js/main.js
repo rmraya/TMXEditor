@@ -74,7 +74,7 @@ ipcRenderer.on('update-languages', (event, arg) => {
     languages = arg;
     var row = '<tr  class="dark_background"><th class="fixed">&#x2713;</th><th class="fixed">#</th>';
 
-    for (index = 0; index < languages.length; ++index) {
+    for (let index = 0; index < languages.length; ++index) {
         row = row + '<th class="dark_background">' + languages[index].code + ' - ' + arg[index].name + '</th>';
     }
     document.getElementById('tableHeader').innerHTML = row + '</tr>';

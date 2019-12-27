@@ -39,6 +39,10 @@ public class LangUtils {
 	private static List<Language> languages;
 	private static RegistryParser registry;
 
+	private LangUtils() {
+		// empty for security
+	}
+
 	public static List<Language> getAllLanguages() throws SAXException, IOException, ParserConfigurationException {
 		if (languages == null) {
 			languages = new ArrayList<>();

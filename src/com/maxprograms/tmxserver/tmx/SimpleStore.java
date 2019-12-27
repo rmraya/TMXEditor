@@ -631,8 +631,6 @@ public class SimpleStore implements StoreInterface {
 			}
 			processed++;
 		}
-		pairs.clear();
-		pairs = null;
 		removeUntranslated(language);
 	}
 

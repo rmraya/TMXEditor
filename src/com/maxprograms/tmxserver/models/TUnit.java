@@ -18,16 +18,12 @@ SOFTWARE.
 *****************************************************************************/
 package com.maxprograms.tmxserver.models;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 public class TUnit implements Serializable, Comparable<TUnit> {
 
@@ -91,7 +87,7 @@ public class TUnit implements Serializable, Comparable<TUnit> {
 		return 13 * id.hashCode();
 	}
 
-	public String toHTML(List<Language> fileLanguages) throws SAXException, IOException, ParserConfigurationException {
+	public String toHTML(List<Language> fileLanguages) {
 		StringBuilder html = new StringBuilder();
 		html.append("<tr id=\"");
 		html.append(id);

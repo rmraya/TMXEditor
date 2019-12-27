@@ -13,3 +13,6 @@ release
 server.sh
 server.bat
 package-lock.json
+sonar-project.properties
+sonarqube.sh
+.scannerwork

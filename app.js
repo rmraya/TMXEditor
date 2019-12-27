@@ -61,7 +61,7 @@ if (ck.error != null) {
     console.log('ck ' + JSON.stringify(ck));
 }
 
-app.on('open-file', function (event, url) {
+app.on('open-file', function (event, filePath) {
     event.preventDefault();
 })
 
@@ -217,7 +217,7 @@ function createWindow() {
             ]
         });
     } else {
-        helpMenu = template.pop()
+        let helpMenu = template.pop()
         template.push(
             {
                 label: 'Settings', submenu: [
@@ -266,7 +266,7 @@ function createWindow() {
         }
         if (process.platform === 'linux') {
             template[0].submenu.push({ type: 'separator' }, { label: 'Quit', accelerator: 'Ctrl+Q', role: 'quit', click: function () { app.quit() } });
-            template[5].submenu.push({ type: 'separator' }, { label: 'About...', click: showAbout() });
+            template[5].submenu.push({ type: 'separator' }, { label: 'About...', click: function () { showAbout() } });
         }
         Menu.setApplicationMenu(Menu.buildFromTemplate(template));
     });
@@ -499,9 +499,9 @@ function saveRecent(file) {
             }
             if (!found) {
                 files.unshift(file);
-                fs.writeFile(appHome + 'recent.json', JSON.stringify(jsonData), function (err) {
-                    if (err) {
-                        dialog.showMessageBox({ type: 'error', message: err.message });
+                fs.writeFile(appHome + 'recent.json', JSON.stringify(jsonData), function (error) {
+                    if (error) {
+                        dialog.showMessageBox({ type: 'error', message: error.message });
                         return;
                     }
                 });
