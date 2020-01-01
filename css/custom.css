@@ -6,6 +6,9 @@
 	--lighter-background: #7da3c6;
 }
 
+body {
+	background: white;
+}
 .dark_background {
 	background: var(--dark-background);
 	color: var(--dark-color);
@@ -186,7 +189,7 @@ button:hover {
 	flex-direction: column;
 }
 
-.fill {
+.fill_width {
 	width: 100%;
 }
 
