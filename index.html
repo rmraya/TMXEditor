@@ -47,12 +47,13 @@
                 </table>
             </div>
 
-            <div id="divider" class="hdivider" draggable="true" ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
-                ondrag="hdrag(event, 'divider', 'left-pane', 'right-pane')" ></div>
+            <div id="divider" class="hdivider" draggable="true"
+                ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
+                ondragstart="hDragStart(event, 'divider', 'left-pane', 'right-pane')"></div>
 
             <div id="right-pane" style="width:20vw; min-width: 200px;">
 
-                <div id="topPanel" class="fill_width" style="height: 34%;">
+                <div id="topPanel" class="fill_width" style="height: 34%;min-height: 20px;">
                     <div class="dark_background fill_width" style=" width: 100%; height: 24px;">
                         TU Attributes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
@@ -62,11 +63,12 @@
                     </table>
                 </div>
 
-                <div id="topDivider" class="vdivider" draggable="true" ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel')"
-                ondrag="vdrag(event, 'topDivider', 'topPanel', 'centerPanel')" ></div>
+                <div id="topDivider" class="vdivider" draggable="true"
+                    ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel')"
+                    ondragstart="vDragStart(event, 'topDivider', 'topPanel', 'centerPanel')"></div>
 
-                <div id="centerPanel" class="fill_width" style="height: 33%;">
-                    <div class="dark_background fill_width" style="width: 100%; height: 25px;">
+                <div id="centerPanel" class="fill_width" style="height: 33%;min-height: 20px;">
+                    <div class="dark_background fill_width" style="width: 100%; height: 24px;">
                         TU Properties
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
                     </div>
@@ -75,10 +77,11 @@
                     </table>
                 </div>
 
-                <div id="bottomDivider" class="vdivider" draggable="true" ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"
-                ondrag="vdrag(event, 'bottomDivider', 'centerPanel', 'bottomPanel')" ></div>
+                <div id="bottomDivider" class="vdivider" draggable="true"
+                    ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"
+                    ondragstart="vDragStart(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"></div>
 
-                <div id="bottomPanel" class="fill_width" style="height: 33%;">
+                <div id="bottomPanel" class="fill_width" style="height: 33%; min-height: 20px;">
                     <div class="dark_background fill_width" style="width: 100%; height: 24px;">
                         TU Notes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
