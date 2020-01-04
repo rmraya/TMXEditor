@@ -31,14 +31,14 @@
 
     <div id="main">
         <div style="position: absolute; top: 30px; bottom: 30px; display:flex; width: 100%;">
-            <div id="left-pane" style="width:80vw; overflow-y: scroll;">
+            <div id="left-pane" style="width:80vw; overflow: scroll;">
                 <table id="mainTable">
                     <thead id='tableHeader'>
                         <tr class="dark_background">
                             <th class="fixed dark_background">&#x2713;</th>
                             <th class="fixed dark_background">#</th>
-                            <th>&nbsp;</th>
-                            <th>&nbsp;</th>
+                            <th class="dark_background">&nbsp;</th>
+                            <th class="dark_background">&nbsp;</th class="dark_background">
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -51,44 +51,53 @@
                 ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
                 ondragstart="hDragStart(event, 'divider', 'left-pane', 'right-pane')"></div>
 
-            <div id="right-pane" style="width:20vw; min-width: 200px;">
+            <div id="right-pane" style="width:20vw; min-width: 200px; height: 100%; display: block;">
 
-                <div id="topPanel" class="fill_width" style="height: 34%;min-height: 20px;">
-                    <div class="dark_background fill_width" style=" width: 100%; height: 24px;">
+                <div id="topPanel" class="panel fill_width" style="height: 34%;">
+                    <div class="titlepanel">
                         TU Attributes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
                     </div>
-                    <table id="attributesTable" style="overflow-y: scroll; ">
-                        <tr></tr>
-                    </table>
+                    <div class="panelcontent">
+                        <table>
+                            <tbody id="attributesTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div id="topDivider" class="vdivider" draggable="true"
                     ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel')"
                     ondragstart="vDragStart(event, 'topDivider', 'topPanel', 'centerPanel')"></div>
 
-                <div id="centerPanel" class="fill_width" style="height: 33%;min-height: 20px;">
-                    <div class="dark_background fill_width" style="width: 100%; height: 24px;">
+                <div id="centerPanel" class="panel fill_width" style="height: 33%;">
+                    <div class="titlepanel">
                         TU Properties
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
                     </div>
-                    <table id="propertiesTable" style="overflow-y: scroll; ">
-                        <tr></tr>
-                    </table>
+                    <div class="panelcontent">
+                        <table>
+                            <tbody id="propertiesTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div id="bottomDivider" class="vdivider" draggable="true"
                     ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"
                     ondragstart="vDragStart(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"></div>
 
-                <div id="bottomPanel" class="fill_width" style="height: 33%; min-height: 20px;">
-                    <div class="dark_background fill_width" style="width: 100%; height: 24px;">
+                <div id="bottomPanel" class="panel fill_width" style="height: 33%;">
+                    <div class="titlepanel">
                         TU Notes
                         <a class="right"><img src="images/edit.svg" title="Edit"></a>
                     </div>
-                    <table id="notesTable" style="overflow-y: scroll;">
-                        <tr></tr>
-                    </table>
+                    <div class="panelcontent">
+                        <table>
+                            <tbody id="notesTable">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>

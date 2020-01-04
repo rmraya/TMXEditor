@@ -9,6 +9,7 @@
 body {
 	background: white;
 }
+
 .dark_background {
 	background: var(--dark-background);
 	color: var(--dark-color);
@@ -20,6 +21,7 @@ body {
 	height: 100%;
 	position: relative;
 	cursor: col-resize;
+	display: block;
 }
 
 .vdivider {
@@ -28,6 +30,7 @@ body {
 	height: 2px;
 	position: relative;
 	cursor: row-resize;
+	display: block;
 }
 
 .wait {
@@ -64,6 +67,11 @@ thead {
 	height: 24px;
 }
 
+tbody {
+	overflow-y: scroll;
+	overflow-x: scroll;
+}
+
 td {
 	padding: 4px;
 	vertical-align: top;
@@ -76,7 +84,6 @@ td.fixed {
 	background: var(--lighter-background);
 	cursor: default !important;
 }
-
 
 table th {
 	position: sticky;
@@ -268,4 +275,32 @@ button.toolbar:hover {
 /* Style the tab content */
 .tabcontent {
 	display: none;
+}
+
+.panel {
+	z-index: 5;
+	display: block;
+	overflow-y: scroll;
+}
+
+.titlepanel {
+	z-index: -10;
+	position: sticky;
+	top: 0px;
+	width: 100%;
+	height: 24px;
+	background: var(--dark-background);
+	color: var(--dark-color);
+}
+
+.panelcontent {
+	z-index: -20;
+	display: block;
+	width: 100%;
+	overflow-y: scroll;
+	overflow-x: scroll;
+}
+
+.panelcontent table {
+	z-index: -30;
 }
