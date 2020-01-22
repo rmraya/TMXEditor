@@ -35,7 +35,7 @@
                 <table id="mainTable">
                     <thead id='tableHeader'>
                         <tr class="dark_background">
-                            <th class="fixed dark_background">&#x2713;</th>
+                            <th class="fixed dark_background"><input type="checkbox"></th>
                             <th class="fixed dark_background">#</th>
                             <th class="dark_background">&nbsp;</th>
                             <th class="dark_background">&nbsp;</th class="dark_background">
@@ -48,8 +48,8 @@
             </div>
 
             <div id="divider" class="hdivider" draggable="true"
-                ondragend="hDragEnd(event, 'divider', 'left-pane', 'right-pane')"
-                ondragstart="hDragStart(event, 'divider', 'left-pane', 'right-pane')"></div>
+                ondragend="hDragEnd(event, 'left-pane', 'right-pane')"
+                ondragstart="hDragStart(event, 'left-pane', 'right-pane')"></div>
 
             <div id="right-pane" style="width:20vw; min-width: 200px; height: 100%; display: block;">
 

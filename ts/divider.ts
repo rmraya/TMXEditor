@@ -1,29 +1,25 @@
 var currentSum: number;
 
-function hDragStart(ev: DragEvent, dividerId: string, leftId: string, rightId: string) {
+function hDragStart(ev: DragEvent, leftId: string, rightId: string) {
     var leftPanel: HTMLElement = document.getElementById(leftId);
-    var divider: HTMLElement = document.getElementById(dividerId);
     var rightPanel: HTMLElement = document.getElementById(rightId);
 
-    currentSum = leftPanel.clientWidth + divider.clientWidth + rightPanel.clientWidth;
+    currentSum = leftPanel.clientWidth + rightPanel.clientWidth;
 }
 
-function hDragEnd(ev: DragEvent, dividerId: string, leftId: string, rightId: string) {
+function hDragEnd(ev: DragEvent, leftId: string, rightId: string) {
     var leftPanel: HTMLElement = document.getElementById(leftId);
-    var divider: HTMLElement = document.getElementById(dividerId);
     var rightPanel: HTMLElement = document.getElementById(rightId);
 
     var left: number = leftPanel.clientWidth + ev.offsetX;
     if (left < 20) {
         left = 20;
     }
+    left = Math.round(left * 100 / currentSum);
     
-    var right: number = currentSum - left - divider.clientWidth;
-    if (right > currentSum - 30) {
-        right = currentSum - 30;
-    }
-    leftPanel.style.width = left + 'px';
-    rightPanel.style.width = right + 'px';
+    var right: number = 100 - left;
+    leftPanel.style.width = left + 'vw';
+    rightPanel.style.width = right + 'vw';
 }
 
 function vDragStart(ev: DragEvent, dividerId: string, leftId: string, rightId: string) {

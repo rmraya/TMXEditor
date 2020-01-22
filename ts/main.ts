@@ -68,7 +68,7 @@ ipcRenderer.on('languages-changed', () => {
 
 ipcRenderer.on('update-languages', (event, arg) => {
     languages = arg;
-    var row = '<tr  class="dark_background"><th class="fixed">&#x2713;</th><th class="fixed">#</th>';
+    var row = '<tr  class="dark_background"><th class="dark_background fixed"><input type="checkbox"></th><th class="dark_background fixed">#</th>';
 
     for (let index = 0; index < languages.length; ++index) {
         row = row + '<th class="dark_background">' + languages[index].code + ' - ' + arg[index].name + '</th>';
