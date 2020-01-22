@@ -21,8 +21,8 @@ const { ipcRenderer, shell } = require('electron');
 var languages;
 var currentId = null;
 var currentLang = null;
-var currentCell = null;
-var currentContent = null;
+var currentCell: Element = null;
+var currentContent: string = null;
 
 document.getElementById('open').addEventListener('click', () => {
     ipcRenderer.send('openFile');
@@ -52,12 +52,12 @@ ipcRenderer.on('update-status', (event, arg) => {
     if (arg.status === 'Success') {
         if (arg.count != undefined) {
             document.getElementById('units').innerText = arg.count;
-            var unitsPage = document.getElementById('units_page').value;
-            if (unitsPage === '' || unitsPage === 0) {
-                unitsPage = 200;
-                document.getElementById('units_page').value = 200;
+            var unitsPage: string = (document.getElementById('units_page') as HTMLInputElement).value;
+            if (unitsPage === '') {
+                unitsPage = '200';
+                (document.getElementById('units_page') as HTMLInputElement).value = unitsPage;
             }
-            document.getElementById('pages').innerText = Math.ceil(arg.count / unitsPage);
+            document.getElementById('pages').innerText = '' + Math.ceil(arg.count / Number(unitsPage));
         }
     }
 });
@@ -81,11 +81,11 @@ ipcRenderer.on('update-languages', (event, arg) => {
 });
 
 ipcRenderer.on('file-loaded', (event, arg) => {
-    var unitsPage = document.getElementById('units_page').value;
-    document.getElementById('page').value = 1;
+    var unitsPage: string = (document.getElementById('units_page') as HTMLInputElement).value;
+    (document.getElementById('page') as HTMLInputElement).value = '1';
     ipcRenderer.send('get-segments', {
         start: 0,
-        count: Math.round(unitsPage),
+        count: Math.round(Number(unitsPage)),
         filterText: '',
         caseSensitiveFilter: false
     });
@@ -102,25 +102,25 @@ ipcRenderer.on('update-segments', (event, arg) => {
 ipcRenderer.on('file-closed', (event, arg) => {
     document.getElementById("tableBody").innerHTML = '';
     document.getElementById("tableHeader").innerHTML = '<tr class="dark_background"><th class="fixed dark_background">&#x2713;</th><th class="fixed dark_background">#</th><th class="dark_background">&nbsp;</th><th class="dark_background">&nbsp;</th></tr>';
-    document.getElementById('page').value = 0;
+    (document.getElementById('page') as HTMLInputElement).value = '0';
     document.getElementById('pages').innerHTML = '0';
     document.getElementById('units').innerHTML = '';
 });
 
 document.getElementById('mainTable').addEventListener('click', (event) => {
-    var x = event.target.tagName;
-    var id = '';
-    var lang = '';
+    var x: string = (event.target as Element).tagName;
+    var id: string = '';
+    var lang: string = '';
     if ('TD' === x) {
         var composed = event.composedPath();
-        if ('TR' === composed[0].tagName) {
-            id = composed[0].id;
-        } else if ('TR' === composed[1].tagName) {
-            id = composed[1].id;
-        } else if ('TR' === composed[2].tagName) {
-            id = composed[2].id;
+        if ('TR' === (composed[0] as Element).tagName) {
+            id = (composed[0] as Element).id;
+        } else if ('TR' === (composed[1] as Element).tagName) {
+            id = (composed[1] as Element).id;
+        } else if ('TR' === (composed[2] as Element).tagName) {
+            id = (composed[2] as Element).id;
         }
-        lang = event.target.lang;
+        lang = (event.target as Element).getAttribute('lang');
         console.log('clicked ' + id + ' ' + lang);
     }
     if (id !== '') {
@@ -132,14 +132,14 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
         }
         if (lang !== '') {
             currentLang = lang;
-            currentCell = event.target;
-            currentContent = event.target.innerHTML;
-            var textArea = document.createElement('textarea');
-            textArea.setAttribute('style', 'height: ' + (event.target.clientHeight - 8) + 'px; width: ' + (event.target.clientWidth - 8) + 'px;')
+            currentCell = (event.target as Element);
+            currentContent = currentCell.innerHTML;
+            var textArea: HTMLTextAreaElement = document.createElement('textarea');
+            textArea.setAttribute('style', 'height: ' + (currentCell.clientHeight - 8) + 'px; width: ' + (currentCell.clientWidth - 8) + 'px;')
             textArea.innerHTML = currentContent;
-            event.target.innerHTML = '';
-            event.target.parentElement.style.padding = '0px';
-            event.target.appendChild(textArea);
+            currentCell.innerHTML = '';
+            currentCell.parentElement.style.padding = '0px';
+            currentCell.appendChild(textArea);
             textArea.focus();
             ipcRenderer.send('get-cell-properties', { id: currentId, lang: currentLang });
         } else {
@@ -147,6 +147,7 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
         }
     }
 });
+
 
 ipcRenderer.on('update-properties', (event, arg) => {
     var table = document.getElementById('attributesTable');

@@ -5,6 +5,8 @@
     "description": "TMX Editor",
     "main": "app.js",
     "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
         "start": "electron ."
     },
     "author": {
@@ -12,8 +14,9 @@
         "email": "rmraya@maxprograms.com",
         "url": "https://www.maxprograms.com"
     },
+    "dependencies": {},
     "devDependencies": {
-        "electron": "^7.1.2"
-    },
-    "dependencies": {}
+        "electron": "^7.1.9",
+        "typescript": "^3.7.5"
+    }
 }

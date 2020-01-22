@@ -1,4 +1,5 @@
 # TMXEditor
+
 ![TMXEditor logo](https://www.maxprograms.com/images/tmxeditor_s.png)
 
 TMXEditor is an open source desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
@@ -18,15 +19,16 @@ Ready to use commercial installers are available at [TMXEditor Home Page](https:
 
 Commercial versions of TMXEditor can be installed in as many computers as desired. TMXEditor licenses are designed for use in one computer at a time and can be transferred from one computer to another in just a few seconds.
 
-You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version there. 
+You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version there.
 
-Commercial version includes unlimited email support at tech@maxprograms.com 
+Commercial version includes unlimited email support at tech@maxprograms.com
 
 ## Requirements
 
-- JDK 11 or newer is required for compiling and building. 
+- JDK 11 or newer is required for compiling and building.
 - Apache Ant 1.10.7 or newer
 - NodeJS 12.14.0 LTS or newer
+- TypeScript 3.7.5 or newer
 
 ## Building
 
@@ -34,6 +36,5 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 - Point your `JAVA_HOME` environment variable to JDK 11
 - Run `ant` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
+- Run `ant tsc` to compile the TypeScript code
 - Run `npm start` to launch TMXEditor
-
-
