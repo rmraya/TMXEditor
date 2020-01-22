@@ -44,6 +44,7 @@ if (!app.requestSingleInstanceLock()) {
         mainWindow.focus();
     }
 }
+
 if (process.platform == 'win32') {
     javapath = __dirname + '\\bin\\java.exe';
     appHome = app.getPath('appData') + '\\tmxeditor\\';
@@ -51,13 +52,16 @@ if (process.platform == 'win32') {
     javapath = __dirname + '/bin/java';
     appHome = app.getPath('appData') + '/tmxeditor/';
 }
+
 spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: __dirname });
 var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: __dirname });
 console.log(ck.toString());
 
 app.on('open-file', function (event, filePath) {
     event.preventDefault();
+    openFile(filePath);
 });
+
 app.on('ready', function () {
     createWindow();
     mainWindow.loadURL('file://' + __dirname + '/index.html');
@@ -70,13 +74,16 @@ app.on('ready', function () {
     mainWindow.show();
     // mainWindow.webContents.openDevTools();
 });
+
 app.on('quit', function () {
     stopServer();
 });
+
 app.on('window-all-closed', function () {
     stopServer();
     app.quit();
 });
+
 if (process.platform === 'darwin') {
     app.on('open-file', function (event, path) {
         event.preventDefault();
@@ -89,9 +96,8 @@ function createWindow() {
     if (existsSync(appHome + 'defaults.json')) {
         try {
             var data: Buffer = readFileSync(appHome + 'defaults.json');
-            currentDefaults = data.toJSON();
-        }
-        catch (err) {
+            currentDefaults = JSON.parse(data.toString());
+        } catch (err) {
             console.log(err);
         }
     }
@@ -104,8 +110,7 @@ function createWindow() {
             nodeIntegration: true
         },
         show: false,
-        icon: 'icons/tmxeditor.png',
-        backgroundColor: '#eeeeee44'
+        icon: 'icons/tmxeditor.png'
     });
     contents = mainWindow.webContents;
     var fileMenu: Menu = Menu.buildFromTemplate([
@@ -255,6 +260,7 @@ function createWindow() {
         Menu.setApplicationMenu(Menu.buildFromTemplate(template));
     });
 }
+
 function sendCommand(command: string) {
     sendRequest({ command: command },
         function success() {
@@ -266,7 +272,7 @@ function sendCommand(command: string) {
     );
 }
 
-function sendRequest(json: any, success:any, error: any) {
+function sendRequest(json: any, success: any, error: any) {
     var postData: string = JSON.stringify(json);
     var options = {
         hostname: '127.0.0.1',
@@ -301,6 +307,7 @@ function sendRequest(json: any, success:any, error: any) {
     req.write(postData);
     req.end();
 }
+
 function stopServer() {
     if (!stopping) {
         stopping = true;

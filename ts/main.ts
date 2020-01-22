@@ -19,8 +19,8 @@ SOFTWARE.
 const { ipcRenderer, shell } = require('electron');
 
 var languages;
-var currentId = null;
-var currentLang = null;
+var currentId: string = null;
+var currentLang: string = null;
 var currentCell: Element = null;
 var currentContent: string = null;
 
@@ -76,7 +76,7 @@ ipcRenderer.on('update-languages', (event, arg) => {
     document.getElementById('tableHeader').innerHTML = row + '</tr>';
 });
 
-ipcRenderer.on('file-loaded', (event, arg) => {
+ipcRenderer.on('file-loaded', () => {
     var unitsPage: string = (document.getElementById('units_page') as HTMLInputElement).value;
     (document.getElementById('page') as HTMLInputElement).value = '1';
     ipcRenderer.send('get-segments', {
@@ -95,7 +95,7 @@ ipcRenderer.on('update-segments', (event, arg) => {
     document.getElementById("tableBody").innerHTML = rows;
 });
 
-ipcRenderer.on('file-closed', (event, arg) => {
+ipcRenderer.on('file-closed', () => {
     document.getElementById("tableBody").innerHTML = '';
     document.getElementById("tableHeader").innerHTML = '<tr class="dark_background"><th class="fixed dark_background">&#x2713;</th><th class="fixed dark_background">#</th><th class="dark_background">&nbsp;</th><th class="dark_background">&nbsp;</th></tr>';
     (document.getElementById('page') as HTMLInputElement).value = '0';
