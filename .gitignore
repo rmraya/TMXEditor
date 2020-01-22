@@ -11,6 +11,7 @@
 docs/out/
 /node_modules/
 /TMXEditor-darwin-x64/
+app.js
 release
 server.sh
 server.bat
