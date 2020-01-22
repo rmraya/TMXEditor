@@ -46,9 +46,9 @@ ipcRenderer.on('end-waiting', () => {
 
 ipcRenderer.on('set-status', (event, arg) => {
     document.getElementById('status').innerHTML = arg;
-})
+});
 
-ipcRenderer.on('update-status', (event, arg) => {
+ipcRenderer.on('status-changed', (event, arg) => {
     if (arg.status === 'Success') {
         if (arg.count != undefined) {
             document.getElementById('units').innerText = arg.count;
@@ -60,10 +60,6 @@ ipcRenderer.on('update-status', (event, arg) => {
             document.getElementById('pages').innerText = '' + Math.ceil(arg.count / Number(unitsPage));
         }
     }
-});
-
-ipcRenderer.on('status-changed', () => {
-    ipcRenderer.send('get-status')
 });
 
 ipcRenderer.on('languages-changed', () => {

@@ -374,7 +374,7 @@ function openFile(file: string) {
                     return;
                 } else if (currentStatus.status === SUCCESS) {
                     // it's OK, keep waiting
-                    mainWindow.webContents.send('status-changed');
+                    mainWindow.webContents.send('status-changed', currentStatus);
                 } else {
                     mainWindow.webContents.send('end-waiting');
                     clearInterval(intervalObject);
@@ -437,10 +437,6 @@ function getFileLanguages() {
         }
     );
 }
-
-ipcMain.on('get-status', function (event, arg) {
-    event.sender.send('update-status', currentStatus.status);
-});
 
 ipcMain.on('get-languages', function (event, arg) {
     event.sender.send('update-languages', fileLanguages);
