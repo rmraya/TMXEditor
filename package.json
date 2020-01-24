@@ -5,8 +5,6 @@
     "description": "TMX Editor",
     "main": "app.js",
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w",
         "start": "electron ."
     },
     "author": {

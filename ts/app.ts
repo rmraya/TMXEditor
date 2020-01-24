@@ -25,13 +25,15 @@ import { Buffer } from "buffer";
 
 var mainWindow: BrowserWindow;
 var contents: webContents;
-var javapath: string;
-var appHome: string;
+var javapath: string = app.getAppPath() + '/bin/java';
+var appHome: string = app.getPath('appData') + '/tmxeditor/';
 var stopping: boolean = false;
 var fileLanguages: any;
 var currentDefaults: any;
 var currentStatus: any = {};
+
 const SUCCESS: string = 'Success';
+const COMPLETED: string = 'Completed';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -46,11 +48,8 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 if (process.platform == 'win32') {
-    javapath = __dirname + '\\bin\\java.exe';
+    javapath = app.getAppPath() + '\\bin\\java.exe';
     appHome = app.getPath('appData') + '\\tmxeditor\\';
-} else {
-    javapath = __dirname + '/bin/java';
-    appHome = app.getPath('appData') + '/tmxeditor/';
 }
 
 spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: __dirname });
@@ -316,10 +315,10 @@ function stopServer() {
 }
 
 function showAbout() {
-    var about = new BrowserWindow({
+    var aboutWindow = new BrowserWindow({
         parent: mainWindow,
         width: 620,
-        height: 320,
+        height: 330,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -330,10 +329,80 @@ function showAbout() {
             nodeIntegration: true
         }
     });
-    about.setMenu(null);
-    about.loadURL('file://' + __dirname + '/html/about.html');
-    about.show();
+    aboutWindow.setMenu(null);
+    aboutWindow.loadURL('file://' + app.getAppPath() + '/html/about.html');
+    aboutWindow.show();
 }
+
+ipcMain.on('licenses-clicked', function () {
+    var licensesWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 500,
+        height: 300,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    licensesWindow.setMenu(null);
+    licensesWindow.loadURL('file://' + app.getAppPath() + '/html/licenses.html');
+    licensesWindow.show();
+});
+
+ipcMain.on('open-license', function (event, arg: any) {
+    var licenseFile = '';
+    switch (arg.type) {
+        case 'TMXEditor':
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/TMXEditor.html'
+            break;
+        case "electron":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/electron.txt'
+            break;
+        case "TypeScript":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
+            break;
+        case "Java":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/java.html'
+            break;
+        case "OpenXLIFF":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            break;
+        case "TMXValidator":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            break;
+        case "MapDB":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
+            break;
+        case "jsoup":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/jsoup.txt'
+            break;
+        case "DTDParser":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/LGPL2.1.txt'
+            break;
+        default:
+            dialog.showErrorBox('Error', 'Unknow license');
+            return;
+    }
+    var licenseWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 680,
+        height: 400,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    licenseWindow.setMenu(null);
+
+    licenseWindow.loadURL(licenseFile);
+    licenseWindow.show();
+});
 
 function showHelp() {
     var help = __dirname + '/tmxeditor.pdf';
@@ -373,7 +442,7 @@ function openFile(file: string) {
         function success(json: any) {
             currentStatus = json;
             var intervalObject = setInterval(function () {
-                if (currentStatus.status === 'Completed') {
+                if (currentStatus.status === COMPLETED) {
                     mainWindow.webContents.send('end-waiting');
                     clearInterval(intervalObject);
                     getFileLanguages();
