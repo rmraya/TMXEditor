@@ -338,7 +338,7 @@ ipcMain.on('licenses-clicked', function () {
     var licensesWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,
-        height: 300,
+        height: 320,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -371,6 +371,9 @@ ipcMain.on('open-license', function (event, arg: any) {
             break;
         case "OpenXLIFF":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            break;
+        case "JSON":
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/json.txt'
             break;
         case "TMXValidator":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
