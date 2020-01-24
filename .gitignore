@@ -7,8 +7,6 @@
 /dist/
 /js/
 .DS_Store
-.cache/
-docs/out/
 /node_modules/
 /TMXEditor-darwin-x64/
 app.js
