@@ -25,6 +25,8 @@ import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.Result;
 import com.maxprograms.tmxserver.models.TUnit;
 
+import org.json.JSONObject;
+
 public interface TMXServiceInterface {
 	String[] openFile(String fileName);
 
@@ -90,7 +92,7 @@ public interface TMXServiceInterface {
 
 	String[] setAttributes(String currentId, String lang, List<String[]> attributes);
 
-	String[] getLoadingProgress();
+	JSONObject getLoadingProgress();
 
 	String[] getSavingProgress();
 

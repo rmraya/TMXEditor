@@ -31,6 +31,8 @@ public class Result<D extends Serializable> implements Serializable {
 	public static final String EMAIL_ERROR = "Email Error";
 	public static final String NOT_REGISTERED = "NOT REGISTERED";
 	public static final String COMPLETED = "Completed";
+	public static final String LOADING = "Loading";
+	
 
 	private List<D> data = null;
 	private String result = "";

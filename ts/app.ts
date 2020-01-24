@@ -33,7 +33,9 @@ var currentDefaults: any;
 var currentStatus: any = {};
 
 const SUCCESS: string = 'Success';
+const LOADING: string = 'Loading';
 const COMPLETED: string = 'Completed';
+const ERROR: string = 'Error';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -52,7 +54,7 @@ if (process.platform == 'win32') {
     appHome = app.getPath('appData') + '\\tmxeditor\\';
 }
 
-spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: __dirname });
+spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
 var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: __dirname });
 console.log(ck.toString());
 
@@ -63,7 +65,7 @@ app.on('open-file', function (event, filePath) {
 
 app.on('ready', function () {
     createWindow();
-    mainWindow.loadURL('file://' + __dirname + '/index.html');
+    mainWindow.loadURL('file://' + app.getAppPath() + '/index.html');
     mainWindow.on('resize', function () {
         saveDefaults();
     });
@@ -101,6 +103,7 @@ function createWindow() {
         }
     }
     mainWindow = new BrowserWindow({
+        title: 'TMXEditor',
         width: currentDefaults.width,
         height: currentDefaults.height,
         x: currentDefaults.x,
@@ -155,7 +158,8 @@ function createWindow() {
         { label: 'Show Next Page', click: function () { sendCommand('next'); } },
         { label: 'Show Last Page', click: function () { sendCommand('last'); } },
         new MenuItem({ type: 'separator' }),
-        new MenuItem({ label: 'Toggle Full Screen', role: 'togglefullscreen' })
+        new MenuItem({ label: 'Toggle Full Screen', role: 'togglefullscreen' }),
+        new MenuItem({ label: 'Toggle Development Tools', accelerator: 'F12', role: 'toggleDevTools' }),
     ]);
     var tasksMenu: Menu = Menu.buildFromTemplate([
         { label: 'Change Language Code...', click: function () { sendCommand('change'); } },
@@ -356,36 +360,47 @@ ipcMain.on('licenses-clicked', function () {
 
 ipcMain.on('open-license', function (event, arg: any) {
     var licenseFile = '';
+    var title = '';
     switch (arg.type) {
         case 'TMXEditor':
-            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/TMXEditor.html'
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/license.txt'
+            title = 'TMXEditor License';
             break;
         case "electron":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/electron.txt'
+            title = 'MIT License';
             break;
         case "TypeScript":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
+            title = 'Apache 2.0';
             break;
         case "Java":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/java.html'
+            'GPL2 with Classpath Exception';
             break;
         case "OpenXLIFF":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            title = 'Eclipse Public License 1.0';
             break;
         case "JSON":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/json.txt'
+            title = 'JSON.org License';
             break;
         case "TMXValidator":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            title = 'Eclipse Public License 1.0';
             break;
         case "MapDB":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
+            title = 'Apache 2.0';
             break;
         case "jsoup":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/jsoup.txt'
+            title = 'MIT License';
             break;
         case "DTDParser":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/LGPL2.1.txt'
+            title = 'LGPL 2.1';
             break;
         default:
             dialog.showErrorBox('Error', 'Unknow license');
@@ -396,21 +411,21 @@ ipcMain.on('open-license', function (event, arg: any) {
         width: 680,
         height: 400,
         show: false,
+        title: title,
         icon: './icons/tmxeditor.png',
         webPreferences: {
             nodeIntegration: true
         }
     });
     licenseWindow.setMenu(null);
-
     licenseWindow.loadURL(licenseFile);
     licenseWindow.show();
 });
 
 function showHelp() {
-    var help = __dirname + '/tmxeditor.pdf';
+    var help = app.getAppPath() + '/tmxeditor.pdf';
     if (process.platform == 'win32') {
-        help = __dirname + '\\tmxeditor.pdf';
+        help = app.getAppPath() + '\\tmxeditor.pdf';
     }
     shell.openItem(help);
 }
@@ -449,15 +464,22 @@ function openFile(file: string) {
                     mainWindow.webContents.send('end-waiting');
                     clearInterval(intervalObject);
                     getFileLanguages();
-                    mainWindow.webContents.send('file-loaded');
+                    mainWindow.webContents.send('file-loaded', currentStatus);
                     return;
-                } else if (currentStatus.status === SUCCESS) {
+                } else if (currentStatus.status === LOADING) {
                     // it's OK, keep waiting
                     mainWindow.webContents.send('status-changed', currentStatus);
-                } else {
+                } else if (currentStatus.status === ERROR) {
                     mainWindow.webContents.send('end-waiting');
                     clearInterval(intervalObject);
                     dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'openFile'
+                } else {
+                    mainWindow.webContents.send('end-waiting');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error loading file');
                     return;
                 }
                 getLoadingProgress();
@@ -551,6 +573,9 @@ function saveRecent(file: string) {
             }
             if (!found) {
                 files.unshift(file);
+                if (files.length > 5) {
+                    jsonData.files = files.slice(0, 5);
+                }
                 writeFile(appHome + 'recent.json', JSON.stringify(jsonData), function (error) {
                     if (error) {
                         dialog.showMessageBox({ type: 'error', message: error.message });
@@ -572,8 +597,7 @@ ipcMain.on('get-segments', function (event, arg) {
             mainWindow.webContents.send('end-waiting');
             if (json.status === SUCCESS) {
                 event.sender.send('update-segments', json);
-            }
-            else {
+            } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
         },

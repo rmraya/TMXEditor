@@ -19,6 +19,11 @@ SOFTWARE.
 const { ipcRenderer, shell } = require('electron');
 
 var languages;
+
+var currentPage: number = 0;
+var maxPage: number = 0;
+var unitsPage: number = 200;
+
 var currentId: string = null;
 var currentLang: string = null;
 var currentCell: Element = null;
@@ -52,12 +57,8 @@ ipcRenderer.on('status-changed', (event, arg) => {
     if (arg.status === 'Success') {
         if (arg.count != undefined) {
             document.getElementById('units').innerText = arg.count;
-            var unitsPage: string = (document.getElementById('units_page') as HTMLInputElement).value;
-            if (unitsPage === '') {
-                unitsPage = '200';
-                (document.getElementById('units_page') as HTMLInputElement).value = unitsPage;
-            }
-            document.getElementById('pages').innerText = '' + Math.ceil(arg.count / Number(unitsPage));
+            maxPage = Math.ceil(arg.count / unitsPage);
+            document.getElementById('pages').innerText = '' + maxPage;
         }
     }
 });
@@ -76,19 +77,17 @@ ipcRenderer.on('update-languages', (event, arg) => {
     document.getElementById('tableHeader').innerHTML = row + '</tr>';
 });
 
-ipcRenderer.on('file-loaded', () => {
-    var unitsPage: string = (document.getElementById('units_page') as HTMLInputElement).value;
-    (document.getElementById('page') as HTMLInputElement).value = '1';
-    ipcRenderer.send('get-segments', {
-        start: 0,
-        count: Math.round(Number(unitsPage)),
-        filterText: '',
-        caseSensitiveFilter: false
-    });
+ipcRenderer.on('file-loaded', (event, arg) => {
+    if (arg.count != undefined) {
+        document.getElementById('units').innerText = arg.count;
+        maxPage = Math.ceil(arg.count / unitsPage);
+        document.getElementById('pages').innerText = '' + maxPage;
+    }
+    firstPage();
 });
 
 ipcRenderer.on('update-segments', (event, arg) => {
-    var rows = '';
+    var rows: string = '';
     for (let i = 0; i < arg.units.length; i++) {
         rows = rows + arg.units[i];
     }
@@ -144,7 +143,6 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
     }
 });
 
-
 ipcRenderer.on('update-properties', (event, arg) => {
     var table = document.getElementById('attributesTable');
     table.innerHTML = '';
@@ -185,3 +183,39 @@ ipcRenderer.on('update-properties', (event, arg) => {
         tr.appendChild(note);
     }
 });
+
+function getSegments(): void {
+    ipcRenderer.send('get-segments', {
+        start: currentPage * unitsPage,
+        count: unitsPage,
+        filterText: '',
+        caseSensitiveFilter: false
+    });
+}
+
+function firstPage(): void {
+    currentPage = 0;
+    (document.getElementById('page') as HTMLInputElement).value = '1';
+    getSegments();
+}
+
+function previousPage(): void {
+    if (currentPage > 1) {
+        currentPage--;
+        (document.getElementById('page') as HTMLInputElement).value = '' + (currentPage + 1);
+        getSegments();
+    }
+}
+
+function nextPage(): void {
+    if (currentPage < maxPage - 1) {
+        currentPage++;
+        (document.getElementById('page') as HTMLInputElement).value = '' + (currentPage + 1);
+        getSegments();
+    }
+}
+function lastPage(): void {
+    currentPage = maxPage - 1;
+    (document.getElementById('page') as HTMLInputElement).value = '' + maxPage;
+    getSegments();
+}

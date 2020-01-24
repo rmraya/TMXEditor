@@ -106,14 +106,14 @@
 
     <footer>
         <div style="display: flex;">
-            <a id="first"><img src="images/first.svg" title="First Page"></a>
-            <a id="previous"><img src="images/previous.svg" title="Previous Page"></a>
+            <a id="first" onclick="firstPage()"><img src="images/first.svg" title="First Page"></a>
+            <a id="previous" onclick="previousPage()"><img src="images/previous.svg" title="Previous Page"></a>
             <span style="margin-left: 10px; margin-top:2px;">Page</span>
-            <input id="page" type="number" style="margin-left: 10px; margin-top:2px;">
+            <input id="page" type="number" style="margin-left: 10px; margin-top:2px;" value="0">
             <span style="margin-left: 10px; margin-top:2px;">of </span>
             <span id="pages" style="width: 60px; margin-left: 10px; margin-top:2px;">0</span>
-            <a id="next"><img src="images/next.svg" title="Next Page"></a>
-            <a id="last"><img src="images/last.svg" title="Last Page"></a>
+            <a id="next" onclick="nextPage()"><img src="images/next.svg" title="Next Page"></a>
+            <a id="last" onclick="lastPage()"><img src="images/last.svg" title="Last Page"></a>
             <span style="margin-left: 10px; margin-top:2px;">Units Page</span>
             <input id="units_page" type="number" style="margin-left: 10px; margin-top:2px;" value="200">
             <span style="margin-left: 10px; margin-top:2px;">Units: </span>

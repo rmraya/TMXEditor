@@ -82,7 +82,7 @@ import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
-
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 public class TMXService implements TMXServiceInterface {
@@ -1101,17 +1101,24 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getLoadingProgress() {
-		if (parsing && store != null) {
-			return new String[] { Result.SUCCESS, "" + store.getCount() };
+	public JSONObject getLoadingProgress() {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			if (parsing) {
+				result.put("status", Result.LOADING);
+			} else {
+				result.put("status", Result.COMPLETED);
+			}
+			result.put("count", store.getCount());
+			if (!parsingError.isEmpty()) {
+				result.put("status", Result.ERROR);
+				result.put("reason", parsingError);
+			}
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", "Null store");
 		}
-		if (!parsing && store != null) {
-			return new String[] { Result.COMPLETED };
-		}
-		if (!parsingError.isEmpty()) {
-			return new String[] { Result.ERROR, parsingError };
-		}
-		return new String[] { Result.ERROR, "Null store and not parsing" };
+		return result;
 	}
 
 	@Override

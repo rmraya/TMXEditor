@@ -242,15 +242,7 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private String getLoadingProgress() {
-		JSONObject result = new JSONObject();
-		String[] res = service.getLoadingProgress();
-		result.put("status", res[0]);
-		if (Result.SUCCESS.equals(res[0])) {
-			result.put("count", res[1]);
-		}
-		if (Result.ERROR.equals(res[0])) {
-			result.put("reason", res[1]);
-		}
+		JSONObject result = service.getLoadingProgress();
 		return result.toString();
 	}
 
