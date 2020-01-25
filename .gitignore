@@ -9,6 +9,7 @@
 .DS_Store
 /node_modules/
 /TMXEditor-darwin-x64/
+/TMXEditor-win32-x64/
 app.js
 release
 server.sh

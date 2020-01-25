@@ -319,7 +319,7 @@ function showAbout() {
     var aboutWindow = new BrowserWindow({
         parent: mainWindow,
         width: 620,
-        height: 330,
+        height: 334,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -339,7 +339,7 @@ ipcMain.on('licenses-clicked', function () {
     var licensesWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,
-        height: 320,
+        height: 330,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
