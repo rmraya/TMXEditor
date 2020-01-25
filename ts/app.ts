@@ -319,7 +319,7 @@ function showAbout() {
     var aboutWindow = new BrowserWindow({
         parent: mainWindow,
         width: 620,
-        height: 334,
+        height: 340,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
