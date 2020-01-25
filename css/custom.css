@@ -4,6 +4,7 @@
 	--dark-color: #fefefe;
 	--light-background: #3c65a4;
 	--lighter-background: #7da3c6;
+	--soft-background: #c5d1dd;
 }
 
 body {
@@ -44,7 +45,7 @@ header {
 }
 
 footer {
-	background: var(--dark-color);
+	background: var(--soft-background);
 	color: var(--darker-background);
 	border-top: 2px solid var(--darker-background);
 }
@@ -54,12 +55,17 @@ table {
 	border-collapse: collapse;
 }
 
+a {
+	color: var(--light-background);
+}
+
 a img {
 	padding-right: 8px;
 	padding-left: 8px;
 }
 
 a:hover {
+	color: var(--dark-background);
 	background: var(--lighter-background);
 }
 
@@ -120,6 +126,15 @@ textarea {
 
 input[type=text] {
 	font-size: 0.8em;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 1px solid var(--dark-background);
+}
+
+input[type=text]:focus {
+	border: none;
+	
 }
 
 input[type=password] {
@@ -180,7 +195,7 @@ button {
 
 button:hover {
 	background: var(--darker-background);
-	border: 1px solid #0d47a1;
+	border: 1px solid var(--darker-background);
 }
 
 .row {
@@ -191,6 +206,23 @@ button:hover {
 	padding-bottom: 0px;
 }
 
+select {
+	font-size: 1em;
+	height: 1.6em;
+	border-radius: 0px;
+	background: white ! important;
+}
+
+option {
+	font-size: 1em;
+	background: white ! important;
+}
+
+label {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 .column {
 	display: flex;
 	flex-direction: column;
@@ -198,6 +230,20 @@ button:hover {
 
 .fill_width {
 	width: 100%;
+}
+
+.noWrap {
+	white-space: nowrap;
+}
+
+.paddedArea {
+	padding: 4px;
+	margin: 4px;
+}
+
+.optionBox {
+	border: 1px solid grey;
+	border-radius: 4px;
 }
 
 .buttonArea {

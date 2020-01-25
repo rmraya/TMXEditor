@@ -16,7 +16,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 SOFTWARE.
 *****************************************************************************/
-const { ipcRenderer, shell } = require('electron');
+
+const { ipcRenderer } = require('electron');
 
 var languages;
 
@@ -29,17 +30,15 @@ var currentLang: string = null;
 var currentCell: Element = null;
 var currentContent: string = null;
 
-document.getElementById('open').addEventListener('click', () => {
-    ipcRenderer.send('openFile');
-});
+var filterText: string = '';
 
-document.getElementById('help').addEventListener('click', () => {
-    var help = __dirname + '/tmxeditor.pdf';
-    if (process.platform == 'win32') {
-        help = __dirname + '\\tmxeditor.pdf'
-    }
-    shell.openItem(help);
-});
+function openFile(): void {
+    ipcRenderer.send('open-file');
+}
+
+function openHelp(): void {
+    ipcRenderer.send('show-help');
+}
 
 ipcRenderer.on('start-waiting', () => {
     document.getElementById('body').classList.add("wait");
@@ -105,7 +104,7 @@ ipcRenderer.on('file-closed', () => {
 document.getElementById('mainTable').addEventListener('click', (event) => {
     var x: string = (event.target as Element).tagName;
     var id: string = '';
-    var lang: string = '';
+    var lang: string;
     if ('TD' === x) {
         var composed = event.composedPath();
         if ('TR' === (composed[0] as Element).tagName) {
@@ -125,7 +124,7 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
             currentCell = null;
             currentContent = null;
         }
-        if (lang !== '') {
+        if (lang !== null) {
             currentLang = lang;
             currentCell = (event.target as Element);
             currentContent = currentCell.innerHTML;
@@ -156,6 +155,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
         tr.appendChild(left);
         var right = document.createElement('td');
         right.textContent = pair[1];
+        right.className = 'noWrap';
         tr.appendChild(right);
     }
     table = document.getElementById('propertiesTable');
@@ -170,6 +170,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
         tr.appendChild(left);
         var right = document.createElement('td');
         right.textContent = pair[1];
+        right.className = 'noWrap';
         tr.appendChild(right);
     }
     table = document.getElementById('notesTable');
@@ -188,7 +189,7 @@ function getSegments(): void {
     ipcRenderer.send('get-segments', {
         start: currentPage * unitsPage,
         count: unitsPage,
-        filterText: '',
+        filterText: filterText,
         caseSensitiveFilter: false
     });
 }
@@ -218,4 +219,8 @@ function lastPage(): void {
     currentPage = maxPage - 1;
     (document.getElementById('page') as HTMLInputElement).value = '' + maxPage;
     getSegments();
+}
+
+function showFilters() {
+    ipcRenderer.send('show-filters');
 }

@@ -17,11 +17,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-import { app, ipcMain, BrowserWindow, webContents, dialog, shell, Menu, MenuItem } from "electron";
-import { execFileSync, spawn } from "child_process";
-import { request, ClientRequest } from "http";
-import { existsSync, readFileSync, readFile, writeFile, writeFileSync } from "fs";
 import { Buffer } from "buffer";
+import { execFileSync, spawn } from "child_process";
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents } from "electron";
+import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
+import { ClientRequest, request } from "http";
 
 var mainWindow: BrowserWindow;
 var contents: webContents;
@@ -31,6 +31,8 @@ var stopping: boolean = false;
 var fileLanguages: any;
 var currentDefaults: any;
 var currentStatus: any = {};
+
+var currentFile: string = '';
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -116,22 +118,22 @@ function createWindow() {
     });
     contents = mainWindow.webContents;
     var fileMenu: Menu = Menu.buildFromTemplate([
-        { label: 'New', accelerator: 'CmdOrCtrl+N', click: function () { sendCommand('newFile'); } },
+        { label: 'New', accelerator: 'CmdOrCtrl+N', click: function () { createNewFile(); } },
         { label: 'Open', accelerator: 'CmdOrCtrl+O', click: function () { openFileDialog(); } },
         { label: 'Close', accelerator: 'CmdOrCtrl+W', click: function () { closeFile(); } },
-        { label: 'Save', accelerator: 'CmdOrCtrl+s', click: function () { sendCommand('save'); } },
-        { label: 'Save As', click: function () { sendCommand('saveAs'); } },
+        { label: 'Save', accelerator: 'CmdOrCtrl+s', click: function () { saveFile(); } },
+        { label: 'Save As', click: function () { saveAs() } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Convert CSV/TAB Delimited to TMX', click: function () { sendCommand('convertCSV'); } },
-        { label: 'Export as TAB Delimited...', click: function () { sendCommand('exportDelimited'); } },
+        { label: 'Convert CSV/TAB Delimited to TMX', click: function () { convertCSV(); } },
+        { label: 'Export as TAB Delimited...', click: function () { exportDelimited(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'File Properties', click: function () { sendCommand('fileInfo'); } },
+        { label: 'File Properties', click: function () { showFileInfo(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Validate TMX File...', click: function () { sendCommand('validate'); } },
-        { label: 'Clean Invalid Characters...', click: function () { sendCommand('cleanChars'); } },
+        { label: 'Validate TMX File...', click: function () { validateFile(); } },
+        { label: 'Clean Invalid Characters...', click: function () { cleanCharacters(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Split TMX File...', click: function () { sendCommand('split'); } },
-        { label: 'Merge TMX Files...', click: function () { sendCommand('merge'); } }
+        { label: 'Split TMX File...', click: function () { splitFile(); } },
+        { label: 'Merge TMX Files...', click: function () { mergeFiles(); } }
     ]);
     var editMenu: Menu = Menu.buildFromTemplate([
         { label: 'Undo', accelerator: 'CmdOrCtrl+Z', click: function () { contents.undo(); } },
@@ -141,60 +143,59 @@ function createWindow() {
         { label: 'Paste', accelerator: 'CmdOrCtrl+V', click: function () { contents.paste(); } },
         { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function () { contents.selectAll(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Confirm Edit', accelerator: 'Alt+Enter', click: function () { sendCommand('complete'); } },
-        { label: 'Cancel Edit', accelerator: 'Esc', click: function () { sendCommand('cancel'); } },
+        { label: 'Confirm Edit', accelerator: 'Alt+Enter', click: function () { saveEdits(); } },
+        { label: 'Cancel Edit', accelerator: 'Esc', click: function () { cancelEdit(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Replace Text...', accelerator: 'CmdOrCtrl+F', click: function () { sendCommand('replace'); } },
+        { label: 'Replace Text...', accelerator: 'CmdOrCtrl+F', click: function () { replaceText(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Insert Unit', click: function () { sendCommand('insert'); } },
-        { label: 'Delete Selected Units', click: function () { sendCommand('delete'); } }
+        { label: 'Insert Unit', click: function () { insertUnit(); } },
+        { label: 'Delete Selected Units', click: function () { deleteUnits(); } }
     ]);
     var viewMenu: Menu = Menu.buildFromTemplate([
-        { label: 'Sort Units', accelerator: 'F5', click: function () { sendCommand('sort'); } },
-        { label: 'Filter Units', accelerator: 'F3', click: function () { sendCommand('filter'); } },
+        { label: 'Sort Units', accelerator: 'F5', click: function () { sortUnits(); } },
+        { label: 'Filter Units', accelerator: 'F3', click: function () { showFilters() } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Show First Page', click: function () { sendCommand('first'); } },
-        { label: 'Show Previous Page', click: function () { sendCommand('previous'); } },
-        { label: 'Show Next Page', click: function () { sendCommand('next'); } },
-        { label: 'Show Last Page', click: function () { sendCommand('last'); } },
+        { label: 'Show First Page', click: function () { firstPage(); } },
+        { label: 'Show Previous Page', click: function () { previousPage(); } },
+        { label: 'Show Next Page', click: function () { nextPage(); } },
+        { label: 'Show Last Page', click: function () { lastPage(); } },
         new MenuItem({ type: 'separator' }),
         new MenuItem({ label: 'Toggle Full Screen', role: 'togglefullscreen' }),
         new MenuItem({ label: 'Toggle Development Tools', accelerator: 'F12', role: 'toggleDevTools' }),
     ]);
     var tasksMenu: Menu = Menu.buildFromTemplate([
-        { label: 'Change Language Code...', click: function () { sendCommand('change'); } },
-        { label: 'Add Language...', click: function () { sendCommand('add'); } },
-        { label: 'Remove Language...', click: function () { sendCommand('remove'); } },
-        { label: 'Change Source Language...', click: function () { sendCommand('changeSrc'); } },
+        { label: 'Change Language Code...', click: function () { changeLanguageCode(); } },
+        { label: 'Add Language...', click: function () { addLanguage(); } },
+        { label: 'Remove Language...', click: function () { removeLanguage() } },
+        { label: 'Change Source Language...', click: function () { changeSourceLanguage(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Remove All Tags', click: function () { sendCommand('removeTags'); } },
-        { label: 'Remove Duplicates', click: function () { sendCommand('removeDuplicates'); } },
-        { label: 'Remove Untranslated...', click: function () { sendCommand('removeUntranslated'); } },
-        { label: 'Remove Initial/Trailing Spaces', click: function () { sendCommand('removeSpaces'); } },
-        { label: 'Consolidate Units...', click: function () { sendCommand('consolidate'); } }
+        { label: 'Remove All Tags', click: function () { removeTags(); } },
+        { label: 'Remove Duplicates', click: function () { removeDuplicates(); } },
+        { label: 'Remove Untranslated...', click: function () { removeUntranslated(); } },
+        { label: 'Remove Initial/Trailing Spaces', click: function () { removeSpaces(); } },
+        { label: 'Consolidate Units...', click: function () { consolidateUnits(); } }
     ]);
     var helpMenu: Menu = Menu.buildFromTemplate([
         { label: 'TMXEditor User Guide', accelerator: 'F1', click: function () { showHelp(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Check for Updates', click: function () { sendCommand('updates'); } },
-        { label: 'View Release History', click: function () { sendCommand('releaseHistory'); } },
-        { label: 'Disable License', click: function () { sendCommand('license'); } },
+        { label: 'Check for Updates', click: function () { checkUpdates(); } },
+        { label: 'View Release History', click: function () { showReleaseHistory(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Send Feedback...', click: function () { sendCommand('feedback'); } }
+        { label: 'Send Feedback...', click: function () { sendFeedback(); } }
     ]);
     var template: MenuItem[] = [
-        new MenuItem({ label: 'File', submenu: fileMenu }),
+        new MenuItem({ label: 'File', role: 'fileMenu', submenu: fileMenu }),
         new MenuItem({ label: 'Edit', role: 'editMenu', submenu: editMenu }),
-        new MenuItem({ label: 'View', submenu: viewMenu }),
+        new MenuItem({ label: 'View', role: 'viewMenu', submenu: viewMenu }),
         new MenuItem({ label: 'Tasks', submenu: tasksMenu }),
-        new MenuItem({ label: 'Help', submenu: helpMenu })
+        new MenuItem({ label: 'Help', role: 'help', submenu: helpMenu })
     ];
     if (process.platform === 'darwin') {
         var appleMenu: Menu = Menu.buildFromTemplate([
             new MenuItem({ label: 'About...', click: function () { showAbout(); } }),
             new MenuItem({
                 label: 'Preferences...', submenu: [
-                    { label: 'Settings', accelerator: 'Cmd+,', click: function () { sendCommand('settings'); } }
+                    { label: 'Settings', accelerator: 'Cmd+,', click: function () { showSettings(); } }
                 ]
             }),
             new MenuItem({ type: 'separator' }),
@@ -206,12 +207,12 @@ function createWindow() {
             new MenuItem({ type: 'separator' }),
             new MenuItem({ label: 'Quit TMXEditor', accelerator: 'Cmd+Q', role: 'quit', click: function () { app.quit(); } })
         ]);
-        template.unshift(new MenuItem({ label: 'TMXEditor', submenu: appleMenu }));
+        template.unshift(new MenuItem({ label: 'TMXEditor', role: 'appMenu', submenu: appleMenu }));
     } else {
         var help: MenuItem = template.pop();
         template.push(new MenuItem({
             label: 'Settings', submenu: [
-                { label: 'Preferences', click: function () { sendCommand('settings'); } }
+                { label: 'Preferences', click: function () { showSettings(); } }
             ]
         }));
         template.push(help);
@@ -264,17 +265,6 @@ function createWindow() {
     });
 }
 
-function sendCommand(command: string) {
-    sendRequest({ command: command },
-        function success() {
-            // do nothing
-        },
-        function error() {
-            dialog.showErrorBox('Error', 'Send "' + command + '" failed');
-        }
-    );
-}
-
 function sendRequest(json: any, success: any, error: any) {
     var postData: string = JSON.stringify(json);
     var options = {
@@ -314,7 +304,14 @@ function sendRequest(json: any, success: any, error: any) {
 function stopServer() {
     if (!stopping) {
         stopping = true;
-        sendCommand('stop');
+        sendRequest({ command: 'stop' },
+            function success(data: any) {
+                console.log('server stopped');
+            },
+            function error(reason: string) {
+                dialog.showErrorBox('Error', reason)
+            }
+        );
     }
 }
 
@@ -430,7 +427,12 @@ function showHelp() {
     shell.openItem(help);
 }
 
-ipcMain.on('openFile', function () {
+ipcMain.on('show-help', () => {
+    showHelp();
+})
+
+
+ipcMain.on('open-file', function () {
     openFileDialog();
 });
 
@@ -465,6 +467,8 @@ function openFile(file: string) {
                     clearInterval(intervalObject);
                     getFileLanguages();
                     mainWindow.webContents.send('file-loaded', currentStatus);
+                    currentFile = file;
+                    mainWindow.setTitle(currentFile);
                     return;
                 } else if (currentStatus.status === LOADING) {
                     // it's OK, keep waiting
@@ -511,6 +515,9 @@ function closeFile() {
             mainWindow.webContents.send('end-waiting');
             if (json.status === SUCCESS) {
                 mainWindow.webContents.send('file-closed');
+                mainWindow.webContents.send('set-status', '');
+                currentFile = '';
+                mainWindow.setTitle('TMXEditor'); // TODO
             } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
@@ -631,3 +638,164 @@ ipcMain.on('get-row-properties', function (event, arg) {
         }
     );
 });
+
+function showSettings(): void {
+    // TODO
+}
+
+function createNewFile(): void {
+    // TODO
+}
+
+function saveFile(): void {
+    // TODO
+}
+
+function saveAs(): void {
+    // TODO
+}
+
+function convertCSV(): void {
+    // TODO
+}
+
+function exportDelimited(): void {
+    // TODO
+}
+
+function showFileInfo(): void {
+    // TODO
+}
+
+function validateFile(): void {
+    // TODO
+}
+
+function cleanCharacters(): void {
+    // TODO
+}
+
+function splitFile(): void {
+    // TODO
+}
+
+function mergeFiles(): void {
+    // TODO
+}
+
+function saveEdits(): void {
+    // TODO
+}
+
+function cancelEdit(): void {
+    // TODO
+}
+
+function replaceText(): void {
+    // TODO
+}
+
+function sortUnits() {
+    // TODO
+}
+
+function showFilters() {
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    var filtersWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 500,
+        height: 280,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    filtersWindow.setMenu(null);
+    filtersWindow.loadURL('file://' + app.getAppPath() + '/html/filters.html');
+    filtersWindow.show();
+    // filtersWindow.webContents.openDevTools();
+}
+
+ipcMain.on('show-filters', () => {
+    showFilters();
+});
+
+function insertUnit(): void {
+    // TODO
+}
+
+function deleteUnits(): void {
+    // TODO
+}
+
+function firstPage(): void {
+    // TODO
+}
+
+function previousPage(): void {
+    // TODO
+}
+
+function nextPage(): void {
+    // TODO
+}
+
+function lastPage(): void {
+    // TODO
+}
+
+function changeLanguageCode(): void {
+    // TODO
+}
+
+function removeLanguage(): void {
+    // TODO
+}
+
+function addLanguage(): void {
+    // TODO
+}
+
+function changeSourceLanguage(): void {
+    // TODO
+}
+
+function removeTags(): void {
+    // TODO
+}
+
+function removeDuplicates(): void {
+    // TODO
+}
+
+function removeUntranslated(): void {
+    // TODO
+}
+
+function removeSpaces(): void {
+    // TODO
+}
+
+function consolidateUnits(): void {
+    // TODO 
+}
+
+function checkUpdates(): void {
+    // TODO
+}
+
+function sendFeedback(): void {
+    // TODO
+}
+
+function showReleaseHistory(): void {
+    // TODO
+}
