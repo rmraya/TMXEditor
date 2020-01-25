@@ -134,7 +134,7 @@ input[type=text] {
 
 input[type=text]:focus {
 	border: none;
-	
+
 }
 
 input[type=password] {
@@ -151,7 +151,6 @@ input[type=number] {
 
 input[type=checkbox] {
 	position: relative;
-	cursor: pointer;
 }
 
 input[type=checkbox]:before {
@@ -160,7 +159,7 @@ input[type=checkbox]:before {
 	position: absolute;
 	width: 12px;
 	height: 12px;
-	top: 0;
+	top: -2px;
 	left: 0;
 	border: 1px solid var(--dark-background);
 	background-color: var(--dark-color);
@@ -175,10 +174,10 @@ input[type=checkbox]:checked:after {
 	border-width: 0 1px 1px 0;
 	transform: rotate(45deg);
 	position: absolute;
-	top: 2px;
+	top: 0px;
 	left: 5px;
 }
-
+*/
 button {
 	color: white;
 	background: var(--dark-background);
@@ -337,6 +336,8 @@ button.toolbar:hover {
 	height: 24px;
 	background: var(--dark-background);
 	color: var(--dark-color);
+	display: flex;
+	white-space: nowrap;
 }
 
 .panelcontent {
@@ -349,4 +350,42 @@ button.toolbar:hover {
 
 .panelcontent table {
 	z-index: -30;
+}
+
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+
+.tooltip .tooltiptext {
+	background-color: var(--light-background);
+	color: var(--dark-color);
+
+	visibility: hidden;
+	padding: 4px;
+	border-radius: 2px;
+	white-space: nowrap;
+
+	/* Position the tooltip */
+	position: absolute;
+	z-index: 100;
+}
+
+.topTooltip {
+	bottom: 120%;
+	left: 20px;
+}
+
+.bottomTooltip {
+	top: 120%;
+	left: 20px;
+}
+
+.bottomRightTooltip {
+	top: 120%;
+	right: 20px;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
 }

@@ -20,6 +20,7 @@ SOFTWARE.
 const { ipcRenderer } = require('electron');
 
 var languages;
+var fileLoaded : boolean = false;
 
 var currentPage: number = 0;
 var maxPage: number = 0;
@@ -36,8 +37,68 @@ function openFile(): void {
     ipcRenderer.send('open-file');
 }
 
+function newFile(): void {
+    ipcRenderer.send('new-file');
+}
+
+function saveFile(): void {
+    ipcRenderer.send('save-file');
+}
+
+function showFileInfo(): void {
+    ipcRenderer.send('show-file-info');
+}
+
+function saveEdit(): void {
+    // TODO
+}
+
+function cancelEdit(): void {
+    // TODO
+}
+
+function replaceText(): void {
+    ipcRenderer.send('replace-text');
+}
+
+function insertUnit(): void {
+    // TODO
+}
+
+function deleteUnits(): void {
+    // TODO
+}
+
+function sortUnits(): void {
+    // TODO
+}
+
+function filterUnits(): void {
+    ipcRenderer.send('filter-units');
+}
+
+function convertCSV(): void {
+    // TODO
+}
+
+function sendFeedback(): void {
+    // TODO
+}
+
 function openHelp(): void {
     ipcRenderer.send('show-help');
+}
+
+function editAttributes(): void {
+    // TODO
+}
+
+function editProperties(): void {
+    // TODO
+}
+
+function editNotes(): void {
+    // TODO
 }
 
 ipcRenderer.on('start-waiting', () => {
@@ -82,6 +143,7 @@ ipcRenderer.on('file-loaded', (event, arg) => {
         maxPage = Math.ceil(arg.count / unitsPage);
         document.getElementById('pages').innerText = '' + maxPage;
     }
+    fileLoaded = true;
     firstPage();
 });
 
@@ -99,13 +161,22 @@ ipcRenderer.on('file-closed', () => {
     (document.getElementById('page') as HTMLInputElement).value = '0';
     document.getElementById('pages').innerHTML = '0';
     document.getElementById('units').innerHTML = '';
+    fileLoaded = false;
 });
 
 document.getElementById('mainTable').addEventListener('click', (event) => {
+    if (!fileLoaded) {
+        return;
+    }
+    // TODO handle top checkbox for select all
     var x: string = (event.target as Element).tagName;
-    var id: string = '';
+    if ('TEXTAREA' === x) {
+        // already editing
+        return;
+    }
+    var id: string;
     var lang: string;
-    if ('TD' === x) {
+    if ('TD' === x || 'INPUT' === x) {
         var composed = event.composedPath();
         if ('TR' === (composed[0] as Element).tagName) {
             id = (composed[0] as Element).id;
@@ -117,7 +188,7 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
         lang = (event.target as Element).getAttribute('lang');
         console.log('clicked ' + id + ' ' + lang);
     }
-    if (id !== '') {
+    if (id !== null) {
         currentId = id;
         if (currentCell != null) {
             currentCell.innerHTML = currentContent;
@@ -143,43 +214,48 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
 });
 
 ipcRenderer.on('update-properties', (event, arg) => {
+    document.getElementById('attributesSpan').innerHTML = arg.type;
     var table = document.getElementById('attributesTable');
     table.innerHTML = '';
     var attributes = arg.attributes;
     for (let i = 0; i < attributes.length; i++) {
-        var pair = attributes[i];
-        var tr = document.createElement('tr');
+        let pair = attributes[i];
+        let tr = document.createElement('tr');
         table.appendChild(tr);
-        var left = document.createElement('td');
+        let left = document.createElement('td');
         left.textContent = pair[0];
         tr.appendChild(left);
-        var right = document.createElement('td');
+        let right = document.createElement('td');
         right.textContent = pair[1];
         right.className = 'noWrap';
         tr.appendChild(right);
     }
+
+    document.getElementById('propertiesSpan').innerHTML = arg.type;
     table = document.getElementById('propertiesTable');
     table.innerHTML = '';
     var properties = arg.properties;
     for (let i = 0; i < properties.length; i++) {
-        var pair = properties[i];
-        var tr = document.createElement('tr');
+        let pair = properties[i];
+        let tr = document.createElement('tr');
         table.appendChild(tr);
-        var left = document.createElement('td');
+        let left = document.createElement('td');
         left.textContent = pair[0];
         tr.appendChild(left);
-        var right = document.createElement('td');
+        let right = document.createElement('td');
         right.textContent = pair[1];
         right.className = 'noWrap';
         tr.appendChild(right);
     }
+
+    document.getElementById('notesSpan').innerHTML = arg.type;
     table = document.getElementById('notesTable');
     table.innerHTML = '';
     var notes = arg.notes;
     for (let i = 0; i < properties.length; i++) {
-        var tr = document.createElement('tr');
+        let tr = document.createElement('tr');
         table.appendChild(tr);
-        var note = document.createElement('td');
+        let note = document.createElement('td');
         note.textContent = notes[i];
         tr.appendChild(note);
     }
@@ -221,6 +297,3 @@ function lastPage(): void {
     getSegments();
 }
 
-function showFilters() {
-    ipcRenderer.send('show-filters');
-}

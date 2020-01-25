@@ -368,7 +368,7 @@ ipcMain.on('open-license', function (event, arg: any) {
             title = 'MIT License';
             break;
         case "TypeScript":
-            case "MapDB":
+        case "MapDB":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
             title = 'Apache 2.0';
             break;
@@ -613,6 +613,7 @@ ipcMain.on('get-cell-properties', function (event, arg) {
     arg.command = 'getTuvData';
     sendRequest(arg,
         function success(json: any) {
+            json.type = arg.lang;
             event.sender.send('update-properties', json);
         },
         function error(data: string) {
@@ -625,6 +626,7 @@ ipcMain.on('get-row-properties', function (event, arg) {
     arg.command = 'getTuData';
     sendRequest(arg,
         function success(json: any) {
+            json.type = 'TU';
             event.sender.send('update-properties', json);
         },
         function error(data: string) {
@@ -641,9 +643,17 @@ function createNewFile(): void {
     // TODO
 }
 
+ipcMain.on('new-file', () => {
+    createNewFile();
+});
+
 function saveFile(): void {
     // TODO
 }
+
+ipcMain.handleOnce('save-file', () => {
+    saveFile();
+})
 
 function saveAs(): void {
     // TODO
@@ -660,6 +670,10 @@ function exportDelimited(): void {
 function showFileInfo(): void {
     // TODO
 }
+
+ipcMain.on('show-file-info', () => {
+    showFileInfo();
+});
 
 function validateFile(): void {
     // TODO
@@ -688,6 +702,10 @@ function cancelEdit(): void {
 function replaceText(): void {
     // TODO
 }
+
+ipcMain.on('replace-text', () => {
+    replaceText();
+})
 
 function sortUnits() {
     // TODO
@@ -718,7 +736,7 @@ function showFilters() {
     // filtersWindow.webContents.openDevTools();
 }
 
-ipcMain.on('show-filters', () => {
+ipcMain.on('filter-units', () => {
     showFilters();
 });
 
