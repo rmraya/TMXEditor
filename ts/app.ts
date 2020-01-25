@@ -225,12 +225,12 @@ function createWindow() {
             }
         });
     }
-    readFile(appHome + 'recent.json', function (err: Error, data: Buffer) {
+    readFile(appHome + 'recent.json', function (err: Error, buf: Buffer) {
         if (err instanceof Error) {
             Menu.setApplicationMenu(Menu.buildFromTemplate(template));
             return;
         }
-        var jsonData = JSON.parse(data.toString());
+        var jsonData = JSON.parse(buf.toString());
         var files = jsonData.files;
         if (files != undefined && files.length > 0) {
             if (process.platform === 'darwin') {
@@ -368,6 +368,7 @@ ipcMain.on('open-license', function (event, arg: any) {
             title = 'MIT License';
             break;
         case "TypeScript":
+            case "MapDB":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
             title = 'Apache 2.0';
             break;
@@ -376,20 +377,13 @@ ipcMain.on('open-license', function (event, arg: any) {
             'GPL2 with Classpath Exception';
             break;
         case "OpenXLIFF":
+        case "TMXValidator":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
             title = 'Eclipse Public License 1.0';
             break;
         case "JSON":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/json.txt'
             title = 'JSON.org License';
-            break;
-        case "TMXValidator":
-            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
-            title = 'Eclipse Public License 1.0';
-            break;
-        case "MapDB":
-            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/Apache2.0.html'
-            title = 'Apache 2.0';
             break;
         case "jsoup":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/jsoup.txt'
@@ -478,7 +472,7 @@ function openFile(file: string) {
                     clearInterval(intervalObject);
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
-                } if (currentStatus.status === SUCCESS) {
+                } else if (currentStatus.status === SUCCESS) {
                     // ignore status from 'openFile'
                 } else {
                     mainWindow.webContents.send('end-waiting');
