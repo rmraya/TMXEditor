@@ -177,7 +177,7 @@ input[type=checkbox]:checked:after {
 	top: 0px;
 	left: 5px;
 }
-*/
+
 button {
 	color: white;
 	background: var(--dark-background);
@@ -359,6 +359,7 @@ button.toolbar:hover {
 
 .tooltip .tooltiptext {
 	background-color: var(--light-background);
+	border-color: var(--lighter-background);
 	color: var(--dark-color);
 
 	visibility: hidden;
