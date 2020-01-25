@@ -67,6 +67,7 @@
         </move>
         <move file="dist\release" todir="."/>
         <delete dir="dist" failonerror="false"/>
+        <delete file=".\jars\tmxserver.jar" />
     </target>
     <target name="copyUnix" unless="isWindows">
         <description>Move java binaries to work folder</description>
@@ -87,6 +88,7 @@
         </move>
         <move file="dist/release" todir="."/>
         <delete dir="dist" failonerror="false"/>
+        <delete file="jars/tmxserver.jar" />
     </target>
     <target name="tsc">
         <description>Compile TypeScript code</description>
