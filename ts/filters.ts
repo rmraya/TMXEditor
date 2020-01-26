@@ -50,7 +50,7 @@ _f.ipcRenderer.on('set-filter-options', (event, arg) => {
         (document.getElementById('caseSensitiveFilter') as HTMLInputElement).checked = arg.caseSensitiveFilter;
     }
     if (arg.filterUntranslated !== undefined) {
-        (document.getElementById('showUntranslated') as HTMLInputElement).checked = arg.filterUntranslated;
+        (document.getElementById('filterUntranslated') as HTMLInputElement).checked = arg.filterUntranslated;
     }
     if (arg.regExp !== undefined) {
         (document.getElementById('regularExpression') as HTMLInputElement).checked = arg.regExp;
