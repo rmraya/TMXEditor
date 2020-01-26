@@ -32,8 +32,6 @@ var currentLang: string = null;
 var currentCell: Element = null;
 var currentContent: string = null;
 
-var filterText: string = '';
-
 function openFile(): void {
     ipcRenderer.send('open-file');
 }
@@ -51,12 +49,26 @@ function showFileInfo(): void {
 }
 
 function saveEdit(): void {
+    if (!fileLoaded) {
+        return;
+    }
     // TODO
 }
 
+ipcRenderer.on('save-edit', () => {
+    saveEdit();
+});
+
 function cancelEdit(): void {
+    if (!fileLoaded) {
+        return;
+    }
     // TODO
 }
+
+ipcRenderer.on('cancel-edit', () => {
+    cancelEdit();
+});
 
 function replaceText(): void {
     ipcRenderer.send('replace-text');
@@ -79,11 +91,11 @@ function filterUnits(): void {
 }
 
 function convertCSV(): void {
-    // TODO
+    ipcRenderer.send('convert-csv');
 }
 
 function sendFeedback(): void {
-    // TODO
+    ipcRenderer.send('send-feedback');
 }
 
 function openHelp(): void {
@@ -278,6 +290,10 @@ function firstPage(): void {
     getSegments();
 }
 
+ipcRenderer.on('first-page', () => {
+    firstPage();
+});
+
 function previousPage(): void {
     if (currentPage > 1) {
         currentPage--;
@@ -286,6 +302,10 @@ function previousPage(): void {
     }
 }
 
+ipcRenderer.on('previous-page', () => {
+    previousPage();
+});
+
 function nextPage(): void {
     if (currentPage < maxPage - 1) {
         currentPage++;
@@ -293,12 +313,20 @@ function nextPage(): void {
         getSegments();
     }
 }
+
+ipcRenderer.on('next-page', () => {
+    nextPage();
+});
+
 function lastPage(): void {
     currentPage = maxPage - 1;
     (document.getElementById('page') as HTMLInputElement).value = '' + maxPage;
     getSegments();
 }
 
+ipcRenderer.on('last-page', () => {
+    lastPage();
+});
 
 (document.getElementById('units_page') as HTMLInputElement).addEventListener('keydown', (ev: KeyboardEvent) => {
     if (!fileLoaded) {

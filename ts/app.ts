@@ -597,14 +597,13 @@ function saveRecent(file: string) {
 
 function loadSegments() {
     var json: any = {
-        command: 'getSegments',
-        start: loadOptions.start,
-        count: loadOptions.count
+        command: 'getSegments'
     }
+    Object.assign(json, loadOptions);
     Object.assign(json, filterOptions);
+    // TODO set sorting options
     contents.send('start-waiting');
     contents.send('set-status', 'Loading segments');
-    // TODO set sorting options
     sendRequest(json,
         function success(json: any) {
             contents.send('set-status', '');
@@ -670,7 +669,7 @@ function saveFile(): void {
     // TODO
 }
 
-ipcMain.handleOnce('save-file', () => {
+ipcMain.on('save-file', () => {
     saveFile();
 })
 
@@ -681,6 +680,10 @@ function saveAs(): void {
 function convertCSV(): void {
     // TODO
 }
+
+ipcMain.on('convert-csv', () => {
+    convertCSV();
+});
 
 function exportDelimited(): void {
     // TODO
@@ -711,11 +714,17 @@ function mergeFiles(): void {
 }
 
 function saveEdits(): void {
-    // TODO
+    if (currentFile === '') {
+        return;
+    }
+    contents.send('save-edit');
 }
 
 function cancelEdit(): void {
-    // TODO
+    if (currentFile === '') {
+        return;
+    }
+    contents.send('cancel-edit');
 }
 
 function replaceText(): void {
@@ -788,19 +797,19 @@ function deleteUnits(): void {
 }
 
 function firstPage(): void {
-    // TODO
+    contents.send('first-page');
 }
 
 function previousPage(): void {
-    // TODO
+    contents.send('previous-page');
 }
 
 function nextPage(): void {
-    // TODO
+    contents.send('next-page');
 }
 
 function lastPage(): void {
-    // TODO
+    contents.send('last-page');
 }
 
 function changeLanguageCode(): void {
@@ -847,8 +856,19 @@ function sendFeedback(): void {
     // TODO
 }
 
+ipcMain.on('send-feedback', () => {
+    sendFeedback();
+});
+
 function showReleaseHistory(): void {
-    // TODO
+    let command: string = 'open';
+    if (process.platform === 'win32') {
+        command = 'start';
+    }
+    if (process.platform === 'linux') {
+        command = 'xdg-open';
+    }
+    spawn(command, ['https://www.maxprograms.com/products/tmxlog.html'], { detached: true });
 }
 
 ipcMain.on('show-message', (event, arg) => {
