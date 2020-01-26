@@ -20,7 +20,7 @@ SOFTWARE.
 import { Buffer } from "buffer";
 import { execFileSync, spawn } from "child_process";
 import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents } from "electron";
-import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
 import { ClientRequest, request } from "http";
 
 var mainWindow: BrowserWindow;
@@ -61,6 +61,10 @@ if (!app.requestSingleInstanceLock()) {
 if (process.platform == 'win32') {
     javapath = app.getAppPath() + '\\bin\\java.exe';
     appHome = app.getPath('appData') + '\\tmxeditor\\';
+}
+
+if (!existsSync(appHome)) {
+    mkdirSync(appHome, {recursive: true});
 }
 
 spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
