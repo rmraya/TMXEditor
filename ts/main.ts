@@ -20,11 +20,12 @@ SOFTWARE.
 const { ipcRenderer } = require('electron');
 
 var languages;
-var fileLoaded : boolean = false;
+var fileLoaded: boolean = false;
 
 var currentPage: number = 0;
 var maxPage: number = 0;
 var unitsPage: number = 200;
+var unitsCount: number;
 
 var currentId: string = null;
 var currentLang: string = null;
@@ -139,8 +140,9 @@ ipcRenderer.on('update-languages', (event, arg) => {
 
 ipcRenderer.on('file-loaded', (event, arg) => {
     if (arg.count != undefined) {
-        document.getElementById('units').innerText = arg.count;
-        maxPage = Math.ceil(arg.count / unitsPage);
+        unitsCount = arg.count;
+        document.getElementById('units').innerText = '' + unitsCount;
+        maxPage = Math.ceil(unitsCount / unitsPage);
         document.getElementById('pages').innerText = '' + maxPage;
     }
     fileLoaded = true;
@@ -161,6 +163,8 @@ ipcRenderer.on('file-closed', () => {
     (document.getElementById('page') as HTMLInputElement).value = '0';
     document.getElementById('pages').innerHTML = '0';
     document.getElementById('units').innerHTML = '';
+    currentPage = 0;
+    maxPage = 0;
     fileLoaded = false;
 });
 
@@ -295,3 +299,39 @@ function lastPage(): void {
     getSegments();
 }
 
+
+(document.getElementById('units_page') as HTMLInputElement).addEventListener('keydown', (ev: KeyboardEvent) => {
+    if (!fileLoaded) {
+        return;
+    }
+    if (ev.keyCode == 13) {
+        unitsPage = Number.parseInt((document.getElementById('units_page') as HTMLInputElement).value);
+        if (unitsPage < 1) {
+            unitsPage = 1;
+        }
+        if (unitsPage > unitsCount) {
+            unitsPage = unitsCount;
+        }
+        (document.getElementById('units_page') as HTMLInputElement).value = '' + unitsPage;
+        maxPage = Math.ceil(unitsCount / unitsPage);
+        document.getElementById('pages').innerText = '' + maxPage;
+        firstPage();
+    }
+});
+
+(document.getElementById('page') as HTMLInputElement).addEventListener('keydown', (ev: KeyboardEvent) => {
+    if (!fileLoaded) {
+        return;
+    }
+    if (ev.keyCode == 13) {
+        currentPage = Number.parseInt((document.getElementById('page') as HTMLInputElement).value) - 1;
+        if (currentPage < 0) {
+            currentPage = 0;
+        }
+        if (currentPage > maxPage - 1) {
+            currentPage = maxPage - 1;
+        }
+        (document.getElementById('page') as HTMLInputElement).value = '' + (currentPage + 1);
+        getSegments();
+    }
+});
