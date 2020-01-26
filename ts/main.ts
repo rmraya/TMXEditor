@@ -264,9 +264,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
 function getSegments(): void {
     ipcRenderer.send('get-segments', {
         start: currentPage * unitsPage,
-        count: unitsPage,
-        filterText: filterText,
-        caseSensitiveFilter: false
+        count: unitsPage
     });
 }
 

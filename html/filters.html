@@ -11,14 +11,12 @@
     <div>
         <div>
             <div style="padding:4px;">
-                <label for="textBox">Text to Search</label>
-                <input type="text" id="textBox" style="width: 350px;">
+                <label for="filterText">Text to Search</label>
+                <input type="text" id="filterText" style="width: 350px;" value="">
             </div>
             <div style="padding:4px;">
                 <label for="filterLanguage">Filter Language</label>
-                <select name="filterLanguage" style="width: 300px;">
-                    <option>EN</option>
-                    <option>ES</option>
+                <select id="filterLanguage" style="width: 300px;">
                 </select>
             </div>
 
@@ -27,27 +25,23 @@
             <div class="paddedArea optionBox">
                 <div style="padding:4px;">
                     <input type="checkbox" id="regularExpression">
-                    <label for="regularExpression">Regular
-                        Expression</label><br>
-                    <input type="checkbox" id="caseSensitive">
-                    <label for="caseSensitive">Case Sensitive
-                        Search</label><br>
-                    <input type="checkbox" id="showUntranslated" onclick="togleSourceLanguage()">
-                    <label for="showUntranslated">Show Untranslated Units Only</label>
+                    <label for="regularExpression">Regular Expression</label><br>
+                    <input type="checkbox" id="caseSensitiveFilter">
+                    <label for="caseSensitiveFilter">Case Sensitive Search</label><br>
+                    <input type="checkbox" id="filterUntranslated" onclick="togleSourceLanguage()">
+                    <label for="filterUntranslated">Show Untranslated Units Only</label>
                 </div>
                 <div style="padding:4px;">
                     <label for="sourceLanguage">Source Language</label>
                     <select id="sourceLanguage" style="width: 300px;" disabled>
-                        <option>EN</option>
-                        <option>ES</option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="buttonArea">
             <span class="fill_width"> </span>
-            <button>Apply Filters</button>
-            <button>Clear Filters</button>
+            <button onclick="applyFilters()">Apply Filters</button>
+            <button onclick="clearFilters()">Clear Filters</button>
         </div>
     </div>
     <script src="../js/filters.js"></script>

@@ -174,14 +174,39 @@ public class TMXServer implements HttpHandler {
 		JSONObject result = new JSONObject();
 		try {
 			String filterText = null;
+			if (json.has("filterText")) {
+				filterText = json.getString("filterText");
+			}
 			Language filterLanguage = null;
+			if (json.has("filterLanguage")) {
+				filterLanguage = service.getLanguage(json.getString("filterLanguage"));
+			}
 			boolean filterUntranslated = false;
+			if (json.has("filterUntranslated")) {
+				filterUntranslated = json.getBoolean("filterUntranslated");
+			}
 			boolean regExp = false;
+			if (json.has("regExp")) {
+				regExp = json.getBoolean("regExp");
+			}
 			Language filterSrcLanguage = null;
+			if (json.has("filterSrcLanguage")) {
+				filterSrcLanguage = service.getLanguage(json.getString("filterSrcLanguage"));
+			}
 			Language sortLanguage = null;
+			if (json.has("sortLanguage")) {
+				sortLanguage = service.getLanguage(json.getString("sortLanguage"));
+			}
 			boolean ascending = false;
+			if (json.has("ascending")) {
+				ascending = json.getBoolean("ascending");
+			}
+			boolean caseSensitiveFilter = false;
+			if (json.has("caseSensitiveFilter")) {
+				caseSensitiveFilter = json.getBoolean("caseSensitiveFilter");
+			}
 			Result<TUnit> segments = service.getData(json.getInt("start"), json.getInt("count"), filterText,
-					filterLanguage, json.getBoolean("caseSensitiveFilter"), filterUntranslated, regExp,
+					filterLanguage, caseSensitiveFilter, filterUntranslated, regExp,
 					filterSrcLanguage, sortLanguage, ascending);
 			result.put("status", segments.getResult());
 			if (segments.getResult().equals(Result.SUCCESS)) {

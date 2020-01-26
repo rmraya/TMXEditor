@@ -24,6 +24,7 @@ import { existsSync, readFile, readFileSync, writeFile, writeFileSync } from "fs
 import { ClientRequest, request } from "http";
 
 var mainWindow: BrowserWindow;
+var filtersWindow: BrowserWindow;
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
 var appHome: string = app.getPath('appData') + '/tmxeditor/';
@@ -31,6 +32,12 @@ var stopping: boolean = false;
 var fileLanguages: any;
 var currentDefaults: any;
 var currentStatus: any = {};
+var filterOptions: any = {
+};
+var loadOptions: any = {
+    start: 0,
+    count: 200
+};
 
 var currentFile: string = '';
 
@@ -75,7 +82,7 @@ app.on('ready', function () {
         saveDefaults();
     });
     mainWindow.show();
-    // mainWindow.webContents.openDevTools();
+    // contents.openDevTools();
 });
 
 app.on('quit', function () {
@@ -450,32 +457,32 @@ function openFileDialog() {
 }
 
 function openFile(file: string) {
-    mainWindow.webContents.send('start-waiting');
-    mainWindow.webContents.send('set-status', 'Opening file');
+    contents.send('start-waiting');
+    contents.send('set-status', 'Opening file');
     sendRequest({ command: 'openFile', file: file },
         function success(json: any) {
             currentStatus = json;
             var intervalObject = setInterval(function () {
                 if (currentStatus.status === COMPLETED) {
-                    mainWindow.webContents.send('end-waiting');
+                    contents.send('end-waiting');
                     clearInterval(intervalObject);
                     getFileLanguages();
-                    mainWindow.webContents.send('file-loaded', currentStatus);
+                    contents.send('file-loaded', currentStatus);
                     currentFile = file;
                     mainWindow.setTitle(currentFile);
                     return;
                 } else if (currentStatus.status === LOADING) {
                     // it's OK, keep waiting
-                    mainWindow.webContents.send('status-changed', currentStatus);
+                    contents.send('status-changed', currentStatus);
                 } else if (currentStatus.status === ERROR) {
-                    mainWindow.webContents.send('end-waiting');
+                    contents.send('end-waiting');
                     clearInterval(intervalObject);
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
                     // ignore status from 'openFile'
                 } else {
-                    mainWindow.webContents.send('end-waiting');
+                    contents.send('end-waiting');
                     clearInterval(intervalObject);
                     dialog.showErrorBox('Error', 'Unknown error loading file');
                     return;
@@ -502,14 +509,14 @@ function getLoadingProgress() {
 }
 
 function closeFile() {
-    mainWindow.webContents.send('set-status', 'Closing file');
-    mainWindow.webContents.send('start-waiting');
+    contents.send('set-status', 'Closing file');
+    contents.send('start-waiting');
     sendRequest({ command: 'closeFile' },
         function success(json: any) {
-            mainWindow.webContents.send('end-waiting');
+            contents.send('end-waiting');
             if (json.status === SUCCESS) {
-                mainWindow.webContents.send('file-closed');
-                mainWindow.webContents.send('set-status', '');
+                contents.send('file-closed');
+                contents.send('set-status', '');
                 currentFile = '';
                 mainWindow.setTitle('TMXEditor'); // TODO
             } else {
@@ -517,19 +524,19 @@ function closeFile() {
             }
         },
         function error(data: string) {
-            mainWindow.webContents.send('end-waiting');
+            contents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
         }
     );
 }
 
 function getFileLanguages() {
-    mainWindow.webContents.send('set-status', 'Getting languages');
+    contents.send('set-status', 'Getting languages');
     sendRequest({ command: 'getLanguages' },
         function success(json: any) {
             if (json.status === SUCCESS) {
                 fileLanguages = json.languages;
-                mainWindow.webContents.send('languages-changed');
+                contents.send('languages-changed');
             } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
@@ -588,26 +595,38 @@ function saveRecent(file: string) {
     });
 }
 
-ipcMain.on('get-segments', function (event, arg) {
-    arg.command = 'getSegments';
-    mainWindow.webContents.send('start-waiting');
-    mainWindow.webContents.send('set-status', 'Loading segments');
-    sendRequest(arg,
+function loadSegments() {
+    var json: any = {
+        command: 'getSegments',
+        start: loadOptions.start,
+        count: loadOptions.count
+    }
+    Object.assign(json, filterOptions);
+    contents.send('start-waiting');
+    contents.send('set-status', 'Loading segments');
+    // TODO set sorting options
+    sendRequest(json,
         function success(json: any) {
-            mainWindow.webContents.send('set-status', '');
-            mainWindow.webContents.send('end-waiting');
+            contents.send('set-status', '');
+            contents.send('end-waiting');
             if (json.status === SUCCESS) {
-                event.sender.send('update-segments', json);
+                contents.send('update-segments', json);
             } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
         },
         function error(data: string) {
-            mainWindow.webContents.send('end-waiting');
+            contents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
         }
     );
+}
+
+ipcMain.on('get-segments', function (event, arg) {
+    loadOptions = arg;
+    loadSegments();
 });
+
 
 ipcMain.on('get-cell-properties', function (event, arg) {
     arg.command = 'getTuvData';
@@ -716,7 +735,7 @@ function showFilters() {
         dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
         return;
     }
-    var filtersWindow = new BrowserWindow({
+    filtersWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,
         height: 280,
@@ -738,6 +757,26 @@ function showFilters() {
 
 ipcMain.on('filter-units', () => {
     showFilters();
+});
+
+ipcMain.on('filter-options', (event, arg) => {
+    filterOptions = arg;
+    filtersWindow.close();
+    loadSegments();
+});
+
+ipcMain.on('get-filter-options', (event, arg) => {
+    event.sender.send('set-filter-options', filterOptions);
+});
+
+ipcMain.on('clear-filter-options', () => {
+    filterOptions = {};
+    filtersWindow.close();
+    loadSegments();
+});
+
+ipcMain.on('get-filter-languages', (event, arg) => {
+    event.sender.send('filter-languages', fileLanguages);
 });
 
 function insertUnit(): void {
@@ -811,3 +850,7 @@ function sendFeedback(): void {
 function showReleaseHistory(): void {
     // TODO
 }
+
+ipcMain.on('show-message', (event, arg) => {
+    dialog.showMessageBox(arg);
+});

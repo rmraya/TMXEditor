@@ -1789,4 +1789,11 @@ public class TMXService implements TMXServiceInterface {
 		return builder.toString();
 	}
 
+	public Language getLanguage(String code) throws IOException {
+		if (registry == null) {
+			registry = new RegistryParser();
+		}
+		return new Language(code, registry.getTagDescription(code));
+	}
+
 }
