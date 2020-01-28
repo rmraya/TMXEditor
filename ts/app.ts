@@ -434,7 +434,7 @@ function showHelp() {
 
 ipcMain.on('show-help', () => {
     showHelp();
-})
+});
 
 
 ipcMain.on('open-file', function () {
