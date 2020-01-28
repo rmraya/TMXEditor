@@ -90,13 +90,6 @@
         <delete dir="dist" failonerror="false"/>
         <delete file="jars/tmxserver.jar" />
     </target>
-    <target name="tsc">
-        <description>Compile TypeScript code</description>
-        <delete dir="js" failonerror="false"/>
-        <delete file="app.js"/>
-        <exec executable="tsc"/>
-        <move file="js/app.js" todir="."/>
-    </target>
     <target name="dist" depends="link,copyWindows,copyUnix">
         <description>Prepare distribution</description>
     </target>

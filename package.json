@@ -3,9 +3,10 @@
     "productName": "TMXEditor",
     "version": "2.0.0",
     "description": "TMX Editor",
-    "main": "app.js",
+    "main": "js/app.js",
     "scripts": {
-        "start": "electron ."
+        "build": "tsc",
+        "start": "npm run build && electron ."
     },
     "author": {
         "name": "Rodolfo M. Raya",

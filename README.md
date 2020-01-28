@@ -25,10 +25,10 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 
 ## Requirements
 
-- JDK 11 or newer is required for compiling and building.
-- Apache Ant 1.10.7 or newer
-- NodeJS 12.14.0 LTS or newer
-- TypeScript 3.7.5 or newer
+- JDK 11 or newer is required for compiling and building. Get it from [AdoptOpenJDK](https://adoptopenjdk.net/).
+- Apache Ant 1.10.7 or newer. Get it from https://ant.apache.org/ 
+- Node.js 12.14.0 LTS or newer. Get it from https://nodejs.org/
+- TypeScript 3.7.5 or newer. Get it from https://www.typescriptlang.org/
 
 ## Building
 
@@ -36,5 +36,14 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 - Point your `JAVA_HOME` environment variable to JDK 11
 - Run `ant` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
-- Run `ant tsc` to compile the TypeScript code
 - Run `npm start` to launch TMXEditor
+
+``` bash
+  git clone https://github.com/rmraya/XLIFFManager.git
+  cd TMXEditor
+  ant
+  npm install
+  npm start
+```
+
+Compile once and then simply run `npm start` to start TMXEditor

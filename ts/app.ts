@@ -68,7 +68,7 @@ if (!existsSync(appHome)) {
 }
 
 spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
-var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: __dirname });
+var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: app.getAppPath() });
 console.log(ck.toString());
 
 app.on('open-file', function (event, filePath) {
