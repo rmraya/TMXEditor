@@ -31,6 +31,8 @@ var currentId: string = null;
 var currentLang: string = null;
 var currentCell: Element = null;
 var currentContent: string = null;
+var currentTags: string[] = [];
+var textArea: HTMLTextAreaElement = null;
 
 function openFile(): void {
     ipcRenderer.send('open-file');
@@ -52,18 +54,40 @@ function saveEdit(): void {
     if (!fileLoaded) {
         return;
     }
-    // TODO
+    if (textArea !== null) {
+        if (currentContent === textArea.value) {
+            cancelEdit();
+            return;
+        }
+        let edited: string = restoretags(textArea.value, currentTags);
+        currentCell.innerHTML = edited;
+        ipcRenderer.send('save-data', { command: 'saveTuvData', id: currentId, lang: currentLang, data: edited });
+    }
 }
 
 ipcRenderer.on('save-edit', () => {
     saveEdit();
 });
 
+
+ipcRenderer.on('data-saved', (event, arg) => {
+    var tr: HTMLElement = document.getElementById(arg.id);
+    var children: HTMLCollection = tr.children;
+    for (let i = 0; i < children.length; i++) {
+        var td: HTMLElement = children.item(i) as HTMLElement;
+        if (td.lang === arg.lang) {
+            td.innerHTML = arg.data;
+            break;
+        }
+    }
+});
+
 function cancelEdit(): void {
     if (!fileLoaded) {
         return;
     }
-    // TODO
+    currentCell.innerHTML = currentContent;
+    textArea = null;
 }
 
 ipcRenderer.on('cancel-edit', () => {
@@ -142,7 +166,7 @@ ipcRenderer.on('languages-changed', () => {
 
 ipcRenderer.on('update-languages', (event, arg) => {
     languages = arg;
-    var row = '<tr  class="dark_background"><th class="dark_background fixed"><input type="checkbox"></th><th class="dark_background fixed">#</th>';
+    var row = '<tr  class="dark_background"><th class="dark_background fixed"><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th><th class="dark_background fixed">#</th>';
 
     for (let index = 0; index < languages.length; ++index) {
         row = row + '<th class="dark_background">' + languages[index].code + ' - ' + arg[index].name + '</th>';
@@ -171,10 +195,13 @@ ipcRenderer.on('update-segments', (event, arg) => {
 
 ipcRenderer.on('file-closed', () => {
     document.getElementById("tableBody").innerHTML = '';
-    document.getElementById("tableHeader").innerHTML = '<tr class="dark_background"><th class="fixed dark_background">&#x2713;</th><th class="fixed dark_background">#</th><th class="dark_background">&nbsp;</th><th class="dark_background">&nbsp;</th></tr>';
+    document.getElementById("tableHeader").innerHTML = '<tr class="dark_background"><th class="fixed dark_background"><input type="checkbox" id="selectAll"></th><th class="fixed dark_background">#</th><th class="dark_background">&nbsp;</th><th class="dark_background">&nbsp;</th></tr>';
     (document.getElementById('page') as HTMLInputElement).value = '0';
     document.getElementById('pages').innerHTML = '0';
     document.getElementById('units').innerHTML = '';
+    document.getElementById('attributesTable').innerHTML = '';
+    document.getElementById('propertiesTable').innerHTML = '';
+    document.getElementById('notesTable').innerHTML = '';
     currentPage = 0;
     maxPage = 0;
     fileLoaded = false;
@@ -204,6 +231,10 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
         lang = (event.target as Element).getAttribute('lang');
         console.log('clicked ' + id + ' ' + lang);
     }
+    if (textArea !== null && (currentId !== id || currentLang !== lang)) {
+        saveEdit();
+    }
+
     if (id !== null) {
         currentId = id;
         if (currentCell != null) {
@@ -215,9 +246,9 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
             currentLang = lang;
             currentCell = (event.target as Element);
             currentContent = currentCell.innerHTML;
-            var textArea: HTMLTextAreaElement = document.createElement('textarea');
+            textArea = document.createElement('textarea');
             textArea.setAttribute('style', 'height: ' + (currentCell.clientHeight - 8) + 'px; width: ' + (currentCell.clientWidth - 8) + 'px;')
-            textArea.innerHTML = currentContent;
+            textArea.innerHTML = cleanTags(currentContent);
             currentCell.innerHTML = '';
             currentCell.parentElement.style.padding = '0px';
             currentCell.appendChild(textArea);
@@ -295,7 +326,7 @@ ipcRenderer.on('first-page', () => {
 });
 
 function previousPage(): void {
-    if (currentPage > 1) {
+    if (currentPage > 0) {
         currentPage--;
         (document.getElementById('page') as HTMLInputElement).value = '' + (currentPage + 1);
         getSegments();
@@ -363,3 +394,30 @@ ipcRenderer.on('last-page', () => {
         getSegments();
     }
 });
+
+function cleanTags(unit: string): string {
+    var index: number = unit.indexOf('<img ');
+    var tagNumber: number = 1;
+    currentTags = [];
+    while (index >= 0) {
+        let start: string = unit.slice(0, index);
+        let rest: string = unit.slice(index + 1);
+        let end: number = rest.indexOf('>');
+        let tag: string = '<' + rest.slice(0, end) + '/>';
+        currentTags.push(tag);
+        unit = start + '[[' + tagNumber++ + ']]' + rest.slice(end + 1);
+        index = unit.indexOf('<img ');
+    }
+    return unit;
+}
+
+function restoretags(text: string, originalTags: string[]): string {
+    for (let i: number = 0; i < originalTags.length; i++) {
+        text = text.replace('[[' + (i + 1) + ']]', originalTags[i]);
+    }
+    return text;
+}
+
+function toggleSelectAll(): void {
+    // TODO
+}

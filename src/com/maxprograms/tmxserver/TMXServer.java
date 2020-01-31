@@ -124,6 +124,8 @@ public class TMXServer implements HttpHandler {
 				response = obj.toString(2);
 			} else if ("closeFile".equals(command)) {
 				response = closeFile();
+			} else if ("saveFile".equals(command)) {
+				response = saveFile(json.getString("file"));
 			} else if ("openFile".equals(command)) {
 				response = openFile(json.getString("file"));
 			} else if ("loadingProgress".equals(command)) {
@@ -136,6 +138,8 @@ public class TMXServer implements HttpHandler {
 				response = getTuData(json.getString("id"));
 			} else if ("getTuvData".equals(command)) {
 				response = getTuvData(json.getString("id"), json.getString("lang"));
+			} else if ("saveTuvData".equals(command)) {
+				response = saveTuvData(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
@@ -168,6 +172,19 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String saveFile(String file) {
+		JSONObject result = service.saveFile(file);
+		return result.toString();
+	}
+
+	private String saveTuvData(JSONObject json) {
+		JSONObject result = service.saveData(json.getString("id"), json.getString("lang"), json.getString("data"));
+		if (Result.SUCCESS.equals(result.getString("status"))) {
+
+		}
+		return result.toString();
 	}
 
 	private String getSegments(JSONObject json) {
@@ -206,8 +223,8 @@ public class TMXServer implements HttpHandler {
 				caseSensitiveFilter = json.getBoolean("caseSensitiveFilter");
 			}
 			Result<TUnit> segments = service.getData(json.getInt("start"), json.getInt("count"), filterText,
-					filterLanguage, caseSensitiveFilter, filterUntranslated, regExp,
-					filterSrcLanguage, sortLanguage, ascending);
+					filterLanguage, caseSensitiveFilter, filterUntranslated, regExp, filterSrcLanguage, sortLanguage,
+					ascending);
 			result.put("status", segments.getResult());
 			if (segments.getResult().equals(Result.SUCCESS)) {
 				List<TUnit> units = segments.getData();
@@ -257,28 +274,15 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private String openFile(String file) {
-		JSONObject result = new JSONObject();
-		String[] res = service.openFile(file);
-		result.put("status", res[0]);
-		if (!Result.SUCCESS.equals(res[0])) {
-			result.put("reason", res[1]);
-		}
-		return result.toString();
+		return service.openFile(file).toString();
 	}
 
 	private String getLoadingProgress() {
-		JSONObject result = service.getLoadingProgress();
-		return result.toString();
+		return service.getLoadingProgress().toString();
 	}
 
 	private String closeFile() {
-		JSONObject result = new JSONObject();
-		String[] res = service.closeFile();
-		result.put("status", res[0]);
-		if (!Result.SUCCESS.equals(res[0])) {
-			result.put("reason", res[1]);
-		}
-		return result.toString();
+		return service.closeFile().toString();
 	}
 
 	private String getTuData(String id) {

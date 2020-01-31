@@ -28,7 +28,7 @@ import com.maxprograms.tmxserver.models.TUnit;
 import org.json.JSONObject;
 
 public interface TMXServiceInterface {
-	String[] openFile(String fileName);
+	JSONObject openFile(String fileName);
 
 	Result<TUnit> getData(int start, int count, String filterText, Language filterLanguage, boolean caseSensitiveFilter,
 			boolean filterUntranslated, boolean regExp, Language filterSrcLanguage, Language sortlanguage,
@@ -40,13 +40,13 @@ public interface TMXServiceInterface {
 
 	String[] getCount();
 
-	String[] closeFile();
+	JSONObject closeFile();
 
 	String[] checkUpdates();
 
-	String[] saveData(String id, String lang, String value);
+	JSONObject saveData(String id, String lang, String value);
 
-	String[] saveFile(String file);
+	JSONObject saveFile(String file);
 
 	Result<FileProperties> getFileProperties();
 

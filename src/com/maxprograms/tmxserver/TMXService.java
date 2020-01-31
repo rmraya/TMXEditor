@@ -149,7 +149,7 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] openFile(String fileName) {
+	public JSONObject openFile(String fileName) {
 		try {
 			parsing = true;
 			File home = getPreferencesFolder();
@@ -193,11 +193,16 @@ public class TMXService implements TMXServiceInterface {
 				}
 			};
 			thread.start();
-			return new String[] { Result.SUCCESS };
+			JSONObject result = new JSONObject();
+			result.put("status", Result.SUCCESS);
+			return result;
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 			parsing = false;
-			return new String[] { Result.ERROR, ex.getMessage() };
+			JSONObject result = new JSONObject();
+			result.put("status", Result.ERROR);
+			result.put("reason", ex.getMessage());
+			return result;
 		}
 	}
 
@@ -286,7 +291,7 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] closeFile() {
+	public JSONObject closeFile() {
 		if (store != null) {
 			try {
 				store.close();
@@ -298,13 +303,21 @@ public class TMXService implements TMXServiceInterface {
 						System.gc();
 					}
 				}.start();
-				return new String[] { Result.SUCCESS };
+				JSONObject result = new JSONObject();
+				result.put("status",Result.SUCCESS);
+				return result;
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				return new String[] { Result.ERROR, e.getMessage() };
+				JSONObject result = new JSONObject();
+				result.put("status",Result.ERROR);
+				result.put("reason", e.getMessage());
+				return result;
 			}
 		}
-		return new String[] { Result.ERROR, "Null Store" };
+		JSONObject result = new JSONObject();
+		result.put("status",Result.ERROR);
+		result.put("reason", "Null Store");
+		return result;
 	}
 
 	@Override
@@ -328,18 +341,24 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] saveData(String id, String lang, String value) {
+	public JSONObject saveData(String id, String lang, String value) {
+		JSONObject result = new JSONObject();
 		try {
 			String updated = store.saveData(id, lang, value);
-			return new String[] { Result.SUCCESS, updated };
+			result.put("status", Constants.SUCCESS);
+			result.put("data", updated);
+			result.put("id", id);
+			result.put("lang", lang);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Constants.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] saveFile(String file) {
+	public JSONObject saveFile(String file) {
 		saving = true;
 		currentFile = new File(file);
 		getIndentation();
@@ -359,9 +378,15 @@ public class TMXService implements TMXServiceInterface {
 					saving = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			JSONObject result = new JSONObject();
+			result.put("status", Result.SUCCESS);
+			return result;
 		} catch (Exception ex) {
-			return new String[] { Result.ERROR, ex.getMessage() };
+			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+			JSONObject result = new JSONObject();
+			result.put("status", Result.ERROR);
+			result.put("reason", ex.getMessage());
+			return result;
 		}
 	}
 

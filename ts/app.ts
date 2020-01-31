@@ -32,14 +32,14 @@ var stopping: boolean = false;
 var fileLanguages: any;
 var currentDefaults: any;
 var currentStatus: any = {};
-var filterOptions: any = {
-};
+var filterOptions: any = {};
 var loadOptions: any = {
     start: 0,
     count: 200
 };
 
 var currentFile: string = '';
+var saved: boolean = true;
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -64,10 +64,24 @@ if (process.platform == 'win32') {
 }
 
 if (!existsSync(appHome)) {
-    mkdirSync(appHome, {recursive: true});
+    mkdirSync(appHome, { recursive: true });
 }
 
-spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
+const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050', '-debug'], { cwd: app.getAppPath() });
+
+
+ls.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+});
+
+ls.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+});
+
+ls.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+});
+
 var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: app.getAppPath() });
 console.log(ck.toString());
 
@@ -313,8 +327,15 @@ function sendRequest(json: any, success: any, error: any) {
 }
 
 function stopServer() {
+
     if (!stopping) {
         stopping = true;
+        if (!saved) {
+            let response = dialog.showMessageBoxSync(mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
+            if (response === 0) {
+                saveFile();
+            }
+        }
         sendRequest({ command: 'stop' },
             function success(data: any) {
                 console.log('server stopped');
@@ -513,6 +534,12 @@ function getLoadingProgress() {
 }
 
 function closeFile() {
+    if (!saved) {
+        let response = dialog.showMessageBoxSync(mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
+        if (response === 0) {
+            saveFile();
+        }
+    }
     contents.send('set-status', 'Closing file');
     contents.send('start-waiting');
     sendRequest({ command: 'closeFile' },
@@ -670,7 +697,22 @@ ipcMain.on('new-file', () => {
 });
 
 function saveFile(): void {
-    // TODO
+    if (currentFile === '') {
+        return;
+    }
+    sendRequest({ command: 'saveFile', file: currentFile },
+        function success(data: any) {
+            // TODO
+            if (data.status == SUCCESS) {
+                saved = true;
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 ipcMain.on('save-file', () => {
@@ -723,6 +765,22 @@ function saveEdits(): void {
     }
     contents.send('save-edit');
 }
+
+ipcMain.on('save-data', (event, arg) => {
+    sendRequest(arg,
+        function (data: any) {
+            if (data.status === SUCCESS) {
+                saved = false;
+                event.sender.send('data-saved', data);
+                return;
+            }
+            dialog.showMessageBox({ type: 'error', message: data.reason });
+        },
+        function (reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function cancelEdit(): void {
     if (currentFile === '') {
