@@ -28,6 +28,10 @@ public class TextUtils {
 	private static Pattern pattern;
 	private static String lastTarget;
 
+	private TextUtils() {
+		// empty for security
+	}
+
 	public static String cleanString(String string) {
 		return string.replace("&", "&amp;").replace("<", "&lt;");
 	}

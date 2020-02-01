@@ -4,7 +4,6 @@
     <property name="source" value="11"/>
     <property name="build.compiler" value="javac10+"/>
     <path id="TMXServer.classpath">
-        <pathelement location="jars/capi.jar"/>
         <pathelement location="jars/dtd.jar"/>
         <pathelement location="jars/json.jar"/>
         <pathelement location="jars/jsoup-1.11.3.jar"/>

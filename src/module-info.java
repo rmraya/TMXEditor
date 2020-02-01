@@ -25,7 +25,6 @@ module tmxserver {
 	requires java.base;
 	requires java.xml;
 	requires transitive openxliff;
-	requires capi;
 	requires tmxvalidator;
 	requires transitive jdk.httpserver;
 	requires transitive json;

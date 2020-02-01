@@ -86,7 +86,7 @@ public class MergeStore implements StoreInterface {
 
 	@Override
 	public long getDiscarded() {
-		return 0;
+		return 0l;
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class MergeStore implements StoreInterface {
 
 	@Override
 	public long getProcessed() {
-		return 0;
+		return 0l;
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class MergeStore implements StoreInterface {
 
 	@Override
 	public long removeUntranslated(Language lang) {
-		return 0;
+		return 0l;
 	}
 
 	@Override

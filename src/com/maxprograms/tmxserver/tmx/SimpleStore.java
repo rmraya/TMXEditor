@@ -135,7 +135,7 @@ public class SimpleStore implements StoreInterface {
 			boolean caseSensitive, boolean filterUntranslated, boolean regExp, Language filterSrcLanguage,
 			Language sortLanguage, boolean ascending) throws IOException {
 		processed = 0;
-		Vector<TUnit> result = new Vector<>();
+		List<TUnit> result = new ArrayList<>();
 		Iterator<String> ut = order.iterator();
 		if (filterText == null && !filterUntranslated) {
 			for (long i = 0; i < tus.size(); i++) {
@@ -205,11 +205,11 @@ public class SimpleStore implements StoreInterface {
 			return result;
 		}
 		if (result.size() < start + count) {
-			Vector<TUnit> list = new Vector<>();
+			List<TUnit> list = new ArrayList<>();
 			list.addAll(result.subList((int) start, result.size()));
 			return list;
 		}
-		Vector<TUnit> list = new Vector<>();
+		List<TUnit> list = new ArrayList<>();
 		list.addAll(result.subList((int) start, (int) (start + count)));
 		return list;
 	}
@@ -397,7 +397,7 @@ public class SimpleStore implements StoreInterface {
 	@Override
 	public long removeUntranslated(Language language) throws IOException {
 		processed = 0l;
-		Vector<String> selected = new Vector<>();
+		List<String> selected = new ArrayList<>();
 		String srclang = language.getCode();
 		Iterator<String> ut = order.iterator();
 		while (ut.hasNext()) {
@@ -477,14 +477,14 @@ public class SimpleStore implements StoreInterface {
 
 	@Override
 	public void removeDuplicates() {
-		Vector<String> langs = new Vector<>();
+		List<String> langs = new ArrayList<>();
 		Iterator<String> it = languages.iterator();
 		while (it.hasNext()) {
 			langs.add(it.next());
 		}
 		for (int m = 0; m < langs.size() - 1; m++) {
 			String srcLang = langs.get(m);
-			Vector<Pair> pairs = new Vector<>();
+			List<Pair> pairs = new ArrayList<>();
 			HashMap<String, Element> map = maps.get(srcLang);
 			Set<String> keySet = map.keySet();
 			it = keySet.iterator();
@@ -594,7 +594,7 @@ public class SimpleStore implements StoreInterface {
 	public void consolidateUnits(Language language) throws IOException {
 		processed = 0l;
 		String srcLang = language.getCode();
-		Vector<Pair> pairs = new Vector<>();
+		List<Pair> pairs = new ArrayList<>();
 		HashMap<String, Element> map = maps.get(srcLang);
 		Set<String> keySet = map.keySet();
 		Iterator<String> it = keySet.iterator();

@@ -406,11 +406,11 @@ ipcMain.on('open-license', function (event, arg: any) {
             break;
         case "Java":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/java.html'
-            'GPL2 with Classpath Exception';
+            title = 'GPL2 with Classpath Exception';
             break;
         case "OpenXLIFF":
         case "TMXValidator":
-            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html'
+            licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html';
             title = 'Eclipse Public License 1.0';
             break;
         case "JSON":
@@ -636,18 +636,18 @@ function loadSegments() {
     contents.send('start-waiting');
     contents.send('set-status', 'Loading segments');
     sendRequest(json,
-        function success(json: any) {
+        function success(data: any) {
             contents.send('set-status', '');
             contents.send('end-waiting');
-            if (json.status === SUCCESS) {
-                contents.send('update-segments', json);
+            if (data.status === SUCCESS) {
+                contents.send('update-segments', data);
             } else {
-                dialog.showMessageBox({ type: 'error', message: json.reason });
+                dialog.showMessageBox({ type: 'error', message: data.reason });
             }
         },
-        function error(data: string) {
+        function error(reason: string) {
             contents.send('end-waiting');
-            dialog.showMessageBox({ type: 'error', message: data });
+            dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
 }

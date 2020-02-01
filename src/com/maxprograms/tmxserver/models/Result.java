@@ -28,14 +28,12 @@ public class Result<D extends Serializable> implements Serializable {
 	public static final String SUCCESS = "Success";
 	public static final String ERROR = "Error";
 	public static final String CANCELLED = "Cancelled";
-	public static final String EMAIL_ERROR = "Email Error";
-	public static final String NOT_REGISTERED = "NOT REGISTERED";
 	public static final String COMPLETED = "Completed";
 	public static final String LOADING = "Loading";
 	
 
 	private List<D> data = null;
-	private String result = "";
+	private String status = "";
 	private String msg = "";
 
 	public void setData(List<D> values) {
@@ -43,7 +41,7 @@ public class Result<D extends Serializable> implements Serializable {
 	}
 
 	public void setResult(String value) {
-		result = value;
+		status = value;
 	}
 
 	public void setMessage(String value) {
@@ -55,7 +53,7 @@ public class Result<D extends Serializable> implements Serializable {
 	}
 
 	public String getResult() {
-		return result;
+		return status;
 	}
 
 	public String getMessage() {

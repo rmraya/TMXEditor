@@ -50,15 +50,7 @@ public interface TMXServiceInterface {
 
 	Result<FileProperties> getFileProperties();
 
-	String[] isRegistered();
-
-	Result<Boolean> registerLicense(String upperCase);
-
-	String[] requestTrial(String firstName, String lastName, String company, String email);
-
 	String[] getTuData(String id);
-
-	String[] sendFeedback(String feedback);
 
 	String[] delete(List<TUnit> selected);
 
@@ -80,15 +72,11 @@ public interface TMXServiceInterface {
 
 	String[] createFile(Language srcLang, Language tgtLang);
 
-	String[] disableLicense();
-
 	String[] removeDuplicates();
 
 	String[] removeSpaces();
 
 	String[] consolidateUnits(Language lang);
-
-	String[] getLicenseData();
 
 	String[] setAttributes(String currentId, String lang, List<String[]> attributes);
 

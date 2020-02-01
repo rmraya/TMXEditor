@@ -28,17 +28,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -48,15 +44,8 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.crypto.NoSuchPaddingException;
-import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.maxprograms.capi.DiskId;
-import com.maxprograms.capi.HexDate;
-import com.maxprograms.capi.LFile;
-import com.maxprograms.capi.Nics;
-import com.maxprograms.converters.StringConverter;
 import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.models.FileProperties;
 import com.maxprograms.tmxserver.models.Language;
@@ -429,234 +418,6 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] isRegistered() {
-		try {
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			if (LFile.ENABLED == lfile.checkLicense()) {
-				if (checkVersion()) {
-					return new String[] { Result.SUCCESS };
-				}
-			}
-			return new String[] { Result.NOT_REGISTERED };
-		} catch (Exception e) {
-			return new String[] { Result.NOT_REGISTERED };
-		}
-	}
-
-	private static boolean checkVersion() throws IOException, SAXException, ParserConfigurationException {
-		File folder = TmxUtils.getWorkFolder();
-		File versionFile = new File(folder, "version.xml");
-		if (!versionFile.exists()) {
-			return false;
-		}
-		SAXBuilder builder = new SAXBuilder();
-		Document doc = builder.build(versionFile);
-		Element root = doc.getRootElement();
-		return root.getText().equals(Constants.VERSION) && root.getAttributeValue("build").equals(Constants.BUILD);
-	}
-
-	@Override
-	public Result<Boolean> registerLicense(String license) {
-		Result<Boolean> result = new Result<>();
-		if (license.matches(".*[A-F|0-9][A-F|0-9][A-F|0-9]-[A-F|0-9][A-F|0-9][A-F|0-9]?")) {
-			long now = System.currentTimeMillis();
-			String[] parts = license.split("-");
-			HexDate date = new HexDate(license.substring(license.indexOf(parts[parts.length - 2])));
-			Calendar cd = Calendar.getInstance();
-			cd.set(date.getYear(), date.getMonth(), date.getDay());
-			if (now > cd.getTimeInMillis()) {
-				result.setResult(Result.NOT_REGISTERED);
-				result.setMessage("Expired License");
-				return result;
-			}
-		}
-		try {
-			String server = "https://apps.maxprograms.com/MXPWebSite/Register";
-			List<String> cards = Nics.getCards();
-			StringBuilder cardList = new StringBuilder();
-			Iterator<String> it = cards.iterator();
-			while (it.hasNext()) {
-				if (!cardList.toString().isEmpty()) {
-					cardList.append('|');
-				}
-				cardList.append(it.next());
-			}
-			String hostName = "unknown";
-			try {
-				hostName = InetAddress.getLocalHost().getHostName();
-			} catch (java.net.UnknownHostException unk) {
-				if (FILE_SEPARATOR.equals("/")) {
-					StringBuilder host = new StringBuilder();
-					Process p = Runtime.getRuntime().exec("hostname");
-					try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-						String line;
-						while ((line = input.readLine()) != null) {
-							host.append(line.trim());
-						}
-					}
-					if (!host.toString().isEmpty()) {
-						hostName = host.toString();
-					}
-				}
-			}
-
-			List<String> disks = null;
-			try {
-				disks = DiskId.getDiskIds();
-			} catch (IOException ioe) {
-				result.setResult(Result.NOT_REGISTERED);
-				result.setMessage("Unsupported hard disks");
-				return result;
-			}
-			StringBuilder diskList = new StringBuilder();
-			Iterator<String> id = disks.iterator();
-			while (id.hasNext()) {
-				if (!diskList.toString().isEmpty()) {
-					diskList.append('|');
-				}
-				diskList.append(id.next());
-			}
-			URL url = new URL(server + "?license=" + StringConverter.encodeString(license) + "&key="
-					+ StringConverter.encodeString(cardList.toString()) + "&product=" + "TMXEditor" + "&version="
-					+ Constants.VERSION + "&user=" + encodeURIcomponent(System.getProperty("user.name")) + "&hostname="
-					+ encodeURIcomponent(hostName) + "&hd=" + StringConverter.encodeString(diskList.toString()));
-			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-			String res = "";
-			try (InputStream input = con.getInputStream()) {
-				int available = input.available();
-				byte[] array = new byte[available];
-				int bytes = input.read(array);
-				if (bytes != -1) {
-					res = StringConverter.decodeString(new String(array).trim());
-				}
-			}
-			con.disconnect();
-			if (!res.startsWith("OK")) {
-				if (res.length() > 2) {
-					result.setResult(Result.NOT_REGISTERED);
-					result.setMessage(res.substring(2));
-					return result;
-				}
-				result.setResult(Result.NOT_REGISTERED);
-				result.setMessage("Error registering license");
-				return result;
-			}
-			String name = res.substring(2);
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			lfile.setUser(name);
-			lfile.setKey(license);
-			lfile.enable(cards, disks);
-
-			File folder = TmxUtils.getWorkFolder();
-			File versionFile = new File(folder, "version.xml");
-			try (FileOutputStream output = new FileOutputStream(versionFile)) {
-				Document doc = new Document(null, "version", null, null);
-				Element root = doc.getRootElement();
-				root.setText(Constants.VERSION);
-				root.setAttribute("build", Constants.BUILD);
-				XMLOutputter outputter = new XMLOutputter();
-				outputter.output(doc, output);
-			}
-			result.setResult(Result.SUCCESS);
-		} catch (Exception e) {
-			result.setResult(Result.NOT_REGISTERED);
-			result.setMessage("Error registering license");
-		}
-		return result;
-	}
-
-	@Override
-	public String[] requestTrial(String firstName, String lastName, String company, String email) {
-		String userid = System.getProperty("user.name");
-		if (userid == null || userid.equals("")) {
-			return new String[] { Result.ERROR, "A computer user account is required" };
-		}
-		List<String> cards = null;
-		try {
-			cards = Nics.getCards();
-		} catch (Exception e) {
-			return new String[] { Result.ERROR, "Error generating trial key" };
-		}
-		if (cards.isEmpty()) {
-			return new String[] { Result.ERROR, "Cannot register trial in this computer" };
-		}
-		StringBuilder cardList = new StringBuilder();
-		Iterator<String> it = cards.iterator();
-		while (it.hasNext()) {
-			if (!cardList.toString().isEmpty()) {
-				cardList.append('|');
-			}
-			cardList.append(it.next());
-		}
-		List<String> disks = null;
-		try {
-			disks = DiskId.getDiskIds();
-		} catch (IOException ioe) {
-			return new String[] { Result.ERROR, "Unsupported hard disk" };
-		}
-		StringBuilder diskList = new StringBuilder();
-		Iterator<String> id = disks.iterator();
-		while (id.hasNext()) {
-			if (!diskList.toString().isEmpty()) {
-				diskList.append('|');
-			}
-			diskList.append(id.next());
-		}
-		String result = "";
-		try {
-			String hostName = "unknown";
-			try {
-				hostName = InetAddress.getLocalHost().getHostName();
-			} catch (java.net.UnknownHostException unk) {
-				if (FILE_SEPARATOR.equals("/")) {
-					StringBuilder host = new StringBuilder();
-					Process p = Runtime.getRuntime().exec("hostname");
-					try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-						String line;
-						while ((line = input.readLine()) != null) {
-							host.append(line.trim());
-						}
-					}
-					if (!host.toString().isEmpty()) {
-						hostName = host.toString();
-					}
-				}
-			}
-			String server = "https://apps.maxprograms.com/MXPWebSite/RegisterTrial";
-			URL url = new URL(server + "?key=" + StringConverter.encodeString(cardList.toString()) + "&product="
-					+ encodeURIcomponent("TMXEditor") + "&version=" + Constants.VERSION + "&user="
-					+ encodeURIcomponent(System.getProperty("user.name")) + "&hostname=" + encodeURIcomponent(hostName)
-					+ "&hd=" + StringConverter.encodeString(diskList.toString()) + "&firstName="
-					+ StringConverter.encodeString(firstName) + "&lastName=" + StringConverter.encodeString(lastName)
-					+ "&company=" + encodeURIcomponent(company) + "&email=" + encodeURIcomponent(email));
-			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-			try (InputStream input = con.getInputStream()) {
-				int available = input.available();
-				byte[] array = new byte[available];
-				int bytes = input.read(array);
-				if (bytes != -1) {
-					result = new String(array).trim();
-				}
-			}
-			con.disconnect();
-		} catch (Exception e) {
-			return new String[] { Result.ERROR, "Error sendig request to server. Check your firewall or antivirus" };
-		}
-		if (result.equals("")) {
-			return new String[] { Result.ERROR, "Error reading server reply. Check your firewall or antivirus" };
-		}
-		result = StringConverter.decodeString(result);
-		if (result.startsWith("REPEATED")) {
-			return new String[] { Result.ERROR,
-					"Duplicated request. Contact sales@maxprograms.com and request a license" };
-		}
-		if (!result.startsWith("OK")) {
-			return new String[] { Result.ERROR, "Trial registration failed" };
-		}
-		return new String[] { Result.SUCCESS };
-	}
-
-	@Override
 	public String[] getTuData(String id) {
 		Comparator<String[]> comparator = new Comparator<>() {
 
@@ -701,38 +462,6 @@ public class TMXService implements TMXServiceInterface {
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return new String[] {Result.ERROR, e.getMessage()};
-		}
-	}
-
-	@Override
-	public String[] sendFeedback(String feedback) {
-		try {
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			String key = lfile.getKey();
-			String user = lfile.getUser();
-
-			String server = "https://apps.maxprograms.com/MXPWebSite/Feedback";
-
-			URL url = new URL(server + "?license=" + StringConverter.encodeString(key) + "&product=" + "TMXEditor"
-					+ "&version=" + Constants.VERSION + "&user=" + StringConverter.encodeString(user) + "&message="
-					+ StringConverter.encodeString(feedback));
-			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-			try (InputStream input = con.getInputStream()) {
-				int available = input.available();
-				byte[] array = new byte[available];
-				int bytes = input.read(array);
-				if (bytes != -1) {
-					String result = new String(array).trim();
-					LOGGER.log(Level.INFO, result);
-					return new String[] { Result.SUCCESS };
-				}
-			}
-			con.disconnect();
-			return new String[] { Result.ERROR, "No reply received from server." };
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IOException | SAXException
-				| ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
 		}
 	}
 
@@ -945,80 +674,6 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] disableLicense() {
-		List<String> cards = null;
-		try {
-			cards = Nics.getCards();
-		} catch (Exception e) {
-			return new String[] { Result.ERROR, "Error generating registration key" };
-		}
-		if (cards.isEmpty()) {
-			return new String[] { Result.ERROR, "Cannot register in this computer" };
-		}
-		StringBuilder cardList = new StringBuilder();
-		Iterator<String> it = cards.iterator();
-		while (it.hasNext()) {
-			if (!cardList.toString().isEmpty()) {
-				cardList.append('|');
-			}
-			cardList.append(it.next());
-		}
-
-		String result = "";
-		try {
-			String hostName = "unknown";
-			try {
-				hostName = InetAddress.getLocalHost().getHostName();
-			} catch (java.net.UnknownHostException unk) {
-				if (FILE_SEPARATOR.equals("/")) {
-					Process p = Runtime.getRuntime().exec("hostname");
-					String line;
-					StringBuilder host = new StringBuilder();
-					try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-						while ((line = input.readLine()) != null) {
-							host.append(line.trim());
-						}
-					}
-					if (!host.toString().isEmpty()) {
-						hostName = host.toString();
-					}
-				}
-			}
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			String server = "https://apps.maxprograms.com/MXPWebSite/Disable";
-			URL url = new URL(server + "?license=" + StringConverter.encodeString(lfile.getKey()) + "&key="
-					+ StringConverter.encodeString(cardList.toString()) + "&product=TMXEditor" + "&version="
-					+ Constants.VERSION + "&hostname=" + encodeURIcomponent(hostName) + "&user="
-					+ encodeURIcomponent(System.getProperty("user.name")));
-			HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
-			try (InputStream input = con.getInputStream()) {
-				int available = input.available();
-				byte[] array = new byte[available];
-				int bytes = input.read(array);
-				if (bytes != -1) {
-					result = new String(array).trim();
-				}
-			}
-			con.disconnect();
-		} catch (Exception e) {
-			return new String[] { Result.ERROR,
-					"Error sending registration to server. Check your firewall or antivirus" };
-		}
-		if (result.equals("")) {
-			return new String[] { Result.ERROR,
-					"Error reading answer from license server. Check your firewall or antivirus" };
-		}
-		result = StringConverter.decodeString(result);
-		try {
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			lfile.disable();
-		} catch (Exception e1) {
-			return new String[] { Result.ERROR, "Error saving license information" };
-		}
-		return new String[] { Result.SUCCESS };
-	}
-
-	@Override
 	public String[] removeDuplicates() {
 		processing = true;
 		processingError = "";
@@ -1090,23 +745,6 @@ public class TMXService implements TMXServiceInterface {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
 			return new String[] { Result.ERROR, e.getMessage() };
-		}
-	}
-
-	@Override
-	public String[] getLicenseData() {
-		try {
-			LFile lfile = new LFile(new File(getPreferencesFolder(), Constants.LICENSE), "TMXEditor");
-			String user = lfile.getUser();
-			String license = lfile.getKey();
-			String days = "";
-			if (license.matches(".*[A-F|0-9][A-F|0-9][A-F|0-9]-[A-F|0-9][A-F|0-9][A-F|0-9]?")) {
-				days = "" + lfile.remainingDays();
-			}
-			return new String[] { Result.SUCCESS, user, days };
-		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IOException | SAXException
-				| ParserConfigurationException e) {
-			return new String[] { Result.ERROR, "Error loading registration details" };
 		}
 	}
 

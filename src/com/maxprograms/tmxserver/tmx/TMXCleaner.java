@@ -38,6 +38,10 @@ public class TMXCleaner {
 
 	protected static final Logger LOGGER = Logger.getLogger(TMXCleaner.class.getName());
 
+	private TMXCleaner() {
+		// empty for security
+	}
+
 	public static void clean(String name) throws IOException {
 		String encoding = getXMLEncoding(name);
 		try (InputStreamReader input = new InputStreamReader(new FileInputStream(name), encoding)) {
@@ -80,7 +84,7 @@ public class TMXCleaner {
 			return result;
 		}
 		while (index != -1) {
-			int end = result.indexOf(";", index);
+			int end = result.indexOf(';', index);
 			if (end != -1) {
 				String start = result.substring(0, index);
 				String entity = result.substring(index, end + 1);
@@ -138,7 +142,7 @@ public class TMXCleaner {
 				while (tokenizer.hasMoreTokens()) {
 					String token = tokenizer.nextToken();
 					if (token.startsWith("encoding")) {
-						result = token.substring(token.indexOf("\"") + 1, token.lastIndexOf("\""));
+						result = token.substring(token.indexOf('\"') + 1, token.lastIndexOf('\"'));
 					}
 				}
 			}

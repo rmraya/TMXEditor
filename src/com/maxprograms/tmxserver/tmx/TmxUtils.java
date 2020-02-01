@@ -25,13 +25,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +59,10 @@ public class TmxUtils {
 	private static String lastFilterText;
 
 	private static File workDir;
+
+	private TmxUtils() {
+		// empty for security
+	}
 
 	protected static Element removeTuvs(Element element) {
 		Element tu = new Element(element.getName());
@@ -103,7 +107,7 @@ public class TmxUtils {
 						String s = ((TextNode) o).getText();
 						Matcher matcher = pattern.matcher(s);
 						if (matcher.find()) {
-							StringBuffer sb = new StringBuffer();
+							StringBuilder sb = new StringBuilder();
 							do {
 								int start = matcher.start();
 								int end = matcher.end();
@@ -303,8 +307,6 @@ public class TmxUtils {
 				}
 			}
 		}
-		it = null;
-		list = null;
 		return text.toString();
 	}
 
@@ -337,7 +339,7 @@ public class TmxUtils {
 	}
 
 	public static void replaceText(Element element, String search, String replace, boolean regExp) {
-		List<XMLNode> newContent = new Vector<>();
+		List<XMLNode> newContent = new ArrayList<>();
 		List<XMLNode> content = element.getContent();
 		Iterator<XMLNode> it = content.iterator();
 		while (it.hasNext()) {
@@ -407,7 +409,7 @@ public class TmxUtils {
 		}
 		Matcher matcher = pattern.matcher(result);
 		if (matcher.find()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			do {
 				int start = matcher.start();
 				int end = matcher.end();

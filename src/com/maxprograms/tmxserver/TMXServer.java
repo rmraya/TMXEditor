@@ -180,11 +180,7 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private String saveTuvData(JSONObject json) {
-		JSONObject result = service.saveData(json.getString("id"), json.getString("lang"), json.getString("data"));
-		if (Result.SUCCESS.equals(result.getString("status"))) {
-
-		}
-		return result.toString();
+		return service.saveData(json.getString("id"), json.getString("lang"), json.getString("data")).toString();
 	}
 
 	private String getSegments(JSONObject json) {
