@@ -36,7 +36,7 @@ public interface TMXServiceInterface {
 
 	Result<Language> getLanguages();
 
-	String[] getProcessingProgress();
+	JSONObject getProcessingProgress();
 
 	String[] getCount();
 
@@ -76,13 +76,13 @@ public interface TMXServiceInterface {
 
 	String[] removeSpaces();
 
-	String[] consolidateUnits(Language lang);
+	JSONObject consolidateUnits(Language lang);
 
 	String[] setAttributes(String currentId, String lang, List<String[]> attributes);
 
 	JSONObject getLoadingProgress();
 
-	String[] getSavingProgress();
+	JSONObject getSavingProgress();
 
 	String[] checkFiles();
 

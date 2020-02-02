@@ -15,7 +15,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "electron": "^7.1.10",
+        "electron": "^7.1.11",
         "typescript": "^3.7.5"
     }
 }

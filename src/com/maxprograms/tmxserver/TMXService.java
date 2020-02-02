@@ -258,17 +258,24 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getProcessingProgress() {
-		if (processing && store != null) {
-			return new String[] { Result.SUCCESS, "Processed " + store.getProcessed() + " units" };
+	public JSONObject getProcessingProgress() {
+		JSONObject result  = new JSONObject();
+		if (store != null) {
+			if (processing) {
+				result.put("status", Result.PROCESSING);
+			} else {
+				result.put("status", Result.COMPLETED);
+			}
+			result.put("count", store.getProcessed());
+			if (!processingError.isEmpty()) {
+				result.put("status", Result.ERROR);
+				result.put("reason", processingError);
+			}
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", "Null store");
 		}
-		if (!processing && store != null) {
-			return new String[] { Result.COMPLETED };
-		}
-		if (!processingError.isEmpty()) {
-			return new String[] { Result.ERROR, processingError };
-		}
-		return new String[] { Result.ERROR, "Not doing anything at this time" };
+		return result;
 	}
 
 	@Override
@@ -724,7 +731,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] consolidateUnits(Language lang) {
+	public JSONObject consolidateUnits(Language lang) {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -740,12 +748,14 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -785,17 +795,24 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getSavingProgress() {
-		if (saving && store != null) {
-			return new String[] { Result.SUCCESS, "Saved " + store.getSaved() + " units" };
+	public JSONObject getSavingProgress() {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			if (saving) {
+				result.put("status", Result.SAVING);
+			} else {
+				result.put("status", Result.COMPLETED);
+			}
+			result.put("count", store.getSaved());
+			if (!savingError.isEmpty()) {
+				result.put("status", Result.ERROR);
+				result.put("reason", savingError);
+			}
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", "Null store");
 		}
-		if (!saving && store != null) {
-			return new String[] { Result.COMPLETED };
-		}
-		if (!savingError.isEmpty()) {
-			return new String[] { Result.ERROR, savingError };
-		}
-		return new String[] { Result.ERROR, "Null store and not saving" };
+		return result;
 	}
 
 	@Override

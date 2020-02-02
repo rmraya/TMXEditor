@@ -126,6 +126,8 @@ public class TMXServer implements HttpHandler {
 				response = closeFile();
 			} else if ("saveFile".equals(command)) {
 				response = saveFile(json.getString("file"));
+			} else if ("savingProgress".equals(command)) {
+				response = getSavingProgress();
 			} else if ("openFile".equals(command)) {
 				response = openFile(json.getString("file"));
 			} else if ("loadingProgress".equals(command)) {
@@ -140,6 +142,10 @@ public class TMXServer implements HttpHandler {
 				response = getTuvData(json.getString("id"), json.getString("lang"));
 			} else if ("saveTuvData".equals(command)) {
 				response = saveTuvData(json);
+			} else if ("consolidateUnits".equals(command)) {
+				response = consolidateUnits(json.getString("srcLang"));
+			} else if ("processingProgress".equals(command)) {
+				response = getProcessingProgress();
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
@@ -171,6 +177,26 @@ public class TMXServer implements HttpHandler {
 			try (OutputStream os = t.getResponseBody()) {
 				os.write(response.getBytes());
 			}
+		}
+	}
+
+	private String getProcessingProgress() {
+		return service.getProcessingProgress().toString();
+	}
+
+	private String getSavingProgress() {
+		return service.getSavingProgress().toString();
+	}
+
+	private String consolidateUnits(String srcLang) {
+		try {
+			Language lang = service.getLanguage(srcLang);
+			return service.consolidateUnits(lang).toString();
+		} catch (IOException e) {
+			JSONObject result = new JSONObject();
+			result.put("status", Constants.ERROR);
+			result.put("reason", e.getMessage());
+			return result.toString();
 		}
 	}
 

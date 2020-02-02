@@ -30,6 +30,8 @@ public class Result<D extends Serializable> implements Serializable {
 	public static final String CANCELLED = "Cancelled";
 	public static final String COMPLETED = "Completed";
 	public static final String LOADING = "Loading";
+	public static final String SAVING = "Saving";
+	public static final String PROCESSING = "Processing";
 	
 
 	private List<D> data = null;

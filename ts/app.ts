@@ -25,11 +25,13 @@ import { ClientRequest, request } from "http";
 
 var mainWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
+var consolidateWindow: BrowserWindow;
+
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
 var appHome: string = app.getPath('appData') + '/tmxeditor/';
 var stopping: boolean = false;
-var fileLanguages: any;
+var fileLanguages: any[];
 var currentDefaults: any;
 var currentStatus: any = {};
 var filterOptions: any = {};
@@ -45,6 +47,8 @@ const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
 const COMPLETED: string = 'Completed';
 const ERROR: string = 'Error';
+const SAVING: string = 'Saving';
+const PROCESSING: string = 'Processing';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -67,8 +71,7 @@ if (!existsSync(appHome)) {
     mkdirSync(appHome, { recursive: true });
 }
 
-const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050', '-debug'], { cwd: app.getAppPath() });
-
+const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
 
 ls.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -204,9 +207,7 @@ function createWindow() {
         { label: 'TMXEditor User Guide', accelerator: 'F1', click: function () { showHelp(); } },
         new MenuItem({ type: 'separator' }),
         { label: 'Check for Updates', click: function () { checkUpdates(); } },
-        { label: 'View Release History', click: function () { showReleaseHistory(); } },
-        new MenuItem({ type: 'separator' }),
-        { label: 'Send Feedback...', click: function () { sendFeedback(); } }
+        { label: 'View Release History', click: function () { showReleaseHistory(); } }
     ]);
     var template: MenuItem[] = [
         new MenuItem({ label: 'File', role: 'fileMenu', submenu: fileMenu }),
@@ -485,8 +486,8 @@ function openFile(file: string) {
     contents.send('start-waiting');
     contents.send('set-status', 'Opening file');
     sendRequest({ command: 'openFile', file: file },
-        function success(json: any) {
-            currentStatus = json;
+        function success(data: any) {
+            currentStatus = data;
             var intervalObject = setInterval(function () {
                 if (currentStatus.status === COMPLETED) {
                     contents.send('end-waiting');
@@ -515,9 +516,9 @@ function openFile(file: string) {
                 getLoadingProgress();
             }, 500);
         },
-        function error(data: string) {
-            console.log(data);
-            dialog.showErrorBox('Error', data);
+        function error(reason: string) {
+            console.log(reason);
+            dialog.showErrorBox('Error', reason);
         }
     );
 }
@@ -634,7 +635,7 @@ function loadSegments() {
     Object.assign(json, filterOptions);
     // TODO set sorting options
     contents.send('start-waiting');
-    contents.send('set-status', 'Loading segments');
+    contents.send('set-status', 'Loading segments...');
     sendRequest(json,
         function success(data: any) {
             contents.send('set-status', '');
@@ -702,12 +703,34 @@ function saveFile(): void {
     }
     sendRequest({ command: 'saveFile', file: currentFile },
         function success(data: any) {
-            // TODO
-            if (data.status == SUCCESS) {
-                saved = true;
-            } else {
-                dialog.showMessageBox({ type: 'error', message: data.reason });
-            }
+            currentStatus = data;
+            contents.send('set-status', 'Saving...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    saved = true;
+                    return;
+                } else if (currentStatus.status === SAVING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'saveFile'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error saving file');
+                    return;
+                }
+                getSavingProgress();
+            }, 500);
         },
         function error(reason: string) {
             dialog.showMessageBox({ type: 'error', message: reason });
@@ -715,6 +738,16 @@ function saveFile(): void {
     );
 }
 
+function getSavingProgress() {
+    sendRequest({ command: 'savingProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(data: string) {
+            console.log(data);
+        }
+    );
+}
 ipcMain.on('save-file', () => {
     saveFile();
 })
@@ -907,30 +940,92 @@ function removeSpaces(): void {
 }
 
 function consolidateUnits(): void {
-    // TODO 
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    if (fileLanguages.length < 3) {
+        dialog.showMessageBox({ type: 'warning', message: 'File must have at least 3 languages' });
+        return;
+    }
+    consolidateWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 480,
+        height: 110,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    consolidateWindow.setMenu(null);
+    consolidateWindow.loadURL('file://' + app.getAppPath() + '/html/consolidateUnits.html');
+    consolidateWindow.show();
+    // consolidateWindow.webContents.openDevTools();
+}
+
+ipcMain.on('consolidate-units', (event, arg) => {
+    consolidateWindow.close();
+    contents.send('start-waiting');
+    sendRequest(arg,
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Consolidating...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    loadSegments();
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'saveFile'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error saving file');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+function getProcessingProgress() {
+    sendRequest({ command: 'processingProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(data: string) {
+            console.log(data);
+        }
+    );
 }
 
 function checkUpdates(): void {
     // TODO
 }
 
-function sendFeedback(): void {
-    // TODO
-}
-
-ipcMain.on('send-feedback', () => {
-    sendFeedback();
-});
-
 function showReleaseHistory(): void {
-    let command: string = 'open';
-    if (process.platform === 'win32') {
-        command = 'start';
-    }
-    if (process.platform === 'linux') {
-        command = 'xdg-open';
-    }
-    spawn(command, ['https://www.maxprograms.com/products/tmxlog.html'], { detached: true });
+    shell.openExternal('https://www.maxprograms.com/products/tmxlog.html');
 }
 
 ipcMain.on('show-message', (event, arg) => {
