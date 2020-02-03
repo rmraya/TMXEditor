@@ -38,7 +38,7 @@ public interface TMXServiceInterface {
 
 	JSONObject getProcessingProgress();
 
-	String[] getCount();
+	JSONObject getCount();
 
 	JSONObject closeFile();
 
@@ -62,19 +62,19 @@ public interface TMXServiceInterface {
 
 	String[] removeUntranslated(Language lang);
 
-	String[] addLanguage(Language lang);
+	JSONObject addLanguage(Language lang);
 
-	String[] removeLanguage(Language lang);
+	JSONObject removeLanguage(Language lang);
 
-	String[] removeAlltags();
+	JSONObject removeAlltags();
 
-	String[] changeLanguage(Language oldLanguage, Language language);
+	JSONObject changeLanguage(Language oldLanguage, Language language);
 
-	String[] createFile(Language srcLang, Language tgtLang);
+	JSONObject createFile(Language srcLang, Language tgtLang);
 
-	String[] removeDuplicates();
+	JSONObject removeDuplicates();
 
-	String[] removeSpaces();
+	JSONObject removeSpaces();
 
 	JSONObject consolidateUnits(Language lang);
 
@@ -98,11 +98,11 @@ public interface TMXServiceInterface {
 
 	String[] setNotes(String id, String lang, List<String> notes);
 
-	String[] cleanCharacters(String file);
+	JSONObject cleanCharacters(String file);
 
 	String[] cleaningProgress();
 
-	String[] setSrcLanguage(Language lang);
+	JSONObject setSrcLanguage(Language lang);
 
 	Result<Language> getSrcLanguage();
 
@@ -112,9 +112,9 @@ public interface TMXServiceInterface {
 
 	String[] getTuvData(String id, String lang);
 
-	String[] validateFile(String file);
+	JSONObject validateFile(String file);
 
-	String[] validatingProgress();
+	JSONObject validatingProgress();
 
 	Result<String> getCharsets();
 

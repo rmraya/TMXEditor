@@ -259,7 +259,7 @@ public class TMXService implements TMXServiceInterface {
 
 	@Override
 	public JSONObject getProcessingProgress() {
-		JSONObject result  = new JSONObject();
+		JSONObject result = new JSONObject();
 		if (store != null) {
 			if (processing) {
 				result.put("status", Result.PROCESSING);
@@ -279,11 +279,16 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getCount() {
+	public JSONObject getCount() {
+		JSONObject result = new JSONObject();
 		if (store != null) {
-			return new String[] { Result.SUCCESS, "" + store.getCount() };
+			result.put("count", store.getCount());
+			result.put("status", Result.SUCCESS);
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", "Null store");
 		}
-		return new String[] { Result.ERROR };
+		return result;
 	}
 
 	@Override
@@ -300,18 +305,18 @@ public class TMXService implements TMXServiceInterface {
 					}
 				}.start();
 				JSONObject result = new JSONObject();
-				result.put("status",Result.SUCCESS);
+				result.put("status", Result.SUCCESS);
 				return result;
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				JSONObject result = new JSONObject();
-				result.put("status",Result.ERROR);
+				result.put("status", Result.ERROR);
 				result.put("reason", e.getMessage());
 				return result;
 			}
 		}
 		JSONObject result = new JSONObject();
-		result.put("status",Result.ERROR);
+		result.put("status", Result.ERROR);
 		result.put("reason", "Null Store");
 		return result;
 	}
@@ -463,12 +468,12 @@ public class TMXService implements TMXServiceInterface {
 				}
 
 				TuProperties tp = new TuProperties(atts, props, notes);
-				return new String[] {Result.SUCCESS, tp.toJSON().toString()};
-			} 
-			return new String[] {Result.ERROR, "Null element"};
+				return new String[] { Result.SUCCESS, tp.toJSON().toString() };
+			}
+			return new String[] { Result.ERROR, "Null element" };
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] {Result.ERROR, e.getMessage()};
+			return new String[] { Result.ERROR, e.getMessage() };
 		}
 	}
 
@@ -560,29 +565,36 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] addLanguage(Language lang) {
+	public JSONObject addLanguage(Language lang) {
+		JSONObject result = new JSONObject();
 		try {
 			store.addLanguage(lang);
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] removeLanguage(Language lang) {
+	public JSONObject removeLanguage(Language lang) {
+		JSONObject result = new JSONObject();
 		try {
 			store.removeLanguage(lang);
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] removeAlltags() {
+	public JSONObject removeAlltags() {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -598,16 +610,19 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] changeLanguage(Language oldLanguage, Language newLanguage) {
+	public JSONObject changeLanguage(Language oldLanguage, Language newLanguage) {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -623,16 +638,18 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] createFile(Language srcLang, Language tgtLang) {
+	public JSONObject createFile(Language srcLang, Language tgtLang) {
+		JSONObject result = new JSONObject();
 		try {
 			Document doc = new Document(null, "tmx", null, null);
 			Element tmx = doc.getRootElement();
@@ -673,15 +690,19 @@ public class TMXService implements TMXServiceInterface {
 				XMLOutputter outputter = new XMLOutputter();
 				outputter.output(doc, out);
 			}
-			return new String[] { Result.SUCCESS, tempFile.getAbsolutePath() };
+			result.put("status", Result.SUCCESS);
+			result.put("path", tempFile.getAbsolutePath());
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Result.ERROR, ex.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] removeDuplicates() {
+	public JSONObject removeDuplicates() {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -697,16 +718,18 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] removeSpaces() {
+	public JSONObject removeSpaces() {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -722,12 +745,13 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put("status", Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -985,7 +1009,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] cleanCharacters(String file) {
+	public JSONObject cleanCharacters(String file) {
+		JSONObject result = new JSONObject();
 		cleaning = true;
 		cleaningError = "";
 		new Thread() {
@@ -1000,7 +1025,8 @@ public class TMXService implements TMXServiceInterface {
 				cleaning = false;
 			}
 		}.start();
-		return new String[] { Result.SUCCESS };
+		result.put("status", Result.SUCCESS);
+		return result;
 	}
 
 	@Override
@@ -1015,11 +1041,18 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] setSrcLanguage(Language lang) {
-		Element header = store.getHeader();
-		header.setAttribute("srclang", lang.getCode());
-		store.storeHeader(header);
-		return new String[] { Result.SUCCESS };
+	public JSONObject setSrcLanguage(Language lang) {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			Element header = store.getHeader();
+			header.setAttribute("srclang", lang.getCode());
+			store.storeHeader(header);
+			result.put("status", Result.SUCCESS);
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", "Null store");
+		}
+		return result;
 	}
 
 	@Override
@@ -1093,7 +1126,7 @@ public class TMXService implements TMXServiceInterface {
 
 	@Override
 	public String[] getTuvData(String id, String lang) {
-		
+
 		try {
 			Element tuv = store.getTuv(id, lang);
 			if (tuv != null) {
@@ -1104,7 +1137,7 @@ public class TMXService implements TMXServiceInterface {
 					Attribute a = at.next();
 					atts.add(new String[] { a.getName(), a.getValue() });
 				}
-				
+
 				List<String[]> props = new ArrayList<>();
 				List<Element> pList = tuv.getChildren("prop");
 				Iterator<Element> pt = pList.iterator();
@@ -1112,7 +1145,7 @@ public class TMXService implements TMXServiceInterface {
 					Element prop = pt.next();
 					props.add(new String[] { prop.getAttributeValue("type"), prop.getText() });
 				}
-				
+
 				List<String> notes = new ArrayList<>();
 				List<Element> nList = tuv.getChildren("note");
 				Iterator<Element> nt = nList.iterator();
@@ -1120,17 +1153,18 @@ public class TMXService implements TMXServiceInterface {
 					notes.add(nt.next().getText());
 				}
 				TuProperties tp = new TuProperties(atts, props, notes);
-				return new String[]{Result.SUCCESS, tp.toJSON().toString()};
+				return new String[] { Result.SUCCESS, tp.toJSON().toString() };
 			}
-			return new String[]{Result.ERROR, "null tuv"};
+			return new String[] { Result.ERROR, "null tuv" };
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[]{Result.ERROR, e.getMessage()};
+			return new String[] { Result.ERROR, e.getMessage() };
 		}
 	}
 
 	@Override
-	public String[] validateFile(String file) {
+	public JSONObject validateFile(String file) {
+		JSONObject result = new JSONObject();
 		validating = true;
 		validatingError = "";
 		new Thread() {
@@ -1139,7 +1173,6 @@ public class TMXService implements TMXServiceInterface {
 				try {
 					TMXValidator validator = new TMXValidator();
 					validator.validate(new File(file));
-					TMXCleaner.clean(file);
 				} catch (IOException | SAXException | ParserConfigurationException e) {
 					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 					validatingError = e.getMessage();
@@ -1147,18 +1180,22 @@ public class TMXService implements TMXServiceInterface {
 				validating = false;
 			}
 		}.start();
-		return new String[] { Result.SUCCESS };
+		result.put("status", Result.SUCCESS);
+		return result;
 	}
 
 	@Override
-	public String[] validatingProgress() {
+	public JSONObject validatingProgress() {
+		JSONObject result = new JSONObject();
 		if (validating) {
-			return new String[] { Result.SUCCESS, "Validating..." };
+			result.put("status", Result.SUCCESS);
+		} else if (validatingError.isEmpty()) {
+			result.put("status", Result.COMPLETED);
+		} else {
+			result.put("status", Result.ERROR);
+			result.put("reason", validatingError);
 		}
-		if (validatingError.isEmpty()) {
-			return new String[] { Result.COMPLETED };
-		}
-		return new String[] { Result.ERROR, validatingError };
+		return result;
 	}
 
 	@Override

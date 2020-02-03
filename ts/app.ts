@@ -328,7 +328,6 @@ function sendRequest(json: any, success: any, error: any) {
 }
 
 function stopServer() {
-
     if (!stopping) {
         stopping = true;
         if (!saved) {
@@ -541,7 +540,7 @@ function closeFile() {
             saveFile();
         }
     }
-    contents.send('set-status', 'Closing file');
+    contents.send('set-status', 'Closing file...');
     contents.send('start-waiting');
     sendRequest({ command: 'closeFile' },
         function success(json: any) {
@@ -981,6 +980,7 @@ ipcMain.on('consolidate-units', (event, arg) => {
                     contents.send('set-status', '');
                     clearInterval(intervalObject);
                     loadSegments();
+                    getCount();
                     return;
                 } else if (currentStatus.status === PROCESSING) {
                     // it's OK, keep waiting
@@ -1016,6 +1016,17 @@ function getProcessingProgress() {
         },
         function error(data: string) {
             console.log(data);
+        }
+    );
+}
+
+function getCount() {
+    sendRequest({ command: 'getCount' },
+        function success(data: any) {
+            contents.send('status-changed', data);
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
 }

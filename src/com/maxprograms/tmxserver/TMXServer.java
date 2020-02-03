@@ -146,7 +146,9 @@ public class TMXServer implements HttpHandler {
 				response = consolidateUnits(json.getString("srcLang"));
 			} else if ("processingProgress".equals(command)) {
 				response = getProcessingProgress();
-			} else {
+			} else if ("getCount".equals(command)) {
+				response = getCount();
+			}else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
 				obj.put("reason", "Unknown command");
@@ -169,6 +171,9 @@ public class TMXServer implements HttpHandler {
 				}
 			}
 			if ("stop".equals(command)) {
+				if (debug) {
+					logger.log(Level.INFO, "Stopping server");
+				}
 				System.exit(0);
 			}
 		} catch (IOException e) {
@@ -178,6 +183,10 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String getCount() {
+		return service.getCount().toString();
 	}
 
 	private String getProcessingProgress() {
