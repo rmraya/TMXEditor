@@ -19,7 +19,7 @@ SOFTWARE.
 
 import { Buffer } from "buffer";
 import { execFileSync, spawn } from "child_process";
-import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents, nativeTheme } from "electron";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
 import { ClientRequest, request } from "http";
 
@@ -50,7 +50,6 @@ const COMPLETED: string = 'Completed';
 const ERROR: string = 'Error';
 const SAVING: string = 'Saving';
 const PROCESSING: string = 'Processing';
-const VALIDATING: string = 'Validating';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -106,6 +105,8 @@ app.on('ready', function () {
     });
     mainWindow.show();
     // contents.openDevTools();
+    console.log('darK: ' + nativeTheme.shouldUseDarkColors);
+
 });
 
 app.on('quit', function () {
@@ -900,7 +901,7 @@ function showFilters() {
     filtersWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,
-        height: 280,
+        height: 300,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -997,7 +998,7 @@ function removeUntranslated(): void {
     removeUntranslatedWindow = new BrowserWindow({
         parent: mainWindow,
         width: 480,
-        height: 110,
+        height: 120,
         useContentSize: true,
         minimizable: false,
         maximizable: false,

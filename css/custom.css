@@ -1,14 +1,6 @@
-:root {
-	--darker-background: #002050;
-	--dark-background: #124078;
-	--dark-color: #fefefe;
-	--light-background: #3c65a4;
-	--lighter-background: #7da3c6;
-	--soft-background: #c5d1dd;
-}
-
 body {
-	background: white;
+	background: var(--normal-background);
+	color: var(--normal-color)
 }
 
 .dark_background {
@@ -40,13 +32,13 @@ body {
 
 header {
 	background: var(--dark-color);
-	color: var(--darker-background);
+	color: var(--dark-color);
 	border-bottom: solid 2px var(--darker-background);
 }
 
 footer {
 	background: var(--soft-background);
-	color: var(--darker-background);
+	color: var(--normal-color);
 	border-top: 2px solid var(--darker-background);
 }
 
@@ -98,13 +90,19 @@ table th {
 	font-weight: lighter;
 }
 
+tr:nth-child(odd) {
+	background-color: var(--odd-row-background) !important;
+}
+
 tr:nth-child(even) {
-	background-color: #f2f2f2;
+	background-color: var(--even-row-background) !important;
 }
 
 textarea {
 	padding: 0px;
 	font-size: medium;
+	background-color: var(--normal-background);
+	color: var(--normal-color);
 }
 
 .fixed {
@@ -130,15 +128,18 @@ input[type=text] {
 	border-left: none;
 	border-right: none;
 	border-bottom: 1px solid var(--dark-background);
+	background-color: var(--normal-background);
+	color: var(--normal-color);
 }
 
 input[type=text]:focus {
 	border: none;
-
 }
 
 input[type=password] {
 	font-size: 0.8em;
+	background-color: var(--normal-background);
+	color: var(--normal-color);
 }
 
 input[type=number] {
@@ -147,6 +148,8 @@ input[type=number] {
 	height: 18px;
 	margin: 0px;
 	padding: 0px;
+	background-color: var(--normal-background);
+	color: var(--normal-color);
 }
 
 input[type=checkbox] {
@@ -179,7 +182,7 @@ input[type=checkbox]:checked:after {
 }
 
 button {
-	color: white;
+	color: var(--dark-color);
 	background: var(--dark-background);
 	border: 1px solid var(--dark-background);
 	border-radius: 2px;
@@ -209,12 +212,15 @@ select {
 	font-size: 1em;
 	height: 1.6em;
 	border-radius: 0px;
-	background: white ! important;
+	background-color: var(--normal-background) !important;
+	color: var(--normal-color);
+
 }
 
 option {
 	font-size: 1em;
-	background: white ! important;
+	background-color: var(--normal-background) !important;
+	color: var(--normal-color);
 }
 
 label {
@@ -257,8 +263,8 @@ label {
 .toolbar {
 	display: flex;
 	flex-direction: row;
-	background: #94aebb;
-	color: white;
+	background: var(--light-background);
+	color: var(--dark-color);
 	padding: 0px;
 	padding-left: 5px;
 	padding-right: 5px;
@@ -293,7 +299,7 @@ button.toolbar:hover {
 /* Style the buttons that are used to open the tab content */
 .column button {
 	background: inherit;
-	color: white;
+	color: var(--normal-color);
 	outline: none;
 	border: none;
 	padding: 5px;
@@ -389,4 +395,8 @@ button.toolbar:hover {
 
 .tooltip:hover .tooltiptext {
 	visibility: visible;
+}
+
+.highlight {
+	color: var(--highlight-color);
 }

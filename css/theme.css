@@ -1,0 +1,13 @@
+:root {
+	--darker-background: #002050;
+	--dark-background: #124078;
+	--dark-color: #fefefe;
+	--light-background: #3c65a4;
+	--lighter-background: #7da3c6;
+	--soft-background: #c5d1dd;
+	--normal-background: #fefefe;
+	--normal-color: #111111;
+	--even-row-background: #efefef;
+    --odd-row-background: #fefefe;
+    --highlight-color: #f07b1b;
+}
