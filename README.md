@@ -26,9 +26,9 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 ## Requirements
 
 - JDK 11 or newer is required for compiling and building. Get it from [AdoptOpenJDK](https://adoptopenjdk.net/).
-- Apache Ant 1.10.7 or newer. Get it from https://ant.apache.org/ 
-- Node.js 12.14.0 LTS or newer. Get it from https://nodejs.org/
-- TypeScript 3.7.5 or newer. Get it from https://www.typescriptlang.org/
+- Apache Ant 1.10.7 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
+- Node.js 12.14.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- TypeScript 3.7.5 or newer. Get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 
@@ -39,7 +39,7 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 - Run `npm start` to launch TMXEditor
 
 ``` bash
-  git clone https://github.com/rmraya/XLIFFManager.git
+  git clone https://github.com/rmraya/TMXEditor.git
   cd TMXEditor
   ant
   npm install
