@@ -148,7 +148,13 @@ public class TMXServer implements HttpHandler {
 				response = getProcessingProgress();
 			} else if ("getCount".equals(command)) {
 				response = getCount();
-			}else {
+			} else if ("validateFile".equals(command)) {
+				response = validateFile(json.getString("file"));
+			} else if ("validatingProgress".equals(command)) {
+				response = getValidatingProgress();
+			} else if ("removeUntranslated".equals(command)) {
+				response = removeUntranslated(json.getString("srcLang"));
+			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
 				obj.put("reason", "Unknown command");
@@ -183,6 +189,26 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String removeUntranslated(String srcLang) {
+		try {
+			Language lang = service.getLanguage(srcLang);
+			return service.removeUntranslated(lang).toString();
+		} catch (IOException e) {
+			JSONObject result = new JSONObject();
+			result.put("status", Constants.ERROR);
+			result.put("reason", e.getMessage());
+			return result.toString();
+		}
+	}
+
+	private String validateFile(String file) {
+		return service.validateFile(file).toString();
+	}
+
+	private String getValidatingProgress() {
+		return service.validatingProgress().toString();
 	}
 
 	private String getCount() {

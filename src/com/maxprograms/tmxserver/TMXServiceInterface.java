@@ -52,15 +52,15 @@ public interface TMXServiceInterface {
 
 	String[] getTuData(String id);
 
-	String[] delete(List<TUnit> selected);
+	JSONObject delete(List<TUnit> selected);
 
-	String[] replaceText(String search, String replace, Language language, boolean regExp);
+	JSONObject replaceText(String search, String replace, Language language, boolean regExp);
 
 	String[] insertUnit();
 
 	Result<Language> getAllLanguages();
 
-	String[] removeUntranslated(Language lang);
+	JSONObject removeUntranslated(Language lang);
 
 	JSONObject addLanguage(Language lang);
 
@@ -86,13 +86,13 @@ public interface TMXServiceInterface {
 
 	String[] checkFiles();
 
-	String[] splitFile(String file, int parts);
+	JSONObject splitFile(String file, int parts);
 
-	String[] getSplitProgress();
+	JSONObject getSplitProgress();
 
-	String[] mergeFiles(String merged, List<String> files);
+	JSONObject mergeFiles(String merged, List<String> files);
 
-	String[] getMergeProgress();
+	JSONObject getMergeProgress();
 
 	String[] setProperties(String id, String lang, List<String[]> dataList);
 
@@ -100,7 +100,7 @@ public interface TMXServiceInterface {
 
 	JSONObject cleanCharacters(String file);
 
-	String[] cleaningProgress();
+	JSONObject cleaningProgress();
 
 	JSONObject setSrcLanguage(Language lang);
 

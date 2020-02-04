@@ -79,6 +79,9 @@ public class TMXService implements TMXServiceInterface {
 	protected static final Logger LOGGER = Logger.getLogger(TMXService.class.getName());
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
+	private static final String REASON = "reason";
+	private static final String STATUS = "status";
+
 	protected StoreInterface store;
 	protected File currentFile;
 	private RegistryParser registry;
@@ -183,14 +186,14 @@ public class TMXService implements TMXServiceInterface {
 			};
 			thread.start();
 			JSONObject result = new JSONObject();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 			return result;
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 			parsing = false;
 			JSONObject result = new JSONObject();
-			result.put("status", Result.ERROR);
-			result.put("reason", ex.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, ex.getMessage());
 			return result;
 		}
 	}
@@ -262,18 +265,19 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			if (processing) {
-				result.put("status", Result.PROCESSING);
+				result.put(STATUS, Result.PROCESSING);
 			} else {
-				result.put("status", Result.COMPLETED);
+				if (processingError.isEmpty()) {
+					result.put(STATUS, Result.COMPLETED);
+				} else {
+					result.put(STATUS, Result.ERROR);
+					result.put(REASON, processingError);
+				}
 			}
 			result.put("count", store.getProcessed());
-			if (!processingError.isEmpty()) {
-				result.put("status", Result.ERROR);
-				result.put("reason", processingError);
-			}
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", "Null store");
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "Null store");
 		}
 		return result;
 	}
@@ -283,10 +287,10 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			result.put("count", store.getCount());
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", "Null store");
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "Null store");
 		}
 		return result;
 	}
@@ -305,19 +309,19 @@ public class TMXService implements TMXServiceInterface {
 					}
 				}.start();
 				JSONObject result = new JSONObject();
-				result.put("status", Result.SUCCESS);
+				result.put(STATUS, Result.SUCCESS);
 				return result;
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				JSONObject result = new JSONObject();
-				result.put("status", Result.ERROR);
-				result.put("reason", e.getMessage());
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, e.getMessage());
 				return result;
 			}
 		}
 		JSONObject result = new JSONObject();
-		result.put("status", Result.ERROR);
-		result.put("reason", "Null Store");
+		result.put(STATUS, Result.ERROR);
+		result.put(REASON, "Null Store");
 		return result;
 	}
 
@@ -346,14 +350,14 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		try {
 			String updated = store.saveData(id, lang, value);
-			result.put("status", Constants.SUCCESS);
+			result.put(STATUS, Constants.SUCCESS);
 			result.put("data", updated);
 			result.put("id", id);
 			result.put("lang", lang);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Constants.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Constants.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -380,13 +384,13 @@ public class TMXService implements TMXServiceInterface {
 				}
 			}.start();
 			JSONObject result = new JSONObject();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 			return result;
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 			JSONObject result = new JSONObject();
-			result.put("status", Result.ERROR);
-			result.put("reason", ex.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, ex.getMessage());
 			return result;
 		}
 	}
@@ -478,18 +482,22 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] delete(List<TUnit> selected) {
+	public JSONObject delete(List<TUnit> selected) {
+		JSONObject result = new JSONObject();
 		try {
 			store.delete(selected);
-			return new String[] { Result.SUCCESS };
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Result.ERROR, ex.getMessage() };
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] replaceText(String search, String replace, Language language, boolean regExp) {
+	public JSONObject replaceText(String search, String replace, Language language, boolean regExp) {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -505,12 +513,14 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception ex) {
 			processing = false;
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Result.ERROR, ex.getMessage() };
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -540,7 +550,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] removeUntranslated(Language lang) {
+	public JSONObject removeUntranslated(Language lang) {
+		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
@@ -556,12 +567,14 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			return new String[] { Result.SUCCESS };
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -569,11 +582,11 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		try {
 			store.addLanguage(lang);
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -583,11 +596,11 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		try {
 			store.removeLanguage(lang);
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -610,12 +623,12 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -638,11 +651,11 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -690,12 +703,12 @@ public class TMXService implements TMXServiceInterface {
 				XMLOutputter outputter = new XMLOutputter();
 				outputter.output(doc, out);
 			}
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 			result.put("path", tempFile.getAbsolutePath());
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			result.put("status", Result.ERROR);
-			result.put("reason", ex.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, ex.getMessage());
 		}
 		return result;
 	}
@@ -718,11 +731,11 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -745,11 +758,11 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -772,12 +785,12 @@ public class TMXService implements TMXServiceInterface {
 					processing = false;
 				}
 			}.start();
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, e.getMessage());
 		}
 		return result;
 	}
@@ -802,18 +815,18 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			if (parsing) {
-				result.put("status", Result.LOADING);
+				result.put(STATUS, Result.LOADING);
 			} else {
-				result.put("status", Result.COMPLETED);
+				result.put(STATUS, Result.COMPLETED);
 			}
 			result.put("count", store.getCount());
 			if (!parsingError.isEmpty()) {
-				result.put("status", Result.ERROR);
-				result.put("reason", parsingError);
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, parsingError);
 			}
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", "Null store");
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "Null store");
 		}
 		return result;
 	}
@@ -823,18 +836,18 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			if (saving) {
-				result.put("status", Result.SAVING);
+				result.put(STATUS, Result.SAVING);
 			} else {
-				result.put("status", Result.COMPLETED);
+				result.put(STATUS, Result.COMPLETED);
 			}
 			result.put("count", store.getSaved());
 			if (!savingError.isEmpty()) {
-				result.put("status", Result.ERROR);
-				result.put("reason", savingError);
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, savingError);
 			}
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", "Null store");
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "Null store");
 		}
 		return result;
 	}
@@ -863,10 +876,13 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] splitFile(String file, int parts) {
+	public JSONObject splitFile(String file, int parts) {
+		JSONObject result = new JSONObject();
 		File f = new File(file);
 		if (!f.exists()) {
-			return new String[] { Result.ERROR, "File does not exist" };
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "File does not exist");
+			return result;
 		}
 		splitting = true;
 		splitError = "";
@@ -900,25 +916,36 @@ public class TMXService implements TMXServiceInterface {
 				splitting = false;
 			}
 		}.start();
-		return new String[] { Result.SUCCESS };
+		result.put(STATUS, Result.SUCCESS);
+		return result;
 	}
 
 	@Override
-	public String[] getSplitProgress() {
-		if (splitting && countStore != null) {
-			return new String[] { Result.SUCCESS, countStore.getCount() + " units counted" };
+	public JSONObject getSplitProgress() {
+		JSONObject result = new JSONObject();
+		if (splitting) {
+			if (countStore != null) {
+				result.put(STATUS, Result.SUCCESS);
+				result.put("count", countStore.getCount() + " units counted");
+			}
+			if (splitStore != null) {
+				result.put(STATUS, Result.SUCCESS);
+				result.put("count", splitStore.getCount() + " units written");
+			}
+		} else {
+			if (splitError.isEmpty()) {
+				result.put(STATUS, Result.COMPLETED);
+			} else {
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, splitError);
+			}
 		}
-		if (splitting && splitStore != null) {
-			return new String[] { Result.SUCCESS, splitStore.getCount() + " units written" };
-		}
-		if (splitError.isEmpty()) {
-			return new String[] { Result.COMPLETED };
-		}
-		return new String[] { Result.ERROR, splitError };
+		return result;
 	}
 
 	@Override
-	public String[] mergeFiles(String merged, List<String> files) {
+	public JSONObject mergeFiles(String merged, List<String> files) {
+		JSONObject result = new JSONObject();
 		merging = true;
 		mergeError = "";
 		new Thread() {
@@ -964,18 +991,25 @@ public class TMXService implements TMXServiceInterface {
 				merging = false;
 			}
 		}.start();
-		return new String[] { Result.SUCCESS };
+		result.put(REASON, Result.SUCCESS);
+		return result;
 	}
 
 	@Override
-	public String[] getMergeProgress() {
-		if (merging && mergeStore != null) {
-			return new String[] { Result.SUCCESS, mergeStore.getCount() + " units merged" };
+	public JSONObject getMergeProgress() {
+		JSONObject result = new JSONObject();
+		if (merging) {
+			result.put(STATUS, Result.SUCCESS);
+			result.put("count", mergeStore != null ? mergeStore.getCount() + " units merged" : "");
+		} else {
+			if (mergeError.isEmpty()) {
+				result.put(STATUS, Result.COMPLETED );
+			} else {
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, mergeError);
+			}
 		}
-		if (mergeError.isEmpty()) {
-			return new String[] { Result.COMPLETED };
-		}
-		return new String[] { Result.ERROR, mergeError };
+		return result;
 	}
 
 	@Override
@@ -1025,19 +1059,24 @@ public class TMXService implements TMXServiceInterface {
 				cleaning = false;
 			}
 		}.start();
-		result.put("status", Result.SUCCESS);
+		result.put(STATUS, Result.SUCCESS);
 		return result;
 	}
 
 	@Override
-	public String[] cleaningProgress() {
+	public JSONObject cleaningProgress() {
+		JSONObject result = new JSONObject();
 		if (cleaning) {
-			return new String[] { Result.SUCCESS, "Cleaning..." };
+			result.put(STATUS, Result.SUCCESS);
+		} else {
+			if (cleaningError.isEmpty()) {
+				result.put(STATUS, Result.COMPLETED);
+			} else {
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, cleaningError);
+			}
 		}
-		if (cleaningError.isEmpty()) {
-			return new String[] { Result.COMPLETED };
-		}
-		return new String[] { Result.ERROR, cleaningError };
+		return result;
 	}
 
 	@Override
@@ -1047,10 +1086,10 @@ public class TMXService implements TMXServiceInterface {
 			Element header = store.getHeader();
 			header.setAttribute("srclang", lang.getCode());
 			store.storeHeader(header);
-			result.put("status", Result.SUCCESS);
+			result.put(STATUS, Result.SUCCESS);
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", "Null store");
+			result.put(STATUS, Result.ERROR);
+			result.put(REASON, "Null store");
 		}
 		return result;
 	}
@@ -1180,7 +1219,7 @@ public class TMXService implements TMXServiceInterface {
 				validating = false;
 			}
 		}.start();
-		result.put("status", Result.SUCCESS);
+		result.put(STATUS, Result.SUCCESS);
 		return result;
 	}
 
@@ -1188,12 +1227,14 @@ public class TMXService implements TMXServiceInterface {
 	public JSONObject validatingProgress() {
 		JSONObject result = new JSONObject();
 		if (validating) {
-			result.put("status", Result.SUCCESS);
-		} else if (validatingError.isEmpty()) {
-			result.put("status", Result.COMPLETED);
+			result.put(STATUS, Result.SUCCESS);
 		} else {
-			result.put("status", Result.ERROR);
-			result.put("reason", validatingError);
+			if (validatingError.isEmpty()) {
+				result.put(STATUS, Result.COMPLETED);
+			} else {
+				result.put(STATUS, Result.ERROR);
+				result.put(REASON, validatingError);
+			}
 		}
 		return result;
 	}

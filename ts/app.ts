@@ -26,6 +26,7 @@ import { ClientRequest, request } from "http";
 var mainWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
+var removeUntranslatedWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -49,6 +50,7 @@ const COMPLETED: string = 'Completed';
 const ERROR: string = 'Error';
 const SAVING: string = 'Saving';
 const PROCESSING: string = 'Processing';
+const VALIDATING: string = 'Validating';
 
 if (!app.requestSingleInstanceLock()) {
     app.quit();
@@ -483,7 +485,7 @@ function openFileDialog() {
 
 function openFile(file: string) {
     contents.send('start-waiting');
-    contents.send('set-status', 'Opening file');
+    contents.send('set-status', 'Opening file...');
     sendRequest({ command: 'openFile', file: file },
         function success(data: any) {
             currentStatus = data;
@@ -549,7 +551,7 @@ function closeFile() {
                 contents.send('file-closed');
                 contents.send('set-status', '');
                 currentFile = '';
-                mainWindow.setTitle('TMXEditor'); // TODO
+                mainWindow.setTitle('TMXEditor');
             } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
@@ -562,7 +564,7 @@ function closeFile() {
 }
 
 function getFileLanguages() {
-    contents.send('set-status', 'Getting languages');
+    contents.send('set-status', 'Getting languages...');
     sendRequest({ command: 'getLanguages' },
         function success(json: any) {
             if (json.status === SUCCESS) {
@@ -776,7 +778,64 @@ ipcMain.on('show-file-info', () => {
 });
 
 function validateFile(): void {
-    // TODO
+    dialog.showOpenDialog({
+        title: 'Validate TMX File',
+        properties: ['openFile'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] }
+        ]
+    }).then(function (value) {
+        if (!value.canceled) {
+            sendRequest({ command: 'validateFile', file: value.filePaths[0] },
+                function success(data: any) {
+                    currentStatus = data;
+                    contents.send('start-waiting');
+                    contents.send('set-status', 'Validating...');
+                    var intervalObject = setInterval(function () {
+                        if (currentStatus.status === COMPLETED) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showMessageBox(mainWindow, { type: 'info', message: 'File is valid' });
+                            return;
+                        } else if (currentStatus.status === ERROR) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', currentStatus.reason);
+                            return;
+                        } else if (currentStatus.status === SUCCESS) {
+                            // keep waiting
+                        } else {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', 'Unknown error validating file');
+                            return;
+                        }
+                        getValidatingProgress();
+                    }, 500);
+                },
+                function error(reason: string) {
+                    dialog.showMessageBox({ type: 'error', message: reason });
+                }
+            );
+        }
+    })["catch"](function (error) {
+        dialog.showErrorBox('Error', error);
+        console.log(error);
+    });
+}
+
+function getValidatingProgress() {
+    sendRequest({ command: 'validatingProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 function cleanCharacters(): void {
@@ -931,8 +990,70 @@ function removeDuplicates(): void {
 }
 
 function removeUntranslated(): void {
-    // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    removeUntranslatedWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 480,
+        height: 110,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    removeUntranslatedWindow.setMenu(null);
+    removeUntranslatedWindow.loadURL('file://' + app.getAppPath() + '/html/removeUntranslated.html');
+    removeUntranslatedWindow.show();
 }
+
+ipcMain.on('remove-untranslated', (event, arg) => {
+    removeUntranslatedWindow.close();
+    contents.send('start-waiting');
+    sendRequest(arg,
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Removing units...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    loadSegments();
+                    getCount();
+                    saved = false;
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'saveFile'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error removing untranslated units');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function removeSpaces(): void {
     // TODO
@@ -996,7 +1117,7 @@ ipcMain.on('consolidate-units', (event, arg) => {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
                     clearInterval(intervalObject);
-                    dialog.showErrorBox('Error', 'Unknown error saving file');
+                    dialog.showErrorBox('Error', 'Unknown error consolidating units');
                     return;
                 }
                 getProcessingProgress();
