@@ -147,7 +147,13 @@ ipcRenderer.on('end-waiting', () => {
 });
 
 ipcRenderer.on('set-status', (event, arg) => {
-    document.getElementById('status').innerHTML = arg;
+    var status: HTMLDivElement = document.getElementById('status') as HTMLDivElement;
+    status.innerHTML = arg;
+    if (arg.length > 0) {
+        status.style.display = 'block';
+    } else {
+        status.style.display = 'none';
+    }
 });
 
 ipcRenderer.on('status-changed', (event, arg) => {

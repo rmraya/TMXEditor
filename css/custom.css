@@ -38,8 +38,19 @@ header {
 
 footer {
 	background: var(--soft-background);
-	color: var(--normal-color);
+	color: var(--dark-color);
 	border-top: 2px solid var(--darker-background);
+}
+
+.status {
+	position: absolute; 
+	top: 200px;
+	left: calc(40% - 100px); 
+	width: 200px; 
+	margin: auto; 
+	background-color: var(--dark-background);
+	color: var(--normal-color);
+	padding: 20px; border:1px solid var(--normal-color);
 }
 
 table {
@@ -80,6 +91,7 @@ td.fixed {
 	text-align: center;
 	vertical-align: middle;
 	background: var(--lighter-background);
+	color: var(--normal-color);
 	cursor: default !important;
 }
 
@@ -191,7 +203,7 @@ button {
 	margin: 3px;
 	padding-left: 4px;
 	padding-right: 4px;
-	box-shadow: 2px 2px 3px #aaaaaa;
+	box-shadow: 2px 2px 1px 2px var(--shadow-color);
 	white-space: nowrap;
 }
 
@@ -214,7 +226,6 @@ select {
 	border-radius: 0px;
 	background-color: var(--normal-background) !important;
 	color: var(--normal-color);
-
 }
 
 option {

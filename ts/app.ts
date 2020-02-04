@@ -900,6 +900,7 @@ function showFilters() {
     }
     filtersWindow = new BrowserWindow({
         parent: mainWindow,
+        modal: true,
         width: 500,
         height: 300,
         useContentSize: true,
@@ -997,6 +998,7 @@ function removeUntranslated(): void {
     }
     removeUntranslatedWindow = new BrowserWindow({
         parent: mainWindow,
+        modal: true,
         width: 480,
         height: 120,
         useContentSize: true,
@@ -1071,6 +1073,7 @@ function consolidateUnits(): void {
     }
     consolidateWindow = new BrowserWindow({
         parent: mainWindow,
+        modal: true,
         width: 480,
         height: 110,
         useContentSize: true,
