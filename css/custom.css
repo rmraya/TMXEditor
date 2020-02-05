@@ -49,8 +49,8 @@ footer {
 	width: 200px; 
 	margin: auto; 
 	background-color: var(--dark-background);
-	color: var(--normal-color);
-	padding: 20px; border:1px solid var(--normal-color);
+	color: var(--dark-color);
+	padding: 20px; border:1px solid var(--dark-color);
 }
 
 table {
