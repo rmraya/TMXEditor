@@ -68,8 +68,7 @@ a img {
 }
 
 a:hover {
-	color: var(--dark-background);
-	background: var(--lighter-background);
+	background: #cccccc;
 }
 
 thead {
