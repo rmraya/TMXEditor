@@ -63,8 +63,8 @@ a {
 }
 
 a img {
-	padding-right: 8px;
-	padding-left: 8px;
+	padding-right: 4px;
+	padding-left: 4px;
 }
 
 a:hover {
@@ -119,6 +119,11 @@ textarea {
 .fixed {
 	width: 1px;
 	text-align: center;
+}
+
+.highlighted {
+	color: var(--highlight-color);
+	background: var(--soft-background);
 }
 
 .right {

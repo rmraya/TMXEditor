@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
 
 public class TmxUtils {
 
-	public static final String STYLE = "style='background:#dedede;color:red;'";
+	public static final String STYLE = "class='highlighted'";
 
 	private static int maxTag;
 	private static int tag;
