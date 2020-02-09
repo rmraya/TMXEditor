@@ -156,6 +156,8 @@ public class TMXServer implements HttpHandler {
 				response = removeUntranslated(json.getString("srcLang"));
 			} else if ("replaceText".equals(command)) {
 				response = replaceText(json);
+			} else if ("removeSpaces".equals(command)) {
+				response = removeSpaces();
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
@@ -191,6 +193,10 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String removeSpaces() {
+		return service.removeSpaces().toString();
 	}
 
 	private String replaceText(JSONObject json) {
