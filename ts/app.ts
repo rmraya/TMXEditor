@@ -766,6 +766,11 @@ function setTheme(): void {
     contents.send('set-theme', currentTheme);
 }
 
+nativeTheme.on('updated',() =>{
+    loadPreferences();
+    setTheme();
+});
+
 function createNewFile(): void {
     // TODO
 }
