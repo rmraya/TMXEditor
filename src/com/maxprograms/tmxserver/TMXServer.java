@@ -158,6 +158,8 @@ public class TMXServer implements HttpHandler {
 				response = replaceText(json);
 			} else if ("removeSpaces".equals(command)) {
 				response = removeSpaces();
+			} else if("removeDuplicates".equals(command)) {
+				response = removeDuplicates();
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
@@ -193,6 +195,10 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String removeDuplicates() {
+		return service.removeDuplicates().toString();
 	}
 
 	private String removeSpaces() {

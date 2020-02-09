@@ -50,7 +50,6 @@ var loadOptions: any = {
 var currentFile: string = '';
 var saved: boolean = true;
 
-
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
 const COMPLETED: string = 'Completed';
@@ -766,7 +765,7 @@ function setTheme(): void {
     contents.send('set-theme', currentTheme);
 }
 
-nativeTheme.on('updated',() =>{
+nativeTheme.on('updated', () => {
     loadPreferences();
     setTheme();
 });
@@ -1130,7 +1129,48 @@ function removeTags(): void {
 }
 
 function removeDuplicates(): void {
-    // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    contents.send('start-waiting');
+    sendRequest({ command: 'removeDuplicates' },
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Removing duplicates...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    loadSegments();
+                    getCount();
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'consolidateUnits'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error removing duplicates');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 function removeUntranslated(): void {
@@ -1200,13 +1240,12 @@ ipcMain.on('remove-untranslated', (event, arg) => {
 });
 
 function removeSpaces(): void {
-    // TODO
     if (currentFile === '') {
         dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
         return;
     }
     contents.send('start-waiting');
-    sendRequest({command: 'removeSpaces'},
+    sendRequest({ command: 'removeSpaces' },
         function success(data: any) {
             currentStatus = data;
             contents.send('set-status', 'Removing spaces...');
