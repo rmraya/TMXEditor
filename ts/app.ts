@@ -883,7 +883,6 @@ function cancelEdit(): void {
 }
 
 function replaceText(): void {
-    // TODO
     if (currentFile === '') {
         dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
         return;
@@ -891,7 +890,7 @@ function replaceText(): void {
     replaceTextWindow = new BrowserWindow({
         parent: mainWindow,
         width: 450,
-        height: 200,
+        height: 230,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -936,12 +935,12 @@ ipcMain.on('replace-request', (event, arg) => {
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
-                    // ignore status from 'saveFile'
+                    // ignore status from 'replaceText'
                 } else {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
                     clearInterval(intervalObject);
-                    dialog.showErrorBox('Error', 'Unknown error consolidating units');
+                    dialog.showErrorBox('Error', 'Unknown error replacing text');
                     return;
                 }
                 getProcessingProgress();
@@ -1178,7 +1177,7 @@ ipcMain.on('consolidate-units', (event, arg) => {
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
-                    // ignore status from 'saveFile'
+                    // ignore status from 'consolidateUnits'
                 } else {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
