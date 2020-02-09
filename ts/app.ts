@@ -1198,7 +1198,7 @@ function removeDuplicates(): void {
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
-                    // ignore status from 'consolidateUnits'
+                    // ignore status from 'removeDuplicates'
                 } else {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
@@ -1265,7 +1265,7 @@ ipcMain.on('remove-untranslated', (event, arg) => {
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
-                    // ignore status from 'saveFile'
+                    // ignore status from 'removeUntranslated'
                 } else {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
@@ -1309,7 +1309,7 @@ function removeSpaces(): void {
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;
                 } else if (currentStatus.status === SUCCESS) {
-                    // ignore status from 'consolidateUnits'
+                    // ignore status from 'removeSpaces'
                 } else {
                     contents.send('end-waiting');
                     contents.send('set-status', '');

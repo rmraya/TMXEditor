@@ -120,7 +120,7 @@ public class TMXServer implements HttpHandler {
 					service.closeFile();
 				}
 				JSONObject obj = new JSONObject();
-				obj.put("status", Result.SUCCESS);
+				obj.put(Constants.STATUS, Result.SUCCESS);
 				response = obj.toString(2);
 			} else if ("closeFile".equals(command)) {
 				response = closeFile();
@@ -162,8 +162,8 @@ public class TMXServer implements HttpHandler {
 				response = removeDuplicates();
 			} else {
 				JSONObject obj = new JSONObject();
-				obj.put("status", Result.ERROR);
-				obj.put("reason", "Unknown command");
+				obj.put(Constants.STATUS, Result.ERROR);
+				obj.put(Constants.REASON, "Unknown command");
 				obj.put("received", json.toString());
 				response = obj.toString(2);
 			}
@@ -228,8 +228,8 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put("status", Constants.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
 	}
@@ -240,8 +240,8 @@ public class TMXServer implements HttpHandler {
 			return service.removeUntranslated(lang).toString();
 		} catch (IOException e) {
 			JSONObject result = new JSONObject();
-			result.put("status", Constants.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
 	}
@@ -272,8 +272,8 @@ public class TMXServer implements HttpHandler {
 			return service.consolidateUnits(lang).toString();
 		} catch (IOException e) {
 			JSONObject result = new JSONObject();
-			result.put("status", Constants.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
 	}
@@ -325,7 +325,7 @@ public class TMXServer implements HttpHandler {
 			Result<TUnit> segments = service.getData(json.getInt("start"), json.getInt("count"), filterText,
 					filterLanguage, caseSensitiveFilter, filterUntranslated, regExp, filterSrcLanguage, sortLanguage,
 					ascending);
-			result.put("status", segments.getResult());
+			result.put(Constants.STATUS, segments.getResult());
 			if (segments.getResult().equals(Result.SUCCESS)) {
 				List<TUnit> units = segments.getData();
 				JSONArray array = new JSONArray();
@@ -336,11 +336,11 @@ public class TMXServer implements HttpHandler {
 				}
 				result.put("units", array);
 			} else {
-				result.put("reason", segments.getMessage());
+				result.put(Constants.REASON, segments.getMessage());
 			}
 		} catch (Exception e) {
-			result.put("status", Result.ERROR);
-			result.put("reason", e.getMessage());
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
 		return result.toString(2);
 	}
@@ -348,7 +348,7 @@ public class TMXServer implements HttpHandler {
 	private String getLanguages() {
 		JSONObject result = new JSONObject();
 		Result<Language> languages = service.getLanguages();
-		result.put("status", languages.getResult());
+		result.put(Constants.STATUS, languages.getResult());
 		if (languages.getResult().equals(Result.SUCCESS)) {
 			JSONArray array = new JSONArray();
 			Iterator<Language> it = languages.getData().iterator();
@@ -357,7 +357,7 @@ public class TMXServer implements HttpHandler {
 			}
 			result.put("languages", array);
 		} else {
-			result.put("reason", languages.getMessage());
+			result.put(Constants.REASON, languages.getMessage());
 		}
 		return result.toString();
 	}
@@ -391,7 +391,7 @@ public class TMXServer implements HttpHandler {
 			return new JSONObject(data[1]).toString();
 		}
 		JSONObject result = new JSONObject();
-		result.put("reason", data[1]);
+		result.put(Constants.REASON, data[1]);
 		return result.toString();
 	}
 
@@ -401,7 +401,7 @@ public class TMXServer implements HttpHandler {
 			return new JSONObject(data[1]).toString();
 		}
 		JSONObject result = new JSONObject();
-		result.put("reason", data[1]);
+		result.put(Constants.REASON, data[1]);
 		return result.toString();
 	}
 }
