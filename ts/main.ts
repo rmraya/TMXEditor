@@ -115,7 +115,7 @@ function deleteUnits(): void {
 }
 
 function sortUnits(): void {
-    // TODO
+    ipcRenderer.send('sort-units');
 }
 
 function filterUnits(): void {

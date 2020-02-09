@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sort Units</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="sortUnitsLoaded()">
+    <div style="padding:4px;">
+        <label for="sortLanguage">Sort Language</label>
+        <select id="sortLanguage" style="width: 300px;">
+        </select>
+    </div>
+    <div style="padding:4px;">
+        <input type="checkbox" id="ascending">
+        <label for="ascending" checked>Sort Ascending</label>
+    </div>
+    <div class="buttonArea">
+        <button onclick="sort()">Sort Units</button>
+        <button onclick="clearSort()">Clear Sorting</button>
+    </div>
+    <script src="../js/sortUnits.js"></script>
+</body>
+
+</html>

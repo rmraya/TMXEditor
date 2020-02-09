@@ -31,6 +31,7 @@ var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
 var settingsWindow: BrowserWindow;
+var sortUnitsWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -46,6 +47,7 @@ var loadOptions: any = {
     start: 0,
     count: 200
 };
+var sortOptions: any = {};
 
 var currentFile: string = '';
 var saved: boolean = true;
@@ -672,7 +674,7 @@ function loadSegments() {
     }
     Object.assign(json, loadOptions);
     Object.assign(json, filterOptions);
-    // TODO set sorting options
+    Object.assign(json, sortOptions);
     contents.send('start-waiting');
     contents.send('set-status', 'Loading segments...');
     sendRequest(json,
@@ -1032,8 +1034,49 @@ ipcMain.on('replace-request', (event, arg) => {
 });
 
 function sortUnits() {
-    // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    sortUnitsWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 450,
+        height: 170,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    sortUnitsWindow.setMenu(null);
+    sortUnitsWindow.loadURL('file://' + app.getAppPath() + '/html/sortUnits.html');
+    sortUnitsWindow.show();
+    // sortUnitsWindow.webContents.openDevTools();
 }
+
+ipcMain.on('sort-units', () => {
+    sortUnits();
+});
+
+ipcMain.on('set-sort', (event, arg) => {
+    sortOptions = arg;
+    sortUnitsWindow.close();
+    loadSegments();
+});
+
+ipcMain.on('clear-sort', () => {
+    sortOptions = {};
+    sortUnitsWindow.close();
+    loadSegments();
+});
+
+ipcMain.on('get-sort', (event, arg) => {
+    event.sender.send('sort-options', sortOptions);
+});
 
 function showFilters() {
     if (currentFile === '') {
