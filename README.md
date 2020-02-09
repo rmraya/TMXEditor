@@ -38,6 +38,8 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
 
+### Steps for building:
+
 ``` bash
   git clone https://github.com/rmraya/TMXEditor.git
   cd TMXEditor
@@ -45,5 +47,8 @@ Commercial version includes unlimited email support at tech@maxprograms.com
   npm install
   npm start
 ```
+
+This vide shows how to build and launch TMXEditor: [https://maxprograms.com/tutorials/TMXEditor_build.mp4](https://maxprograms.com/tutorials/TMXEditor_build.mp4)
+
 
 Compile once and then simply run `npm start` to start TMXEditor
