@@ -35,3 +35,11 @@ function consolidate(): void {
     var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
     _c.ipcRenderer.send('consolidate-units', { command: 'consolidateUnits', srcLang: srcLang });
 }
+
+function consolidateLoaded() : void {
+    _c.ipcRenderer.send('get-theme');
+}
+
+_c.ipcRenderer.on('set-theme', (event, arg) => {
+    (document.getElementById('theme') as HTMLLinkElement).href = arg;
+});

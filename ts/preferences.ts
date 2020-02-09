@@ -16,16 +16,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
-var _l = require('electron');
 
-function openLicense(type: string) {
-    _l.ipcRenderer.send('open-license', {type: type});
+const _p = require("electron");
+
+_p.ipcRenderer.send('get-preferences');
+
+_p.ipcRenderer.on('set-preferences', (event, arg) => {
+    (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
+    (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
+});
+
+function savePreferences() {
+    var theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
+    var indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
+    var prefs: any = { theme: theme, indentation: indent }
+    _p.ipcRenderer.send('save-preferences', prefs);
 }
 
-function licensesLoaded(): void {
-    _l.ipcRenderer.send('get-theme');
+function preferencesLoaded() : void {
+    _p.ipcRenderer.send('get-theme');
 }
 
-_l.ipcRenderer.on('set-theme', (event, arg) => {
+_p.ipcRenderer.on('set-theme', (event, arg) => {
     (document.getElementById('theme') as HTMLLinkElement).href = arg;
 });

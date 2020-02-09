@@ -124,7 +124,7 @@ public interface TMXServiceInterface {
 	String[] convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet, String columsSeparator,
 			String textDelimiter);
 
-	String[] getIndentation();
+	JSONObject getIndentation();
 
-	String[] saveIndentation(int value);
+	JSONObject saveIndentation(int value);
 }

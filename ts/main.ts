@@ -34,6 +34,14 @@ var currentContent: string = null;
 var currentTags: string[] = [];
 var textArea: HTMLTextAreaElement = null;
 
+function getTheme() {
+    ipcRenderer.send('get-theme');
+}
+
+ipcRenderer.on('set-theme', (event, arg) => {
+    (document.getElementById('theme') as HTMLLinkElement).href = arg;
+});
+
 function openFile(): void {
     ipcRenderer.send('open-file');
 }

@@ -23,11 +23,14 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
 import { ClientRequest, request } from "http";
 
+app.allowRendererProcessReuse = true;
+
 var mainWindow: BrowserWindow;
 var replaceTextWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
+var settingsWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -36,6 +39,8 @@ var stopping: boolean = false;
 var fileLanguages: any[];
 var currentDefaults: any;
 var currentStatus: any = {};
+var currentPreferences: any;
+var currentTheme: string;
 var filterOptions: any = {};
 var loadOptions: any = {
     start: 0,
@@ -44,6 +49,7 @@ var loadOptions: any = {
 
 var currentFile: string = '';
 var saved: boolean = true;
+
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -95,6 +101,9 @@ app.on('open-file', function (event, filePath) {
     openFile(filePath);
 });
 
+loadDefaults();
+loadPreferences();
+
 app.on('ready', function () {
     createWindow();
     mainWindow.loadURL('file://' + app.getAppPath() + '/index.html');
@@ -106,8 +115,7 @@ app.on('ready', function () {
     });
     mainWindow.show();
     // contents.openDevTools();
-    console.log('darK: ' + nativeTheme.shouldUseDarkColors);
-
+    setTheme();
 });
 
 app.on('quit', function () {
@@ -127,15 +135,6 @@ if (process.platform === 'darwin') {
 }
 
 function createWindow() {
-    currentDefaults = { width: 900, height: 700, x: 0, y: 0 };
-    if (existsSync(appHome + 'defaults.json')) {
-        try {
-            var data: Buffer = readFileSync(appHome + 'defaults.json');
-            currentDefaults = JSON.parse(data.toString());
-        } catch (err) {
-            console.log(err);
-        }
-    }
     mainWindow = new BrowserWindow({
         title: 'TMXEditor',
         width: currentDefaults.width,
@@ -340,14 +339,7 @@ function stopServer() {
                 saveFile();
             }
         }
-        sendRequest({ command: 'stop' },
-            function success(data: any) {
-                console.log('server stopped');
-            },
-            function error(reason: string) {
-                dialog.showErrorBox('Error', reason)
-            }
-        );
+        ls.kill();
     }
 }
 
@@ -538,6 +530,9 @@ function getLoadingProgress() {
 }
 
 function closeFile() {
+    if (currentFile === '') {
+        return;
+    }
     if (!saved) {
         let response = dialog.showMessageBoxSync(mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
         if (response === 0) {
@@ -598,6 +593,48 @@ function saveDefaults() {
         return;
     }
     writeFileSync(appHome + 'defaults.json', JSON.stringify(defaults));
+}
+
+function loadDefaults() {
+    currentDefaults = { width: 900, height: 700, x: 0, y: 0 };
+    if (existsSync(appHome + 'defaults.json')) {
+        try {
+            var data: Buffer = readFileSync(appHome + 'defaults.json');
+            currentDefaults = JSON.parse(data.toString());
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
+function savePreferences() {
+    writeFileSync(appHome + 'preferences.json', JSON.stringify(currentPreferences));
+}
+
+function loadPreferences() {
+    currentPreferences = { theme: 'system', indentation: 2 };
+    if (existsSync(appHome + 'preferences.json')) {
+        try {
+            var data: Buffer = readFileSync(appHome + 'preferences.json');
+            currentPreferences = JSON.parse(data.toString());
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    if (currentPreferences.theme === 'system') {
+        if (nativeTheme.shouldUseDarkColors) {
+            currentTheme = app.getAppPath() + '/css/dark.css';
+        } else {
+            currentTheme = app.getAppPath() + '/css/light.css';
+        }
+    }
+    if (currentPreferences.theme === 'dark') {
+        currentTheme = app.getAppPath() + '/css/dark.css';
+    }
+    if (currentPreferences.theme === 'light') {
+        currentTheme = app.getAppPath() + '/css/light.css';
+    }
 }
 
 function saveRecent(file: string) {
@@ -689,7 +726,44 @@ ipcMain.on('get-row-properties', function (event, arg) {
 });
 
 function showSettings(): void {
-    // TODO
+    settingsWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 400,
+        height: 170,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    settingsWindow.setMenu(null);
+    settingsWindow.loadURL('file://' + app.getAppPath() + '/html/preferences.html');
+    // settingsWindow.webContents.openDevTools()
+    settingsWindow.show();
+}
+
+ipcMain.on('get-preferences', (event, arg) => {
+    event.sender.send('set-preferences', currentPreferences);
+});
+
+ipcMain.on('save-preferences', (event, arg) => {
+    currentPreferences = arg;
+    savePreferences();
+    settingsWindow.close();
+    loadPreferences();
+    setTheme();
+});
+
+ipcMain.on('get-theme', (event, arg) => {
+    event.sender.send('set-theme', currentTheme);
+});
+
+function setTheme(): void {
+    contents.send('set-theme', currentTheme);
 }
 
 function createNewFile(): void {

@@ -19,7 +19,6 @@ SOFTWARE.
 package com.maxprograms.tmxserver;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -68,8 +67,6 @@ import com.maxprograms.tmxvalidation.TMXValidator;
 import com.maxprograms.xml.Attribute;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
-import com.maxprograms.xml.Indenter;
-import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
@@ -1396,68 +1393,87 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getIndentation() {
+	public JSONObject getIndentation() {
+		JSONObject result = new JSONObject();
 		File home = getPreferencesFolder();
 		if (!home.exists()) {
 			home.mkdirs();
 		}
-		File preferences = new File(home, "indentation.xml");
-		SAXBuilder builder = new SAXBuilder();
+		File preferences = new File(home, "preferences.json");
 		try {
 			if (!preferences.exists()) {
-				Document doc = builder.build(new ByteArrayInputStream(
-						"<preferences><indentation>2</indentation></preferences>".getBytes(StandardCharsets.UTF_8)));
-				XMLOutputter outputter = new XMLOutputter();
+				JSONObject prefs = new JSONObject();
+				prefs.put("theme", "system");
+				prefs.put("indentation", 2);
 				try (FileOutputStream output = new FileOutputStream(preferences)) {
-					outputter.output(doc, output);
+					output.write(prefs.toString().getBytes(StandardCharsets.UTF_8));
 				}
 			}
-			Document doc = builder.build(preferences);
-			Element root = doc.getRootElement();
-			String text = root.getChild("indentation").getText();
-			indentation = Integer.valueOf(text);
-			return new String[] { Result.SUCCESS, text };
-		} catch (IOException | SAXException | ParserConfigurationException e) {
+			try (FileReader input = new FileReader(preferences)) {
+				try (BufferedReader reader = new BufferedReader(input)) {
+					StringBuilder builder = new StringBuilder();
+					String line = "";
+					while ((line = reader.readLine()) != null) {
+						builder.append(line);
+					}
+					JSONObject json = new JSONObject(builder.toString());
+					indentation = json.getInt("indentation");
+					result.put("indentation", indentation);
+				}
+			}
+			result.put("status", Result.SUCCESS);
+		} catch (IOException  e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] saveIndentation(int value) {
+	public JSONObject saveIndentation(int value) {
+		JSONObject result = new JSONObject();
 		File home = getPreferencesFolder();
 		if (!home.exists()) {
 			home.mkdirs();
 		}
-		File preferences = new File(home, "indentation.xml");
-		SAXBuilder builder = new SAXBuilder();
+		File preferences = new File(home, "preferences.json");
 		try {
 			if (!preferences.exists()) {
-				Document doc = builder.build(new ByteArrayInputStream(
-						"<preferences><indentation/></preferences>".getBytes(StandardCharsets.UTF_8)));
-				XMLOutputter outputter = new XMLOutputter();
+				JSONObject prefs = new JSONObject();
+				prefs.put("theme", "system");
+				prefs.put("indentation", 2);
 				try (FileOutputStream output = new FileOutputStream(preferences)) {
-					outputter.output(doc, output);
+					output.write(prefs.toString().getBytes(StandardCharsets.UTF_8));
 				}
 			}
-			Document doc = builder.build(preferences);
-			Element root = doc.getRootElement();
-			root.getChild("indentation").setText("" + value);
-			Indenter.indent(root, 2);
-			XMLOutputter outputter = new XMLOutputter();
-			outputter.preserveSpace(true);
+			JSONObject json = null;
+			try (FileReader input = new FileReader(preferences)) {
+				try (BufferedReader reader = new BufferedReader(input)) {
+					StringBuilder builder = new StringBuilder();
+					String line = "";
+					while ((line = reader.readLine()) != null) {
+						builder.append(line);
+					}
+					 json = new JSONObject(builder.toString());
+					json.put("indentation", value);
+					
+				}
+			}
 			try (FileOutputStream output = new FileOutputStream(preferences)) {
-				outputter.output(doc, output);
+				output.write(json.toString().getBytes(StandardCharsets.UTF_8));
 			}
 			indentation = value;
 			if (store != null) {
 				store.setIndentation(indentation);
 			}
-		} catch (IOException | SAXException | ParserConfigurationException e) {
+			result.put("status", Result.SUCCESS);
+		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put("status", Result.ERROR);
+			result.put("reason", e.getMessage());
 		}
-		return new String[] { Result.SUCCESS };
+		return result;
 	}
 
 	public static String encodeURIcomponent(String s) {

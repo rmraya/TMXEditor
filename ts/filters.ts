@@ -85,3 +85,11 @@ function applyFilters(): void {
 function clearFilters(): void {
     _f.ipcRenderer.send('clear-filter-options');
 }
+
+function filtersLoaded(): void {
+    _f.ipcRenderer.send('get-theme');
+}
+
+_f.ipcRenderer.on('set-theme', (event, arg) => {
+    (document.getElementById('theme') as HTMLLinkElement).href = arg;
+});

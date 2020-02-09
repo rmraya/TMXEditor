@@ -35,3 +35,11 @@ function removeUntranslated(): void {
     var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
     _ru.ipcRenderer.send('remove-untranslated', { command: 'removeUntranslated', srcLang: srcLang });
 }
+
+function removeUntranslatedLoaded() : void {
+    _ru.ipcRenderer.send('get-theme');
+}
+
+_ru.ipcRenderer.on('set-theme', (event, arg) => {
+    (document.getElementById('theme') as HTMLLinkElement).href = arg;
+});

@@ -17,7 +17,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
+var _b = require('electron');
+   
 function licensesClicked() {
-    var _b = require('electron');
     _b.ipcRenderer.send('licenses-clicked');
 }
+
+function aboutLoaded() : void {
+    _b.ipcRenderer.send('get-theme');
+}
+
+_b.ipcRenderer.on('set-theme', (event, arg) => {
+    (document.getElementById('theme') as HTMLLinkElement).href = arg;
+});
