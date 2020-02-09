@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Replace Text</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/theme.css">
+    <link rel="stylesheet" type="text/css" href="../css/custom.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body>
+
+    <div style="padding:4px;" class="fill-width">
+        <label for="searchText">Text to Search</label>
+        <input type="text" id="searchText" style="width: 300px;" class="right">
+    </div>
+
+    <div style="padding:4px;" class="fill-width">
+        <label for="replaceText">Replace with</label>
+        <input type="text" id="replaceText" style="width: 300px;" class="right">
+    </div>
+
+    <div style="padding:4px;" class="fill-width">
+        <label for="language">Language</label>
+        <select id="language" style="width: 300px;" class="right">
+        </select>
+    </div>
+
+    <div style="padding:4px;">
+        <input type="checkbox" id="regularExpression">
+        <label for="regularExpression">Regular Expression</label>
+    </div>
+
+    <div class="buttonArea">
+        <button onclick="replace()">Replace Text</button>
+    </div>
+    <script src="../js/searchReplace.js"></script>
+</body>
+
+</html>

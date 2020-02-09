@@ -154,6 +154,8 @@ public class TMXServer implements HttpHandler {
 				response = getValidatingProgress();
 			} else if ("removeUntranslated".equals(command)) {
 				response = removeUntranslated(json.getString("srcLang"));
+			} else if ("replaceText".equals(command)) {
+				response = replaceText(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put("status", Result.ERROR);
@@ -188,6 +190,35 @@ public class TMXServer implements HttpHandler {
 			try (OutputStream os = t.getResponseBody()) {
 				os.write(response.getBytes());
 			}
+		}
+	}
+
+	private String replaceText(JSONObject json) {
+		try {
+			String search = "";
+			if (json.has("search")) {
+				search = json.getString("search");
+			}
+			String replace = "";
+			if (json.has("replace")) {
+				replace = json.getString("replace");
+			}
+			String lang = "";
+			if (json.has("lang")) {
+				lang = json.getString("lang");
+			}
+			Language language = service.getLanguage(lang);
+			boolean regExp = false;
+			if (json.has("regExp")) {
+				regExp = json.getBoolean("regExp");
+			}
+			return service.replaceText(search, replace, language, regExp).toString();
+		} catch (IOException e) {
+			logger.log(Level.ERROR, e);
+			JSONObject result = new JSONObject();
+			result.put("status", Constants.ERROR);
+			result.put("reason", e.getMessage());
+			return result.toString();
 		}
 	}
 

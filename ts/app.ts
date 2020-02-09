@@ -24,6 +24,7 @@ import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync
 import { ClientRequest, request } from "http";
 
 var mainWindow: BrowserWindow;
+var replaceTextWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
@@ -883,11 +884,75 @@ function cancelEdit(): void {
 
 function replaceText(): void {
     // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    replaceTextWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 450,
+        height: 200,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    replaceTextWindow.setMenu(null);
+    replaceTextWindow.loadURL('file://' + app.getAppPath() + '/html/searchReplace.html');
+    replaceTextWindow.show();
+    // filtersWindow.webContents.openDevTools();
 }
 
 ipcMain.on('replace-text', () => {
     replaceText();
 })
+
+ipcMain.on('replace-request', (event, arg) => {
+    replaceTextWindow.close();
+    contents.send('start-waiting');
+    sendRequest(arg,
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Replacing...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    loadSegments();
+                    getCount();
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'saveFile'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error consolidating units');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function sortUnits() {
     // TODO
@@ -900,7 +965,6 @@ function showFilters() {
     }
     filtersWindow = new BrowserWindow({
         parent: mainWindow,
-        modal: true,
         width: 500,
         height: 300,
         useContentSize: true,
@@ -998,7 +1062,6 @@ function removeUntranslated(): void {
     }
     removeUntranslatedWindow = new BrowserWindow({
         parent: mainWindow,
-        modal: true,
         width: 480,
         height: 120,
         useContentSize: true,
@@ -1073,7 +1136,6 @@ function consolidateUnits(): void {
     }
     consolidateWindow = new BrowserWindow({
         parent: mainWindow,
-        modal: true,
         width: 480,
         height: 110,
         useContentSize: true,
