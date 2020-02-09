@@ -5,12 +5,13 @@
 	--light-background: #3c65a4;
 	--lighter-background: #7da3c6;
 	--soft-background: #666666;
-	--normal-background: #fefefe;
+	--normal-background: #efefef;
 	--normal-color: #111111;
 	--even-row-background: #efefef;
     --odd-row-background: #fefefe;
     --highlight-color: #ecf01b;
-    --shadow-color: #eeeeee;
+	--shadow-color: #eeeeee;
+	--input-background: #ffffff;
 }
 
 body {
@@ -159,7 +160,7 @@ input[type=text] {
 	border-left: none;
 	border-right: none;
 	border-bottom: 1px solid var(--dark-background);
-	background-color: var(--normal-background);
+	background-color: var(--input-background);
 	color: var(--normal-color);
 }
 
@@ -169,7 +170,7 @@ input[type=text]:focus {
 
 input[type=password] {
 	font-size: 0.8em;
-	background-color: var(--normal-background);
+	background-color: var(--input-background);
 	color: var(--normal-color);
 }
 
@@ -179,7 +180,7 @@ input[type=number] {
 	height: 18px;
 	margin: 0px;
 	padding: 0px;
-	background-color: var(--normal-background);
+	background-color: var(--input-background);
 	color: var(--normal-color);
 }
 
@@ -196,7 +197,7 @@ input[type=checkbox]:before {
 	top: -2px;
 	left: 0;
 	border: 1px solid var(--dark-background);
-	background-color: var(--dark-color);
+	background-color: var(--input-background);
 }
 
 input[type=checkbox]:checked:after {
@@ -204,7 +205,7 @@ input[type=checkbox]:checked:after {
 	display: block;
 	width: 4px;
 	height: 8px;
-	border: solid var(--darker-background);
+	border: solid var(--normal-color);
 	border-width: 0 1px 1px 0;
 	transform: rotate(45deg);
 	position: absolute;
@@ -243,7 +244,7 @@ select {
 	font-size: 1em;
 	height: 1.6em;
 	border-radius: 0px;
-	background-color: var(--normal-background) !important;
+	background-color: var(--input-background) !important;
 	color: var(--normal-color);
 }
 
