@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Change Language Code</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="changeLanguageLoaded()">
+    <div style="padding:4px;">
+        <label for="currentLanguage">Current Language</label>
+        <select id="currentLanguage" style="width: 300px;" class="right">
+        </select>
+    </div>
+    <div style="padding:4px;">
+        <label for="newLanguage">New Language</label>
+        <select id="newLanguage" style="width: 300px;"  class="right">
+        </select>
+    </div>
+    <div class="buttonArea">
+        <button onclick="changeLanguage()">Change Language</button>
+    </div>
+    <script src="../js/changeLanguage.js"></script>
+</body>
+
+</html>

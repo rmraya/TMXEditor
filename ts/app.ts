@@ -32,6 +32,7 @@ var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
 var settingsWindow: BrowserWindow;
 var sortUnitsWindow: BrowserWindow;
+var changeLanguageWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -211,7 +212,10 @@ function createWindow() {
         { label: 'TMXEditor User Guide', accelerator: 'F1', click: function () { showHelp(); } },
         new MenuItem({ type: 'separator' }),
         { label: 'Check for Updates', click: function () { checkUpdates(); } },
-        { label: 'View Release History', click: function () { showReleaseHistory(); } }
+        { label: 'View Licenses', click: function () { showLicenses(); } },
+        new MenuItem({ type: 'separator' }),
+        { label: 'Release History', click: function () { showReleaseHistory(); } },
+        { label: 'Support Group', click: function () { showSupportGroup(); } }
     ]);
     var template: MenuItem[] = [
         new MenuItem({ label: 'File', role: 'fileMenu', submenu: fileMenu }),
@@ -364,7 +368,7 @@ function showAbout() {
     aboutWindow.show();
 }
 
-ipcMain.on('licenses-clicked', function () {
+function showLicenses() {
     var licensesWindow = new BrowserWindow({
         parent: mainWindow,
         width: 500,
@@ -382,6 +386,10 @@ ipcMain.on('licenses-clicked', function () {
     licensesWindow.setMenu(null);
     licensesWindow.loadURL('file://' + app.getAppPath() + '/html/licenses.html');
     licensesWindow.show();
+}
+
+ipcMain.on('licenses-clicked', function () {
+    showLicenses();
 });
 
 ipcMain.on('open-license', function (event, arg: any) {
@@ -921,7 +929,64 @@ function getValidatingProgress() {
 }
 
 function cleanCharacters(): void {
-    // TODO
+    dialog.showOpenDialog({
+        title: 'Clean Characters',
+        properties: ['openFile'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] }
+        ]
+    }).then(function (value) {
+        if (!value.canceled) {
+            sendRequest({ command: 'cleanCharacters', file: value.filePaths[0] },
+                function success(data: any) {
+                    currentStatus = data;
+                    contents.send('start-waiting');
+                    contents.send('set-status', 'Cleaning...');
+                    var intervalObject = setInterval(function () {
+                        if (currentStatus.status === COMPLETED) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showMessageBox(mainWindow, { type: 'info', message: 'File cleaned' });
+                            return;
+                        } else if (currentStatus.status === ERROR) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', currentStatus.reason);
+                            return;
+                        } else if (currentStatus.status === SUCCESS) {
+                            // keep waiting
+                        } else {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', 'Unknown error cleaning characters');
+                            return;
+                        }
+                        getCleaningProgress();
+                    }, 500);
+                },
+                function error(reason: string) {
+                    dialog.showMessageBox({ type: 'error', message: reason });
+                }
+            );
+        }
+    })["catch"](function (error) {
+        dialog.showErrorBox('Error', error);
+        console.log(error);
+    });
+}
+
+function getCleaningProgress() {
+    sendRequest({ command: 'cleaningProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 function splitFile(): void {
@@ -1153,7 +1218,61 @@ function lastPage(): void {
 
 function changeLanguageCode(): void {
     // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    changeLanguageWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 490,
+        height: 170,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    changeLanguageWindow.setMenu(null);
+    changeLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/changeLanguage.html');
+    changeLanguageWindow.show();
+    // changeLanguageWindow.webContents.openDevTools();
 }
+
+ipcMain.on('change-language', (event, arg) => {
+    changeLanguageWindow.close();
+    sendRequest(arg,
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                getFileLanguages();
+                loadSegments();
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('all-languages', (event, arg) => {
+    sendRequest({ command: 'getAllLanguages' },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('languages-list', data.languages);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function removeLanguage(): void {
     // TODO
@@ -1426,6 +1545,10 @@ function checkUpdates(): void {
 
 function showReleaseHistory(): void {
     shell.openExternal('https://www.maxprograms.com/products/tmxlog.html');
+}
+
+function showSupportGroup(): void {
+    shell.openExternal('https://groups.io/g/maxprograms/');
 }
 
 ipcMain.on('show-message', (event, arg) => {

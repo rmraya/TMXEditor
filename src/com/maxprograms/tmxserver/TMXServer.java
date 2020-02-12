@@ -152,6 +152,10 @@ public class TMXServer implements HttpHandler {
 				response = validateFile(json.getString("file"));
 			} else if ("validatingProgress".equals(command)) {
 				response = getValidatingProgress();
+			} else if ("cleanCharacters".equals(command)) {
+				response = cleanCharacters(json.getString("file"));
+			} else if ("cleaningProgress".equals(command)) {
+				response = getCleaningProgress();
 			} else if ("removeUntranslated".equals(command)) {
 				response = removeUntranslated(json.getString("srcLang"));
 			} else if ("replaceText".equals(command)) {
@@ -160,6 +164,10 @@ public class TMXServer implements HttpHandler {
 				response = removeSpaces();
 			} else if("removeDuplicates".equals(command)) {
 				response = removeDuplicates();
+			} else if ("getAllLanguages".equals(command)) {
+				response = getAllLanguages();
+			} else if ("changeLanguage".equals(command)) {
+				response = changeLanguage(json.getString("oldLanguage"), json.getString("newLanguage"));
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -195,6 +203,45 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String changeLanguage(String oldLanguage, String newLanguage) {
+		try {
+			Language oldLang = service.getLanguage(oldLanguage);
+			Language newLang = service.getLanguage(newLanguage);
+			return service.changeLanguage(oldLang, newLang).toString();
+		} catch (IOException e ){
+			JSONObject result = new JSONObject();
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+			return result.toString();
+		}
+	}
+
+	private String getAllLanguages() {
+		JSONObject result = new JSONObject();
+		Result<Language> res = service.getAllLanguages();
+		if (res.getResult().equals(Result.SUCCESS)) {
+			JSONArray array = new JSONArray();
+			Iterator<Language> it = res.getData().iterator();
+			while (it.hasNext()) {
+				array.put(it.next().toJSON());
+			}
+			result.put("languages", array);
+			result.put(Constants.STATUS, Result.SUCCESS);
+		} else {
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, res.getMessage());
+		}
+		return result.toString();
+	}
+
+	private String cleanCharacters(String file) {
+		return service.cleanCharacters(file).toString();
+	}
+
+	private String getCleaningProgress() {
+		return service.cleaningProgress().toString();
 	}
 
 	private String removeDuplicates() {
