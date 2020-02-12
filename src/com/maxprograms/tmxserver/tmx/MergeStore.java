@@ -115,7 +115,7 @@ public class MergeStore implements StoreInterface {
 	}
 
 	@Override
-	public void delete(List<TUnit> selected) {
+	public void delete(List<String> selected) {
 		// do nothing
 	}
 

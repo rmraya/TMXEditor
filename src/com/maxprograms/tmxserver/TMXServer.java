@@ -30,6 +30,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -168,6 +169,8 @@ public class TMXServer implements HttpHandler {
 				response = getAllLanguages();
 			} else if ("changeLanguage".equals(command)) {
 				response = changeLanguage(json.getString("oldLanguage"), json.getString("newLanguage"));
+			} else if ("deleteUnits". equals(command)) {
+				response = deleteUnits(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -203,6 +206,15 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String deleteUnits(JSONObject json) {
+		JSONArray array = json.getJSONArray("selected");
+		List<String> selected = new ArrayList<>();
+		for (int i=0 ; i<array.length() ; i++) {
+			selected.add(array.getString(i));
+		}
+		return service.delete(selected).toString();
 	}
 
 	private String changeLanguage(String oldLanguage, String newLanguage) {

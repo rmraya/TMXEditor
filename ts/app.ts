@@ -1198,7 +1198,23 @@ function insertUnit(): void {
 
 function deleteUnits(): void {
     // TODO
+    contents.send('request-delete');
 }
+
+ipcMain.on('delete-units', (event, arg) => {
+    sendRequest({ command: 'deleteUnits', units: arg.selected },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('file-loaded', currentStatus);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function firstPage(): void {
     contents.send('first-page');

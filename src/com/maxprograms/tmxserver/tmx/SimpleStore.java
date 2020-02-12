@@ -346,12 +346,10 @@ public class SimpleStore implements StoreInterface {
 	}
 
 	@Override
-	public void delete(List<TUnit> selected) {
-		Iterator<TUnit> it = selected.iterator();
+	public void delete(List<String> selected) {
+		Iterator<String> it = selected.iterator();
 		while (it.hasNext()) {
-			TUnit unit = it.next();
-			String id = unit.getId();
-			delete(id);
+			delete(it.next());
 		}
 	}
 

@@ -61,7 +61,7 @@ public interface StoreInterface {
 
 	Element getTu(String id);
 
-	void delete(List<TUnit> selected);
+	void delete(List<String> selected);
 
 	void replaceText(String search, String replace, Language language, boolean regExp);
 

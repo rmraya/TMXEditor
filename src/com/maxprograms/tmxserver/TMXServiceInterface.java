@@ -52,7 +52,7 @@ public interface TMXServiceInterface {
 
 	String[] getTuData(String id);
 
-	JSONObject delete(List<TUnit> selected);
+	JSONObject delete(List<String> selected);
 
 	JSONObject replaceText(String search, String replace, Language language, boolean regExp);
 

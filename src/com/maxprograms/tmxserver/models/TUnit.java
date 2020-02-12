@@ -91,7 +91,7 @@ public class TUnit implements Serializable, Comparable<TUnit> {
 		StringBuilder html = new StringBuilder();
 		html.append("<tr id=\"");
 		html.append(id);
-		html.append("\"><td class='fixed'><input type='checkbox'></td><td class='fixed'>");
+		html.append("\"><td class='fixed'><input type='checkbox' class='rowCheck'></td><td class='fixed'>");
 		html.append(count);
 		html.append("</td>");
 		Iterator<Language> it = fileLanguages.iterator();

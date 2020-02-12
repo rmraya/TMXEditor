@@ -476,10 +476,11 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public JSONObject delete(List<TUnit> selected) {
+	public JSONObject delete(List<String> selected) {
 		JSONObject result = new JSONObject();
 		try {
 			store.delete(selected);
+			result.put("count", store.getCount());
 			result.put(Constants.STATUS, Result.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
