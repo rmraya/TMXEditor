@@ -480,7 +480,6 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		try {
 			store.delete(selected);
-			result.put("count", store.getCount());
 			result.put(Constants.STATUS, Result.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);

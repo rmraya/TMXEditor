@@ -1197,15 +1197,30 @@ function insertUnit(): void {
 }
 
 function deleteUnits(): void {
-    // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
     contents.send('request-delete');
 }
 
 ipcMain.on('delete-units', (event, arg) => {
-    sendRequest({ command: 'deleteUnits', units: arg.selected },
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    var selected: string[] = arg;
+    if (selected.length === 0) {
+        dialog.showMessageBox({ type: 'warning', message: 'Select units' });
+        return;
+    }
+    sendRequest({ command: 'deleteUnits', selected },
         function success(data: any) {
             if (data.status === SUCCESS) {
-                event.sender.send('file-loaded', currentStatus);
+                getFileLanguages();
+                getCount();
+                loadSegments();
+                saved = false;
             } else {
                 dialog.showMessageBox({ type: 'error', message: data.reason });
             }
@@ -1233,7 +1248,6 @@ function lastPage(): void {
 }
 
 function changeLanguageCode(): void {
-    // TODO
     if (currentFile === '') {
         dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
         return;
@@ -1265,6 +1279,7 @@ ipcMain.on('change-language', (event, arg) => {
             if (data.status === SUCCESS) {
                 getFileLanguages();
                 loadSegments();
+                saved = false;
             } else {
                 dialog.showMessageBox({ type: 'error', message: data.reason });
             }
@@ -1323,6 +1338,7 @@ function removeDuplicates(): void {
                     clearInterval(intervalObject);
                     loadSegments();
                     getCount();
+                    saved = false;
                     return;
                 } else if (currentStatus.status === PROCESSING) {
                     // it's OK, keep waiting

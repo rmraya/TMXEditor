@@ -32,6 +32,7 @@ var currentLang: string = null;
 var currentCell: Element = null;
 var currentContent: string = null;
 var currentTags: string[] = [];
+var selectedUnits: string[] = [];
 var textArea: HTMLTextAreaElement = null;
 
 function getTheme() {
@@ -111,7 +112,24 @@ function insertUnit(): void {
 }
 
 function deleteUnits(): void {
-    // TODO
+    getSelected();
+    console.log('delete requested');
+    ipcRenderer.send('delete-units', selectedUnits);
+}
+
+ipcRenderer.on('request-delete', () => {
+    deleteUnits();
+});
+
+function getSelected() {
+    selectedUnits = [];
+    var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+    for (let i = 0; i < collection.length; i++) {
+        var check = collection[i] as HTMLInputElement;
+        if (check.checked) {
+            selectedUnits.push(check.parentElement.parentElement.id);
+        }
+    }
 }
 
 function sortUnits(): void {
@@ -225,8 +243,12 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
     if (!fileLoaded) {
         return;
     }
-    // TODO handle top checkbox for select all
-    var x: string = (event.target as Element).tagName;
+    var element: Element = (event.target as Element);
+    if (element.parentElement.tagName === 'TH') {
+        // clicked select all
+        return;
+    }
+    var x: string = element.tagName;
     if ('TEXTAREA' === x) {
         // already editing
         return;
@@ -433,5 +455,13 @@ function restoretags(text: string, originalTags: string[]): string {
 }
 
 function toggleSelectAll(): void {
-    // TODO
+    if (!fileLoaded) {
+        return;
+    }
+    var selectAll = (document.getElementById('selectAll') as HTMLInputElement);
+    var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+    for (let i = 0; i < collection.length; i++) {
+        var check = collection[i] as HTMLInputElement;
+        check.checked = selectAll.checked;
+    }
 }
