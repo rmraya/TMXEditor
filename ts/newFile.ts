@@ -19,8 +19,6 @@ SOFTWARE.
 
 var _nf = require('electron');
 
-_nf.ipcRenderer.send('all-languages');
-
 _nf.ipcRenderer.on('languages-list', (event, arg) => {
     var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
     var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
@@ -40,11 +38,12 @@ function createFile() {
         _nf.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages' });
         return;
     }
-    _nf.ipcRenderer.send('create-file', {command: 'createFile', srcLang: srcLanguage.value, tgtLang: tgtLanguage.value});
+    _nf.ipcRenderer.send('create-file', { command: 'createFile', srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
 }
 
 function newFileLoaded(): void {
     _nf.ipcRenderer.send('get-theme');
+    _nf.ipcRenderer.send('all-languages');
 }
 
 _nf.ipcRenderer.on('set-theme', (event, arg) => {

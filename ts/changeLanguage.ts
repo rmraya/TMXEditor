@@ -19,8 +19,6 @@ SOFTWARE.
 
 var _cl = require('electron');
 
-_cl.ipcRenderer.send('get-filter-languages');
-
 _cl.ipcRenderer.on('filter-languages', (event, arg) => {
     var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
     var options: string = '';
@@ -45,11 +43,12 @@ _cl.ipcRenderer.on('languages-list', (event, arg) => {
 function changeLanguage() {
     var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
     var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
-    _cl.ipcRenderer.send('change-language', {command: 'changeLanguage', oldLanguage: currentLanguage.value, newLanguage: newLanguage.value});
+    _cl.ipcRenderer.send('change-language', { command: 'changeLanguage', oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
 }
 
 function changeLanguageLoaded(): void {
     _cl.ipcRenderer.send('get-theme');
+    _cl.ipcRenderer.send('get-filter-languages');
 }
 
 _cl.ipcRenderer.on('set-theme', (event, arg) => {

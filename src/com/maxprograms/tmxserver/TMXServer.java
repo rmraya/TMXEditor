@@ -173,6 +173,8 @@ public class TMXServer implements HttpHandler {
 				response = deleteUnits(json);
 			} else if ("createFile".equals(command)) {
 				response = createFile(json);
+			} else if ("getFileProperties".equals(command)) {
+				response = getFileProperties();
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -223,6 +225,10 @@ public class TMXServer implements HttpHandler {
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
+	}
+
+	private String getFileProperties() {
+		return service.getFileProperties().toString();
 	}
 
 	private String deleteUnits(JSONObject json) {

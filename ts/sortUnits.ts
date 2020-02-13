@@ -19,8 +19,6 @@ SOFTWARE.
 
 var _su = require('electron');
 
-_su.ipcRenderer.send('get-filter-languages');
-
 _su.ipcRenderer.on('filter-languages', (event, arg) => {
     var sortLanguage: HTMLSelectElement = document.getElementById('sortLanguage') as HTMLSelectElement;
     var options: string = '';
@@ -44,7 +42,7 @@ _su.ipcRenderer.on('sort-options', (event, arg) => {
 function sort(): void {
     var language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
     var desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;
-    _su.ipcRenderer.send('set-sort', {sortLanguage: language, ascending: !desc});
+    _su.ipcRenderer.send('set-sort', { sortLanguage: language, ascending: !desc });
 }
 
 function clearSort() {
@@ -53,6 +51,7 @@ function clearSort() {
 
 function sortUnitsLoaded(): void {
     _su.ipcRenderer.send('get-theme');
+    _su.ipcRenderer.send('get-filter-languages');
 }
 
 _su.ipcRenderer.on('set-theme', (event, arg) => {

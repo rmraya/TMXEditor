@@ -24,8 +24,6 @@ function togleSourceLanguage(): void {
     (document.getElementById('sourceLanguage') as HTMLSelectElement).disabled = !checked;
 }
 
-_f.ipcRenderer.send('get-filter-languages');
-
 _f.ipcRenderer.on('filter-languages', (event, arg) => {
     var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
     var filterLanguage: HTMLSelectElement = document.getElementById('filterLanguage') as HTMLSelectElement;
@@ -88,6 +86,7 @@ function clearFilters(): void {
 
 function filtersLoaded(): void {
     _f.ipcRenderer.send('get-theme');
+    _f.ipcRenderer.send('get-filter-languages');
 }
 
 _f.ipcRenderer.on('set-theme', (event, arg) => {

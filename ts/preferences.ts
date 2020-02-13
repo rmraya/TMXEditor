@@ -19,8 +19,6 @@ SOFTWARE.
 
 const _p = require("electron");
 
-_p.ipcRenderer.send('get-preferences');
-
 _p.ipcRenderer.on('set-preferences', (event, arg) => {
     (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
     (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
@@ -33,8 +31,9 @@ function savePreferences() {
     _p.ipcRenderer.send('save-preferences', prefs);
 }
 
-function preferencesLoaded() : void {
+function preferencesLoaded(): void {
     _p.ipcRenderer.send('get-theme');
+    _p.ipcRenderer.send('get-preferences');
 }
 
 _p.ipcRenderer.on('set-theme', (event, arg) => {

@@ -19,8 +19,6 @@ SOFTWARE.
 
 const _c = require("electron");
 
-_c.ipcRenderer.send('get-filter-languages');
-
 _c.ipcRenderer.on('filter-languages', (event, arg) => {
     var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
     var options: string = '';
@@ -36,8 +34,9 @@ function consolidate(): void {
     _c.ipcRenderer.send('consolidate-units', { command: 'consolidateUnits', srcLang: srcLang });
 }
 
-function consolidateLoaded() : void {
+function consolidateLoaded(): void {
     _c.ipcRenderer.send('get-theme');
+    _c.ipcRenderer.send('get-filter-languages');
 }
 
 _c.ipcRenderer.on('set-theme', (event, arg) => {

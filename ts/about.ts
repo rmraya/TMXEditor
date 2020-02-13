@@ -18,12 +18,12 @@ SOFTWARE.
 *****************************************************************************/
 
 var _b = require('electron');
-   
+
 function licensesClicked() {
     _b.ipcRenderer.send('licenses-clicked');
 }
 
-function aboutLoaded() : void {
+function aboutLoaded(): void {
     _b.ipcRenderer.send('get-theme');
 }
 

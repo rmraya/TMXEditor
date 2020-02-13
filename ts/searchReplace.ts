@@ -19,8 +19,6 @@ SOFTWARE.
 
 const _s = require("electron");
 
-_s.ipcRenderer.send('get-filter-languages');
-
 _s.ipcRenderer.on('filter-languages', (event, arg) => {
     var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
     var options: string = '';
@@ -44,11 +42,12 @@ function replace(): void {
         return;
     }
     var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
-    _s.ipcRenderer.send('replace-request', {command: 'replaceText', search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
+    _s.ipcRenderer.send('replace-request', { command: 'replaceText', search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
 }
 
-function searchReplaceLoaded() : void {
+function searchReplaceLoaded(): void {
     _s.ipcRenderer.send('get-theme');
+    _s.ipcRenderer.send('get-filter-languages');
 }
 
 _s.ipcRenderer.on('set-theme', (event, arg) => {

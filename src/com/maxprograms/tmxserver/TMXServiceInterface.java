@@ -20,7 +20,6 @@ package com.maxprograms.tmxserver;
 
 import java.util.List;
 
-import com.maxprograms.tmxserver.models.FileProperties;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.Result;
 import com.maxprograms.tmxserver.models.TUnit;
@@ -48,7 +47,7 @@ public interface TMXServiceInterface {
 
 	JSONObject saveFile(String file);
 
-	Result<FileProperties> getFileProperties();
+	JSONObject getFileProperties();
 
 	String[] getTuData(String id);
 

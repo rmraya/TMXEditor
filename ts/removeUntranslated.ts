@@ -19,8 +19,6 @@ SOFTWARE.
 
 const _ru = require("electron");
 
-_ru.ipcRenderer.send('get-filter-languages');
-
 _ru.ipcRenderer.on('filter-languages', (event, arg) => {
     var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
     var options: string = '';
@@ -36,8 +34,9 @@ function removeUntranslated(): void {
     _ru.ipcRenderer.send('remove-untranslated', { command: 'removeUntranslated', srcLang: srcLang });
 }
 
-function removeUntranslatedLoaded() : void {
+function removeUntranslatedLoaded(): void {
     _ru.ipcRenderer.send('get-theme');
+    _ru.ipcRenderer.send('get-filter-languages');
 }
 
 _ru.ipcRenderer.on('set-theme', (event, arg) => {

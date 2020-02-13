@@ -435,3 +435,7 @@ button.toolbar:hover {
 .active {
 	background: var(--highlight-color);
 }
+
+.bordered {
+	border: 1px solid var(--normal-color) !important;
+}

@@ -145,6 +145,7 @@ function createWindow() {
         height: currentDefaults.height,
         x: currentDefaults.x,
         y: currentDefaults.y,
+        useContentSize: true,
         webPreferences: {
             nodeIntegration: true
         },
@@ -925,11 +926,47 @@ function exportDelimited(): void {
 }
 
 function showFileInfo(): void {
-    // TODO
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    var fileInfoWindow: BrowserWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 550,
+        height: 400,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    fileInfoWindow.setMenu(null);
+    fileInfoWindow.loadURL('file://' + app.getAppPath() + '/html/fileInfo.html');
+    // fileInfoWindow.webContents.openDevTools()
+    fileInfoWindow.show();
 }
 
 ipcMain.on('show-file-info', () => {
     showFileInfo();
+});
+
+ipcMain.on('file-properties', (event, arg) => {
+    sendRequest({ command: 'getFileProperties' },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('set-file-properties', data);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 });
 
 function validateFile(): void {

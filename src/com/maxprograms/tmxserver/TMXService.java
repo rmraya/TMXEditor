@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.maxprograms.languages.RegistryParser;
-import com.maxprograms.tmxserver.models.FileProperties;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.Result;
 import com.maxprograms.tmxserver.models.TUnit;
@@ -69,6 +68,7 @@ import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.XMLOutputter;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.xml.sax.SAXException;
 
 public class TMXService implements TMXServiceInterface {
@@ -390,39 +390,48 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public Result<FileProperties> getFileProperties() {
-		Result<FileProperties> result = new Result<>();
+	public JSONObject getFileProperties() {
+		JSONObject result = new JSONObject();
 		if (currentFile != null) {
-			result.setResult(Result.SUCCESS);
 			Element header = store.getHeader();
 
-			List<String[]> properties = new ArrayList<>();
+			result.put("file", currentFile.getAbsolutePath());
+
+			JSONArray properties = new JSONArray();
+			result.put("properties", properties);
 			List<Element> propsList = header.getChildren("prop");
 			Iterator<Element> propsIt = propsList.iterator();
 			while (propsIt.hasNext()) {
 				Element prop = propsIt.next();
-				properties.add(new String[] { prop.getAttributeValue("type"), prop.getText() });
+				JSONArray array = new JSONArray();
+				array.put(prop.getAttributeValue("type"));
+				array.put(prop.getText());
+				properties.put(array );
 			}
 
-			List<String> notes = new ArrayList<>();
+			JSONArray notes = new JSONArray();
+			result.put("notes", notes);
 			List<Element> notesList = header.getChildren("note");
 			Iterator<Element> notesIt = notesList.iterator();
 			while (notesIt.hasNext()) {
 				Element note = notesIt.next();
-				notes.add(note.getText());
+				notes.put(note.getText());
 			}
 
-			FileProperties file = new FileProperties(currentFile.getAbsolutePath(),
-					header.getAttributeValue("creationtool"), header.getAttributeValue("creationtoolversion"),
-					header.getAttributeValue("segtype"), header.getAttributeValue("o-tmf"),
-					header.getAttributeValue("adminlang"), header.getAttributeValue("srclang"),
-					header.getAttributeValue("datatype"), properties, notes);
-			List<FileProperties> data = new ArrayList<>();
-			data.add(file);
-			result.setData(data);
+			JSONObject attributes = new JSONObject();
+			result.put("attributes", attributes);
+			attributes.put("creationtool", header.getAttributeValue("creationtool"));
+			attributes.put("creationtoolversion", header.getAttributeValue("creationtoolversion"));
+			attributes.put("segtype", header.getAttributeValue("segtype"));
+			attributes.put("o_tmf", header.getAttributeValue("o-tmf"));
+			attributes.put("adminlang",header.getAttributeValue("adminlang"));
+			attributes.put("srclang", header.getAttributeValue("srclang"));
+			attributes.put("datatype", header.getAttributeValue("datatype"));
+
+			result.put(Constants.STATUS, Result.SUCCESS);
 		} else {
-			result.setResult(Result.ERROR);
-			result.setMessage("No file open.");
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, "No file open");
 		}
 		return result;
 	}
