@@ -163,14 +163,16 @@ public class TMXServer implements HttpHandler {
 				response = replaceText(json);
 			} else if ("removeSpaces".equals(command)) {
 				response = removeSpaces();
-			} else if("removeDuplicates".equals(command)) {
+			} else if ("removeDuplicates".equals(command)) {
 				response = removeDuplicates();
 			} else if ("getAllLanguages".equals(command)) {
 				response = getAllLanguages();
 			} else if ("changeLanguage".equals(command)) {
 				response = changeLanguage(json.getString("oldLanguage"), json.getString("newLanguage"));
-			} else if ("deleteUnits". equals(command)) {
+			} else if ("deleteUnits".equals(command)) {
 				response = deleteUnits(json);
+			} else if ("createFile".equals(command)) {
+				response = createFile(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -199,7 +201,9 @@ public class TMXServer implements HttpHandler {
 				}
 				System.exit(0);
 			}
-		} catch (IOException e) {
+		} catch (
+
+		IOException e) {
 			response = e.getMessage();
 			t.sendResponseHeaders(500, response.length());
 			try (OutputStream os = t.getResponseBody()) {
@@ -208,10 +212,23 @@ public class TMXServer implements HttpHandler {
 		}
 	}
 
+	private String createFile(JSONObject json) {
+		try {
+			Language srcLang = service.getLanguage(json.getString("srcLang"));
+			Language tgtLang = service.getLanguage(json.getString("tgtLang"));
+			return service.createFile(srcLang, tgtLang).toString();
+		} catch (IOException e) {
+			JSONObject result = new JSONObject();
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+			return result.toString();
+		}
+	}
+
 	private String deleteUnits(JSONObject json) {
 		JSONArray array = json.getJSONArray("selected");
 		List<String> selected = new ArrayList<>();
-		for (int i=0 ; i<array.length() ; i++) {
+		for (int i = 0; i < array.length(); i++) {
 			selected.add(array.getString(i));
 		}
 		return service.delete(selected).toString();
@@ -222,7 +239,7 @@ public class TMXServer implements HttpHandler {
 			Language oldLang = service.getLanguage(oldLanguage);
 			Language newLang = service.getLanguage(newLanguage);
 			return service.changeLanguage(oldLang, newLang).toString();
-		} catch (IOException e ){
+		} catch (IOException e) {
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Result.ERROR);
 			result.put(Constants.REASON, e.getMessage());

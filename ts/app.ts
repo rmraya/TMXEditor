@@ -33,6 +33,7 @@ var removeUntranslatedWindow: BrowserWindow;
 var settingsWindow: BrowserWindow;
 var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
+var newFileWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -781,8 +782,47 @@ nativeTheme.on('updated', () => {
 });
 
 function createNewFile(): void {
-    // TODO
+    newFileWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 450,
+        height: 170,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    newFileWindow.setMenu(null);
+    newFileWindow.loadURL('file://' + app.getAppPath() + '/html/newFile.html');
+    // settingsWindow.webContents.openDevTools()
+    newFileWindow.show();
 }
+
+ipcMain.on('create-file', (event, arg) => {
+    newFileWindow.close();
+    if (currentFile != '' && !saved) {
+        let response = dialog.showMessageBoxSync(mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
+        if (response === 0) {
+            saveFile();
+        }
+    }
+    sendRequest(arg,
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                openFile(data.path);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 ipcMain.on('new-file', () => {
     createNewFile();

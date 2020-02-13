@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>New TMX File</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="newFileLoaded()">
+    <div style="padding:4px;">
+        <label for="srcLanguage">Source Language</label>
+        <select id="srcLanguage" style="width: 300px;" class="right">
+        </select>
+    </div>
+    <div style="padding:4px;">
+        <label for="tgtLanguage">Target Language</label>
+        <select id="tgtLanguage" style="width: 300px;"  class="right">
+        </select>
+    </div>
+    <div class="buttonArea">
+        <button onclick="createFile()">Create TMX File</button>
+    </div>
+    <script src="../js/newFile.js"></script>
+</body>
+
+</html>
