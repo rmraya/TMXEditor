@@ -431,3 +431,7 @@ button.toolbar:hover {
 .highlight {
 	color: var(--highlight-color);
 }
+
+.active {
+	background: var(--highlight-color);
+}

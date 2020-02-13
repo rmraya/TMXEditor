@@ -37,14 +37,14 @@ _su.ipcRenderer.on('sort-options', (event, arg) => {
         (document.getElementById('sortLanguage') as HTMLSelectElement).value = arg.sortLanguage;
     }
     if (arg.ascending != undefined) {
-        (document.getElementById('ascending') as HTMLInputElement).checked = arg.ascending;
+        (document.getElementById('descending') as HTMLInputElement).checked = !arg.ascending;
     }
 });
 
 function sort(): void {
     var language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
-    var asc: boolean = (document.getElementById('ascending') as HTMLInputElement).checked;
-    _su.ipcRenderer.send('set-sort', {sortLanguage: language, ascending: asc});
+    var desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;
+    _su.ipcRenderer.send('set-sort', {sortLanguage: language, ascending: !desc});
 }
 
 function clearSort() {

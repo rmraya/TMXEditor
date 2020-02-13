@@ -1131,12 +1131,14 @@ ipcMain.on('set-sort', (event, arg) => {
     sortOptions = arg;
     sortUnitsWindow.close();
     loadSegments();
+    contents.send('sort-on');
 });
 
 ipcMain.on('clear-sort', () => {
     sortOptions = {};
     sortUnitsWindow.close();
     loadSegments();
+    contents.send('sort-off');
 });
 
 ipcMain.on('get-sort', (event, arg) => {
@@ -1176,6 +1178,7 @@ ipcMain.on('filter-options', (event, arg) => {
     filterOptions = arg;
     filtersWindow.close();
     loadSegments();
+    contents.send('filters-on');
 });
 
 ipcMain.on('get-filter-options', (event, arg) => {
@@ -1186,6 +1189,7 @@ ipcMain.on('clear-filter-options', () => {
     filterOptions = {};
     filtersWindow.close();
     loadSegments();
+    contents.send('filters-off');
 });
 
 ipcMain.on('get-filter-languages', (event, arg) => {

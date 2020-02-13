@@ -136,9 +136,25 @@ function sortUnits(): void {
     ipcRenderer.send('sort-units');
 }
 
+ipcRenderer.on('sort-on', () => {
+    document.getElementById('sorting').classList.add('active');
+});
+
+ipcRenderer.on('sort-off', () => {
+    document.getElementById('sorting').classList.remove('active');
+});
+
 function filterUnits(): void {
     ipcRenderer.send('filter-units');
 }
+
+ipcRenderer.on('filters-on', () => {
+    document.getElementById('filtering').classList.add('active');
+});
+
+ipcRenderer.on('filters-off', () => {
+    document.getElementById('filtering').classList.remove('active');
+});
 
 function convertCSV(): void {
     ipcRenderer.send('convert-csv');
