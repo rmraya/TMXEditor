@@ -53,6 +53,7 @@ var sortOptions: any = {};
 
 var currentFile: string = '';
 var saved: boolean = true;
+var needsName: boolean = false;
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -814,6 +815,7 @@ ipcMain.on('create-file', (event, arg) => {
         function success(data: any) {
             if (data.status === SUCCESS) {
                 openFile(data.path);
+                needsName = true;
             } else {
                 dialog.showMessageBox({ type: 'error', message: data.reason });
             }
@@ -830,6 +832,10 @@ ipcMain.on('new-file', () => {
 
 function saveFile(): void {
     if (currentFile === '') {
+        return;
+    }
+    if (needsName) {
+        saveAs();
         return;
     }
     sendRequest({ command: 'saveFile', file: currentFile },
@@ -884,7 +890,26 @@ ipcMain.on('save-file', () => {
 })
 
 function saveAs(): void {
-    // TODO
+    dialog.showSaveDialog({
+        title: 'Save TMX File',
+        properties: ['showOverwriteConfirmation', 'createDirectory'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value) {
+        if (!value.canceled) {
+            currentFile = value.filePath;
+            needsName = false;
+            saveFile();
+            mainWindow.setTitle(currentFile);
+            saveRecent(currentFile);
+            saved = true;
+        }
+    })["catch"](function (error) {
+        dialog.showErrorBox('Error', error);
+        console.log(error);
+    });
 }
 
 function convertCSV(): void {
@@ -1239,6 +1264,10 @@ ipcMain.on('get-filter-languages', (event, arg) => {
 function insertUnit(): void {
     // TODO
 }
+
+ipcMain.on('insert-unit', () => {
+    insertUnit();
+});
 
 function deleteUnits(): void {
     if (currentFile === '') {

@@ -108,7 +108,7 @@ function replaceText(): void {
 }
 
 function insertUnit(): void {
-    // TODO
+    ipcRenderer.send('insert-unit');
 }
 
 function deleteUnits(): void {
