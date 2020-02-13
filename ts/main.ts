@@ -160,10 +160,6 @@ function convertCSV(): void {
     ipcRenderer.send('convert-csv');
 }
 
-function sendFeedback(): void {
-    ipcRenderer.send('send-feedback');
-}
-
 function openHelp(): void {
     ipcRenderer.send('show-help');
 }

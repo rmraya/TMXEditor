@@ -917,6 +917,7 @@ function saveAs(): void {
 
 function convertCSV(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 ipcMain.on('convert-csv', () => {
@@ -925,6 +926,7 @@ ipcMain.on('convert-csv', () => {
 
 function exportDelimited(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function showFileInfo(): void {
@@ -1095,10 +1097,12 @@ function getCleaningProgress() {
 
 function splitFile(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function mergeFiles(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function saveEdits(): void {
@@ -1302,6 +1306,7 @@ ipcMain.on('get-filter-languages', (event, arg) => {
 
 function insertUnit(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 ipcMain.on('insert-unit', () => {
@@ -1419,18 +1424,22 @@ ipcMain.on('all-languages', (event, arg) => {
 
 function removeLanguage(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function addLanguage(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function changeSourceLanguage(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function removeTags(): void {
     // TODO
+    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
 }
 
 function removeDuplicates(): void {
