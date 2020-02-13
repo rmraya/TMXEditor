@@ -21,7 +21,8 @@ import { Buffer } from "buffer";
 import { execFileSync, spawn } from "child_process";
 import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents, nativeTheme } from "electron";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
-import { ClientRequest, request } from "http";
+import { ClientRequest, request, IncomingMessage } from "http";
+const https = require('https');
 
 app.allowRendererProcessReuse = true;
 
@@ -43,6 +44,7 @@ var fileLanguages: any[];
 var currentDefaults: any;
 var currentStatus: any = {};
 var currentPreferences: any;
+var currentVersion: string;
 var currentTheme: string;
 var filterOptions: any = {};
 var loadOptions: any = {
@@ -214,7 +216,7 @@ function createWindow() {
     var helpMenu: Menu = Menu.buildFromTemplate([
         { label: 'TMXEditor User Guide', accelerator: 'F1', click: function () { showHelp(); } },
         new MenuItem({ type: 'separator' }),
-        { label: 'Check for Updates', click: function () { checkUpdates(); } },
+        { label: 'Check for Updates...', click: function () { checkUpdates(false); } },
         { label: 'View Licenses', click: function () { showLicenses(); } },
         new MenuItem({ type: 'separator' }),
         { label: 'Release History', click: function () { showReleaseHistory(); } },
@@ -355,7 +357,7 @@ function showAbout() {
     var aboutWindow = new BrowserWindow({
         parent: mainWindow,
         width: 620,
-        height: 340,
+        height: 350,
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1681,9 +1683,51 @@ function getCount() {
     );
 }
 
-function checkUpdates(): void {
-    // TODO
+function checkUpdates(silent: boolean): void {
+    https.get('https://raw.githubusercontent.com/rmraya/TMXEditor/master/package.json', (res: IncomingMessage) => {
+        if (res.statusCode === 200) {
+            let rawData = '';
+            res.on('data', (chunk: string) => {
+                rawData += chunk;
+            });
+            res.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(rawData);
+                    if (app.getVersion() !== parsedData.version) {
+                        dialog.showMessageBox(mainWindow, {
+                            type: 'info',
+                            title: 'Updates Available',
+                            message: 'Version ' + parsedData.version + ' is available'
+                        });
+                    } else {
+                        if (!silent) {
+                            dialog.showMessageBox(mainWindow, {
+                                type: 'info',
+                                message: 'There are currently no updates available'
+                            });
+                        }
+                    }
+                } catch (e) {
+                    dialog.showErrorBox('Error', e.message);
+                }
+            });
+        } else {
+            if (!silent) {
+                dialog.showErrorBox('Error', 'Updates Request Failed.\nStatus code: ' + res.statusCode);
+            }
+        }
+    }).on('error', (e: any) => {
+        if (!silent) {
+            dialog.showErrorBox('Error', e.message);
+        }
+    });
 }
+
+
+
+ipcMain.on('get-version', (event, arg) => {
+    event.sender.send('set-version', app.getVersion());
+});
 
 function showReleaseHistory(): void {
     shell.openExternal('https://www.maxprograms.com/products/tmxlog.html');
