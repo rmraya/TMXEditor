@@ -75,7 +75,7 @@ public interface StoreInterface {
 
 	void removeLanguage(Language lang) throws IOException;
 
-	void removeAlltags();
+	void removeTags();
 
 	void changeLanguage(Language oldLanguage, Language newLanguage) throws IOException;
 

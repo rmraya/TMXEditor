@@ -133,7 +133,7 @@ public class CountStore implements StoreInterface {
 	}
 
 	@Override
-	public void removeAlltags() {
+	public void removeTags() {
 		// do nothing
 	}
 

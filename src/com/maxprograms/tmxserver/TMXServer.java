@@ -177,6 +177,8 @@ public class TMXServer implements HttpHandler {
 				response = createFile(json);
 			} else if ("getFileProperties".equals(command)) {
 				response = getFileProperties();
+			} else if ("removeTags".equals(command)) {
+				response = removeTags();
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -214,6 +216,10 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String removeTags() {
+		return service.removeTags().toString();
 	}
 
 	private String createFile(JSONObject json) {

@@ -63,7 +63,7 @@ public interface TMXServiceInterface {
 
 	JSONObject removeLanguage(Language lang);
 
-	JSONObject removeAlltags();
+	JSONObject removeTags();
 
 	JSONObject changeLanguage(Language oldLanguage, Language language);
 

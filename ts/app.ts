@@ -505,6 +505,7 @@ function openFile(file: string) {
                     contents.send('file-loaded', currentStatus);
                     currentFile = file;
                     mainWindow.setTitle(currentFile);
+                    saved = true;
                     return;
                 } else if (currentStatus.status === LOADING) {
                     // it's OK, keep waiting
@@ -1448,8 +1449,48 @@ function changeSourceLanguage(): void {
 }
 
 function removeTags(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    contents.send('start-waiting');
+    sendRequest({ command: 'removeTags' },
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Removing tags...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    loadSegments();
+                    saved = false;
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'removeDuplicates'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error removing tags');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 function removeDuplicates(): void {

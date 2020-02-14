@@ -590,7 +590,7 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public JSONObject removeAlltags() {
+	public JSONObject removeTags() {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
@@ -599,7 +599,7 @@ public class TMXService implements TMXServiceInterface {
 				@Override
 				public void run() {
 					try {
-						store.removeAlltags();
+						store.removeTags();
 					} catch (Exception e) {
 						LOGGER.log(Level.SEVERE, e.getMessage(), e);
 						processingError = e.getMessage();

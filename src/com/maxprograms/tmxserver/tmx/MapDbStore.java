@@ -509,7 +509,7 @@ public class MapDbStore implements StoreInterface {
 	}
 
 	@Override
-	public void removeAlltags() {
+	public void removeTags() {
 		processed = 0l;
 		Iterator<String> ut = order.iterator();
 		while (ut.hasNext()) {
