@@ -179,6 +179,8 @@ public class TMXServer implements HttpHandler {
 				response = getFileProperties();
 			} else if ("removeTags".equals(command)) {
 				response = removeTags();
+			} else if ("removeLanguage".equals(command)) {
+				response = removeLanguage(json);
 			} else if ("addLanguage".equals(command)) {
 				response = addLanguage(json);
 			} else {
@@ -216,6 +218,19 @@ public class TMXServer implements HttpHandler {
 			try (OutputStream os = t.getResponseBody()) {
 				os.write(response.getBytes());
 			}
+		}
+	}
+
+	private String removeLanguage(JSONObject json) {
+		try {
+			Language lang = service.getLanguage(json.getString("lang"));
+			return service.removeLanguage(lang).toString();
+		} catch (IOException e) {
+			logger.log(Level.ERROR, e);
+			JSONObject result = new JSONObject();
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+			return result.toString();
 		}
 	}
 

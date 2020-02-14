@@ -36,6 +36,7 @@ var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;
 var addLanguageWindow: BrowserWindow;
+var removeLanguageWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -1435,9 +1436,47 @@ ipcMain.on('all-languages', (event, arg) => {
 });
 
 function removeLanguage(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    removeLanguageWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 490,
+        height: 120,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    removeLanguageWindow.setMenu(null);
+    removeLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/removeLanguage.html');
+    removeLanguageWindow.show();
+    // removeLanguageWindow.webContents.openDevTools();
 }
+
+ipcMain.on('remove-language', (event, arg) => {
+    removeLanguageWindow.close();
+    sendRequest({ command: 'removeLanguage', lang: arg },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                getFileLanguages();
+                loadSegments();
+                saved = false;
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function addLanguage(): void {
     if (currentFile === '') {
@@ -1471,6 +1510,7 @@ ipcMain.on('add-language', (event, arg) => {
             if (data.status === SUCCESS) {
                 getFileLanguages();
                 loadSegments();
+                saved = false;
             } else {
                 dialog.showMessageBox({ type: 'error', message: data.reason });
             }

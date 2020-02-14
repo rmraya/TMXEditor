@@ -17,9 +17,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _al = require('electron');
+var _rl = require('electron');
 
-_al.ipcRenderer.on('languages-list', (event, arg) => {
+
+_rl.ipcRenderer.on('filter-languages', (event, arg) => {
     var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
     var options: string = '';
     for (let i: number = 0; i < arg.length; i++) {
@@ -29,16 +30,16 @@ _al.ipcRenderer.on('languages-list', (event, arg) => {
     language.innerHTML = options;
 });
 
-function addLanguage() {
+function removeLanguage() {
     var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    _al.ipcRenderer.send('add-language', language.value);
+    _rl.ipcRenderer.send('remove-language', language.value);
 }
 
-function addLanguageLoaded(): void {
-    _al.ipcRenderer.send('get-theme');
-    _al.ipcRenderer.send('all-languages');
+function removeLanguageLoaded(): void {
+    _rl.ipcRenderer.send('get-theme');
+    _rl.ipcRenderer.send('get-filter-languages');
 }
 
-_al.ipcRenderer.on('set-theme', (event, arg) => {
+_rl.ipcRenderer.on('set-theme', (event, arg) => {
     (document.getElementById('theme') as HTMLLinkElement).href = arg;
 });
