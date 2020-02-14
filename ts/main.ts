@@ -19,7 +19,7 @@ SOFTWARE.
 
 const { ipcRenderer } = require('electron');
 
-var languages;
+var languages: any;
 var fileLoaded: boolean = false;
 
 var currentPage: number = 0;
@@ -456,6 +456,19 @@ function cleanTags(unit: string): string {
         unit = start + '[[' + tagNumber++ + ']]' + rest.slice(end + 1);
         index = unit.indexOf('<img ');
     }
+    index = unit.indexOf('<span');
+    while (index >= 0) {
+        let start: string = unit.slice(0, index);
+        let rest: string = unit.slice(index + 1);
+        let end: number = rest.indexOf('>');
+        unit = start + rest.slice(end + 1);
+        index = unit.indexOf('<span');
+    }
+    index = unit.indexOf('</span>');
+    while (index >= 0) {
+        unit = unit.replace('</span>', '');
+        index = unit.indexOf('</span>');
+    }
     return unit;
 }
 
@@ -477,3 +490,12 @@ function toggleSelectAll(): void {
         check.checked = selectAll.checked;
     }
 }
+
+ipcRenderer.on('unit-inserted', (event, arg) => {
+    var tr: string = '<tr id="' + arg + '"><td class="fixed"><input type="checkbox" class="rowCheck"></td><td class="fixed">0</td>';
+    for (let index = 0; index < languages.length; ++index) {
+        tr = tr + '<td lang="' + languages[index].code + '"></td>';
+    }
+    tr = tr + '</tr>';
+    document.getElementById("tableBody").innerHTML = tr + document.getElementById("tableBody").innerHTML;
+});

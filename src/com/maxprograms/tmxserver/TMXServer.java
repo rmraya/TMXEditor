@@ -168,7 +168,9 @@ public class TMXServer implements HttpHandler {
 			} else if ("getAllLanguages".equals(command)) {
 				response = getAllLanguages();
 			} else if ("changeLanguage".equals(command)) {
-				response = changeLanguage(json.getString("oldLanguage"), json.getString("newLanguage"));
+				response = changeLanguage(json);
+			} else if ("insertUnit".equals(command)) {
+				response = insertUnit();
 			} else if ("deleteUnits".equals(command)) {
 				response = deleteUnits(json);
 			} else if ("createFile".equals(command)) {
@@ -231,6 +233,10 @@ public class TMXServer implements HttpHandler {
 		return service.getFileProperties().toString();
 	}
 
+	private String insertUnit() {
+		return service.insertUnit().toString();
+	}
+
 	private String deleteUnits(JSONObject json) {
 		JSONArray array = json.getJSONArray("selected");
 		List<String> selected = new ArrayList<>();
@@ -240,10 +246,10 @@ public class TMXServer implements HttpHandler {
 		return service.delete(selected).toString();
 	}
 
-	private String changeLanguage(String oldLanguage, String newLanguage) {
+	private String changeLanguage(JSONObject json) {
 		try {
-			Language oldLang = service.getLanguage(oldLanguage);
-			Language newLang = service.getLanguage(newLanguage);
+			Language oldLang = service.getLanguage(json.getString("oldLanguage"));
+			Language newLang = service.getLanguage(json.getString("newLanguage"));
 			return service.changeLanguage(oldLang, newLang).toString();
 		} catch (IOException e) {
 			JSONObject result = new JSONObject();

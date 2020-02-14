@@ -41,8 +41,6 @@ public interface TMXServiceInterface {
 
 	JSONObject closeFile();
 
-	String[] checkUpdates();
-
 	JSONObject saveData(String id, String lang, String value);
 
 	JSONObject saveFile(String file);
@@ -55,7 +53,7 @@ public interface TMXServiceInterface {
 
 	JSONObject replaceText(String search, String replace, Language language, boolean regExp);
 
-	String[] insertUnit();
+	JSONObject insertUnit();
 
 	Result<Language> getAllLanguages();
 

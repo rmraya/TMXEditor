@@ -24,11 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -320,26 +317,6 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] checkUpdates() {
-		String version = "";
-		try {
-			URL url = new URL("https://www.maxprograms.com/tmxeditor");
-			URLConnection connection = url.openConnection();
-			connection.setConnectTimeout(10000);
-			try (InputStream input = connection.getInputStream()) {
-				byte[] array = new byte[1024];
-				int bytes = input.read(array);
-				if (bytes != -1) {
-					version = new String(array, StandardCharsets.UTF_8).trim();
-				}
-			}
-			return new String[] { Result.SUCCESS, version };
-		} catch (IOException e) {
-			return new String[] { Result.ERROR, "Error checking for updates" };
-		}
-	}
-
-	@Override
 	public JSONObject saveData(String id, String lang, String value) {
 		JSONObject result = new JSONObject();
 		try {
@@ -527,15 +504,19 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] insertUnit() {
+	public JSONObject insertUnit() {
+		JSONObject result = new JSONObject();
 		try {
 			String id = "tmx" + System.currentTimeMillis();
 			store.insertUnit(id);
-			return new String[] { Result.SUCCESS, id };
+			result.put(Constants.STATUS, Result.SUCCESS);
+			result.put("id", id);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override

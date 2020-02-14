@@ -1305,8 +1305,18 @@ ipcMain.on('get-filter-languages', (event, arg) => {
 });
 
 function insertUnit(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    sendRequest({ command: 'insertUnit' },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                contents.send('unit-inserted', data.id);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 ipcMain.on('insert-unit', () => {
