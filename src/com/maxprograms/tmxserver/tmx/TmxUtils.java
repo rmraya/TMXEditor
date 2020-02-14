@@ -369,7 +369,7 @@ public class TmxUtils {
 		int start = 0;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if (Character.isSpaceChar(c)) {
+			if (Character.isSpaceChar(c) || c == '\n' || c== '\t' || c== 'r') {
 				start++;
 			} else {
 				break;
@@ -378,7 +378,7 @@ public class TmxUtils {
 		int end = text.length();
 		for (int i = text.length(); i > 0; i--) {
 			char c = text.charAt(i - 1);
-			if (Character.isSpaceChar(c)) {
+			if (Character.isSpaceChar(c) || c == '\n' || c== '\t' || c== 'r') {
 				end = i - 1;
 			} else {
 				break;

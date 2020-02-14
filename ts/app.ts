@@ -1659,7 +1659,7 @@ function removeSpaces(): void {
                     contents.send('set-status', '');
                     clearInterval(intervalObject);
                     loadSegments();
-                    getCount();
+                    saved = false;
                     return;
                 } else if (currentStatus.status === PROCESSING) {
                     // it's OK, keep waiting
