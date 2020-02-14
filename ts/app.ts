@@ -480,13 +480,13 @@ function openFileDialog() {
             { name: 'TMX File', extensions: ['tmx'] },
             { name: 'Any File', extensions: ['*'] }
         ]
-    }).then(function (value) {
+    }).then(function (value: any) {
         if (!value.canceled) {
             openFile(value.filePaths[0]);
             saveRecent(value.filePaths[0]);
         }
-    })["catch"](function (error) {
-        dialog.showErrorBox('Error', error);
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
 }
@@ -900,7 +900,7 @@ function saveAs(): void {
             { name: 'TMX File', extensions: ['tmx'] },
             { name: 'Any File', extensions: ['*'] }
         ]
-    }).then(function (value) {
+    }).then(function (value: any) {
         if (!value.canceled) {
             currentFile = value.filePath;
             needsName = false;
@@ -909,8 +909,8 @@ function saveAs(): void {
             saveRecent(currentFile);
             saved = true;
         }
-    })["catch"](function (error) {
-        dialog.showErrorBox('Error', error);
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
 }
