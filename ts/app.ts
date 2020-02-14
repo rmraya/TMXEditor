@@ -35,6 +35,7 @@ var settingsWindow: BrowserWindow;
 var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;
+var addLanguageWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -85,7 +86,7 @@ if (!existsSync(appHome)) {
     mkdirSync(appHome, { recursive: true });
 }
 
-const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8050'], { cwd: app.getAppPath() });
+const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
 ls.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -99,7 +100,7 @@ ls.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
 });
 
-var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8050/TMXserver'], { cwd: app.getAppPath() });
+var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
 console.log(ck.toString());
 
 app.on('open-file', function (event, filePath) {
@@ -308,7 +309,7 @@ function sendRequest(json: any, success: any, error: any) {
     var postData: string = JSON.stringify(json);
     var options = {
         hostname: '127.0.0.1',
-        port: 8050,
+        port: 8060,
         path: '/TMXServer',
         headers: {
             'Content-Type': 'application/json',
@@ -1439,9 +1440,46 @@ function removeLanguage(): void {
 }
 
 function addLanguage(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    addLanguageWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 490,
+        height: 120,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    addLanguageWindow.setMenu(null);
+    addLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/addLanguage.html');
+    addLanguageWindow.show();
+    // addLanguageWindow.webContents.openDevTools();
 }
+
+ipcMain.on('add-language', (event, arg) => {
+    addLanguageWindow.close();
+    sendRequest({ command: 'addLanguage', lang: arg },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                getFileLanguages();
+                loadSegments();
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function changeSourceLanguage(): void {
     // TODO
