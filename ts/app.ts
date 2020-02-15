@@ -37,6 +37,7 @@ var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;
 var addLanguageWindow: BrowserWindow;
 var removeLanguageWindow: BrowserWindow;
+var srcLanguageWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -1522,9 +1523,58 @@ ipcMain.on('add-language', (event, arg) => {
 });
 
 function changeSourceLanguage(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    srcLanguageWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 490,
+        height: 120,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    srcLanguageWindow.setMenu(null);
+    srcLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/srcLanguage.html');
+    srcLanguageWindow.show();
+    // srcLanguageWindow.webContents.openDevTools();
 }
+
+ipcMain.on('get-source-language', (event, arg) => {
+    sendRequest({ command: 'getSrcLanguage' },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('set-source-language', data);
+            } else {
+                dialog.showMessageBox({ type: 'warning', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('change-source-language', (event, arg) => {
+    srcLanguageWindow.close();
+    sendRequest({ command: 'setSrcLanguage', lang: arg },
+        function success(data: any) {
+            if (data.status !== SUCCESS) {
+                dialog.showMessageBox({ type: 'warning', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
 
 function removeTags(): void {
     if (currentFile === '') {

@@ -183,6 +183,10 @@ public class TMXServer implements HttpHandler {
 				response = removeLanguage(json);
 			} else if ("addLanguage".equals(command)) {
 				response = addLanguage(json);
+			} else if ("getSrcLanguage".equals(command)) {
+				response = getSrcLanguage();
+			} else if ("setSrcLanguage".equals(command)) {
+				response = setSrcLanguage(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -219,6 +223,23 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String setSrcLanguage(JSONObject json) {
+		try {
+			Language lang = service.getLanguage(json.getString("lang"));
+			return service.setSrcLanguage(lang).toString();
+		} catch (IOException e) {
+			logger.log(Level.ERROR, e);
+			JSONObject result = new JSONObject();
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+			return result.toString();
+		}
+	}
+
+	private String getSrcLanguage() {
+		return service.getSrcLanguage().toString();
 	}
 
 	private String removeLanguage(JSONObject json) {

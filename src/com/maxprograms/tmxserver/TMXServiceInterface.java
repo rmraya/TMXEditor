@@ -101,7 +101,7 @@ public interface TMXServiceInterface {
 
 	JSONObject setSrcLanguage(Language lang);
 
-	Result<Language> getSrcLanguage();
+	JSONObject getSrcLanguage();
 
 	String[] exportDelimited(String file);
 

@@ -383,7 +383,7 @@ public class TMXService implements TMXServiceInterface {
 				JSONArray array = new JSONArray();
 				array.put(prop.getAttributeValue("type"));
 				array.put(prop.getText());
-				properties.put(array );
+				properties.put(array);
 			}
 
 			JSONArray notes = new JSONArray();
@@ -401,7 +401,7 @@ public class TMXService implements TMXServiceInterface {
 			attributes.put("creationtoolversion", header.getAttributeValue("creationtoolversion"));
 			attributes.put("segtype", header.getAttributeValue("segtype"));
 			attributes.put("o_tmf", header.getAttributeValue("o-tmf"));
-			attributes.put("adminlang",header.getAttributeValue("adminlang"));
+			attributes.put("adminlang", header.getAttributeValue("adminlang"));
 			attributes.put("srclang", header.getAttributeValue("srclang"));
 			attributes.put("datatype", header.getAttributeValue("datatype"));
 
@@ -987,7 +987,7 @@ public class TMXService implements TMXServiceInterface {
 			result.put("count", mergeStore != null ? mergeStore.getCount() + " units merged" : "");
 		} else {
 			if (mergeError.isEmpty()) {
-				result.put(Constants.STATUS, Result.COMPLETED );
+				result.put(Constants.STATUS, Result.COMPLETED);
 			} else {
 				result.put(Constants.STATUS, Result.ERROR);
 				result.put(Constants.REASON, mergeError);
@@ -1079,31 +1079,34 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public Result<Language> getSrcLanguage() {
-		Result<Language> result = new Result<>();
-		List<Language> data = new ArrayList<>();
-		result.setData(data);
-		Element header = store.getHeader();
-		String code = header.getAttributeValue("srclang");
-		if ("*all*".equals(code)) {
-			data.add(new Language(code, "Any Language"));
-		} else {
-			try {
-				Language l = LangUtils.getLanguage(code);
-				if (l != null) {
-					data.add(l);
-				} else {
-					result.setResult(Result.ERROR);
-					result.setMessage("Invalid source language: " + code);
-					return result;
+	public JSONObject getSrcLanguage() {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			Element header = store.getHeader();
+			String code = header.getAttributeValue("srclang");
+			result.put(Constants.STATUS, Result.SUCCESS);
+			if ("*all*".equals(code)) {
+				result.put("srcLang", code);
+				result.put(Constants.STATUS, Result.SUCCESS);
+			} else {
+				try {
+					Language l = LangUtils.getLanguage(code);
+					if (l != null) {
+						result.put("srcLang", l.getCode());
+						result.put(Constants.STATUS, Result.SUCCESS);
+					} else {
+						result.put(Constants.STATUS, Result.ERROR);
+						result.put(Constants.REASON, "File has invalid source language: " + code);
+					}
+				} catch (IOException e) {
+					result.put(Constants.STATUS, Result.ERROR);
+					result.put(Constants.REASON, e.getMessage());
 				}
-			} catch (IOException e) {
-				result.setResult(Result.ERROR);
-				result.setMessage(e.getMessage());
-				return result;
 			}
+		} else {
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, "Null store");
 		}
-		result.setResult(Result.SUCCESS);
 		return result;
 	}
 
@@ -1409,7 +1412,7 @@ public class TMXService implements TMXServiceInterface {
 				}
 			}
 			result.put(Constants.STATUS, Result.SUCCESS);
-		} catch (IOException  e) {
+		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Result.ERROR);
 			result.put(Constants.REASON, e.getMessage());
@@ -1442,9 +1445,9 @@ public class TMXService implements TMXServiceInterface {
 					while ((line = reader.readLine()) != null) {
 						builder.append(line);
 					}
-					 json = new JSONObject(builder.toString());
+					json = new JSONObject(builder.toString());
 					json.put("indentation", value);
-					
+
 				}
 			}
 			try (FileOutputStream output = new FileOutputStream(preferences)) {
