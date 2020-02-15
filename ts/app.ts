@@ -38,6 +38,7 @@ var newFileWindow: BrowserWindow;
 var addLanguageWindow: BrowserWindow;
 var removeLanguageWindow: BrowserWindow;
 var srcLanguageWindow: BrowserWindow;
+var splitFileWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -1162,8 +1163,92 @@ function getCleaningProgress() {
 }
 
 function splitFile(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    splitFileWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 490,
+        height: 150,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    splitFileWindow.setMenu(null);
+    splitFileWindow.loadURL('file://' + app.getAppPath() + '/html/splitFile.html');
+    // splitFileWindow.webContents.openDevTools()
+    splitFileWindow.show();
+}
+
+ipcMain.on('select-tmx', (event, arg) => {
+    dialog.showOpenDialog({
+        title: 'TMX File',
+        properties: ['openFile'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            event.sender.send('tmx-file', value.filePaths[0]);
+        }
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+});
+
+ipcMain.on('split-tmx', (event, arg) => {
+    splitFileWindow.close();
+    sendRequest(arg,
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Splitting...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showMessageBox(mainWindow, { type: 'info', message: 'File split' });
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'replaceText'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error splitting text');
+                    return;
+                }
+                getSplitProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+function getSplitProgress() {
+    sendRequest({ command: 'getSplitProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(data: string) {
+            console.log(data);
+        }
+    );
 }
 
 function mergeFiles(): void {

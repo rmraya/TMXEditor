@@ -29,7 +29,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -837,29 +836,6 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] checkFiles() {
-		try {
-			File folder = TmxUtils.getWorkFolder();
-			File start = new File(folder, "start.txt");
-			if (!start.exists()) {
-				return new String[] { Result.SUCCESS, "" };
-			}
-			StringBuilder file = new StringBuilder();
-			try (BufferedReader input = new BufferedReader(new FileReader(start))) {
-				String line;
-				while ((line = input.readLine()) != null) {
-					file.append(line.trim());
-				}
-			}
-			Files.delete(Paths.get(start.toURI()));
-			return new String[] { Result.SUCCESS, file.toString() };
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
-		}
-	}
-
-	@Override
 	public JSONObject splitFile(String file, int parts) {
 		JSONObject result = new JSONObject();
 		File f = new File(file);
@@ -1130,7 +1106,7 @@ public class TMXService implements TMXServiceInterface {
 				}
 
 			}.start();
-			result.put(Constants.STATUS,Result.SUCCESS);
+			result.put(Constants.STATUS, Result.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Result.ERROR);

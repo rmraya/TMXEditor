@@ -81,8 +81,6 @@ public interface TMXServiceInterface {
 
 	JSONObject getSavingProgress();
 
-	String[] checkFiles();
-
 	JSONObject splitFile(String file, int parts);
 
 	JSONObject getSplitProgress();

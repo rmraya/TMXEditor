@@ -95,108 +95,150 @@ public class TMXServer implements HttpHandler {
 
 	@Override
 	public void handle(HttpExchange t) throws IOException {
-		String request = "";
-		try (InputStream is = t.getRequestBody()) {
-			request = readRequestBody(is);
-		}
-		if (debug) {
-			logger.log(Level.INFO, request);
-		}
-		JSONObject json = null;
-		String response = "";
-		String command = "version";
 		try {
-			if (!request.isBlank()) {
-				json = new JSONObject(request);
-				command = json.getString("command");
+			String request = "";
+			try (InputStream is = t.getRequestBody()) {
+				request = readRequestBody(is);
 			}
-			if ("version".equals(command)) {
+			if (request.isBlank()) {
+				throw new IOException("Empty request");
+			}
+			if (debug) {
+				logger.log(Level.INFO, request);
+			}
+			String response = "";
+			JSONObject json = new JSONObject(request);
+			String command = json.getString("command");
+			switch (command) {
+			case "version":
 				JSONObject obj = new JSONObject();
 				obj.put("tool", "TMXServer");
 				obj.put("version", Constants.VERSION);
 				obj.put("build", Constants.BUILD);
-				response = obj.toString(2);
-			} else if ("stop".equals(command)) {
+				response = obj.toString();
+				break;
+			case "stop":
 				if (service.isOpen()) {
 					service.closeFile();
 				}
-				JSONObject obj = new JSONObject();
-				obj.put(Constants.STATUS, Result.SUCCESS);
-				response = obj.toString(2);
-			} else if ("closeFile".equals(command)) {
+				JSONObject stop = new JSONObject();
+				stop.put(Constants.STATUS, Result.SUCCESS);
+				response = stop.toString();
+				break;
+			case "closeFile":
 				response = closeFile();
-			} else if ("saveFile".equals(command)) {
+				break;
+			case "saveFile":
 				response = saveFile(json.getString("file"));
-			} else if ("savingProgress".equals(command)) {
+				break;
+			case "savingProgress":
 				response = getSavingProgress();
-			} else if ("openFile".equals(command)) {
+				break;
+			case "openFile":
 				response = openFile(json.getString("file"));
-			} else if ("loadingProgress".equals(command)) {
+				break;
+			case "loadingProgress":
 				response = getLoadingProgress();
-			} else if ("getLanguages".equals(command)) {
+				break;
+			case "getLanguages":
 				response = getLanguages();
-			} else if ("getSegments".equals(command)) {
+				break;
+			case "getSegments":
 				response = getSegments(json);
-			} else if ("getTuData".equals(command)) {
+				break;
+			case "getTuData":
 				response = getTuData(json.getString("id"));
-			} else if ("getTuvData".equals(command)) {
+				break;
+			case "getTuvData":
 				response = getTuvData(json.getString("id"), json.getString("lang"));
-			} else if ("saveTuvData".equals(command)) {
+				break;
+			case "saveTuvData":
 				response = saveTuvData(json);
-			} else if ("consolidateUnits".equals(command)) {
+				break;
+			case "consolidateUnits":
 				response = consolidateUnits(json.getString("srcLang"));
-			} else if ("processingProgress".equals(command)) {
+				break;
+			case "processingProgress":
 				response = getProcessingProgress();
-			} else if ("getCount".equals(command)) {
+				break;
+			case "getCount":
 				response = getCount();
-			} else if ("validateFile".equals(command)) {
+				break;
+			case "validateFile":
 				response = validateFile(json.getString("file"));
-			} else if ("validatingProgress".equals(command)) {
+				break;
+			case "validatingProgress":
 				response = getValidatingProgress();
-			} else if ("cleanCharacters".equals(command)) {
+				break;
+			case "cleanCharacters":
 				response = cleanCharacters(json.getString("file"));
-			} else if ("cleaningProgress".equals(command)) {
+				break;
+			case "cleaningProgress":
 				response = getCleaningProgress();
-			} else if ("removeUntranslated".equals(command)) {
+				break;
+			case "removeUntranslated":
 				response = removeUntranslated(json.getString("srcLang"));
-			} else if ("replaceText".equals(command)) {
+				break;
+			case "replaceText":
 				response = replaceText(json);
-			} else if ("removeSpaces".equals(command)) {
+				break;
+			case "removeSpaces":
 				response = removeSpaces();
-			} else if ("removeDuplicates".equals(command)) {
+				break;
+			case "removeDuplicates":
 				response = removeDuplicates();
-			} else if ("getAllLanguages".equals(command)) {
+				break;
+			case "getAllLanguages":
 				response = getAllLanguages();
-			} else if ("changeLanguage".equals(command)) {
+				break;
+			case "changeLanguage":
 				response = changeLanguage(json);
-			} else if ("insertUnit".equals(command)) {
+				break;
+			case "insertUnit":
 				response = insertUnit();
-			} else if ("deleteUnits".equals(command)) {
+				break;
+			case "deleteUnits":
 				response = deleteUnits(json);
-			} else if ("createFile".equals(command)) {
+				break;
+			case "createFile":
 				response = createFile(json);
-			} else if ("getFileProperties".equals(command)) {
+				break;
+			case "getFileProperties":
 				response = getFileProperties();
-			} else if ("removeTags".equals(command)) {
+				break;
+			case "removeTags":
 				response = removeTags();
-			} else if ("removeLanguage".equals(command)) {
+				break;
+			case "removeLanguage":
 				response = removeLanguage(json);
-			} else if ("addLanguage".equals(command)) {
+				break;
+			case "addLanguage":
 				response = addLanguage(json);
-			} else if ("getSrcLanguage".equals(command)) {
+				break;
+			case "getSrcLanguage":
 				response = getSrcLanguage();
-			} else if ("setSrcLanguage".equals(command)) {
+				break;
+			case "setSrcLanguage":
 				response = setSrcLanguage(json);
-			} else if ("exportProgress".equals(command)) {
+				break;
+			case "exportProgress":
 				response = exportProgress();
-			} else if ("exportDelimited".equals(command)) {
+				break;
+			case "exportDelimited":
 				response = exportDelimited(json);
-			} else {
-				JSONObject obj = new JSONObject();
-				obj.put(Constants.STATUS, Result.ERROR);
-				obj.put(Constants.REASON, "Unknown command");
-				obj.put("received", json.toString());
-				response = obj.toString(2);
+				break;
+			case "splitFile":
+				response = splitFile(json);
+				break;
+			case "getSplitProgress":
+				response = getSplitProgress();
+				break;
+			default:
+				JSONObject unknown = new JSONObject();
+				unknown.put(Constants.STATUS, Result.ERROR);
+				unknown.put(Constants.REASON, "Unknown command");
+				unknown.put("received", json.toString());
+				response = unknown.toString();
 			}
 			if (debug) {
 				logger.log(Level.INFO, response);
@@ -221,12 +263,20 @@ public class TMXServer implements HttpHandler {
 			}
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
-			response = e.getMessage();
-			t.sendResponseHeaders(500, response.length());
+			String message = e.getMessage();
+			t.sendResponseHeaders(500, message.length());
 			try (OutputStream os = t.getResponseBody()) {
-				os.write(response.getBytes());
+				os.write(message.getBytes());
 			}
 		}
+	}
+
+	private String getSplitProgress() {
+		return service.getSplitProgress().toString();
+	}
+
+	private String splitFile(JSONObject json) {
+		return service.splitFile(json.getString("file"), json.getInt("parts")).toString();
 	}
 
 	private String exportProgress() {
