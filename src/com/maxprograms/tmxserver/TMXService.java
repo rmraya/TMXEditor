@@ -951,7 +951,7 @@ public class TMXService implements TMXServiceInterface {
 				merging = false;
 			}
 		}.start();
-		result.put(Constants.REASON, Result.SUCCESS);
+		result.put(Constants.STATUS, Result.SUCCESS);
 		return result;
 	}
 
@@ -960,7 +960,6 @@ public class TMXService implements TMXServiceInterface {
 		JSONObject result = new JSONObject();
 		if (merging) {
 			result.put(Constants.STATUS, Result.SUCCESS);
-			result.put("count", mergeStore != null ? mergeStore.getCount() + " units merged" : "");
 		} else {
 			if (mergeError.isEmpty()) {
 				result.put(Constants.STATUS, Result.COMPLETED);

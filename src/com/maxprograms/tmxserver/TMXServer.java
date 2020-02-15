@@ -28,9 +28,9 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -233,6 +233,12 @@ public class TMXServer implements HttpHandler {
 			case "getSplitProgress":
 				response = getSplitProgress();
 				break;
+			case "mergeFiles":
+				response = mergeFiles(json);
+				break;
+			case "getMergeProgress":
+				response = getMergeProgress();
+				break;
 			default:
 				JSONObject unknown = new JSONObject();
 				unknown.put(Constants.STATUS, Result.ERROR);
@@ -256,9 +262,7 @@ public class TMXServer implements HttpHandler {
 				}
 			}
 			if ("stop".equals(command)) {
-				if (debug) {
-					logger.log(Level.INFO, "Stopping server");
-				}
+				logger.log(Level.INFO, "Stopping server");
 				System.exit(0);
 			}
 		} catch (IOException e) {
@@ -269,6 +273,19 @@ public class TMXServer implements HttpHandler {
 				os.write(message.getBytes());
 			}
 		}
+	}
+
+	private String getMergeProgress() {
+		return service.getMergeProgress().toString();
+	}
+
+	private String mergeFiles(JSONObject json) {
+		JSONArray array = json.getJSONArray("files");
+		List<String> files = new ArrayList<>();
+		for (int i = 0; i < array.length(); i++) {
+			files.add(array.getString(i));
+		}
+		return service.mergeFiles(json.getString("merged"), files).toString();
 	}
 
 	private String getSplitProgress() {

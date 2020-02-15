@@ -39,6 +39,7 @@ var addLanguageWindow: BrowserWindow;
 var removeLanguageWindow: BrowserWindow;
 var srcLanguageWindow: BrowserWindow;
 var splitFileWindow: BrowserWindow;
+var mergeFilesWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -1228,7 +1229,7 @@ ipcMain.on('split-tmx', (event, arg) => {
                     contents.send('end-waiting');
                     contents.send('set-status', '');
                     clearInterval(intervalObject);
-                    dialog.showErrorBox('Error', 'Unknown error splitting text');
+                    dialog.showErrorBox('Error', 'Unknown error splitting file');
                     return;
                 }
                 getSplitProgress();
@@ -1252,8 +1253,112 @@ function getSplitProgress() {
 }
 
 function mergeFiles(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    mergeFilesWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: 560,
+        height: 450,
+        useContentSize: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    mergeFilesWindow.setMenu(null);
+    mergeFilesWindow.loadURL('file://' + app.getAppPath() + '/html/mergeFiles.html');
+    // mergeFilesWindow.webContents.openDevTools()
+    mergeFilesWindow.show();
+}
+
+ipcMain.on('select-merged-tmx', (event, arg) => {
+    dialog.showSaveDialog({
+        title: 'Merged TMX File',
+        properties: ['showOverwriteConfirmation', 'createDirectory'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            event.sender.send('merged-tmx-file', value.filePath);
+        }
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+});
+
+ipcMain.on('add-tmx-files', (event, arg) => {
+    dialog.showOpenDialog({
+        title: 'TMX Files',
+        properties: ['openFile', 'multiSelections'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            event.sender.send('tmx-files', value.filePaths);
+        }
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+});
+
+ipcMain.on('merge-tmx-files', (event, arg) => {
+    mergeFilesWindow.close();
+    contents.send('start-waiting');
+    sendRequest(arg,
+        function success(data: any) {
+            currentStatus = data;
+            contents.send('set-status', 'Merging...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Files merged' });
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'mergeFiles'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error merging files');
+                    return;
+                }
+                getMergeProgress();
+            }, 500);
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+function getMergeProgress() {
+    sendRequest({ command: 'getMergeProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(data: string) {
+            console.log(data);
+        }
+    );
 }
 
 function saveEdits(): void {
