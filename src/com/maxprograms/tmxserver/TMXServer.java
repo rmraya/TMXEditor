@@ -187,6 +187,10 @@ public class TMXServer implements HttpHandler {
 				response = getSrcLanguage();
 			} else if ("setSrcLanguage".equals(command)) {
 				response = setSrcLanguage(json);
+			} else if ("exportProgress".equals(command)) {
+				response = exportProgress();
+			} else if ("exportDelimited".equals(command)) {
+				response = exportDelimited(json);
 			} else {
 				JSONObject obj = new JSONObject();
 				obj.put(Constants.STATUS, Result.ERROR);
@@ -223,6 +227,14 @@ public class TMXServer implements HttpHandler {
 				os.write(response.getBytes());
 			}
 		}
+	}
+
+	private String exportProgress() {
+		return service.exportProgress().toString();
+	}
+
+	private String exportDelimited(JSONObject json) {
+		return service.exportDelimited(json.getString("file")).toString();
 	}
 
 	private String setSrcLanguage(JSONObject json) {

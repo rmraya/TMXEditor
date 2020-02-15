@@ -103,9 +103,9 @@ public interface TMXServiceInterface {
 
 	JSONObject getSrcLanguage();
 
-	String[] exportDelimited(String file);
+	JSONObject exportDelimited(String file);
 
-	String[] exportProgress();
+	JSONObject exportProgress();
 
 	String[] getTuvData(String id, String lang);
 

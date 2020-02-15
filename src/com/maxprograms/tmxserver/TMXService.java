@@ -1111,7 +1111,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] exportDelimited(String file) {
+	public JSONObject exportDelimited(String file) {
+		JSONObject result = new JSONObject();
 		exporting = true;
 		exportingError = "";
 		try {
@@ -1129,25 +1130,34 @@ public class TMXService implements TMXServiceInterface {
 				}
 
 			}.start();
-			return new String[] { Result.SUCCESS };
-		} catch (Exception ex) {
-			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Result.ERROR, ex.getMessage() };
+			result.put(Constants.STATUS,Result.SUCCESS);
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
-	public String[] exportProgress() {
-		if (exporting && store != null) {
-			return new String[] { Result.SUCCESS, "Exported " + store.getExported() + " units" };
+	public JSONObject exportProgress() {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			if (exporting) {
+				result.put(Constants.STATUS, Result.SUCCESS);
+			} else {
+				if (exportingError.isEmpty()) {
+					result.put(Constants.STATUS, Result.COMPLETED);
+				} else {
+					result.put(Constants.STATUS, Result.ERROR);
+					result.put(Constants.REASON, exportingError);
+				}
+			}
+		} else {
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, "Null store");
 		}
-		if (!exporting && store != null) {
-			return new String[] { Result.COMPLETED };
-		}
-		if (!exportingError.isEmpty()) {
-			return new String[] { Result.ERROR, exportingError };
-		}
-		return new String[] { Result.ERROR, "Null store and not exporting" };
+		return result;
 	}
 
 	@Override

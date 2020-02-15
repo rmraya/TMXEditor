@@ -929,8 +929,70 @@ ipcMain.on('convert-csv', () => {
 });
 
 function exportDelimited(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    if (currentFile === '') {
+        dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+        return;
+    }
+    dialog.showSaveDialog({
+        title: 'Export TAB Delimited',
+        properties: ['showOverwriteConfirmation', 'createDirectory'],
+        filters: [
+            { name: 'Text File', extensions: ['txt'] },
+            { name: 'CSV File', extensions: ['csv'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            sendRequest({ command: 'exportDelimited', file: value.filePath },
+                function success(data: any) {
+                    currentStatus = data;
+                    contents.send('start-waiting');
+                    contents.send('set-status', 'Exporting...');
+                    var intervalObject = setInterval(function () {
+                        if (currentStatus.status === COMPLETED) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showMessageBox(mainWindow, { type: 'info', message: 'File exported' });
+                            return;
+                        } else if (currentStatus.status === ERROR) {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', currentStatus.reason);
+                            return;
+                        } else if (currentStatus.status === SUCCESS) {
+                            // keep waiting
+                        } else {
+                            contents.send('end-waiting');
+                            contents.send('set-status', '');
+                            clearInterval(intervalObject);
+                            dialog.showErrorBox('Error', 'Unknown error exporting file');
+                            return;
+                        }
+                        getExportProgress();
+                    }, 500);
+                },
+                function error(reason: string) {
+                    dialog.showErrorBox('Error', reason);
+                }
+            );
+        }
+    })["catch"](function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+}
+
+function getExportProgress() {
+    sendRequest({ command: 'exportProgress' },
+        function success(data: any) {
+            currentStatus = data;
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 }
 
 function showFileInfo(): void {
