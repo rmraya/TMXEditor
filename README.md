@@ -48,7 +48,7 @@ Commercial version includes unlimited email support at tech@maxprograms.com
   npm start
 ```
 
-This vide shows how to build and launch TMXEditor: [https://maxprograms.com/tutorials/TMXEditor_build.mp4](https://maxprograms.com/tutorials/TMXEditor_build.mp4)
+This video shows how to build and launch TMXEditor: [https://maxprograms.com/tutorials/TMXEditor_build.mp4](https://maxprograms.com/tutorials/TMXEditor_build.mp4)
 
 
 Compile once and then simply run `npm start` to start TMXEditor
