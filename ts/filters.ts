@@ -35,6 +35,13 @@ _f.ipcRenderer.on('filter-languages', (event, arg) => {
     sourceLanguage.innerHTML = options;
     filterLanguage.innerHTML = options;
     _f.ipcRenderer.send('get-filter-options');
+    _f.ipcRenderer.send('get-source-language');
+});
+
+_f.ipcRenderer.on('set-source-language', (event, arg) => {
+    if (arg.srcLang !== '*all*') {
+        (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+    }
 });
 
 _f.ipcRenderer.on('set-filter-options', (event, arg) => {

@@ -27,6 +27,13 @@ _c.ipcRenderer.on('filter-languages', (event, arg) => {
         options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
     }
     sourceLanguage.innerHTML = options;
+    _c.ipcRenderer.send('get-source-language');
+});
+
+_c.ipcRenderer.on('set-source-language', (event, arg) => {
+    if (arg.srcLang !== '*all*') {
+        (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+    }
 });
 
 function consolidate(): void {

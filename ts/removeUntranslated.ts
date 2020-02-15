@@ -27,6 +27,13 @@ _ru.ipcRenderer.on('filter-languages', (event, arg) => {
         options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
     }
     sourceLanguage.innerHTML = options;
+    _ru.ipcRenderer.send('get-source-language');
+});
+
+_ru.ipcRenderer.on('set-source-language', (event, arg) => {
+    if (arg.srcLang !== '*all*') {
+        (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+    }
 });
 
 function removeUntranslated(): void {
