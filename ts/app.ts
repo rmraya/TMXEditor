@@ -368,7 +368,6 @@ function showAbout() {
         resizable: false,
         useContentSize: true,
         show: false,
-        modal: true,
         icon: './icons/tmxeditor.png',
         webPreferences: {
             nodeIntegration: true
@@ -2182,41 +2181,6 @@ ipcMain.on('show-message', (event, arg) => {
     dialog.showMessageBox(arg);
 });
 
-const sizes: any = {
-    darwin: {
-        aboutWindow: { width: 620, height: 350 },
-        replaceTextWindow: { width: 450, height: 230 },
-        filtersWindow: { width: 500, height: 300 },
-        consolidateWindow: { width: 400, height: 110 },
-        removeUntranslatedWindow: { width: 40, height: 120 },
-        settingsWindow: { width: 400, height: 170 },
-        sortUnitsWindow: { width: 450, height: 170 },
-        changeLanguageWindow: { width: 490, height: 170 },
-        newFileWindow: { width: 450, height: 170 },
-        addLanguageWindow: { width: 490, height: 120 },
-        removeLanguageWindow: { width: 490, height: 120 },
-        srcLanguageWindow: { width: 490, height: 120 },
-        splitFileWindow: { width: 490, height: 150 },
-        mergeFilesWindow: { width: 560, height: 450 }
-    },
-    linux: {
-        aboutWindow: { width: 620, height: 350 },
-        replaceTextWindow: { width: 450, height: 230 },
-        filtersWindow: { width: 500, height: 300 },
-        consolidateWindow: { width: 400, height: 110 },
-        removeUntranslatedWindow: { width: 40, height: 120 },
-        settingsWindow: { width: 400, height: 170 },
-        sortUnitsWindow: { width: 450, height: 170 },
-        changeLanguageWindow: { width: 490, height: 170 },
-        newFileWindow: { width: 450, height: 170 },
-        addLanguageWindow: { width: 490, height: 120 },
-        removeLanguageWindow: { width: 490, height: 120 },
-        srcLanguageWindow: { width: 490, height: 120 },
-        splitFileWindow: { width: 490, height: 150 },
-        mergeFilesWindow: { width: 560, height: 450 }
-    }
-}
-
 function getWidth(window: string): number {
     switch (process.platform) {
         case 'win32': {
@@ -2306,20 +2270,20 @@ function getHeihght(window: string): number {
         }
         case 'darwin': {
             switch (window) {
-                case 'aboutWindow': { return 380; }
-                case 'replaceTextWindow': { return 210; }
-                case 'filtersWindow': { return 300; }
-                case 'consolidateWindow': { return 120; }
-                case 'removeUntranslatedWindow': { return 120; }
-                case 'settingsWindow': { return 150; }
-                case 'sortUnitsWindow': { return 150; }
-                case 'changeLanguageWindow': { return 160; }
-                case 'newFileWindow': { return 160; }
-                case 'addLanguageWindow': { return 120; }
-                case 'removeLanguageWindow': { return 120; }
-                case 'srcLanguageWindow': { return 120; }
-                case 'splitFileWindow': { return 150; }
-                case 'mergeFilesWindow': { return 450; }
+                case 'aboutWindow': { return 360; }
+                case 'replaceTextWindow': { return 190; }
+                case 'filtersWindow': { return 290; }
+                case 'consolidateWindow': { return 110; }
+                case 'removeUntranslatedWindow': { return 110; }
+                case 'settingsWindow': { return 140; }
+                case 'sortUnitsWindow': { return 140; }
+                case 'changeLanguageWindow': { return 150; }
+                case 'newFileWindow': { return 150; }
+                case 'addLanguageWindow': { return 110; }
+                case 'removeLanguageWindow': { return 110; }
+                case 'srcLanguageWindow': { return 110; }
+                case 'splitFileWindow': { return 140; }
+                case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': {return 330;}
             }
             break;
