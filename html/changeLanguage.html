@@ -9,14 +9,26 @@
 
 <body onload="changeLanguageLoaded()">
     <div style="padding:4px;">
-        <label for="currentLanguage">Current Language</label>
-        <select id="currentLanguage" style="width: 300px;" class="right">
-        </select>
+        <table class="nostripes">
+            <tr class="nostripes">
+                <td><label for="currentLanguage">Current Language</label></td>
+                <td>
+                    <select id="newLanguage" style="width: 300px;">
+                    </select>
+                </td>
+            </tr>
+            <tr class="nostripes">
+                <td><label for="newLanguage">New Language</label></td>
+                <td>
+                    <select id="currentLanguage" style="width: 300px;">
+                    </select>
+                </td>
+            </tr>
+        </table>
     </div>
     <div style="padding:4px;">
-        <label for="newLanguage">New Language</label>
-        <select id="newLanguage" style="width: 300px;"  class="right">
-        </select>
+
+
     </div>
     <div class="buttonArea">
         <button onclick="changeLanguage()">Change Language</button>

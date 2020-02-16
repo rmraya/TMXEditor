@@ -31,7 +31,7 @@ var replaceTextWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
-var settingsWindow: BrowserWindow;
+var settingsWindow: BrowserWindow; ``
 var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;
@@ -41,6 +41,7 @@ var srcLanguageWindow: BrowserWindow;
 var splitFileWindow: BrowserWindow;
 var mergeFilesWindow: BrowserWindow;
 
+
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
 var appHome: string = app.getPath('appData') + '/tmxeditor/';
@@ -49,7 +50,6 @@ var fileLanguages: any[];
 var currentDefaults: any;
 var currentStatus: any = {};
 var currentPreferences: any;
-var currentVersion: string;
 var currentTheme: string;
 var filterOptions: any = {};
 var loadOptions: any = {
@@ -361,13 +361,14 @@ function stopServer() {
 function showAbout() {
     var aboutWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 620,
-        height: 350,
-        useContentSize: true,
+        width: getWidth('aboutWindow'),
+        height: getHeihght('aboutWindow'),
         minimizable: false,
         maximizable: false,
         resizable: false,
+        useContentSize: true,
         show: false,
+        modal: true,
         icon: './icons/tmxeditor.png',
         webPreferences: {
             nodeIntegration: true
@@ -748,8 +749,8 @@ ipcMain.on('get-row-properties', function (event, arg) {
 function showSettings(): void {
     settingsWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 400,
-        height: 170,
+        width: getWidth('settingsWindow'),
+        height: getHeihght('settingsWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1398,8 +1399,8 @@ function replaceText(): void {
     }
     replaceTextWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 450,
-        height: 230,
+        width: getWidth('replaceTextWindow'),
+        height: getHeihght('replaceTextWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1469,8 +1470,8 @@ function sortUnits() {
     }
     sortUnitsWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 450,
-        height: 170,
+        width: getWidth('sortUnitsWindow'),
+        height: getHeihght('sortUnitsWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1516,8 +1517,8 @@ function showFilters() {
     }
     filtersWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 500,
-        height: 300,
+        width: getWidth('filtersWindow'),
+        height: getHeihght('filtersWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1637,12 +1638,12 @@ function changeLanguageCode(): void {
     }
     changeLanguageWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 490,
-        height: 170,
+        width: getWidth('changeLanguageWindow'),
+        height: getHeihght('changeLanguageWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
-        resizable: false,
+        // resizable: false,
         show: false,
         icon: './icons/tmxeditor.png',
         webPreferences: {
@@ -1652,7 +1653,7 @@ function changeLanguageCode(): void {
     changeLanguageWindow.setMenu(null);
     changeLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/changeLanguage.html');
     changeLanguageWindow.show();
-    // changeLanguageWindow.webContents.openDevTools();
+    changeLanguageWindow.webContents.openDevTools();
 }
 
 ipcMain.on('change-language', (event, arg) => {
@@ -1926,8 +1927,8 @@ function removeUntranslated(): void {
     }
     removeUntranslatedWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 480,
-        height: 120,
+        width: getWidth('removeUntranslatedWindow'),
+        height: getHeihght('removeUntranslatedWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -2041,8 +2042,8 @@ function consolidateUnits(): void {
     }
     consolidateWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 480,
-        height: 110,
+        width: getWidth('consolidateWindow'),
+        height: getHeihght('consolidateWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -2180,3 +2181,100 @@ function showSupportGroup(): void {
 ipcMain.on('show-message', (event, arg) => {
     dialog.showMessageBox(arg);
 });
+
+const sizes: any = {
+    win32: {
+        changeLanguageWindow: { width: 490, height: 170 },
+        newFileWindow: { width: 450, height: 170 },
+        addLanguageWindow: { width: 490, height: 120 },
+        removeLanguageWindow: { width: 490, height: 120 },
+        srcLanguageWindow: { width: 490, height: 120 },
+        splitFileWindow: { width: 490, height: 150 },
+        mergeFilesWindow: { width: 560, height: 450 }
+    },
+    darwin: {
+        aboutWindow: { width: 620, height: 350 },
+        replaceTextWindow: { width: 450, height: 230 },
+        filtersWindow: { width: 500, height: 300 },
+        consolidateWindow: { width: 400, height: 110 },
+        removeUntranslatedWindow: { width: 40, height: 120 },
+        settingsWindow: { width: 400, height: 170 },
+        sortUnitsWindow: { width: 450, height: 170 },
+        changeLanguageWindow: { width: 490, height: 170 },
+        newFileWindow: { width: 450, height: 170 },
+        addLanguageWindow: { width: 490, height: 120 },
+        removeLanguageWindow: { width: 490, height: 120 },
+        srcLanguageWindow: { width: 490, height: 120 },
+        splitFileWindow: { width: 490, height: 150 },
+        mergeFilesWindow: { width: 560, height: 450 }
+    },
+    linux: {
+        aboutWindow: { width: 620, height: 350 },
+        replaceTextWindow: { width: 450, height: 230 },
+        filtersWindow: { width: 500, height: 300 },
+        consolidateWindow: { width: 400, height: 110 },
+        removeUntranslatedWindow: { width: 40, height: 120 },
+        settingsWindow: { width: 400, height: 170 },
+        sortUnitsWindow: { width: 450, height: 170 },
+        changeLanguageWindow: { width: 490, height: 170 },
+        newFileWindow: { width: 450, height: 170 },
+        addLanguageWindow: { width: 490, height: 120 },
+        removeLanguageWindow: { width: 490, height: 120 },
+        srcLanguageWindow: { width: 490, height: 120 },
+        splitFileWindow: { width: 490, height: 150 },
+        mergeFilesWindow: { width: 560, height: 450 }
+    }
+}
+
+function getWidth(window: string): number {
+    switch (process.platform) {
+        case 'win32': {
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 500; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+            }
+            break;
+        }
+        case 'darwin': {
+
+            break;
+        }
+        case 'linux': {
+
+            break;
+        }
+    }
+}
+
+function getHeihght(window: string): number {
+    switch (process.platform) {
+        case 'win32': {
+            switch (window) {
+                case 'aboutWindow': { return 380; }
+                case 'replaceTextWindow': { return 210; }
+                case 'filtersWindow': { return 300; }
+                case 'consolidateWindow': { return 120; }
+                case 'removeUntranslatedWindow': { return 120; }
+                case 'settingsWindow': { return 150; }
+                case 'sortUnitsWindow': { return 150; }
+                case 'changeLanguageWindow': { return 170; }
+            }
+            break;
+        }
+        case 'darwin': {
+
+            break;
+        }
+        case 'linux': {
+
+            break;
+        }
+    }
+}
+

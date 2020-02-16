@@ -117,11 +117,11 @@ table th {
 	font-weight: lighter;
 }
 
-tr:nth-child(odd) {
+table.stripes tr:nth-child(odd) {
 	background-color: var(--odd-row-background) !important;
 }
 
-tr:nth-child(even) {
+table.stripes tr:nth-child(even) {
 	background-color: var(--even-row-background) !important;
 }
 
