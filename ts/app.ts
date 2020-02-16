@@ -382,8 +382,8 @@ function showAbout() {
 function showLicenses() {
     var licensesWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 500,
-        height: 330,
+        width: getWidth('licensesWindow'),
+        height: getHeihght('licensesWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -795,8 +795,8 @@ nativeTheme.on('updated', () => {
 function createNewFile(): void {
     newFileWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 450,
-        height: 170,
+        width: getWidth('newFileWindow'),
+        height: getHeihght('newFileWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1167,8 +1167,8 @@ function getCleaningProgress() {
 function splitFile(): void {
     splitFileWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 490,
-        height: 150,
+        width: getWidth('splitFileWindow'),
+        height: getHeihght('splitFileWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1256,8 +1256,8 @@ function getSplitProgress() {
 function mergeFiles(): void {
     mergeFilesWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 560,
-        height: 450,
+        width: getWidth('mergeFilesWindow'),
+        height: getHeihght('mergeFilesWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1643,7 +1643,7 @@ function changeLanguageCode(): void {
         useContentSize: true,
         minimizable: false,
         maximizable: false,
-        // resizable: false,
+        resizable: false,
         show: false,
         icon: './icons/tmxeditor.png',
         webPreferences: {
@@ -1653,7 +1653,7 @@ function changeLanguageCode(): void {
     changeLanguageWindow.setMenu(null);
     changeLanguageWindow.loadURL('file://' + app.getAppPath() + '/html/changeLanguage.html');
     changeLanguageWindow.show();
-    changeLanguageWindow.webContents.openDevTools();
+    //changeLanguageWindow.webContents.openDevTools();
 }
 
 ipcMain.on('change-language', (event, arg) => {
@@ -1696,8 +1696,8 @@ function removeLanguage(): void {
     }
     removeLanguageWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 490,
-        height: 120,
+        width: getWidth('removeLanguageWindow'),
+        height: getHeihght('removeLanguageWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1739,8 +1739,8 @@ function addLanguage(): void {
     }
     addLanguageWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 490,
-        height: 120,
+        width: getWidth('addLanguageWindow'),
+        height: getHeihght('addLanguageWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -1782,8 +1782,8 @@ function changeSourceLanguage(): void {
     }
     srcLanguageWindow = new BrowserWindow({
         parent: mainWindow,
-        width: 490,
-        height: 120,
+        width: getWidth('srcLanguageWindow'),
+        height: getHeihght('srcLanguageWindow'),
         useContentSize: true,
         minimizable: false,
         maximizable: false,
@@ -2183,15 +2183,6 @@ ipcMain.on('show-message', (event, arg) => {
 });
 
 const sizes: any = {
-    win32: {
-        changeLanguageWindow: { width: 490, height: 170 },
-        newFileWindow: { width: 450, height: 170 },
-        addLanguageWindow: { width: 490, height: 120 },
-        removeLanguageWindow: { width: 490, height: 120 },
-        srcLanguageWindow: { width: 490, height: 120 },
-        splitFileWindow: { width: 490, height: 150 },
-        mergeFilesWindow: { width: 560, height: 450 }
-    },
     darwin: {
         aboutWindow: { width: 620, height: 350 },
         replaceTextWindow: { width: 450, height: 230 },
@@ -2238,15 +2229,54 @@ function getWidth(window: string): number {
                 case 'settingsWindow': { return 400; }
                 case 'sortUnitsWindow': { return 450; }
                 case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 490 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': {return 500;}
             }
             break;
         }
         case 'darwin': {
-
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 500; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 490 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': {return 500;}
+            }
             break;
         }
         case 'linux': {
-
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 500; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 490 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': {return 500;}
+            }
             break;
         }
     }
@@ -2263,16 +2293,55 @@ function getHeihght(window: string): number {
                 case 'removeUntranslatedWindow': { return 120; }
                 case 'settingsWindow': { return 150; }
                 case 'sortUnitsWindow': { return 150; }
-                case 'changeLanguageWindow': { return 170; }
+                case 'changeLanguageWindow': { return 160; }
+                case 'newFileWindow': { return 160; }
+                case 'addLanguageWindow': { return 120; }
+                case 'removeLanguageWindow': { return 120; }
+                case 'srcLanguageWindow': { return 120; }
+                case 'splitFileWindow': { return 150; }
+                case 'mergeFilesWindow': { return 450; }
+                case 'licensesWindow': {return 330;}
             }
             break;
         }
         case 'darwin': {
-
+            switch (window) {
+                case 'aboutWindow': { return 380; }
+                case 'replaceTextWindow': { return 210; }
+                case 'filtersWindow': { return 300; }
+                case 'consolidateWindow': { return 120; }
+                case 'removeUntranslatedWindow': { return 120; }
+                case 'settingsWindow': { return 150; }
+                case 'sortUnitsWindow': { return 150; }
+                case 'changeLanguageWindow': { return 160; }
+                case 'newFileWindow': { return 160; }
+                case 'addLanguageWindow': { return 120; }
+                case 'removeLanguageWindow': { return 120; }
+                case 'srcLanguageWindow': { return 120; }
+                case 'splitFileWindow': { return 150; }
+                case 'mergeFilesWindow': { return 450; }
+                case 'licensesWindow': {return 330;}
+            }
             break;
         }
         case 'linux': {
-
+            switch (window) {
+                case 'aboutWindow': { return 380; }
+                case 'replaceTextWindow': { return 210; }
+                case 'filtersWindow': { return 300; }
+                case 'consolidateWindow': { return 120; }
+                case 'removeUntranslatedWindow': { return 120; }
+                case 'settingsWindow': { return 150; }
+                case 'sortUnitsWindow': { return 150; }
+                case 'changeLanguageWindow': { return 160; }
+                case 'newFileWindow': { return 160; }
+                case 'addLanguageWindow': { return 120; }
+                case 'removeLanguageWindow': { return 120; }
+                case 'srcLanguageWindow': { return 120; }
+                case 'splitFileWindow': { return 150; }
+                case 'mergeFilesWindow': { return 450; }
+                case 'licensesWindow': {return 330;}
+            }
             break;
         }
     }

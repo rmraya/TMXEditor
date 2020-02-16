@@ -8,16 +8,26 @@
 </head>
 
 <body onload="newFileLoaded()">
-    <div style="padding:4px;">
-        <label for="srcLanguage">Source Language</label>
-        <select id="srcLanguage" style="width: 300px;" class="right">
-        </select>
-    </div>
-    <div style="padding:4px;">
-        <label for="tgtLanguage">Target Language</label>
-        <select id="tgtLanguage" style="width: 300px;"  class="right">
-        </select>
-    </div>
+    <table>
+        <tr>
+            <td>
+                <label for="srcLanguage">Source Language</label>
+            </td>
+            <td>
+                <select id="srcLanguage" style="width: 300px;">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="tgtLanguage">Target Language</label>
+            </td>
+            <td>
+                <select id="tgtLanguage" style="width: 300px;">
+                </select>
+            </td>
+        </tr>
+    </table>
     <div class="buttonArea">
         <button onclick="createFile()">Create TMX File</button>
     </div>
