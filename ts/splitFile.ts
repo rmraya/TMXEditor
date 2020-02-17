@@ -34,7 +34,7 @@ function splitFile() {
         return;
     }
     var parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
-    _sf.ipcRenderer.send('split-tmx', {command: 'splitFile', file: file, parts: parts});
+    _sf.ipcRenderer.send('split-tmx', { command: 'splitFile', file: file, parts: parts });
 }
 
 function browseFiles() {
@@ -48,5 +48,8 @@ _sf.ipcRenderer.on('tmx-file', (event, arg) => {
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         window.close();
+    }
+    if (event.key === 'Enter') {
+        splitFile();
     }
 });
