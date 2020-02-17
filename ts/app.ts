@@ -646,17 +646,20 @@ function loadPreferences() {
     if (currentPreferences.theme === 'system') {
         if (nativeTheme.shouldUseDarkColors) {
             currentTheme = app.getAppPath() + '/css/dark.css';
+            nativeTheme.themeSource = 'dark';
         } else {
             currentTheme = app.getAppPath() + '/css/light.css';
+            nativeTheme.themeSource = 'light';
         }
     }
     if (currentPreferences.theme === 'dark') {
         currentTheme = app.getAppPath() + '/css/dark.css';
+        nativeTheme.themeSource = 'dark';
     }
     if (currentPreferences.theme === 'light') {
         currentTheme = app.getAppPath() + '/css/light.css';
+        nativeTheme.themeSource = 'light';
     }
-    nativeTheme.themeSource = currentPreferences.theme;
 }
 
 function saveRecent(file: string) {
