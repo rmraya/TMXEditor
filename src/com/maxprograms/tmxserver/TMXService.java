@@ -45,7 +45,6 @@ import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.Result;
 import com.maxprograms.tmxserver.models.TUnit;
-import com.maxprograms.tmxserver.models.TuProperties;
 import com.maxprograms.tmxserver.tmx.CountStore;
 import com.maxprograms.tmxserver.tmx.MapDbStore;
 import com.maxprograms.tmxserver.tmx.MergeStore;
@@ -413,7 +412,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getTuData(String id) {
+	public JSONObject getTuData(String id) {
+		JSONObject result = new JSONObject();
 		Comparator<String[]> comparator = new Comparator<>() {
 
 			@Override
@@ -450,14 +450,32 @@ public class TMXService implements TMXServiceInterface {
 					notes.add(nt.next().getText());
 				}
 
-				TuProperties tp = new TuProperties(atts, props, notes);
-				return new String[] { Result.SUCCESS, tp.toJSON().toString() };
+				JSONArray propertiesArray = new JSONArray();
+				for (int i = 0; i < props.size(); i++) {
+					propertiesArray.put(props.get(i));
+				}
+				result.put("properties", propertiesArray);
+				JSONArray attributesArray = new JSONArray();
+				for (int i = 0; i < atts.size(); i++) {
+					attributesArray.put(atts.get(i));
+				}
+				result.put("attributes", attributesArray);
+				JSONArray notesArray = new JSONArray();
+				result.put("notes", notesArray);
+				for (int i = 0; i < notes.size(); i++) {
+					notesArray.put(notes.get(i));
+				}
+				result.put(Constants.STATUS, Result.SUCCESS);
+			} else {
+				result.put(Constants.STATUS, Result.ERROR);
+				result.put(Constants.REASON, "null tu");
 			}
-			return new String[] { Result.ERROR, "Null element" };
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -1136,8 +1154,8 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] getTuvData(String id, String lang) {
-
+	public JSONObject getTuvData(String id, String lang) {
+		JSONObject result = new JSONObject();
 		try {
 			Element tuv = store.getTuv(id, lang);
 			if (tuv != null) {
@@ -1163,14 +1181,33 @@ public class TMXService implements TMXServiceInterface {
 				while (nt.hasNext()) {
 					notes.add(nt.next().getText());
 				}
-				TuProperties tp = new TuProperties(atts, props, notes);
-				return new String[] { Result.SUCCESS, tp.toJSON().toString() };
+
+				JSONArray propertiesArray = new JSONArray();
+				for (int i = 0; i < props.size(); i++) {
+					propertiesArray.put(props.get(i));
+				}
+				result.put("properties", propertiesArray);
+				JSONArray attributesArray = new JSONArray();
+				for (int i = 0; i < atts.size(); i++) {
+					attributesArray.put(atts.get(i));
+				}
+				result.put("attributes", attributesArray);
+				JSONArray notesArray = new JSONArray();
+				result.put("notes", notesArray);
+				for (int i = 0; i < notes.size(); i++) {
+					notesArray.put(notes.get(i));
+				}
+				result.put(Constants.STATUS, Result.SUCCESS);
+			} else {
+				result.put(Constants.STATUS, Result.ERROR);
+				result.put(Constants.REASON, "null tuv");
 			}
-			return new String[] { Result.ERROR, "null tuv" };
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Result.ERROR, e.getMessage() };
+			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override

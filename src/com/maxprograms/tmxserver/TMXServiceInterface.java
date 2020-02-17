@@ -47,7 +47,7 @@ public interface TMXServiceInterface {
 
 	JSONObject getFileProperties();
 
-	String[] getTuData(String id);
+	JSONObject getTuData(String id);
 
 	JSONObject delete(List<String> selected);
 
@@ -105,7 +105,7 @@ public interface TMXServiceInterface {
 
 	JSONObject exportProgress();
 
-	String[] getTuvData(String id, String lang);
+	JSONObject getTuvData(String id, String lang);
 
 	JSONObject validateFile(String file);
 

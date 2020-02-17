@@ -307,6 +307,7 @@ public class SimpleStore implements StoreInterface {
 			String tuid = tuIt.next();
 			Element tu = tus.get(tuid);
 			Iterator<String> langIt = languages.iterator();
+			tu.removeChild("tuv");
 			while (langIt.hasNext()) {
 				String lang = langIt.next();
 				Element tuv = maps.get(lang).get(tuid);

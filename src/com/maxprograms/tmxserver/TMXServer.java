@@ -613,22 +613,10 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private String getTuData(String id) {
-		String[] data = service.getTuData(id);
-		if (Result.SUCCESS.equals(data[0])) {
-			return new JSONObject(data[1]).toString();
-		}
-		JSONObject result = new JSONObject();
-		result.put(Constants.REASON, data[1]);
-		return result.toString();
+		return service.getTuData(id).toString();
 	}
 
 	private String getTuvData(String id, String lang) {
-		String[] data = service.getTuvData(id, lang);
-		if (Result.SUCCESS.equals(data[0])) {
-			return new JSONObject(data[1]).toString();
-		}
-		JSONObject result = new JSONObject();
-		result.put(Constants.REASON, data[1]);
-		return result.toString();
+		return  service.getTuvData(id, lang).toString();
 	}
 }

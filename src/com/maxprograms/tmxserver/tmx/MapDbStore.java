@@ -38,11 +38,6 @@ import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.mapdb.BTreeMap;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.xml.sax.SAXException;
-
 import com.maxprograms.tmxserver.Constants;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
@@ -52,6 +47,11 @@ import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
+
+import org.mapdb.BTreeMap;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.xml.sax.SAXException;
 
 public class MapDbStore implements StoreInterface {
 
@@ -351,6 +351,7 @@ public class MapDbStore implements StoreInterface {
 		while (tuIt.hasNext()) {
 			String tuid = tuIt.next();
 			Element tu = tus.get(tuid);
+			tu.removeChild("tuv");
 			Iterator<String> langIt = languages.iterator();
 			while (langIt.hasNext()) {
 				String lang = langIt.next();
