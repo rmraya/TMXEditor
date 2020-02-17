@@ -1664,13 +1664,35 @@ ipcMain.on('change-language', (event, arg) => {
     changeLanguageWindow.close();
     sendRequest(arg,
         function success(data: any) {
-            if (data.status === SUCCESS) {
-                getFileLanguages();
-                loadSegments();
-                saved = false;
-            } else {
-                dialog.showMessageBox({ type: 'error', message: data.reason });
-            }
+            currentStatus = data;
+            contents.send('set-status', 'Changing...');
+            var intervalObject = setInterval(function () {
+                if (currentStatus.status === COMPLETED) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    getFileLanguages();
+                    loadSegments();
+                    return;
+                } else if (currentStatus.status === PROCESSING) {
+                    // it's OK, keep waiting
+                } else if (currentStatus.status === ERROR) {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', currentStatus.reason);
+                    return;
+                } else if (currentStatus.status === SUCCESS) {
+                    // ignore status from 'replaceText'
+                } else {
+                    contents.send('end-waiting');
+                    contents.send('set-status', '');
+                    clearInterval(intervalObject);
+                    dialog.showErrorBox('Error', 'Unknown error changing language code');
+                    return;
+                }
+                getProcessingProgress();
+            }, 500);
         },
         function error(reason: string) {
             dialog.showMessageBox({ type: 'error', message: reason });
@@ -2287,7 +2309,7 @@ function getHeihght(window: string): number {
                 case 'addLanguageWindow': { return 110; }
                 case 'removeLanguageWindow': { return 110; }
                 case 'srcLanguageWindow': { return 110; }
-                case 'splitFileWindow': { return 140; }
+                case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': {return 330;}
             }
