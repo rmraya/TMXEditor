@@ -97,7 +97,7 @@ public class TUnit implements Serializable, Comparable<TUnit> {
 		Iterator<Language> it = fileLanguages.iterator();
 		while (it.hasNext()) {
 			Language lang = it.next();
-			html.append("<td lang=\"");
+			html.append("<td class=\"lang\" lang=\"");
 			html.append(lang.getCode());
 			html.append("\"");
 			if (lang.isBidi()) {

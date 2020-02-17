@@ -235,6 +235,14 @@ ipcRenderer.on('update-segments', (event, arg) => {
         rows = rows + arg.units[i];
     }
     document.getElementById("tableBody").innerHTML = rows;
+    var cells = document.getElementsByClassName('lang');
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].addEventListener('click', (event: MouseEvent) => clickListener(event));
+    }
+    var fixed = document.getElementsByClassName('fixed');
+    for (let i = 0; i < fixed.length; i++) {
+        fixed[i].addEventListener('click', (event: MouseEvent) => fixedListener(event));
+    }
 });
 
 ipcRenderer.on('file-closed', () => {
@@ -251,7 +259,7 @@ ipcRenderer.on('file-closed', () => {
     fileLoaded = false;
 });
 
-document.getElementById('mainTable').addEventListener('click', (event) => {
+function fixedListener(event: MouseEvent) {
     if (!fileLoaded) {
         return;
     }
@@ -277,7 +285,48 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
             id = (composed[2] as Element).id;
         }
         lang = (event.target as Element).getAttribute('lang');
-        console.log('clicked ' + id + ' ' + lang);
+    }
+    if (textArea !== null && (currentId !== id || currentLang !== lang)) {
+        saveEdit();
+    }
+
+    if (id !== null) {
+        currentId = id;
+        if (currentCell != null) {
+            currentCell.innerHTML = currentContent;
+            currentCell = null;
+            currentContent = null;
+        }
+        ipcRenderer.send('get-row-properties', { id: currentId });
+    }
+}
+
+function clickListener(event: MouseEvent) {
+    if (!fileLoaded) {
+        return;
+    }
+    var element: Element = (event.target as Element);
+    if (element.parentElement.tagName === 'TH') {
+        // clicked select all
+        return;
+    }
+    var x: string = element.tagName;
+    if ('TEXTAREA' === x) {
+        // already editing
+        return;
+    }
+    var id: string;
+    var lang: string;
+    if ('TD' === x || 'INPUT' === x) {
+        var composed = event.composedPath();
+        if ('TR' === (composed[0] as Element).tagName) {
+            id = (composed[0] as Element).id;
+        } else if ('TR' === (composed[1] as Element).tagName) {
+            id = (composed[1] as Element).id;
+        } else if ('TR' === (composed[2] as Element).tagName) {
+            id = (composed[2] as Element).id;
+        }
+        lang = (event.target as Element).getAttribute('lang');
     }
     if (textArea !== null && (currentId !== id || currentLang !== lang)) {
         saveEdit();
@@ -302,11 +351,9 @@ document.getElementById('mainTable').addEventListener('click', (event) => {
             currentCell.appendChild(textArea);
             textArea.focus();
             ipcRenderer.send('get-cell-properties', { id: currentId, lang: currentLang });
-        } else {
-            ipcRenderer.send('get-row-properties', { id: currentId });
         }
     }
-});
+}
 
 ipcRenderer.on('update-properties', (event, arg) => {
     document.getElementById('attributesSpan').innerHTML = arg.type;
