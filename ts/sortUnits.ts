@@ -39,6 +39,12 @@ _su.ipcRenderer.on('sort-options', (event, arg) => {
     }
 });
 
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});
+
 function sort(): void {
     var language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
     var desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;

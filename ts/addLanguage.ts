@@ -42,3 +42,9 @@ function addLanguageLoaded(): void {
 _al.ipcRenderer.on('set-theme', (event, arg) => {
     (document.getElementById('theme') as HTMLLinkElement).href = arg;
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});

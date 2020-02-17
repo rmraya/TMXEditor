@@ -44,3 +44,9 @@ function browseFiles() {
 _sf.ipcRenderer.on('tmx-file', (event, arg) => {
     (document.getElementById('file') as HTMLInputElement).value = arg;
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});

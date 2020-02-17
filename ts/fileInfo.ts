@@ -94,3 +94,9 @@ function showNotes() {
     document.getElementById('attributes').classList.remove('tabContent');
     document.getElementById('attributes').classList.add('hiddenTab');
 }
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});

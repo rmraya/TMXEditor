@@ -109,3 +109,9 @@ function deleteFiles() {
     }
     document.getElementById('table').innerHTML = rows;
 }
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});

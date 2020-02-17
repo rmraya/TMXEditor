@@ -43,3 +43,9 @@ function removeLanguageLoaded(): void {
 _rl.ipcRenderer.on('set-theme', (event, arg) => {
     (document.getElementById('theme') as HTMLLinkElement).href = arg;
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});

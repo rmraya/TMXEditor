@@ -35,3 +35,9 @@ _b.ipcRenderer.on('set-theme', (event, arg) => {
 _b.ipcRenderer.on('set-version', (event, arg) => {
     document.getElementById('version').innerHTML = arg;
 });
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        window.close();
+    }
+});
