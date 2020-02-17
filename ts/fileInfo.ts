@@ -52,3 +52,45 @@ _fi.ipcRenderer.on('set-file-properties', (event, arg) => {
     }
     document.getElementById('notesTable').innerHTML = notesContent;
 });
+
+function showAttributes() {
+    document.getElementById('atributesTab').classList.add('selected');
+    document.getElementById('attributes').classList.remove('hiddenTab');
+    document.getElementById('attributes').classList.add('tabContent');
+
+    document.getElementById('propertiesTab').classList.remove('selected');
+    document.getElementById('properties').classList.remove('tabContent');
+    document.getElementById('properties').classList.add('hiddenTab');
+
+    document.getElementById('notesTab').classList.remove('selected');
+    document.getElementById('notes').classList.remove('tabContent');
+    document.getElementById('notes').classList.add('hiddenTab');
+}
+
+function showProperties() {
+    document.getElementById('propertiesTab').classList.add('selected');
+    document.getElementById('properties').classList.remove('hiddenTab');
+    document.getElementById('properties').classList.add('tabContent');
+
+    document.getElementById('atributesTab').classList.remove('selected');
+    document.getElementById('attributes').classList.remove('tabContent');
+    document.getElementById('attributes').classList.add('hiddenTab');
+
+    document.getElementById('notesTab').classList.remove('selected');
+    document.getElementById('notes').classList.remove('tabContent');
+    document.getElementById('notes').classList.add('hiddenTab');
+}
+
+function showNotes() {
+    document.getElementById('notesTab').classList.add('selected');
+    document.getElementById('notes').classList.add('tabContent');
+    document.getElementById('notes').classList.remove('hiddenTab');
+
+    document.getElementById('propertiesTab').classList.remove('selected');
+    document.getElementById('properties').classList.remove('tabContent');
+    document.getElementById('properties').classList.add('hiddenTab');
+    
+    document.getElementById('atributesTab').classList.remove('selected');
+    document.getElementById('attributes').classList.remove('tabContent');
+    document.getElementById('attributes').classList.add('hiddenTab');
+}

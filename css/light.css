@@ -8,8 +8,8 @@
 	--normal-background: #efefef;
 	--normal-color: #111111;
 	--even-row-background: #efefef;
-    --odd-row-background: #fefefe;
-    --highlight-color: #ecf01b;
+	--odd-row-background: #fefefe;
+	--highlight-color: #ecf01b;
 	--shadow-color: #eeeeee;
 	--input-background: #ffffff;
 }
@@ -59,14 +59,15 @@ footer {
 }
 
 .status {
-	position: absolute; 
+	position: absolute;
 	top: 200px;
-	left: calc(40% - 100px); 
-	width: 200px; 
-	margin: auto; 
+	left: calc(40% - 100px);
+	width: 200px;
+	margin: auto;
 	background-color: var(--dark-background);
 	color: var(--dark-color);
-	padding: 20px; border:1px solid var(--dark-color);
+	padding: 20px;
+	border: 1px solid var(--dark-color);
 }
 
 table {
@@ -322,40 +323,51 @@ button.toolbar:hover {
 	background: #455a64;
 }
 
-/* Style the tab */
+.tabHolder {
+	display: flex;
+	flex-flow: row;
+	color: var(--normal-color);
+	background: var(--normal-background);
+	padding: 0px;
+	border-bottom: 1px solid var(--light-background);
+}
+
 .tab {
 	overflow: hidden;
+	background: var(--lighter-background);
+	padding-top: 8px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
-/* Style the buttons that are used to open the tab content */
-.column button {
-	background: inherit;
-	color: var(--normal-color);
-	outline: none;
-	border: none;
-	padding: 5px;
+.tab:hover {
+	background: var(--light-background);
+}
+
+.tab a {
+	color: var(--dark-color);
+	text-decoration: none;
 	cursor: pointer;
-	font-size: 0.8em;
-	transition: 0.3s;
-	box-shadow: none;
 }
 
-.column button img {
-	padding: 4px;
+.tab a:hover {
+	background: var(--light-background);
 }
 
-/* Change background color of buttons on hover */
-.column button:hover {
-	background-color: #37474f;
+.selected {
+	background: var(--light-background);
+	color: var(--dark-color);
 }
 
-/* Create an active/current tablink class */
-.tab button.active {
-	background-color: #777777;
+.selected a {
+	color: var(--dark-color) !important;
 }
 
-/* Style the tab content */
-.tabcontent {
+.tabContent {
+	display: block;
+}
+
+.hiddenTab {
 	display: none;
 }
 

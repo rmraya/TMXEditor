@@ -9,52 +9,78 @@
 
 <body id="body" onload="fileInfoLoaded()">
     <div style="padding:4px;">
-        <h3 id="file">&nbsp;</h3>
-        <h3>TMX Attributes</h3>
-        <table class="bordered">
-            <tr>
-                <td>Creation Tool</td>
-                <td id="creationtool"></td>
-            </tr>
-            <tr>
-                <td>Creation Tool Version</td>
-                <td id="creationtoolversion"></td>
-            </tr>
-            <tr>
-                <td>Segmentation Type</td>
-                <td id="segtype"></td>
-            </tr>
-            <tr>
-                <td>Original Translation Memory Format</td>
-                <td id="o-tmf"></td>
-            </tr>
-            <tr>
-                <td>Administrative Language</td>
-                <td id="adminlang"></td>
-            </tr>
-            <tr>
-                <td>Source Language</td>
-                <td id="srclang"></td>
-            </tr>
-            <tr>
-                <td>Data Type</td>
-                <td id="datatype"></td>
-            </tr>
-        </table>
-        <h3>Properties</h3>
-        <table id="propertiesTable" class="bordered">
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div style="padding-bottom:8px;">
+            <strong id="file">&nbsp;</strong>
+        </div>
+        <div class="tabHolder">
+            <div class="tab selected" id="atributesTab">
+                <a href="#" class="button" onclick="showAttributes()">TMX Attributes</a>
+            </div>
+            <div class="tab " id="propertiesTab">
+                <a href="#" class="button" onclick="showProperties()">Properties</a>
+            </div>
+            <div class="tab " id="notesTab">
+                <a href="#" class="button" onclick="showNotes()">Notes</a>
+            </div>
+        </div>
 
-        <h3>Notes</h3>
-        <table id="notesTable" class="bordered">
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
+        <div>
+            <div id="attributes" class="tabContent">
+                <div class="panelContent">
+                    <table class="bordered stripes">
+                        <tr>
+                            <td>Creation Tool</td>
+                            <td id="creationtool"></td>
+                        </tr>
+                        <tr>
+                            <td>Creation Tool Version</td>
+                            <td id="creationtoolversion"></td>
+                        </tr>
+                        <tr>
+                            <td>Segmentation Type</td>
+                            <td id="segtype"></td>
+                        </tr>
+                        <tr>
+                            <td>Original Translation Memory Format</td>
+                            <td id="o-tmf"></td>
+                        </tr>
+                        <tr>
+                            <td>Administrative Language</td>
+                            <td id="adminlang"></td>
+                        </tr>
+                        <tr>
+                            <td>Source Language</td>
+                            <td id="srclang"></td>
+                        </tr>
+                        <tr>
+                            <td>Data Type</td>
+                            <td id="datatype"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div id="properties" class="hiddenTab">
+                <div class="panelcontent" >
+                    <table id="propertiesTable" class="bordered stripes">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div id="notes" class="hiddenTab">
+                <div class="panelcontent">
+                    <table id="notesTable" class="bordered stripes">
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="../js/fileInfo.js"></script>
 </body>
