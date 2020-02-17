@@ -629,6 +629,7 @@ function loadDefaults() {
 
 function savePreferences() {
     writeFileSync(appHome + 'preferences.json', JSON.stringify(currentPreferences));
+    nativeTheme.themeSource = currentPreferences.theme;
 }
 
 function loadPreferences() {
@@ -655,6 +656,7 @@ function loadPreferences() {
     if (currentPreferences.theme === 'light') {
         currentTheme = app.getAppPath() + '/css/light.css';
     }
+    nativeTheme.themeSource = currentPreferences.theme;
 }
 
 function saveRecent(file: string) {
