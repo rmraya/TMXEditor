@@ -31,7 +31,7 @@ var replaceTextWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
-var settingsWindow: BrowserWindow; 
+var settingsWindow: BrowserWindow;
 var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;
@@ -462,11 +462,9 @@ ipcMain.on('open-license', function (event, arg: any) {
 });
 
 function showHelp() {
-    var help = app.getAppPath() + '/tmxeditor.pdf';
-    if (process.platform == 'win32') {
-        help = app.getAppPath() + '\\tmxeditor.pdf';
-    }
-    shell.openItem(help);
+    shell.openExternal('file://' + app.getAppPath() + '/tmxeditor.pdf', { activate: true, workingDirectory: app.getAppPath() }).catch((error) => {
+        dialog.showErrorBox('Error', error.message);
+    });
 }
 
 ipcMain.on('show-help', () => {
@@ -2227,7 +2225,7 @@ function getWidth(window: string): number {
                 case 'srcLanguageWindow': { return 420; }
                 case 'splitFileWindow': { return 490 }
                 case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': {return 500;}
+                case 'licensesWindow': { return 500; }
             }
             break;
         }
@@ -2247,7 +2245,7 @@ function getWidth(window: string): number {
                 case 'srcLanguageWindow': { return 420; }
                 case 'splitFileWindow': { return 490 }
                 case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': {return 500;}
+                case 'licensesWindow': { return 500; }
             }
             break;
         }
@@ -2267,7 +2265,7 @@ function getWidth(window: string): number {
                 case 'srcLanguageWindow': { return 420; }
                 case 'splitFileWindow': { return 490 }
                 case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': {return 500;}
+                case 'licensesWindow': { return 500; }
             }
             break;
         }
@@ -2292,7 +2290,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
-                case 'licensesWindow': {return 330;}
+                case 'licensesWindow': { return 330; }
             }
             break;
         }
@@ -2312,7 +2310,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 110; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 420; }
-                case 'licensesWindow': {return 330;}
+                case 'licensesWindow': { return 330; }
             }
             break;
         }
@@ -2332,7 +2330,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
-                case 'licensesWindow': {return 330;}
+                case 'licensesWindow': { return 330; }
             }
             break;
         }
