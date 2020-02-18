@@ -29,14 +29,12 @@ import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.maxprograms.tmxserver.models.Language;
-import com.maxprograms.tmxserver.models.Result;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -122,7 +120,7 @@ public class TMXServer implements HttpHandler {
 					service.closeFile();
 				}
 				JSONObject stop = new JSONObject();
-				stop.put(Constants.STATUS, Result.SUCCESS);
+				stop.put(Constants.STATUS, Constants.SUCCESS);
 				response = stop.toString();
 				break;
 			case "closeFile":
@@ -241,7 +239,7 @@ public class TMXServer implements HttpHandler {
 				break;
 			default:
 				JSONObject unknown = new JSONObject();
-				unknown.put(Constants.STATUS, Result.ERROR);
+				unknown.put(Constants.STATUS, Constants.ERROR);
 				unknown.put(Constants.REASON, "Unknown command");
 				unknown.put("received", json.toString());
 				response = unknown.toString();
@@ -311,7 +309,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -328,7 +326,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -341,7 +339,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -359,7 +357,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -390,28 +388,14 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
 	}
 
 	private String getAllLanguages() {
-		JSONObject result = new JSONObject();
-		Result<Language> res = service.getAllLanguages();
-		if (res.getResult().equals(Result.SUCCESS)) {
-			JSONArray array = new JSONArray();
-			Iterator<Language> it = res.getData().iterator();
-			while (it.hasNext()) {
-				array.put(it.next().toJSON());
-			}
-			result.put("languages", array);
-			result.put(Constants.STATUS, Result.SUCCESS);
-		} else {
-			result.put(Constants.STATUS, Result.ERROR);
-			result.put(Constants.REASON, res.getMessage());
-		}
-		return result.toString();
+		return service.getAllLanguages().toString();
 	}
 
 	private String cleanCharacters(String file) {
@@ -453,7 +437,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -466,7 +450,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -499,7 +483,7 @@ public class TMXServer implements HttpHandler {
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 			return result.toString();
 		}
@@ -549,44 +533,38 @@ public class TMXServer implements HttpHandler {
 			if (json.has("caseSensitiveFilter")) {
 				caseSensitiveFilter = json.getBoolean("caseSensitiveFilter");
 			}
-			Result<TUnit> segments = service.getData(json.getInt("start"), json.getInt("count"), filterText,
+			JSONObject segments = service.getData(json.getInt("start"), json.getInt("count"), filterText,
 					filterLanguage, caseSensitiveFilter, filterUntranslated, regExp, filterSrcLanguage, sortLanguage,
 					ascending);
-			result.put(Constants.STATUS, segments.getResult());
-			if (segments.getResult().equals(Result.SUCCESS)) {
-				List<TUnit> units = segments.getData();
+			result.put(Constants.STATUS, segments.getString(Constants.STATUS));
+
+			if (segments.getString(Constants.STATUS).equals(Constants.SUCCESS)) {
+				JSONArray units = segments.getJSONArray("units");
+				
+				List<Language> fileLanguages = new ArrayList<>();
+				JSONArray langs = service.getLanguages().getJSONArray("languages");
+				for (int i=0 ; i<langs.length() ; i++) {
+					fileLanguages.add(new Language(langs.getJSONObject(i)));
+				}
+				
 				JSONArray array = new JSONArray();
-				Iterator<TUnit> it = units.iterator();
-				List<Language> fileLanguages = service.getLanguages().getData();
-				while (it.hasNext()) {
-					array.put(it.next().toHTML(fileLanguages));
+				for (int i=0 ; i<units.length(); i++) {
+					TUnit unit = new TUnit(units.getJSONObject(i));
+					array.put(unit.toHTML(fileLanguages));
 				}
 				result.put("units", array);
 			} else {
-				result.put(Constants.REASON, segments.getMessage());
+				result.put(Constants.REASON, segments.getString(Constants.REASON));
 			}
 		} catch (Exception e) {
-			result.put(Constants.STATUS, Result.ERROR);
+			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 		}
 		return result.toString(2);
 	}
 
 	private String getLanguages() {
-		JSONObject result = new JSONObject();
-		Result<Language> languages = service.getLanguages();
-		result.put(Constants.STATUS, languages.getResult());
-		if (languages.getResult().equals(Result.SUCCESS)) {
-			JSONArray array = new JSONArray();
-			Iterator<Language> it = languages.getData().iterator();
-			while (it.hasNext()) {
-				array.put(it.next().toJSON());
-			}
-			result.put("languages", array);
-		} else {
-			result.put(Constants.REASON, languages.getMessage());
-		}
-		return result.toString();
+		return service.getLanguages().toString();
 	}
 
 	private static String readRequestBody(InputStream is) throws IOException {

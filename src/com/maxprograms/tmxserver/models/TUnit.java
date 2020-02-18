@@ -19,9 +19,11 @@ SOFTWARE.
 package com.maxprograms.tmxserver.models;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -42,8 +44,29 @@ public class TUnit implements Serializable, Comparable<TUnit> {
 		JSONObject json = new JSONObject();
 		json.put("count", count);
 		json.put("id", id);
-		json.put("segs", segs);
+
+		JSONObject map = new JSONObject();
+		Set<String> keyset = segs.keySet();
+		Iterator<String> it = keyset.iterator();
+		while (it.hasNext()) {
+			String lang = it.next();
+			map.put(lang, segs.get(lang));
+		}
+		json.put("segs", map);
 		return json;
+	}
+
+	public TUnit(JSONObject json) {
+		this.id = json.getString("id");
+		this.count = json.getLong("count");
+		this.segs = new HashMap<>();
+
+		JSONObject map = json.getJSONObject("segs");
+		Iterator<String> keys = map.keys();
+		while (keys.hasNext()) {
+			String lang = keys.next();
+			segs.put(lang, map.getString(lang));
+		}
 	}
 
 	public String getId() {

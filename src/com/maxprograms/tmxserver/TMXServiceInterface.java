@@ -21,19 +21,17 @@ package com.maxprograms.tmxserver;
 import java.util.List;
 
 import com.maxprograms.tmxserver.models.Language;
-import com.maxprograms.tmxserver.models.Result;
-import com.maxprograms.tmxserver.models.TUnit;
 
 import org.json.JSONObject;
 
 public interface TMXServiceInterface {
 	JSONObject openFile(String fileName);
 
-	Result<TUnit> getData(int start, int count, String filterText, Language filterLanguage, boolean caseSensitiveFilter,
+	JSONObject getData(int start, int count, String filterText, Language filterLanguage, boolean caseSensitiveFilter,
 			boolean filterUntranslated, boolean regExp, Language filterSrcLanguage, Language sortlanguage,
 			boolean ascending);
 
-	Result<Language> getLanguages();
+	JSONObject getLanguages();
 
 	JSONObject getProcessingProgress();
 
@@ -55,7 +53,7 @@ public interface TMXServiceInterface {
 
 	JSONObject insertUnit();
 
-	Result<Language> getAllLanguages();
+	JSONObject getAllLanguages();
 
 	JSONObject removeUntranslated(Language lang);
 
@@ -111,7 +109,7 @@ public interface TMXServiceInterface {
 
 	JSONObject validatingProgress();
 
-	Result<String> getCharsets();
+	JSONObject getCharsets();
 
 	String[] previewCsv(String csvFile, List<String> languages, String charSet, String columsSeparator,
 			String textDelimiter);

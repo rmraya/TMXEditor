@@ -34,6 +34,11 @@ public class Language implements Serializable, Comparable<Language> {
 		this.name = name;
 	}
 
+	public Language(JSONObject json) {
+		this.code = json.getString("code");
+		this.name = json.getString("name");
+	}
+
 	public String getCode() {
 		return code;
 	}

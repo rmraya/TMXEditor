@@ -127,6 +127,7 @@ app.on('ready', function () {
     mainWindow.show();
     // contents.openDevTools();
     setTheme();
+    checkUpdates(true);
 });
 
 app.on('quit', function () {
