@@ -462,7 +462,9 @@ ipcMain.on('open-license', function (event, arg: any) {
 });
 
 function showHelp() {
-    shell.openExternal('file://' + app.getAppPath() + '/tmxeditor.pdf', { activate: true, workingDirectory: app.getAppPath() }).catch((error) => {
+    shell.openExternal('file://' + app.getAppPath() + '/tmxeditor.pdf',
+        { activate: true, workingDirectory: app.getAppPath() }
+    ).catch((error: Error) => {
         dialog.showErrorBox('Error', error.message);
     });
 }
@@ -489,7 +491,7 @@ function openFileDialog() {
             openFile(value.filePaths[0]);
             saveRecent(value.filePaths[0]);
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -531,6 +533,7 @@ function openFile(file: string) {
             }, 500);
         },
         function error(reason: string) {
+            contents.send('end-waiting');
             console.log(reason);
             dialog.showErrorBox('Error', reason);
         }
@@ -919,7 +922,7 @@ function saveAs(): void {
             saveRecent(currentFile);
             saved = true;
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -949,10 +952,10 @@ function exportDelimited(): void {
         ]
     }).then(function (value: any) {
         if (!value.canceled) {
+            contents.send('start-waiting');
             sendRequest({ command: 'exportDelimited', file: value.filePath },
                 function success(data: any) {
                     currentStatus = data;
-                    contents.send('start-waiting');
                     contents.send('set-status', 'Exporting...');
                     var intervalObject = setInterval(function () {
                         if (currentStatus.status === COMPLETED) {
@@ -980,11 +983,12 @@ function exportDelimited(): void {
                     }, 500);
                 },
                 function error(reason: string) {
+                    contents.send('end-waiting');
                     dialog.showErrorBox('Error', reason);
                 }
             );
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -1054,10 +1058,10 @@ function validateFile(): void {
         ]
     }).then(function (value) {
         if (!value.canceled) {
+            contents.send('start-waiting');
             sendRequest({ command: 'validateFile', file: value.filePaths[0] },
                 function success(data: any) {
                     currentStatus = data;
-                    contents.send('start-waiting');
                     contents.send('set-status', 'Validating...');
                     var intervalObject = setInterval(function () {
                         if (currentStatus.status === COMPLETED) {
@@ -1085,12 +1089,13 @@ function validateFile(): void {
                     }, 500);
                 },
                 function error(reason: string) {
+                    contents.send('end-waiting');
                     dialog.showMessageBox({ type: 'error', message: reason });
                 }
             );
         }
-    })["catch"](function (error) {
-        dialog.showErrorBox('Error', error);
+    }).catch(function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
 }
@@ -1115,10 +1120,10 @@ function cleanCharacters(): void {
         ]
     }).then(function (value) {
         if (!value.canceled) {
+            contents.send('start-waiting');
             sendRequest({ command: 'cleanCharacters', file: value.filePaths[0] },
                 function success(data: any) {
                     currentStatus = data;
-                    contents.send('start-waiting');
                     contents.send('set-status', 'Cleaning...');
                     var intervalObject = setInterval(function () {
                         if (currentStatus.status === COMPLETED) {
@@ -1146,12 +1151,13 @@ function cleanCharacters(): void {
                     }, 500);
                 },
                 function error(reason: string) {
+                    contents.send('end-waiting');
                     dialog.showMessageBox({ type: 'error', message: reason });
                 }
             );
         }
-    })["catch"](function (error) {
-        dialog.showErrorBox('Error', error);
+    }).catch(function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
 }
@@ -1200,7 +1206,7 @@ ipcMain.on('select-tmx', (event, arg) => {
         if (!value.canceled) {
             event.sender.send('tmx-file', value.filePaths[0]);
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -1289,7 +1295,7 @@ ipcMain.on('select-merged-tmx', (event, arg) => {
         if (!value.canceled) {
             event.sender.send('merged-tmx-file', value.filePath);
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -1307,7 +1313,7 @@ ipcMain.on('add-tmx-files', (event, arg) => {
         if (!value.canceled) {
             event.sender.send('tmx-files', value.filePaths);
         }
-    })["catch"](function (error: Error) {
+    }).catch(function (error: Error) {
         dialog.showErrorBox('Error', error.message);
         console.log(error);
     });
@@ -2006,6 +2012,7 @@ ipcMain.on('remove-untranslated', (event, arg) => {
             }, 500);
         },
         function error(reason: string) {
+            contents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
