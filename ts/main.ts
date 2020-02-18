@@ -237,11 +237,11 @@ ipcRenderer.on('update-segments', (event, arg) => {
     document.getElementById("tableBody").innerHTML = rows;
     var cells = document.getElementsByClassName('lang');
     for (let i = 0; i < cells.length; i++) {
-        cells[i].addEventListener('click', (event: MouseEvent) => clickListener(event));
+        cells[i].addEventListener('click', (ev: MouseEvent) => clickListener(ev));
     }
     var fixed = document.getElementsByClassName('fixed');
     for (let i = 0; i < fixed.length; i++) {
-        fixed[i].addEventListener('click', (event: MouseEvent) => fixedListener(event));
+        fixed[i].addEventListener('click', (ev: MouseEvent) => fixedListener(ev));
     }
 });
 

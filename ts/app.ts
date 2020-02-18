@@ -31,7 +31,7 @@ var replaceTextWindow: BrowserWindow;
 var filtersWindow: BrowserWindow;
 var consolidateWindow: BrowserWindow;
 var removeUntranslatedWindow: BrowserWindow;
-var settingsWindow: BrowserWindow; ``
+var settingsWindow: BrowserWindow; 
 var sortUnitsWindow: BrowserWindow;
 var changeLanguageWindow: BrowserWindow;
 var newFileWindow: BrowserWindow;

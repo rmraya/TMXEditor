@@ -72,7 +72,7 @@ _mf.ipcRenderer.on('tmx-files', (event, arg) => {
     document.getElementById('table').innerHTML = rows;
 });
 
-function contains(array: string[], value: String): boolean {
+function contains(array: string[], value: string): boolean {
     for (let i = 0; i < array.length; i++) {
         if (array[i] === value) {
             return true;
@@ -95,14 +95,14 @@ function deleteFiles() {
         _mf.ipcRenderer.send('show-message', { type: 'warning', message: 'Select files' });
         return;
     }
-
     var array: string[] = [];
     for (let i = 0; i < files.length; i++) {
         if (!contains(selected, files[i])) {
             array.push(files[i]);
         }
     }
-    files = array.sort();
+    array.sort();
+    files = array;
     var rows: string = '';
     for (let i = 0; i < files.length; i++) {
         rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + files[i] + '</td></tr>';
