@@ -33,21 +33,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import com.maxprograms.tmxserver.Constants;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
-import com.maxprograms.xml.Attribute;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
+
+import org.xml.sax.SAXException;
 
 public class SimpleStore implements StoreInterface {
 
@@ -205,12 +203,11 @@ public class SimpleStore implements StoreInterface {
 		if (result.size() < count) {
 			return result;
 		}
+		List<TUnit> list = new ArrayList<>();
 		if (result.size() < start + count) {
-			List<TUnit> list = new ArrayList<>();
 			list.addAll(result.subList((int) start, result.size()));
 			return list;
 		}
-		List<TUnit> list = new ArrayList<>();
 		list.addAll(result.subList((int) start, (int) (start + count)));
 		return list;
 	}
@@ -645,19 +642,17 @@ public class SimpleStore implements StoreInterface {
 	@Override
 	public void setTuAttributes(String id, List<String[]> attributes) {
 		Element tu = tus.get(id);
-		List<Attribute> atts = new Vector<>();
 		Iterator<String[]> it = attributes.iterator();
 		while (it.hasNext()) {
 			String[] pair = it.next();
-			atts.add(new Attribute(pair[0], pair[1]));
+			tu.setAttribute(pair[0], pair[1]);
 		}
-		tu.setAttributes(atts);
 		tus.put(id, tu);
 	}
 
 	@Override
 	public void setTuProperties(String id, List<String[]> properties) {
-		List<Element> content = new Vector<>();
+		List<Element> content = new ArrayList<>();
 		Iterator<String[]> it = properties.iterator();
 		while (it.hasNext()) {
 			String[] pair = it.next();
@@ -678,7 +673,7 @@ public class SimpleStore implements StoreInterface {
 	@Override
 	public void setTuNotes(String id, List<String> notes) {
 		Element tu = tus.get(id);
-		List<Element> content = new Vector<>();
+		List<Element> content = new ArrayList<>();
 		content.addAll(tu.getChildren("prop"));
 		Iterator<String> it = notes.iterator();
 		while (it.hasNext()) {
@@ -755,13 +750,11 @@ public class SimpleStore implements StoreInterface {
 		HashMap<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		if (tuv != null) {
-			List<Attribute> atts = new Vector<>();
 			Iterator<String[]> it = attributes.iterator();
 			while (it.hasNext()) {
 				String[] pair = it.next();
-				atts.add(new Attribute(pair[0], pair[1]));
+				tuv.setAttribute(pair[0], pair[1]);
 			}
-			tuv.setAttributes(atts);
 			map.put(id, tuv);
 		}
 	}

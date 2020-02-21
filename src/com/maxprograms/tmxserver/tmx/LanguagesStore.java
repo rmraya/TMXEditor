@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
@@ -70,7 +71,7 @@ public class LanguagesStore implements StoreInterface {
 	public List<TUnit> getUnits(long start, int count, String filterText, Language filterLanguage,
 			boolean caseSensitiveFilter, boolean filterUntranslated, boolean regExp, Language filterSrcLanguage,
 			Language sortLanguage, boolean ascending) {
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override

@@ -18,11 +18,13 @@ SOFTWARE.
 *****************************************************************************/
 package com.maxprograms.tmxserver.tmx;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.IContentHandler;
 
-import java.util.Stack;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -30,13 +32,13 @@ import org.xml.sax.SAXException;
 class TMXContentHandler implements IContentHandler {
 
 	private Element current;
-	Stack<Element> stack;
+	Deque<Element> stack;
 	private boolean inCDATA = false;
 	private StoreInterface db;
 
 	public TMXContentHandler(StoreInterface db) {
 		this.db = db;
-		stack = new Stack<>();
+		stack = new ArrayDeque<>();
 	}
 
 	@Override

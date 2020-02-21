@@ -2216,67 +2216,22 @@ ipcMain.on('show-message', (event, arg) => {
 });
 
 function getWidth(window: string): number {
-    switch (process.platform) {
-        case 'win32': {
-            switch (window) {
-                case 'aboutWindow': { return 620; }
-                case 'replaceTextWindow': { return 450; }
-                case 'filtersWindow': { return 500; }
-                case 'consolidateWindow': { return 470; }
-                case 'removeUntranslatedWindow': { return 470; }
-                case 'settingsWindow': { return 400; }
-                case 'sortUnitsWindow': { return 450; }
-                case 'changeLanguageWindow': { return 490; }
-                case 'newFileWindow': { return 480; }
-                case 'addLanguageWindow': { return 420; }
-                case 'removeLanguageWindow': { return 420; }
-                case 'srcLanguageWindow': { return 420; }
-                case 'splitFileWindow': { return 490 }
-                case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': { return 500; }
-            }
-            break;
-        }
-        case 'darwin': {
-            switch (window) {
-                case 'aboutWindow': { return 620; }
-                case 'replaceTextWindow': { return 450; }
-                case 'filtersWindow': { return 500; }
-                case 'consolidateWindow': { return 470; }
-                case 'removeUntranslatedWindow': { return 470; }
-                case 'settingsWindow': { return 400; }
-                case 'sortUnitsWindow': { return 450; }
-                case 'changeLanguageWindow': { return 490; }
-                case 'newFileWindow': { return 480; }
-                case 'addLanguageWindow': { return 420; }
-                case 'removeLanguageWindow': { return 420; }
-                case 'srcLanguageWindow': { return 420; }
-                case 'splitFileWindow': { return 490 }
-                case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': { return 500; }
-            }
-            break;
-        }
-        case 'linux': {
-            switch (window) {
-                case 'aboutWindow': { return 620; }
-                case 'replaceTextWindow': { return 450; }
-                case 'filtersWindow': { return 500; }
-                case 'consolidateWindow': { return 470; }
-                case 'removeUntranslatedWindow': { return 470; }
-                case 'settingsWindow': { return 400; }
-                case 'sortUnitsWindow': { return 450; }
-                case 'changeLanguageWindow': { return 490; }
-                case 'newFileWindow': { return 480; }
-                case 'addLanguageWindow': { return 420; }
-                case 'removeLanguageWindow': { return 420; }
-                case 'srcLanguageWindow': { return 420; }
-                case 'splitFileWindow': { return 490 }
-                case 'mergeFilesWindow': { return 560 }
-                case 'licensesWindow': { return 500; }
-            }
-            break;
-        }
+    switch (window) {
+        case 'aboutWindow': { return 620; }
+        case 'replaceTextWindow': { return 450; }
+        case 'filtersWindow': { return 500; }
+        case 'consolidateWindow': { return 470; }
+        case 'removeUntranslatedWindow': { return 470; }
+        case 'settingsWindow': { return 400; }
+        case 'sortUnitsWindow': { return 450; }
+        case 'changeLanguageWindow': { return 490; }
+        case 'newFileWindow': { return 480; }
+        case 'addLanguageWindow': { return 420; }
+        case 'removeLanguageWindow': { return 420; }
+        case 'srcLanguageWindow': { return 420; }
+        case 'splitFileWindow': { return 490 }
+        case 'mergeFilesWindow': { return 560 }
+        case 'licensesWindow': { return 500; }
     }
 }
 
