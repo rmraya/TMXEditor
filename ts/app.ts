@@ -2329,7 +2329,7 @@ function getHeihght(window: string): number {
                 case 'filtersWindow': { return 290; }
                 case 'consolidateWindow': { return 110; }
                 case 'removeUntranslatedWindow': { return 110; }
-                case 'settingsWindow': { return 150; }
+                case 'settingsWindow': { return 140; }
                 case 'sortUnitsWindow': { return 140; }
                 case 'changeLanguageWindow': { return 140; }
                 case 'newFileWindow': { return 140; }
