@@ -2298,7 +2298,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
-                case 'licensesWindow': { return 350; }
+                case 'licensesWindow': { return 360; }
             }
             break;
         }
@@ -2324,20 +2324,20 @@ function getHeihght(window: string): number {
         }
         case 'linux': {
             switch (window) {
-                case 'aboutWindow': { return 380; }
+                case 'aboutWindow': { return 350; }
                 case 'replaceTextWindow': { return 210; }
-                case 'filtersWindow': { return 300; }
-                case 'consolidateWindow': { return 120; }
-                case 'removeUntranslatedWindow': { return 120; }
+                case 'filtersWindow': { return 290; }
+                case 'consolidateWindow': { return 110; }
+                case 'removeUntranslatedWindow': { return 110; }
                 case 'settingsWindow': { return 150; }
-                case 'sortUnitsWindow': { return 150; }
-                case 'changeLanguageWindow': { return 160; }
-                case 'newFileWindow': { return 160; }
-                case 'addLanguageWindow': { return 120; }
-                case 'removeLanguageWindow': { return 120; }
-                case 'srcLanguageWindow': { return 120; }
-                case 'splitFileWindow': { return 150; }
-                case 'mergeFilesWindow': { return 450; }
+                case 'sortUnitsWindow': { return 140; }
+                case 'changeLanguageWindow': { return 140; }
+                case 'newFileWindow': { return 140; }
+                case 'addLanguageWindow': { return 110; }
+                case 'removeLanguageWindow': { return 110; }
+                case 'srcLanguageWindow': { return 110; }
+                case 'splitFileWindow': { return 170; }
+                case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
             }
             break;
