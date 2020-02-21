@@ -90,7 +90,7 @@ if (!existsSync(appHome)) {
     mkdirSync(appHome, { recursive: true });
 }
 
-const ls = spawn(javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
+const ls = spawn(javapath, ['-cp','lib/h2-1.4.200.jar','--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
 ls.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);

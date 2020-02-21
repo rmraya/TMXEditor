@@ -64,22 +64,6 @@ public class TmxUtils {
 		// empty for security
 	}
 
-	protected static Element removeTuvs(Element element) {
-		Element tu = new Element(element.getName());
-		tu.setAttributes(element.getAttributes());
-		List<Element> props = element.getChildren("prop");
-		Iterator<Element> pt = props.iterator();
-		while (pt.hasNext()) {
-			tu.addContent(pt.next());
-		}
-		List<Element> notes = element.getChildren("note");
-		Iterator<Element> nt = notes.iterator();
-		while (nt.hasNext()) {
-			tu.addContent(nt.next());
-		}
-		return tu;
-	}
-
 	public static String pureText(Element seg, boolean clearTags, String filterText, boolean caseSensitive,
 			boolean regExp) throws IOException {
 		if (clearTags) {
@@ -183,6 +167,7 @@ public class TmxUtils {
 		return text.toString();
 	}
 
+	
 	protected static String highlight(String string, String target, boolean caseSensitive) {
 		String result = string;
 		int start = -1;

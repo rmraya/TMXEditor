@@ -24,6 +24,7 @@ module tmxserver {
 	requires mapdb;
 	requires java.base;
 	requires java.xml;
+	requires java.sql;
 	requires transitive openxliff;
 	requires tmxvalidator;
 	requires transitive jdk.httpserver;

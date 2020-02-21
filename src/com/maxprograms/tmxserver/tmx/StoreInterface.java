@@ -20,6 +20,7 @@ package com.maxprograms.tmxserver.tmx;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ import com.maxprograms.xml.Element;
 
 public interface StoreInterface {
 
-	void storeTU(Element tu) throws IOException;
+	void storeTU(Element tu) throws IOException, SQLException;
 
 	void storeHeader(Element header);
 
@@ -43,65 +44,73 @@ public interface StoreInterface {
 
 	List<TUnit> getUnits(long start, int count, String filterText, Language filterLanguage, boolean caseSensitiveFilter,
 			boolean filterUntranslated, boolean regExp, Language filterSrcLanguage, Language sortLanguage,
-			boolean ascending) throws IOException;
+			boolean ascending) throws IOException, SQLException;
 
-	void close() throws IOException;
+	void close() throws IOException, SQLException;
 
 	long getCount();
 
 	long getDiscarded();
 
-	String saveData(String id, String lang, String value) throws IOException;
+	String saveData(String id, String lang, String value) throws IOException, SQLException, SAXException, ParserConfigurationException;
 
-	void writeFile(File out) throws IOException;
+	void writeFile(File out) throws IOException, SQLException, SAXException, ParserConfigurationException;
 
 	int getSaved();
 
-	void commit() throws IOException;
+	void commit() throws IOException, SQLException;
 
-	Element getTu(String id);
+	Element getTu(String id) throws SQLException;
 
-	void delete(List<String> selected);
+	void delete(List<String> selected) throws SQLException;
 
-	void replaceText(String search, String replace, Language language, boolean regExp);
+	void replaceText(String search, String replace, Language language, boolean regExp)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
 	long getProcessed();
 
-	void insertUnit(String id);
+	void insertUnit(String id) throws SQLException, IOException;
 
-	long removeUntranslated(Language lang) throws IOException;
+	long removeUntranslated(Language lang) throws IOException, SQLException;
 
-	void addLanguage(Language lang) throws IOException;
+	void addLanguage(Language lang) throws IOException, SQLException;
 
-	void removeLanguage(Language lang) throws IOException;
+	void removeLanguage(Language lang) throws IOException, SQLException;
 
-	void removeTags();
+	void removeTags() throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void changeLanguage(Language oldLanguage, Language newLanguage) throws IOException;
+	void changeLanguage(Language oldLanguage, Language newLanguage)
+			throws IOException, SQLException, SAXException, ParserConfigurationException;
 
-	void removeDuplicates();
+	void removeDuplicates() throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void removeSpaces() throws SAXException, IOException, ParserConfigurationException;
+	void removeSpaces() throws SAXException, IOException, ParserConfigurationException, SQLException;
 
-	void consolidateUnits(Language lang) throws IOException;
+	void consolidateUnits(Language lang) throws IOException, SQLException, SAXException, ParserConfigurationException;
 
-	void setTuAttributes(String id, List<String[]> attributes);
+	void setTuAttributes(String id, List<String[]> attributes)
+			throws SAXException, IOException, ParserConfigurationException, SQLException;
 
-	void setTuvAttributes(String id, String lang, List<String[]> attributes);
+	void setTuvAttributes(String id, String lang, List<String[]> attributes)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void setTuProperties(String id, List<String[]> properties);
+	void setTuProperties(String id, List<String[]> properties)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void setTuvProperties(String id, String lang, List<String[]> dataList);
+	void setTuvProperties(String id, String lang, List<String[]> dataList)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void setTuNotes(String id, List<String> notes);
+	void setTuNotes(String id, List<String> notes)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void setTuvNotes(String id, String lang, List<String> notes);
+	void setTuvNotes(String id, String lang, List<String> notes)
+			throws SQLException, SAXException, IOException, ParserConfigurationException;
 
-	void exportDelimited(String file) throws IOException;
+	void exportDelimited(String file) throws IOException, SQLException, SAXException, ParserConfigurationException;
 
 	long getExported();
 
-	Element getTuv(String id, String lang);
+	Element getTuv(String id, String lang) throws SQLException, SAXException, IOException, ParserConfigurationException;
 
 	void setIndentation(int indentation);
 

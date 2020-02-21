@@ -103,7 +103,8 @@ public class SimpleStore implements StoreInterface {
 			tuvCount++;
 		}
 		if (tuvCount > 0) {
-			tus.put(id, TmxUtils.removeTuvs(element));
+			element.removeChild("tuv");
+			tus.put(id, element);
 			order.add(id);
 		} else {
 			discarded++;

@@ -20,6 +20,7 @@ package com.maxprograms.tmxserver.tmx;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -44,7 +45,7 @@ public class TMXReader {
 		builder.setErrorHandler(new CustomErrorHandler());
 	}
 
-	public void parse(File file) throws SAXException, IOException, ParserConfigurationException {
+	public void parse(File file) throws SAXException, IOException, ParserConfigurationException, SQLException {
 		TmxUtils.resetTags();
 		builder.build(file);
 		store.commit();

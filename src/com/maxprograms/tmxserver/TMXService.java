@@ -45,7 +45,8 @@ import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.tmx.CountStore;
-import com.maxprograms.tmxserver.tmx.MapDbStore;
+import com.maxprograms.tmxserver.tmx.H2Store;
+import com.maxprograms.tmxserver.tmx.LanguagesStore;
 import com.maxprograms.tmxserver.tmx.MergeStore;
 import com.maxprograms.tmxserver.tmx.SimpleStore;
 import com.maxprograms.tmxserver.tmx.SplitStore;
@@ -61,8 +62,9 @@ import com.maxprograms.xml.Attribute;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.XMLOutputter;
-import org.json.JSONObject;
+
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 public class TMXService implements TMXServiceInterface {
@@ -130,6 +132,7 @@ public class TMXService implements TMXServiceInterface {
 
 	@Override
 	public JSONObject openFile(String fileName) {
+		JSONObject result = new JSONObject();
 		try {
 			parsing = true;
 			File home = getPreferencesFolder();
@@ -146,9 +149,15 @@ public class TMXService implements TMXServiceInterface {
 				store = null;
 			}
 			currentFile = new File(fileName);
+			store = new SimpleStore();
 			long size = currentFile.length();
 			if (size > 100l * 1024 * 1024) {
-				store = new MapDbStore(tmp.getAbsolutePath());
+				//store = new MapDbStore(tmp.getAbsolutePath());
+				LanguagesStore langStore = new LanguagesStore();
+				TMXReader reader = new TMXReader(langStore);				
+				reader.parse(currentFile);
+				Set<String> languages = langStore.getLanguages();
+				store = new H2Store(languages);
 			} else {
 				store = new SimpleStore();
 			}
@@ -173,17 +182,14 @@ public class TMXService implements TMXServiceInterface {
 				}
 			};
 			thread.start();
-			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.SUCCESS);
-			return result;
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 			parsing = false;
-			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, ex.getMessage());
-			return result;
 		}
+		return result;
 	}
 
 	@Override

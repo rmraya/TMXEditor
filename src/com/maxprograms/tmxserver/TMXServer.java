@@ -48,7 +48,7 @@ public class TMXServer implements HttpHandler {
 	private static Logger logger = System.getLogger(TMXServer.class.getName());
 	private HttpServer server;
 	private TMXService service;
-	private boolean debug;
+	private static boolean debug;
 
 	public TMXServer(Integer port) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -86,6 +86,10 @@ public class TMXServer implements HttpHandler {
 		debug = value;
 	}
 
+	public static boolean isDebug() {
+		return debug;
+	}
+
 	private void run() {
 		server.start();
 		logger.log(Level.INFO, "TMXServer started");
@@ -108,141 +112,141 @@ public class TMXServer implements HttpHandler {
 			JSONObject json = new JSONObject(request);
 			String command = json.getString("command");
 			switch (command) {
-			case "version":
-				JSONObject obj = new JSONObject();
-				obj.put("tool", "TMXServer");
-				obj.put("version", Constants.VERSION);
-				obj.put("build", Constants.BUILD);
-				response = obj.toString();
-				break;
-			case "stop":
-				if (service.isOpen()) {
-					service.closeFile();
-				}
-				JSONObject stop = new JSONObject();
-				stop.put(Constants.STATUS, Constants.SUCCESS);
-				response = stop.toString();
-				break;
-			case "closeFile":
-				response = closeFile();
-				break;
-			case "saveFile":
-				response = saveFile(json.getString("file"));
-				break;
-			case "savingProgress":
-				response = getSavingProgress();
-				break;
-			case "openFile":
-				response = openFile(json.getString("file"));
-				break;
-			case "loadingProgress":
-				response = getLoadingProgress();
-				break;
-			case "getLanguages":
-				response = getLanguages();
-				break;
-			case "getSegments":
-				response = getSegments(json);
-				break;
-			case "getTuData":
-				response = getTuData(json.getString("id"));
-				break;
-			case "getTuvData":
-				response = getTuvData(json.getString("id"), json.getString("lang"));
-				break;
-			case "saveTuvData":
-				response = saveTuvData(json);
-				break;
-			case "consolidateUnits":
-				response = consolidateUnits(json.getString("srcLang"));
-				break;
-			case "processingProgress":
-				response = getProcessingProgress();
-				break;
-			case "getCount":
-				response = getCount();
-				break;
-			case "validateFile":
-				response = validateFile(json.getString("file"));
-				break;
-			case "validatingProgress":
-				response = getValidatingProgress();
-				break;
-			case "cleanCharacters":
-				response = cleanCharacters(json.getString("file"));
-				break;
-			case "cleaningProgress":
-				response = getCleaningProgress();
-				break;
-			case "removeUntranslated":
-				response = removeUntranslated(json.getString("srcLang"));
-				break;
-			case "replaceText":
-				response = replaceText(json);
-				break;
-			case "removeSpaces":
-				response = removeSpaces();
-				break;
-			case "removeDuplicates":
-				response = removeDuplicates();
-				break;
-			case "getAllLanguages":
-				response = getAllLanguages();
-				break;
-			case "changeLanguage":
-				response = changeLanguage(json);
-				break;
-			case "insertUnit":
-				response = insertUnit();
-				break;
-			case "deleteUnits":
-				response = deleteUnits(json);
-				break;
-			case "createFile":
-				response = createFile(json);
-				break;
-			case "getFileProperties":
-				response = getFileProperties();
-				break;
-			case "removeTags":
-				response = removeTags();
-				break;
-			case "removeLanguage":
-				response = removeLanguage(json);
-				break;
-			case "addLanguage":
-				response = addLanguage(json);
-				break;
-			case "getSrcLanguage":
-				response = getSrcLanguage();
-				break;
-			case "setSrcLanguage":
-				response = setSrcLanguage(json);
-				break;
-			case "exportProgress":
-				response = exportProgress();
-				break;
-			case "exportDelimited":
-				response = exportDelimited(json);
-				break;
-			case "splitFile":
-				response = splitFile(json);
-				break;
-			case "getSplitProgress":
-				response = getSplitProgress();
-				break;
-			case "mergeFiles":
-				response = mergeFiles(json);
-				break;
-			case "getMergeProgress":
-				response = getMergeProgress();
-				break;
-			default:
-				JSONObject unknown = new JSONObject();
-				unknown.put(Constants.STATUS, Constants.ERROR);
-				unknown.put(Constants.REASON, "Unknown command");
-				unknown.put("received", json.toString());
-				response = unknown.toString();
+				case "version":
+					JSONObject obj = new JSONObject();
+					obj.put("tool", "TMXServer");
+					obj.put("version", Constants.VERSION);
+					obj.put("build", Constants.BUILD);
+					response = obj.toString();
+					break;
+				case "stop":
+					if (service.isOpen()) {
+						service.closeFile();
+					}
+					JSONObject stop = new JSONObject();
+					stop.put(Constants.STATUS, Constants.SUCCESS);
+					response = stop.toString();
+					break;
+				case "closeFile":
+					response = closeFile();
+					break;
+				case "saveFile":
+					response = saveFile(json.getString("file"));
+					break;
+				case "savingProgress":
+					response = getSavingProgress();
+					break;
+				case "openFile":
+					response = openFile(json.getString("file"));
+					break;
+				case "loadingProgress":
+					response = getLoadingProgress();
+					break;
+				case "getLanguages":
+					response = getLanguages();
+					break;
+				case "getSegments":
+					response = getSegments(json);
+					break;
+				case "getTuData":
+					response = getTuData(json.getString("id"));
+					break;
+				case "getTuvData":
+					response = getTuvData(json.getString("id"), json.getString("lang"));
+					break;
+				case "saveTuvData":
+					response = saveTuvData(json);
+					break;
+				case "consolidateUnits":
+					response = consolidateUnits(json.getString("srcLang"));
+					break;
+				case "processingProgress":
+					response = getProcessingProgress();
+					break;
+				case "getCount":
+					response = getCount();
+					break;
+				case "validateFile":
+					response = validateFile(json.getString("file"));
+					break;
+				case "validatingProgress":
+					response = getValidatingProgress();
+					break;
+				case "cleanCharacters":
+					response = cleanCharacters(json.getString("file"));
+					break;
+				case "cleaningProgress":
+					response = getCleaningProgress();
+					break;
+				case "removeUntranslated":
+					response = removeUntranslated(json.getString("srcLang"));
+					break;
+				case "replaceText":
+					response = replaceText(json);
+					break;
+				case "removeSpaces":
+					response = removeSpaces();
+					break;
+				case "removeDuplicates":
+					response = removeDuplicates();
+					break;
+				case "getAllLanguages":
+					response = getAllLanguages();
+					break;
+				case "changeLanguage":
+					response = changeLanguage(json);
+					break;
+				case "insertUnit":
+					response = insertUnit();
+					break;
+				case "deleteUnits":
+					response = deleteUnits(json);
+					break;
+				case "createFile":
+					response = createFile(json);
+					break;
+				case "getFileProperties":
+					response = getFileProperties();
+					break;
+				case "removeTags":
+					response = removeTags();
+					break;
+				case "removeLanguage":
+					response = removeLanguage(json);
+					break;
+				case "addLanguage":
+					response = addLanguage(json);
+					break;
+				case "getSrcLanguage":
+					response = getSrcLanguage();
+					break;
+				case "setSrcLanguage":
+					response = setSrcLanguage(json);
+					break;
+				case "exportProgress":
+					response = exportProgress();
+					break;
+				case "exportDelimited":
+					response = exportDelimited(json);
+					break;
+				case "splitFile":
+					response = splitFile(json);
+					break;
+				case "getSplitProgress":
+					response = getSplitProgress();
+					break;
+				case "mergeFiles":
+					response = mergeFiles(json);
+					break;
+				case "getMergeProgress":
+					response = getMergeProgress();
+					break;
+				default:
+					JSONObject unknown = new JSONObject();
+					unknown.put(Constants.STATUS, Constants.ERROR);
+					unknown.put(Constants.REASON, "Unknown command");
+					unknown.put("received", json.toString());
+					response = unknown.toString();
 			}
 			if (debug) {
 				logger.log(Level.INFO, response);
@@ -525,7 +529,7 @@ public class TMXServer implements HttpHandler {
 			if (json.has("sortLanguage")) {
 				sortLanguage = service.getLanguage(json.getString("sortLanguage"));
 			}
-			boolean ascending = false;
+			boolean ascending = true;
 			if (json.has("ascending")) {
 				ascending = json.getBoolean("ascending");
 			}
@@ -540,15 +544,15 @@ public class TMXServer implements HttpHandler {
 
 			if (segments.getString(Constants.STATUS).equals(Constants.SUCCESS)) {
 				JSONArray units = segments.getJSONArray("units");
-				
+
 				List<Language> fileLanguages = new ArrayList<>();
 				JSONArray langs = service.getLanguages().getJSONArray("languages");
-				for (int i=0 ; i<langs.length() ; i++) {
+				for (int i = 0; i < langs.length(); i++) {
 					fileLanguages.add(new Language(langs.getJSONObject(i)));
 				}
-				
+
 				JSONArray array = new JSONArray();
-				for (int i=0 ; i<units.length(); i++) {
+				for (int i = 0; i < units.length(); i++) {
 					TUnit unit = new TUnit(units.getJSONObject(i));
 					array.put(unit.toHTML(fileLanguages));
 				}
@@ -595,6 +599,6 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private String getTuvData(String id, String lang) {
-		return  service.getTuvData(id, lang).toString();
+		return service.getTuvData(id, lang).toString();
 	}
 }
