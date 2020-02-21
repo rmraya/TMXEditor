@@ -21,7 +21,6 @@ module tmxserver {
 	exports com.maxprograms.tmxserver;
 	exports com.maxprograms.tmxserver.models;
 	
-	requires mapdb;
 	requires java.base;
 	requires java.xml;
 	requires java.sql;

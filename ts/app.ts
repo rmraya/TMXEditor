@@ -90,7 +90,7 @@ if (!existsSync(appHome)) {
     mkdirSync(appHome, { recursive: true });
 }
 
-const ls = spawn(javapath, ['-cp','lib/h2-1.4.200.jar','--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
+const ls = spawn(javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
 ls.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -426,6 +426,7 @@ ipcMain.on('open-license', function (event, arg: any) {
             break;
         case "OpenXLIFF":
         case "TMXValidator":
+        case "H2":
             licenseFile = 'file://' + app.getAppPath() + '/html/licenses/EclipsePublicLicense1.0.html';
             title = 'Eclipse Public License 1.0';
             break;
@@ -2297,7 +2298,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
-                case 'licensesWindow': { return 330; }
+                case 'licensesWindow': { return 350; }
             }
             break;
         }
@@ -2317,7 +2318,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 110; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 420; }
-                case 'licensesWindow': { return 330; }
+                case 'licensesWindow': { return 350; }
             }
             break;
         }
@@ -2337,7 +2338,7 @@ function getHeihght(window: string): number {
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
-                case 'licensesWindow': { return 330; }
+                case 'licensesWindow': { return 350; }
             }
             break;
         }
