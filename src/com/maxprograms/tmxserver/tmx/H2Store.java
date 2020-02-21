@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,7 +39,7 @@ import org.xml.sax.SAXException;
 
 public class H2Store implements StoreInterface {
 
-	private long id;
+	private long time;
 	private Element header;
 	private Set<String> languages;
 	private long tuCount;
@@ -66,7 +68,7 @@ public class H2Store implements StoreInterface {
 
 	public H2Store(Set<String> languageSet) throws ClassNotFoundException, SQLException, IOException {
 		langSet = languageSet;
-		id = 1l;
+		time = System.currentTimeMillis();
 		languages = new TreeSet<>();
 		tuCount = 1l;
 		discarded = 0;
@@ -86,16 +88,14 @@ public class H2Store implements StoreInterface {
 			database.mkdirs();
 		}
 
-		Class.forName("org.h2.Driver");
 		String url = "jdbc:h2:" + database.getAbsolutePath() + "/db";
-		conn = DriverManager.getConnection(url, "sa", "");
+		conn = DriverManager.getConnection(url);
 		conn.setAutoCommit(false);
 		createTuTable();
 	}
 
 	private void createTuTable() throws SQLException {
-		String query = "CREATE TABLE tu ( " + "  tuid VARCHAR(40) NOT NULL, " + "  tu VARCHAR(6000) NOT NULL, "
-				+ "  PRIMARY KEY(tuid) " + ");";
+		String query = "CREATE TABLE tu (tuid VARCHAR(30) NOT NULL, tu VARCHAR(6000) NOT NULL,  PRIMARY KEY(tuid) );";
 		try (Statement stmt = conn.createStatement()) {
 			stmt.execute(query);
 		}
@@ -107,7 +107,7 @@ public class H2Store implements StoreInterface {
 		deleteTu = conn.prepareStatement("DELETE FROM tu WHERE tuid=?");
 
 		StringBuilder sbuilder = new StringBuilder();
-		sbuilder.append("CREATE TABLE tunits (tcount INTEGER NOT NULL, tuid VARCHAR(40) NOT NULL");
+		sbuilder.append("CREATE TABLE tunits (tcount INTEGER NOT NULL, tuid VARCHAR(30) NOT NULL");
 		Iterator<String> it = langSet.iterator();
 		while (it.hasNext()) {
 			String lang = it.next();
@@ -140,7 +140,7 @@ public class H2Store implements StoreInterface {
 
 	@Override
 	public void storeTU(Element element) throws IOException, SQLException {
-		String tuid = "" + id++;
+		String tuid = "" + time++;
 		List<Element> tuvs = element.getChildren("tuv");
 		Iterator<Element> it = tuvs.iterator();
 		int tuvCount = 0;
@@ -221,9 +221,8 @@ public class H2Store implements StoreInterface {
 	}
 
 	private void createTable(String lang) throws SQLException {
-		String query = "CREATE TABLE " + lang.replace('-', '_') + "_tuv ( " + "  tuid VARCHAR(40) NOT NULL, "
-				+ "  tuv VARCHAR(2147483647) NOT NULL, " + "  pureText VARCHAR(2147483647) NOT NULL, "
-				+ "  PRIMARY KEY(tuid) " + ");";
+		String query = "CREATE TABLE " + lang.replace('-', '_')
+				+ "_tuv ( tuid VARCHAR(30) NOT NULL, tuv VARCHAR(2147483647) NOT NULL, pureText VARCHAR(2147483647) NOT NULL, PRIMARY KEY(tuid) );";
 		try (Statement stmt = conn.createStatement()) {
 			stmt.execute(query);
 			conn.commit();
@@ -529,7 +528,8 @@ public class H2Store implements StoreInterface {
 				return d.getRootElement();
 			} catch (SAXException | IOException | ParserConfigurationException sax) {
 				// ignore this
-				System.err.println("Broken TU " + tu);
+				Logger logger = System.getLogger(H2Store.class.getName());
+				logger.log(Level.WARNING, "Broken TU " + tu);
 			}
 		}
 		return null;

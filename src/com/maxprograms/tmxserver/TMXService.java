@@ -152,7 +152,6 @@ public class TMXService implements TMXServiceInterface {
 			store = new SimpleStore();
 			long size = currentFile.length();
 			if (size > 100l * 1024 * 1024) {
-				//store = new MapDbStore(tmp.getAbsolutePath());
 				LanguagesStore langStore = new LanguagesStore();
 				TMXReader reader = new TMXReader(langStore);				
 				reader.parse(currentFile);

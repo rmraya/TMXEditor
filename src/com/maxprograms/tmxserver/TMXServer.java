@@ -48,7 +48,7 @@ public class TMXServer implements HttpHandler {
 	private static Logger logger = System.getLogger(TMXServer.class.getName());
 	private HttpServer server;
 	private TMXService service;
-	private static boolean debug;
+	private boolean debug;
 
 	public TMXServer(Integer port) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -84,10 +84,6 @@ public class TMXServer implements HttpHandler {
 
 	private void setDebug(boolean value) {
 		debug = value;
-	}
-
-	public static boolean isDebug() {
-		return debug;
 	}
 
 	private void run() {
