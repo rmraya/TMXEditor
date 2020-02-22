@@ -2197,10 +2197,8 @@ function checkUpdates(silent: boolean): void {
     });
 }
 
-
-
 ipcMain.on('get-version', (event, arg) => {
-    event.sender.send('set-version', app.getVersion());
+    event.sender.send('set-version', app.name + ' ' + app.getVersion());
 });
 
 function showReleaseHistory(): void {
