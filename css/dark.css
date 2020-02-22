@@ -155,21 +155,23 @@ textarea {
 }
 
 input[type=text] {
-	font-size: 0.8em;
-	border-top: none;
-	border-left: none;
-	border-right: none;
-	border-bottom: 1px solid var(--dark-background);
+	margin-top: 3px;
+	height: 1.4rem;
+	font-size: 1rem;
+	border: 1px solid var(--dark-background);
 	background-color: var(--input-background);
 	color: var(--normal-color);
 }
 
 input[type=text]:focus {
-	border: none;
+	border: 1px solid transparent;
 }
 
 input[type=password] {
-	font-size: 0.8em;
+	margin-top: 3px;
+	height: 1.4rem;
+	font-size: 1rem;
+	border: 1px solid var(--dark-background);
 	background-color: var(--input-background);
 	color: var(--normal-color);
 }
@@ -180,8 +182,14 @@ input[type=number] {
 	height: 18px;
 	margin: 0px;
 	padding: 0px;
+	padding-left: 2px;
 	background-color: var(--input-background);
+	border: 1px solid var(--dark-background);
 	color: var(--normal-color);
+}
+
+input[type=number]:focus {
+	border: 1px solid transparent;
 }
 
 input[type=checkbox] {

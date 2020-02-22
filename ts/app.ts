@@ -2227,7 +2227,7 @@ function getWidth(window: string): number {
         case 'addLanguageWindow': { return 420; }
         case 'removeLanguageWindow': { return 420; }
         case 'srcLanguageWindow': { return 420; }
-        case 'splitFileWindow': { return 490 }
+        case 'splitFileWindow': { return 500 }
         case 'mergeFilesWindow': { return 560 }
         case 'licensesWindow': { return 500; }
     }

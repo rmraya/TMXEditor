@@ -20,7 +20,7 @@ SOFTWARE.
 var _sf = require('electron');
 
 function splitFileLoaded(): void {
-    _b.ipcRenderer.send('get-theme');
+    _sf.ipcRenderer.send('get-theme');
 }
 
 _sf.ipcRenderer.on('set-theme', (event, arg) => {
