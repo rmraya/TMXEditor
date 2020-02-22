@@ -390,6 +390,7 @@ button.toolbar:hover {
 	width:100%; 
 	background: var(--dark-background); 
 	color: var(--dark-color);
+	white-space: nowrap;
 }
 
 .titlepanel a:hover {

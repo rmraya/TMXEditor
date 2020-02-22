@@ -246,6 +246,9 @@ ipcRenderer.on('update-segments', (event, arg) => {
     for (let i = 0; i < fixed.length; i++) {
         fixed[i].addEventListener('click', (ev: MouseEvent) => fixedListener(ev));
     }
+    document.getElementById('attributesTable').innerHTML = '';
+    document.getElementById('propertiesTable').innerHTML = '';
+    document.getElementById('notesTable').innerHTML = '';
 });
 
 ipcRenderer.on('file-closed', () => {
@@ -368,6 +371,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
         let tr = document.createElement('tr');
         table.appendChild(tr);
         let left = document.createElement('td');
+        left.style.whiteSpace = 'nowrap';
         left.textContent = pair[0];
         tr.appendChild(left);
         let right = document.createElement('td');
@@ -386,6 +390,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
         table.appendChild(tr);
         let left = document.createElement('td');
         left.textContent = pair[0];
+        left.style.whiteSpace = 'nowrap';
         tr.appendChild(left);
         let right = document.createElement('td');
         right.textContent = pair[1];

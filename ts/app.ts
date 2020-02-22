@@ -673,24 +673,19 @@ function saveRecent(file: string) {
         var jsonData = JSON.parse(data.toString());
         var files = jsonData.files;
         if (files != undefined) {
-            var found = false;
-            for (var i = 0; i < files.length; i++) {
-                if (file === files[i]) {
-                    found = true;
-                }
+            files = files.filter(function (f: string) {
+                return f != file;
+            });
+            files.unshift(file);
+            if (files.length > 5) {
+                jsonData.files = files.slice(0, 8);
             }
-            if (!found) {
-                files.unshift(file);
-                if (files.length > 5) {
-                    jsonData.files = files.slice(0, 5);
+            writeFile(appHome + 'recent.json', JSON.stringify(jsonData), function (error) {
+                if (error) {
+                    dialog.showMessageBox({ type: 'error', message: error.message });
+                    return;
                 }
-                writeFile(appHome + 'recent.json', JSON.stringify(jsonData), function (error) {
-                    if (error) {
-                        dialog.showMessageBox({ type: 'error', message: error.message });
-                        return;
-                    }
-                });
-            }
+            });
         }
     });
 }
