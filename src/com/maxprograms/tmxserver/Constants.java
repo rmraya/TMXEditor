@@ -24,8 +24,9 @@ public class Constants {
 		// empty for security
 	}
 
+	public static final String APPNAME = "TMXEditor";
 	public static final String VERSION = "2.0.0";
-	public static final String BUILD = "20200201_0737";
+	public static final String BUILD = "20200221_2104";
 
 	public static final String REASON = "reason";
 	public static final String STATUS = "status";

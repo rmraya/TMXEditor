@@ -61,6 +61,7 @@ import com.maxprograms.tmxvalidation.TMXValidator;
 import com.maxprograms.xml.Attribute;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
+import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.XMLOutputter;
 
 import org.json.JSONArray;
@@ -686,7 +687,7 @@ public class TMXService implements TMXServiceInterface {
 			tmx.setAttribute("version", "1.4");
 			Element header = new Element("header");
 			header.setAttribute("creationdate", TmxUtils.tmxDate());
-			header.setAttribute("creationtool", "TMXEditor");
+			header.setAttribute("creationtool", Constants.APPNAME);
 			header.setAttribute("creationtoolversion", Constants.VERSION);
 			header.setAttribute("datatype", "xml");
 			header.setAttribute("segtype", "block");
@@ -698,7 +699,7 @@ public class TMXService implements TMXServiceInterface {
 			tmx.addContent(body);
 			Element tu = new Element("tu");
 			tu.setAttribute("creationdate", TmxUtils.tmxDate());
-			tu.setAttribute("creationtool", "TMXEditor");
+			tu.setAttribute("creationtool", Constants.APPNAME);
 			tu.setAttribute("creationtoolversion", Constants.VERSION);
 			body.addContent(tu);
 			Element tuv1 = new Element("tuv");
@@ -716,8 +717,10 @@ public class TMXService implements TMXServiceInterface {
 
 			File tempFile = File.createTempFile("temp", ".tmx");
 			tempFile.deleteOnExit();
+			Indenter.indent(tmx, 2);
+			XMLOutputter outputter = new XMLOutputter();
+			outputter.preserveSpace(true);
 			try (FileOutputStream out = new FileOutputStream(tempFile)) {
-				XMLOutputter outputter = new XMLOutputter();
 				outputter.output(doc, out);
 			}
 			result.put(Constants.STATUS, Constants.SUCCESS);
@@ -950,7 +953,7 @@ public class TMXService implements TMXServiceInterface {
 					try (FileOutputStream out = new FileOutputStream(new File(merged))) {
 						Element header = new Element("header");
 						header.setAttribute("creationdate", TmxUtils.tmxDate());
-						header.setAttribute("creationtool", "TMXEditor");
+						header.setAttribute("creationtool", Constants.APPNAME);
 						header.setAttribute("creationtoolversion", Constants.VERSION);
 						header.setAttribute("datatype", "xml");
 						header.setAttribute("segtype", "block");

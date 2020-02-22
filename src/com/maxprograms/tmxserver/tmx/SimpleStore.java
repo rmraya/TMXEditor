@@ -385,7 +385,7 @@ public class SimpleStore implements StoreInterface {
 		tu.setAttribute("tuid", id);
 		tu.setAttribute("creationdate", TmxUtils.tmxDate());
 		tu.setAttribute("creationid", System.getProperty("user.name"));
-		tu.setAttribute("creationtool", "TMXEditor");
+		tu.setAttribute("creationtool", Constants.APPNAME);
 		tu.setAttribute("creationtoolversion", Constants.VERSION);
 		tus.put(id, tu);
 		order.add(id);
