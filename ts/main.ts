@@ -165,14 +165,17 @@ function openHelp(): void {
 }
 
 function editAttributes(): void {
+    console.log('edit attributes clicked');
     // TODO
 }
 
 function editProperties(): void {
+    console.log('edit properties clicked');
     // TODO
 }
 
 function editNotes(): void {
+    console.log('edit notes clicked');
     // TODO
 }
 
