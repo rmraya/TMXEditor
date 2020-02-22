@@ -16,24 +16,24 @@ function hDragEnd(ev: DragEvent, leftId: string, rightId: string) {
         left = 20;
     }
     left = Math.round(left * 100 / currentSum);
-    
+
     var right: number = 100 - left;
     leftPanel.style.width = left + 'vw';
     rightPanel.style.width = right + 'vw';
 }
 
-function vDragStart(ev: DragEvent, dividerId: string, leftId: string, rightId: string) {
-    var topPanel: HTMLElement = document.getElementById(leftId);
+function vDragStart(ev: DragEvent, dividerId: string, topId: string, bottomId: string) {
+    var topPanel: HTMLElement = document.getElementById(topId);
     var divider: HTMLElement = document.getElementById(dividerId);
-    var bottomPanel: HTMLElement = document.getElementById(rightId);
+    var bottomPanel: HTMLElement = document.getElementById(bottomId);
 
     currentSum = topPanel.clientHeight + divider.clientHeight + bottomPanel.clientHeight;
 }
 
-function vDragEnd(ev: DragEvent, dividerId: string, leftId: string, rightId: string) {
-    var topPanel: HTMLElement = document.getElementById(leftId);
+function vDragEnd(ev: DragEvent, dividerId: string, topId: string, bottomId: string, topContainer: string, bottomContainer: string) {
+    var topPanel: HTMLElement = document.getElementById(topId);
     var divider: HTMLElement = document.getElementById(dividerId);
-    var bottomPanel: HTMLElement = document.getElementById(rightId);
+    var bottomPanel: HTMLElement = document.getElementById(bottomId);
 
     var top: number = topPanel.clientHeight + ev.offsetY;
     if (top < 24) {
@@ -45,4 +45,10 @@ function vDragEnd(ev: DragEvent, dividerId: string, leftId: string, rightId: str
     var bottom: number = currentSum - top - divider.clientHeight;
     topPanel.style.height = top + 'px';
     bottomPanel.style.height = bottom + 'px';
+
+    var tc = document.getElementById(topContainer);
+    tc.style.height = (top - 25) + 'px';
+
+    var bc = document.getElementById(bottomContainer);
+    bc.style.height = (bottom - 25) + 'px';
 }

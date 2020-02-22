@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/fonts.css">
 </head>
 
-<body id="body" onload="getTheme()">
+<body id="body" onload="getTheme();setSizes();" onresize="resizePanels()">
     <header>
         <div style="padding-top:0px; display:flex;">
             <a onclick="openFile()" class="tooltip">
@@ -100,13 +100,13 @@
                 <div id="topPanel" class="fill_width" style="height: 34%;">
                     <div class="titlepanel">
                         <span id="attributesSpan">TU</span> &nbsp;&nbsp;Attributes
-                        <span class="fill_width" >&nbsp;</span>
+                        <span class="fill_width">&nbsp;</span>
                         <a href="#" onclick="editAttributes()" class="tooltip right">
                             <img src="images/edit.svg">
                             <span class="tooltiptext bottomRightTooltip">Edit Attributes</span>
                         </a>
                     </div>
-                    <div class="panelcontent">
+                    <div id="attributesPanel" class="panelcontent">
                         <table class="stripes">
                             <tbody id="attributesTable">
                             </tbody>
@@ -115,19 +115,19 @@
                 </div>
 
                 <div id="topDivider" class="vdivider" draggable="true"
-                    ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel')"
+                    ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel', 'attributesPanel', 'propertiesPanel')"
                     ondragstart="vDragStart(event, 'topDivider', 'topPanel', 'centerPanel')"></div>
 
                 <div id="centerPanel" class="fill_width" style="height: 33%;">
                     <div class="titlepanel">
                         <span id="propertiesSpan">TU</span> &nbsp;&nbsp;Properties
-                        <span class="fill_width" >&nbsp;</span>
+                        <span class="fill_width">&nbsp;</span>
                         <a onclick="editProperties()" class="tooltip right">
                             <img src="images/edit.svg">
                             <span class="tooltiptext bottomRightTooltip">Edit Properties</span>
                         </a>
                     </div>
-                    <div class="panelcontent">
+                    <div id="propertiesPanel" class="panelcontent">
                         <table class="stripes">
                             <tbody id="propertiesTable">
                             </tbody>
@@ -136,19 +136,19 @@
                 </div>
 
                 <div id="bottomDivider" class="vdivider" draggable="true"
-                    ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"
+                    ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel', 'propertiesPanel', 'notesPanel')"
                     ondragstart="vDragStart(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"></div>
 
                 <div id="bottomPanel" class="fill_width" style="height: 33%;">
                     <div class="titlepanel">
                         <span id=notesSpan>TU</span> &nbsp;&nbsp;Notes
-                        <span class="fill_width" >&nbsp;</span>
+                        <span class="fill_width">&nbsp;</span>
                         <a onclick="editNotes()" class="tooltip right">
                             <img src="images/edit.svg">
                             <span class="tooltiptext bottomRightTooltip">Edit Notes</span>
                         </a>
                     </div>
-                    <div class="panelcontent">
+                    <div id="notesPanel" class="panelcontent">
                         <table class="stripes">
                             <tbody id="notesTable">
                             </tbody>
@@ -200,6 +200,34 @@
 
     </div>
 
+    <script>
+        function setSizes() {
+            var rightPane = document.getElementById('right-pane');
+            var height = ((rightPane.clientHeight - 4) / 3) - 25;
+
+            var attributesPanel = document.getElementById('attributesPanel');
+            attributesPanel.style.height = height + 'px';
+
+            var propertiesPanel = document.getElementById('propertiesPanel');
+            propertiesPanel.style.height = height + 'px';
+
+            var notesPanel = document.getElementById('notesPanel');
+            notesPanel.style.height = (height - 2) + 'px';
+        }
+        function resizePanels() {
+            var topPanel = document.getElementById('topPanel');
+            var attributesPanel = document.getElementById('attributesPanel');
+            attributesPanel.style.height = (topPanel.clientHeight - 25) + 'px';
+
+            var centerPanel = document.getElementById('centerPanel');
+            var propertiesPanel = document.getElementById('propertiesPanel');
+            propertiesPanel.style.height = (centerPanel.clientHeight - 25) + 'px';
+
+            var bottomPanel = document.getElementById('bottomPanel');
+            var notesPanel = document.getElementById('notesPanel');
+            notesPanel.style.height = (bottomPanel.clientHeight - 25) + 'px';
+        }
+    </script>
     <script src="js/main.js"></script>
     <script src="js/divider.js"></script>
 </body>
