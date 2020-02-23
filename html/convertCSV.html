@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Convert CSV to TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="convertCSVLoaded()">
+
+    <table class="fill_width">
+        <tr>
+            <td style="vertical-align: middle;" class="noWrap"><label for="csvFile">CSV/Text File</label></td>
+            <td class="fill_width"><input type="text" id="csvFile" class="fill_width"></td>
+            <td><Button onclick="browseCsvFiles()">Browse...</Button></td>
+        </tr>
+        <tr>
+            <td style="vertical-align: middle;" class="noWrap"><label for="tmxFile">TMX File</label></td>
+            <td class="fill_width"> <input type="text" id="tmxFile" class="fill_width"></td>
+            <td><Button onclick="browseTmxFiles()">Browse...</Button></td>
+        </tr>
+    </table>
+    <table class="fill_width">
+        <tr>
+            <td><label>Character Set</label></td>
+            <td><label>Column Separator</label></td>
+            <td><label>Text Delimiter</label></td>
+        </tr>
+        <tr>
+            <td>
+                <select id="charSets" class="fill_width" onchange="refreshPreview(true)">
+                </select>
+            </td>
+            <td>
+                <select id="colSeps" class="fill_width" onchange="refreshPreview(true)">
+                    <option value=";">;</option>
+                    <option value=":">:</option>
+                    <option value="|">|</option>
+                    <option value="TAB">TAB</option>
+                </select>
+            </td>
+            <td>
+                <select id="textDelim" class="fill_width" onchange="refreshPreview(true)">
+                    <option value=""></option>
+                    <option value="'">'</option>
+                    <option value='"'>"</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td style="vertical-align: middle;">Custom Separator: <input id="customSep" type='text'
+                    style="width: 30px;"></td>
+            <td style="vertical-align: middle;">Custom Delimiter: <input id="customDel" type='text'
+                    style="width: 30px;"></td>
+        </tr>
+    </table>
+
+    <div style="border: 1px solid var(--normal-color);">
+        <div id="preview" style="width: 100%; height:200px; overflow-x: auto; overflow-y: auto; ">
+            <pre id="preview" style="width: 100%;">
+               Preview not available
+            </pre>
+        </div>
+    </div>
+
+    <table class="fill_width">
+        <tr>
+            <td>Detected Columns: <span id="columns">0</span></td>
+            <td>Languages Set: <span id="langs">0</span></td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button onclick="refreshPreview(false)">Refresh Preview</button>
+        <button onclick="setLanguages()">Set Languages</button>
+        <button onclick="convertFile()">Convert CSV to TMX</button>
+    </div>
+
+    <script src="../js/convertCSV.js"></script>
+</body>
+
+</html>

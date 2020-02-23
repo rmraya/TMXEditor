@@ -237,6 +237,15 @@ public class TMXServer implements HttpHandler {
 				case "getMergeProgress":
 					response = getMergeProgress();
 					break;
+				case "getCharsets":
+					response = getCharsets();
+					break;
+				case "previewCsv":
+					response = previewCsv(json);
+					break;
+				case "convertCsv":
+					response = convertCsv(json);
+					break;
 				default:
 					JSONObject unknown = new JSONObject();
 					unknown.put(Constants.STATUS, Constants.ERROR);
@@ -271,6 +280,31 @@ public class TMXServer implements HttpHandler {
 				os.write(message.getBytes());
 			}
 		}
+	}
+
+	private String convertCsv(JSONObject json) {
+		JSONArray array = json.getJSONArray("langs");
+		List<String> langs = new ArrayList<>();
+		for (int i = 0; i < array.length(); i++) {
+			langs.add(array.getString(i));
+		}
+		return service.convertCsv(json.getString("csvFile"), json.getString("tmxFile"), langs,
+				json.getString("charSet"), json.getString("columnsSeparator"), json.getString("textDelimiter"))
+				.toString();
+	}
+
+	private String previewCsv(JSONObject json) {
+		JSONArray array = json.getJSONArray("langs");
+		List<String> langs = new ArrayList<>();
+		for (int i = 0; i < array.length(); i++) {
+			langs.add(array.getString(i));
+		}
+		return service.previewCsv(json.getString("csvFile"), langs, json.getString("charSet"),
+				json.getString("columnsSeparator"), json.getString("textDelimiter")).toString();
+	}
+
+	private String getCharsets() {
+		return service.getCharsets().toString();
 	}
 
 	private String getMergeProgress() {

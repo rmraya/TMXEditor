@@ -46,7 +46,9 @@ public class TMXConverter {
         writeString("<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n"); //$NON-NLS-1$
         writeString("<tmx version=\"1.4\">\n"); 
 		writeString("  <header \n" + 
-				"      creationtool=\"TMXEditor\" \n" + 
+				"      creationtool=\"" + 
+				Constants.APPNAME + 
+				"\" \n" + 
 				"      creationtoolversion=\"" + 
 				Constants.VERSION +
 				"\"  \n" + 

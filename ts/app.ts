@@ -40,7 +40,9 @@ var removeLanguageWindow: BrowserWindow;
 var srcLanguageWindow: BrowserWindow;
 var splitFileWindow: BrowserWindow;
 var mergeFilesWindow: BrowserWindow;
-
+var convertCsvWindow: BrowserWindow;
+var csvLanguagesWindow: BrowserWindow;
+var csvEvent: Electron.IpcMainEvent;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -57,6 +59,7 @@ var loadOptions: any = {
     count: 200
 };
 var sortOptions: any = {};
+var csvLangArgs: any;
 
 var currentFile: string = '';
 var saved: boolean = true;
@@ -925,13 +928,148 @@ function saveAs(): void {
 }
 
 function convertCSV(): void {
-    // TODO
-    dialog.showMessageBox(mainWindow, { type: 'info', message: 'Not implemented' });
+    convertCsvWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: getWidth('convertCSV'),
+        height: getHeihght('convertCSV'),
+        minimizable: false,
+        maximizable: false,
+        resizable: true,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    convertCsvWindow.setMenu(null);
+    convertCsvWindow.loadURL('file://' + app.getAppPath() + '/html/convertCSV.html');
+    // convertCsvWindow.webContents.openDevTools();
+    convertCsvWindow.show();
 }
 
 ipcMain.on('convert-csv', () => {
     convertCSV();
 });
+
+ipcMain.on('convert-csv-tmx', (event, arg) => {
+    sendRequest(arg,
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                dialog.showMessageBox({ type: 'info', message: 'File converted' });
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('get-charsets', (event, arg) => {
+    sendRequest({ command: 'getCharsets' },
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('set-charsets', data.charsets);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('get-csvconversion-defaults', (eent, arg) => {
+    // TODO
+});
+
+ipcMain.on('get-csvfile', (event, arg) => {
+    dialog.showOpenDialog({
+        title: 'Open CSV/Text File',
+        properties: ['openFile'],
+        filters: [
+            { name: 'CSV/Text File', extensions: ['csv', 'txt'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            event.sender.send('set-csvfile', value.filePaths[0]);
+        }
+    }).catch(function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+});
+
+ipcMain.on('get-converted-tmx', (event, arg) => {
+    dialog.showSaveDialog({
+        title: 'Converted TMX File',
+        defaultPath: arg.default,
+        properties: ['showOverwriteConfirmation', 'createDirectory'],
+        filters: [
+            { name: 'TMX File', extensions: ['tmx'] },
+            { name: 'Any File', extensions: ['*'] }
+        ]
+    }).then(function (value: any) {
+        if (!value.canceled) {
+            event.sender.send('converted-tmx-file', value.filePath);
+        }
+    }).catch(function (error: Error) {
+        dialog.showErrorBox('Error', error.message);
+        console.log(error);
+    });
+});
+
+ipcMain.on('get-csv-preview', (event, arg) => {
+    sendRequest(arg,
+        function success(data: any) {
+            if (data.status === SUCCESS) {
+                event.sender.send('set-preview', data);
+            } else {
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('get-csv-languages', (event, arg) => {
+    csvEvent = event;
+    csvLangArgs = arg;
+    csvLanguagesWindow = new BrowserWindow({
+        parent: convertCsvWindow,
+        modal: true,
+        width: getWidth('csvLanguages'),
+        height: getHeihght('csvLanguages'),
+        minimizable: false,
+        maximizable: false,
+        resizable: true,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    csvLanguagesWindow.setMenu(null);
+    csvLanguagesWindow.loadURL('file://' + app.getAppPath() + '/html/csvLanguages.html');
+    csvLanguagesWindow.show();
+});
+
+ipcMain.on('get-csv-lang-args', (event, arg) => {
+    event.sender.send('set-csv-lang-args', csvLangArgs);
+});
+
+ipcMain.on('set-csv-languages', (event, arg) => {
+    csvLanguagesWindow.close();
+    csvEvent.sender.send('csv-languages', arg);
+});
+
 
 function exportDelimited(): void {
     if (currentFile === '') {
@@ -2225,6 +2363,8 @@ function getWidth(window: string): number {
         case 'splitFileWindow': { return 500 }
         case 'mergeFilesWindow': { return 560 }
         case 'licensesWindow': { return 500; }
+        case 'convertCSV': { return 600; }
+        case 'csvLanguages': { return 600; }
     }
 }
 
@@ -2247,6 +2387,8 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 450; }
                 case 'licensesWindow': { return 360; }
+                case 'convertCSV': { return 500; }
+                case 'csvLanguages': { return 380; }
             }
             break;
         }
@@ -2267,6 +2409,8 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
+                case 'convertCSV': { return 500; }
+                case 'csvLanguages': { return 370; }
             }
             break;
         }
@@ -2287,6 +2431,8 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 170; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
+                case 'convertCSV': { return 500; }
+                case 'csvLanguages': { return 370; }
             }
             break;
         }

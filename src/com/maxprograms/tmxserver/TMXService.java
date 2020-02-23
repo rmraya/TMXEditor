@@ -154,7 +154,7 @@ public class TMXService implements TMXServiceInterface {
 			long size = currentFile.length();
 			if (size > 100l * 1024 * 1024) {
 				LanguagesStore langStore = new LanguagesStore();
-				TMXReader reader = new TMXReader(langStore);				
+				TMXReader reader = new TMXReader(langStore);
 				reader.parse(currentFile);
 				Set<String> languages = langStore.getLanguages();
 				store = new H2Store(languages);
@@ -200,15 +200,15 @@ public class TMXService implements TMXServiceInterface {
 		processingError = "";
 		JSONObject result = new JSONObject();
 		try {
-			List<TUnit>  data = store.getUnits(start, count, filterText, filterLanguage, caseSensitiveFilter, filterUntranslated,
-					regExp, filterSrcLanguage, sortLanguage, ascending);
+			List<TUnit> data = store.getUnits(start, count, filterText, filterLanguage, caseSensitiveFilter,
+					filterUntranslated, regExp, filterSrcLanguage, sortLanguage, ascending);
 			JSONArray array = new JSONArray();
 			Iterator<TUnit> it = data.iterator();
 			while (it.hasNext()) {
 				array.put(it.next().toJSON());
 			}
 			result.put("units", array);
-			result.put(Constants.STATUS,Constants.SUCCESS);
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			processingError = e.getMessage();
@@ -250,7 +250,7 @@ public class TMXService implements TMXServiceInterface {
 		}
 		Iterator<String> it = codes.iterator();
 		JSONArray data = new JSONArray();
-		
+
 		while (it.hasNext()) {
 			String code = it.next();
 			data.put(new Language(code, registry.getTagDescription(code)).toJSON());
@@ -1279,13 +1279,14 @@ public class TMXService implements TMXServiceInterface {
 			codes.put(cset.name());
 		}
 		result.put("charsets", codes);
-		result.put(Constants.STATUS,Constants.SUCCESS);
+		result.put(Constants.STATUS, Constants.SUCCESS);
 		return result;
 	}
 
 	@Override
-	public String[] previewCsv(String csvFile, List<String> langs, String charSet, String columsSeparator,
+	public JSONObject previewCsv(String csvFile, List<String> langs, String charSet, String columnsSeparator,
 			String textDelimiter) {
+		JSONObject result = new JSONObject();
 		List<String> lines = new ArrayList<>();
 		ArrayList<String> languages = new ArrayList<>();
 		if (langs != null) {
@@ -1303,7 +1304,9 @@ public class TMXService implements TMXServiceInterface {
 			}
 		} catch (IOException ioe) {
 			LOGGER.log(Level.SEVERE, "Error reading CSV", ioe);
-			return new String[] { Constants.ERROR, "Error reading CSV file" };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, "Error reading CSV file");
+			return result;
 		}
 
 		byte[] feff = { -1, -2 }; // UTF-16BE
@@ -1326,15 +1329,17 @@ public class TMXService implements TMXServiceInterface {
 			}
 		} catch (UnsupportedEncodingException uee) {
 			LOGGER.log(Level.SEVERE, "Error reading CSV", uee);
-			return new String[] { Constants.ERROR, "Error reading CSV file" };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, "Error reading CSV file");
+			return result;
 		}
 		int cols = 0;
 
 		StringBuilder builder = new StringBuilder();
-		if (delimitersOk(lines, columsSeparator, textDelimiter)) {
+		if (delimitersOk(lines, columnsSeparator, textDelimiter)) {
 			if (languages.isEmpty()) {
 				String line = lines.get(0);
-				String[] parts = TextUtils.split(line, columsSeparator);
+				String[] parts = TextUtils.split(line, columnsSeparator);
 				try {
 					boolean hasLanguages = true;
 					for (int i = 0; i < parts.length; i++) {
@@ -1360,30 +1365,31 @@ public class TMXService implements TMXServiceInterface {
 					}
 				} catch (IOException ex) {
 					LOGGER.log(Level.SEVERE, "Error checking CSV languages", ex);
-					return new String[] { Constants.ERROR, "Error checking CSV languages" };
+					result.put(Constants.REASON, "Error checking CSV languages");
+					return result;
 				}
 			}
-			builder.append("<table style='border-collapse:collapse; margin:0px;'>");
+			builder.append("<table class='stripes'>");
 			if (!languages.isEmpty()) {
 				builder.append("<tr>");
 				Iterator<String> it = languages.iterator();
 				while (it.hasNext()) {
 					builder.append(
-							"<td style='border:1px solid #eeeeee; padding:1px; margin:0px; font-weight: bold; background: #80cbc4;'>");
+							"<th class'dark_background'>");
 					String cell = it.next();
 					builder.append(TextUtils.cleanString(cell));
-					builder.append("</td>");
+					builder.append("</th>");
 				}
 				builder.append("</tr>");
 			}
 			Iterator<String> it = lines.iterator();
 			while (it.hasNext()) {
 				String line = it.next();
-				String[] parts = TextUtils.split(line, columsSeparator);
+				String[] parts = TextUtils.split(line, columnsSeparator);
 				cols = parts.length;
 				builder.append("<tr>");
 				for (int i = 0; i < parts.length; i++) {
-					builder.append("<td style='border:1px solid #eeeeee; padding:1px; margin:0px;'>");
+					builder.append("<td style='padding:1px; margin:0px;'>");
 					String cell = parts[i];
 					if (!textDelimiter.isEmpty()) {
 						cell = cell.substring(1);
@@ -1407,20 +1413,26 @@ public class TMXService implements TMXServiceInterface {
 			}
 			builder.append("</pre>");
 		}
-		return new String[] { Constants.SUCCESS, builder.toString(), "" + cols, "" + languages.size(),
-				langsList(languages) };
+		result.put(Constants.STATUS, Constants.SUCCESS);
+		result.put("cols", cols);
+		result.put("langs", languages.size());
+		result.put("preview", builder.toString());
+		return result;
 	}
 
 	@Override
-	public String[] convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet,
+	public JSONObject convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet,
 			String columsSeparator, String textDelimiter) {
+		JSONObject result = new JSONObject();
 		try {
 			TMXConverter.csv2tmx(csvFile, tmxFile, languages, charSet, columsSeparator, textDelimiter);
-			return new String[] { Constants.SUCCESS };
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			return new String[] { Constants.ERROR, e.getMessage() };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, e.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -1579,19 +1591,6 @@ public class TMXService implements TMXServiceInterface {
 			}
 		}
 		return !(textDelimiter.isEmpty() && sameDelimiter);
-	}
-
-	private static String langsList(List<String> languages) {
-		if (languages.isEmpty()) {
-			return "";
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append(languages.get(0));
-		for (int i = 1; i < languages.size(); i++) {
-			builder.append('|');
-			builder.append(languages.get(i));
-		}
-		return builder.toString();
 	}
 
 	public Language getLanguage(String code) throws IOException {

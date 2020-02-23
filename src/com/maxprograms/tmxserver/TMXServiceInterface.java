@@ -111,11 +111,11 @@ public interface TMXServiceInterface {
 
 	JSONObject getCharsets();
 
-	String[] previewCsv(String csvFile, List<String> languages, String charSet, String columsSeparator,
+	JSONObject previewCsv(String csvFile, List<String> languages, String charSet, String columsSeparator,
 			String textDelimiter);
 
-	String[] convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet, String columsSeparator,
-			String textDelimiter);
+	JSONObject convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet,
+			String columsSeparator, String textDelimiter);
 
 	JSONObject getIndentation();
 
