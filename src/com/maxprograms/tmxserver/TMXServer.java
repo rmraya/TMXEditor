@@ -305,7 +305,7 @@ public class TMXServer implements HttpHandler {
 			langs.add(array.getString(i));
 		}
 		return service.convertCsv(json.getString("csvFile"), json.getString("tmxFile"), langs,
-				json.getString("charSet"), json.getString("columnsSeparator"), json.getString("textDelimiter"))
+				json.getString("charSet"), json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims"))
 				.toString();
 	}
 
@@ -316,7 +316,7 @@ public class TMXServer implements HttpHandler {
 			langs.add(array.getString(i));
 		}
 		return service.previewCsv(json.getString("csvFile"), langs, json.getString("charSet"),
-				json.getString("columnsSeparator"), json.getString("textDelimiter")).toString();
+				json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims")).toString();
 	}
 
 	private String getCharsets() {

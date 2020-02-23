@@ -121,7 +121,9 @@ function refreshPreview(silent: boolean) {
         langs: langs,
         charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
         columnsSeparator: columnsSeparator,
-        textDelimiter: textDelimiter
+        textDelimiter: textDelimiter,
+        fixQuotes: (document.getElementById('fixQuotes') as HTMLInputElement).checked,
+        optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked
     }
     _csv.ipcRenderer.send('get-csv-preview', arg);
 }

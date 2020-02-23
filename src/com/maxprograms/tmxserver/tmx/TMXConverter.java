@@ -38,72 +38,77 @@ public class TMXConverter {
 	}
 
 	public static void csv2tmx(String csvFile, String tmxFile, List<String> languages, String charSet,
-			String columsSeparator, String textDelimiter) throws IOException {
-		
+			String columsSeparator, String textDelimiter, boolean fixQuotes, boolean optionalDelims)
+			throws IOException {
+
 		output = new FileOutputStream(tmxFile);
-		
-		writeString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"); 
-        writeString("<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n"); //$NON-NLS-1$
-        writeString("<tmx version=\"1.4\">\n"); 
-		writeString("  <header \n" + 
-				"      creationtool=\"" + 
-				Constants.APPNAME + 
-				"\" \n" + 
-				"      creationtoolversion=\"" + 
-				Constants.VERSION +
-				"\"  \n" + 
-				"      srclang=\"*all*\" \n" + 
-				"      adminlang=\"en\"  \n" + 
-				"      datatype=\"csv\" \n" + 
-				"      o-tmf=\"csv\" \n" + 
-				"      segtype=\"block\"\n" + 
-				"  />\n"); 
+
+		writeString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		writeString(
+				"<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n"); //$NON-NLS-1$
+		writeString("<tmx version=\"1.4\">\n");
+		writeString("  <header \n" + "      creationtool=\"" + Constants.APPNAME + "\" \n"
+				+ "      creationtoolversion=\"" + Constants.VERSION + "\"  \n" + "      srclang=\"*all*\" \n"
+				+ "      adminlang=\"en\"  \n" + "      datatype=\"csv\" \n" + "      o-tmf=\"csv\" \n"
+				+ "      segtype=\"block\"\n" + "  />\n");
 		writeString("  <body>\n");
-		
-		byte[] feff = {-1,-2};           // UTF-16BE
-		byte[] fffe = {-2,-1};           // UTF-16LE
-		byte[] efbbbf = {-17,-69, -65};  // UTF-8
-		
+
+		byte[] feff = { -1, -2 }; // UTF-16BE
+		byte[] fffe = { -2, -1 }; // UTF-16LE
+		byte[] efbbbf = { -17, -69, -65 }; // UTF-8
+
 		long id = System.currentTimeMillis();
 		String today = TmxUtils.tmxDate();
-		
+
 		boolean firstLine = true;
-		try (InputStreamReader input = new InputStreamReader(new FileInputStream(csvFile),charSet)) {
+		try (InputStreamReader input = new InputStreamReader(new FileInputStream(csvFile), charSet)) {
 			try (BufferedReader buffer = new BufferedReader(input)) {
-				String line = ""; 
+				String line = "";
 				while ((line = buffer.readLine()) != null) {
 					if (firstLine) {
 						byte[] array = line.getBytes(charSet);
-						if (charSet.equals(StandardCharsets.UTF_16LE.name()) && (array[0] == fffe[0] && array[1] == fffe[1])) {
-							line = line.substring(1);
-						} 
-						if (charSet.equals(StandardCharsets.UTF_16BE.name()) && (array[0] == feff[0] && array[1] == feff[1])) {
+						if (charSet.equals(StandardCharsets.UTF_16LE.name())
+								&& (array[0] == fffe[0] && array[1] == fffe[1])) {
 							line = line.substring(1);
 						}
-						if (charSet.equals(StandardCharsets.UTF_8.name()) && (array[0] == efbbbf[0] && array[1] == efbbbf[1] && array[2] == efbbbf[2])) {
+						if (charSet.equals(StandardCharsets.UTF_16BE.name())
+								&& (array[0] == feff[0] && array[1] == feff[1])) {
+							line = line.substring(1);
+						}
+						if (charSet.equals(StandardCharsets.UTF_8.name())
+								&& (array[0] == efbbbf[0] && array[1] == efbbbf[1] && array[2] == efbbbf[2])) {
 							line = line.substring(1);
 						}
 						firstLine = false;
 					}
-		            writeString("    <tu creationtool=\"TMXEditor\" creationtoolversion=\"" 
-		                    + Constants.VERSION 
-		                    + "\" tuid=\"" + (id++) + "\" creationdate=\""+ today +"\">\n");  
-					String[] parts = TextUtils.split(line,columsSeparator); 
-					for (int i=0 ; i<parts.length ; i++) {
+					writeString("    <tu creationtool=\"TMXEditor\" creationtoolversion=\"" + Constants.VERSION
+							+ "\" tuid=\"" + (id++) + "\" creationdate=\"" + today + "\">\n");
+					String[] parts = TextUtils.split(line, columsSeparator);
+					for (int i = 0; i < parts.length; i++) {
 						String cell = parts[i];
 						if (!textDelimiter.isEmpty()) {
-							cell = cell.substring(1);
-							cell = cell.substring(0, cell.length()-1);
+							if (optionalDelims) {
+								if (cell.startsWith(textDelimiter) && cell.endsWith(textDelimiter)) {
+									cell = cell.substring(1);
+									cell = cell.substring(0, cell.length() - 1);
+								}
+							} else {
+								cell = cell.substring(1);
+								cell = cell.substring(0, cell.length() - 1);
+							}
 						}
-						writeString("      <tuv xml:lang=\"" + languages.get(i) + "\" creationdate=\""+ today +"\">\n        <seg>" 
-		                        + TextUtils.cleanString(cell) + "</seg>\n      </tuv>\n");
+						if (fixQuotes) {
+							cell = cell.replaceAll("\\\"\\\"", "\"");
+						}
+						writeString("      <tuv xml:lang=\"" + languages.get(i) + "\" creationdate=\"" + today
+								+ "\">\n        <seg>" + TextUtils.cleanString(cell) + "</seg>\n      </tuv>\n");
 					}
-					writeString("    </tu>\n"); 			           
+					writeString("    </tu>\n");
 				}
 			}
 		}
-		writeString("  </body>\n"); 
-		writeString("</tmx>"); 
+		writeString("  </body>\n");
+		writeString("</tmx>");
 		output.close();
 	}
 

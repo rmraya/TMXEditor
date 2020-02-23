@@ -66,8 +66,8 @@
     </div>
     <div class="right" style="padding: 4px;">Detected Columns: <span id="columns">0</span></div>
     <div style="padding: 4px;">
-        <input type="checkbox" id="fixQuotes"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
-        <input type="checkbox" id="optionalDelims"> <label for="optionalDelims" class="noWrap">Optional Text Delimiters</label><br>
+        <input type="checkbox" id="fixQuotes" onchange="refreshPreview(false)"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
+        <input type="checkbox" id="optionalDelims" onchange="refreshPreview(false)"> <label for="optionalDelims" class="noWrap">Optional Text Delimiters</label><br>
         <input type="checkbox" id="openTMX" checked> <label for="openTMX">Open Generated TMX File</label>
     </div>
     <div class="buttonArea">

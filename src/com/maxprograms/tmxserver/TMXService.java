@@ -1293,7 +1293,7 @@ public class TMXService implements TMXServiceInterface {
 
 	@Override
 	public JSONObject previewCsv(String csvFile, List<String> langs, String charSet, String columnsSeparator,
-			String textDelimiter) {
+			String textDelimiter, boolean fixQuotes, boolean optionalDelims) {
 		JSONObject result = new JSONObject();
 		List<String> lines = new ArrayList<>();
 		ArrayList<String> languages = new ArrayList<>();
@@ -1344,7 +1344,7 @@ public class TMXService implements TMXServiceInterface {
 		int cols = 0;
 
 		StringBuilder builder = new StringBuilder();
-		if (delimitersOk(lines, columnsSeparator, textDelimiter)) {
+		if (delimitersOk(lines, columnsSeparator, textDelimiter, optionalDelims)) {
 			if (languages.isEmpty()) {
 				String line = lines.get(0);
 				String[] parts = TextUtils.split(line, columnsSeparator);
@@ -1400,8 +1400,18 @@ public class TMXService implements TMXServiceInterface {
 					builder.append("<td style='padding:1px; margin:0px;'>");
 					String cell = parts[i];
 					if (!textDelimiter.isEmpty()) {
-						cell = cell.substring(1);
-						cell = cell.substring(0, cell.length() - 1);
+						if (optionalDelims) {
+							if (cell.startsWith(textDelimiter) && cell.endsWith(textDelimiter)) {
+								cell = cell.substring(1);
+								cell = cell.substring(0, cell.length() - 1);
+							}
+						} else {
+							cell = cell.substring(1);
+							cell = cell.substring(0, cell.length() - 1);
+						}
+					}
+					if (fixQuotes) {
+						cell = cell.replaceAll("\\\"\\\"", "\"");
 					}
 					if (cell.length() > 25) {
 						cell = cell.substring(0, 25) + "...";
@@ -1430,11 +1440,11 @@ public class TMXService implements TMXServiceInterface {
 
 	@Override
 	public JSONObject convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet,
-			String columsSeparator, String textDelimiter) {
+			String columsSeparator, String textDelimiter, boolean fixQuotes, boolean optionalDelims) {
 		JSONObject result = new JSONObject();
 		try {
-			// TODO implememt new options
-			TMXConverter.csv2tmx(csvFile, tmxFile, languages, charSet, columsSeparator, textDelimiter);
+			TMXConverter.csv2tmx(csvFile, tmxFile, languages, charSet, columsSeparator, textDelimiter, fixQuotes,
+					optionalDelims);
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -1553,7 +1563,8 @@ public class TMXService implements TMXServiceInterface {
 		return " %$&+,/:;=?@<>#%".indexOf(ch) >= 0;
 	}
 
-	private static boolean delimitersOk(List<String> lines, String columsSeparator, String textDelimiter) {
+	private static boolean delimitersOk(List<String> lines, String columsSeparator, String textDelimiter,
+			boolean optionalDelims) {
 		int columns = -1;
 		Iterator<String> it = lines.iterator();
 		boolean sameDelimiter = true;
@@ -1561,7 +1572,7 @@ public class TMXService implements TMXServiceInterface {
 		while (it.hasNext()) {
 			String line = it.next();
 			String[] parts = TextUtils.split(line, columsSeparator);
-			if (!textDelimiter.isEmpty()) {
+			if (!textDelimiter.isEmpty() && !optionalDelims) {
 				for (int i = 0; i < parts.length; i++) {
 					if (!parts[i].startsWith(textDelimiter)) {
 						return false;
