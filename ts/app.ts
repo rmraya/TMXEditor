@@ -2347,24 +2347,73 @@ ipcMain.on('show-message', (event, arg) => {
 });
 
 function getWidth(window: string): number {
-    switch (window) {
-        case 'aboutWindow': { return 620; }
-        case 'replaceTextWindow': { return 450; }
-        case 'filtersWindow': { return 500; }
-        case 'consolidateWindow': { return 470; }
-        case 'removeUntranslatedWindow': { return 470; }
-        case 'settingsWindow': { return 400; }
-        case 'sortUnitsWindow': { return 450; }
-        case 'changeLanguageWindow': { return 490; }
-        case 'newFileWindow': { return 480; }
-        case 'addLanguageWindow': { return 420; }
-        case 'removeLanguageWindow': { return 420; }
-        case 'srcLanguageWindow': { return 420; }
-        case 'splitFileWindow': { return 500 }
-        case 'mergeFilesWindow': { return 560 }
-        case 'licensesWindow': { return 500; }
-        case 'convertCSV': { return 600; }
-        case 'csvLanguages': { return 600; }
+    switch (process.platform) {
+        case 'win32': {
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 520; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 504 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': { return 500; }
+                case 'convertCSV': { return 600; }
+                case 'csvLanguages': { return 600; }
+            }
+            break;
+        }
+        case 'darwin': {
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 500; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 500 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': { return 500; }
+                case 'convertCSV': { return 600; }
+                case 'csvLanguages': { return 600; }
+            }
+            break;
+        }
+        case 'linux': {
+            switch (window) {
+                case 'aboutWindow': { return 620; }
+                case 'replaceTextWindow': { return 450; }
+                case 'filtersWindow': { return 520; }
+                case 'consolidateWindow': { return 470; }
+                case 'removeUntranslatedWindow': { return 470; }
+                case 'settingsWindow': { return 400; }
+                case 'sortUnitsWindow': { return 450; }
+                case 'changeLanguageWindow': { return 490; }
+                case 'newFileWindow': { return 480; }
+                case 'addLanguageWindow': { return 420; }
+                case 'removeLanguageWindow': { return 420; }
+                case 'srcLanguageWindow': { return 420; }
+                case 'splitFileWindow': { return 500 }
+                case 'mergeFilesWindow': { return 560 }
+                case 'licensesWindow': { return 500; }
+                case 'convertCSV': { return 600; }
+                case 'csvLanguages': { return 600; }
+            }
+            break;
+        }
     }
 }
 
@@ -2374,7 +2423,7 @@ function getHeihght(window: string): number {
             switch (window) {
                 case 'aboutWindow': { return 380; }
                 case 'replaceTextWindow': { return 210; }
-                case 'filtersWindow': { return 300; }
+                case 'filtersWindow': { return 310; }
                 case 'consolidateWindow': { return 120; }
                 case 'removeUntranslatedWindow': { return 120; }
                 case 'settingsWindow': { return 150; }
@@ -2385,9 +2434,9 @@ function getHeihght(window: string): number {
                 case 'removeLanguageWindow': { return 120; }
                 case 'srcLanguageWindow': { return 120; }
                 case 'splitFileWindow': { return 150; }
-                case 'mergeFilesWindow': { return 450; }
+                case 'mergeFilesWindow': { return 430; }
                 case 'licensesWindow': { return 360; }
-                case 'convertCSV': { return 500; }
+                case 'convertCSV': { return 490; }
                 case 'csvLanguages': { return 380; }
             }
             break;
@@ -2418,7 +2467,7 @@ function getHeihght(window: string): number {
             switch (window) {
                 case 'aboutWindow': { return 350; }
                 case 'replaceTextWindow': { return 210; }
-                case 'filtersWindow': { return 290; }
+                case 'filtersWindow': { return 295; }
                 case 'consolidateWindow': { return 110; }
                 case 'removeUntranslatedWindow': { return 110; }
                 case 'settingsWindow': { return 140; }
@@ -2428,10 +2477,10 @@ function getHeihght(window: string): number {
                 case 'addLanguageWindow': { return 110; }
                 case 'removeLanguageWindow': { return 110; }
                 case 'srcLanguageWindow': { return 110; }
-                case 'splitFileWindow': { return 170; }
+                case 'splitFileWindow': { return 160; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
-                case 'convertCSV': { return 500; }
+                case 'convertCSV': { return 490; }
                 case 'csvLanguages': { return 370; }
             }
             break;
