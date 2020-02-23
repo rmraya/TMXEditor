@@ -149,6 +149,7 @@ function setLanguages() {
 _csv.ipcRenderer.on('csv-languages', (event, arg: string[]) => {
     langs = arg;
     refreshPreview(false);
+    (document.getElementById('convert') as HTMLButtonElement).focus();
 });
 
 function convertFile() {
@@ -197,7 +198,8 @@ function convertFile() {
         columnsSeparator: columnsSeparator,
         textDelimiter: textDelimiter,
         fixQuotes: (document.getElementById('fixQuotes') as HTMLInputElement).checked,
-        optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked
+        optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked,
+        openTMX: (document.getElementById('openTMX') as HTMLInputElement).checked
     }
     _csv.ipcRenderer.send('convert-csv-tmx', arg);
 }

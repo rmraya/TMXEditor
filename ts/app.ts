@@ -803,6 +803,7 @@ ipcMain.on('save-attributes', (event, arg) => {
                 } else {
                     getCellProperties(arg.id, arg.lang);
                 }
+                saved = false;
             } else {
                 contents.send('end-waiting');
                 dialog.showMessageBox({ type: 'error', message: data.reason });
@@ -1018,11 +1019,19 @@ ipcMain.on('convert-csv', () => {
 });
 
 ipcMain.on('convert-csv-tmx', (event, arg) => {
+    convertCsvWindow.close();
     arg.command = 'convertCsv';
     sendRequest(arg,
         function success(data: any) {
             if (data.status === SUCCESS) {
-                dialog.showMessageBox({ type: 'info', message: 'File converted' });
+                if (arg.openTMX) {
+                    if (currentFile !== '') {
+                        closeFile();
+                    }
+                    openFile(arg.tmxFile);
+                } else {
+                    dialog.showMessageBox({ type: 'info', message: 'File converted' });
+                }
             } else {
                 dialog.showMessageBox({ type: 'error', message: data.reason });
             }

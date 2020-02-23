@@ -68,12 +68,12 @@
     <div style="padding: 4px;">
         <input type="checkbox" id="fixQuotes"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
         <input type="checkbox" id="optionalDelims"> <label for="optionalDelims" class="noWrap">Optional Text Delimiters</label><br>
-        <input type="checkbox" id="openTMX"> <label for="openTMX">Open Generated TMX File</label>
+        <input type="checkbox" id="openTMX" checked> <label for="openTMX">Open Generated TMX File</label>
     </div>
     <div class="buttonArea">
         <button onclick="refreshPreview(false)">Refresh Preview</button>
         <button onclick="setLanguages()">Set Languages</button>
-        <button onclick="convertFile()">Convert CSV to TMX</button>
+        <button id="convert" onclick="convertFile()">Convert CSV to TMX</button>
     </div>
 
     <script src="../js/convertCSV.js"></script>
