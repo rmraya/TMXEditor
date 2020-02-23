@@ -38,7 +38,7 @@ _ru.ipcRenderer.on('set-source-language', (event, arg) => {
 
 function removeUntranslated(): void {
     var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-    _ru.ipcRenderer.send('remove-untranslated', { command: 'removeUntranslated', srcLang: srcLang });
+    _ru.ipcRenderer.send('remove-untranslated', { srcLang: srcLang });
 }
 
 function removeUntranslatedLoaded(): void {

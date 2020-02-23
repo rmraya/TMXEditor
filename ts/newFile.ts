@@ -38,7 +38,7 @@ function createFile() {
         _nf.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages' });
         return;
     }
-    _nf.ipcRenderer.send('create-file', { command: 'createFile', srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
+    _nf.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
 }
 
 function newFileLoaded(): void {

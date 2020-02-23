@@ -43,6 +43,7 @@ var mergeFilesWindow: BrowserWindow;
 var convertCsvWindow: BrowserWindow;
 var csvLanguagesWindow: BrowserWindow;
 var csvEvent: Electron.IpcMainEvent;
+var attributesWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -60,6 +61,7 @@ var loadOptions: any = {
 };
 var sortOptions: any = {};
 var csvLangArgs: any;
+var attributesArg: any;
 
 var currentFile: string = '';
 var saved: boolean = true;
@@ -724,29 +726,91 @@ ipcMain.on('get-segments', function (event, arg) {
     loadSegments();
 });
 
-
-ipcMain.on('get-cell-properties', function (event, arg) {
-    arg.command = 'getTuvData';
-    sendRequest(arg,
+function getCellProperties(id: string, lang: string) {
+    contents.send('start-waiting');
+    sendRequest({ command: 'getTuvData', id: id, lang: lang },
         function success(json: any) {
-            json.type = arg.lang;
-            event.sender.send('update-properties', json);
+            contents.send('end-waiting');
+            json.type = lang;
+            contents.send('update-properties', json);
         },
         function error(data: string) {
+            contents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
         }
     );
+}
+
+ipcMain.on('get-cell-properties', function (event, arg) {
+    getCellProperties(arg.id, arg.lang);
 });
 
-ipcMain.on('get-row-properties', function (event, arg) {
-    arg.command = 'getTuData';
-    sendRequest(arg,
+function getRowProperties(id: string) {
+    contents.send('start-waiting');
+    sendRequest({ command: 'getTuData', id: id },
         function success(json: any) {
+            contents.send('end-waiting');
             json.type = 'TU';
-            event.sender.send('update-properties', json);
+            contents.send('update-properties', json);
         },
         function error(data: string) {
+            contents.send('end-waiting');
             dialog.showMessageBox({ type: 'error', message: data });
+        }
+    );
+}
+
+ipcMain.on('get-row-properties', function (event, arg) {
+    getRowProperties(arg.id);
+});
+
+ipcMain.on('edit-attributes', (event, arg) => {
+    attributesWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: getWidth('attributesWindow'),
+        height: getHeihght('attributesWindow'),
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    attributesArg = arg;
+    attributesWindow.setMenu(null);
+    attributesWindow.loadURL('file://' + app.getAppPath() + '/html/attributes.html');
+    // attributesWindow.webContents.openDevTools();
+    attributesWindow.show();
+});
+
+ipcMain.on('get-unit-attributes', (event, arg) => {
+    event.sender.send('set-unit-attributes', attributesArg);
+});
+
+ipcMain.on('save-attributes', (event, arg) => {
+    contents.send('start-waiting');
+    attributesWindow.close();
+    arg.command = 'setAttributes';
+    sendRequest(arg,
+        function success(data: any) {
+            contents.send('end-waiting');
+            if (data.status === SUCCESS) {
+                if (arg.lang === '') {
+                    getRowProperties(arg.id);
+                } else {
+                    getCellProperties(arg.id, arg.lang);
+                }
+            } else {
+                contents.send('end-waiting');
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
 });
@@ -826,6 +890,7 @@ ipcMain.on('create-file', (event, arg) => {
             saveFile();
         }
     }
+    arg.command = 'createFile';
     sendRequest(arg,
         function success(data: any) {
             if (data.status === SUCCESS) {
@@ -953,6 +1018,7 @@ ipcMain.on('convert-csv', () => {
 });
 
 ipcMain.on('convert-csv-tmx', (event, arg) => {
+    arg.command = 'convertCsv';
     sendRequest(arg,
         function success(data: any) {
             if (data.status === SUCCESS) {
@@ -980,10 +1046,6 @@ ipcMain.on('get-charsets', (event, arg) => {
             dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
-});
-
-ipcMain.on('get-csvconversion-defaults', (eent, arg) => {
-    // TODO
 });
 
 ipcMain.on('get-csvfile', (event, arg) => {
@@ -1024,6 +1086,7 @@ ipcMain.on('get-converted-tmx', (event, arg) => {
 });
 
 ipcMain.on('get-csv-preview', (event, arg) => {
+    arg.command = 'previewCsv';
     sendRequest(arg,
         function success(data: any) {
             if (data.status === SUCCESS) {
@@ -1348,6 +1411,7 @@ ipcMain.on('select-tmx', (event, arg) => {
 
 ipcMain.on('split-tmx', (event, arg) => {
     splitFileWindow.close();
+    arg.command = 'splitFile';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -1456,6 +1520,7 @@ ipcMain.on('add-tmx-files', (event, arg) => {
 ipcMain.on('merge-tmx-files', (event, arg) => {
     mergeFilesWindow.close();
     contents.send('start-waiting');
+    arg.command = 'mergeFiles';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -1513,6 +1578,7 @@ function saveEdits(): void {
 }
 
 ipcMain.on('save-data', (event, arg) => {
+    arg.command = 'saveTuvData';
     sendRequest(arg,
         function (data: any) {
             if (data.status === SUCCESS) {
@@ -1567,6 +1633,7 @@ ipcMain.on('replace-text', () => {
 ipcMain.on('replace-request', (event, arg) => {
     replaceTextWindow.close();
     contents.send('start-waiting');
+    arg.command = 'replaceText';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -1801,6 +1868,7 @@ function changeLanguageCode(): void {
 
 ipcMain.on('change-language', (event, arg) => {
     changeLanguageWindow.close();
+    arg.command = 'changeLanguage';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -2112,6 +2180,7 @@ function removeUntranslated(): void {
 ipcMain.on('remove-untranslated', (event, arg) => {
     removeUntranslatedWindow.close();
     contents.send('start-waiting');
+    arg.command = 'removeUntranslated';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -2229,6 +2298,7 @@ function consolidateUnits(): void {
 ipcMain.on('consolidate-units', (event, arg) => {
     consolidateWindow.close();
     contents.send('start-waiting');
+    arg.command = 'consolidateUnits';
     sendRequest(arg,
         function success(data: any) {
             currentStatus = data;
@@ -2367,6 +2437,7 @@ function getWidth(window: string): number {
                 case 'licensesWindow': { return 500; }
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
+                case 'attributesWindow': { return 630; }
             }
             break;
         }
@@ -2389,6 +2460,7 @@ function getWidth(window: string): number {
                 case 'licensesWindow': { return 500; }
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
+                case 'attributesWindow': { return 630; }
             }
             break;
         }
@@ -2411,6 +2483,7 @@ function getWidth(window: string): number {
                 case 'licensesWindow': { return 500; }
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
+                case 'attributesWindow': { return 630; }
             }
             break;
         }
@@ -2436,8 +2509,9 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 430; }
                 case 'licensesWindow': { return 360; }
-                case 'convertCSV': { return 490; }
-                case 'csvLanguages': { return 380; }
+                case 'convertCSV': { return 520; }
+                case 'csvLanguages': { return 280; }
+                case 'attributesWindow': { return 380; }
             }
             break;
         }
@@ -2458,8 +2532,9 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 150; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
-                case 'convertCSV': { return 500; }
-                case 'csvLanguages': { return 370; }
+                case 'convertCSV': { return 530; }
+                case 'csvLanguages': { return 270; }
+                case 'attributesWindow': { return 370; }
             }
             break;
         }
@@ -2480,8 +2555,9 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 160; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
-                case 'convertCSV': { return 490; }
-                case 'csvLanguages': { return 370; }
+                case 'convertCSV': { return 520; }
+                case 'csvLanguages': { return 270; }
+                case 'attributesWindow': { return 380; }
             }
             break;
         }

@@ -42,7 +42,7 @@ function replace(): void {
         return;
     }
     var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
-    _s.ipcRenderer.send('replace-request', { command: 'replaceText', search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
+    _s.ipcRenderer.send('replace-request', { search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
 }
 
 function searchReplaceLoaded(): void {

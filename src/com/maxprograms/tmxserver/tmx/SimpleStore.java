@@ -280,8 +280,6 @@ public class SimpleStore implements StoreInterface {
 			seg.setText(text);
 			tuv.addContent(seg);
 		}
-		tuv.setAttribute("changedate", TmxUtils.tmxDate());
-		tuv.setAttribute("changeid", System.getProperty("user.name"));
 		map.put(id, tuv);
 		return TmxUtils.pureText(tuv.getChild("seg"), true, null, false, false);
 	}
@@ -642,6 +640,7 @@ public class SimpleStore implements StoreInterface {
 	@Override
 	public void setTuAttributes(String id, List<String[]> attributes) {
 		Element tu = tus.get(id);
+		tu.setAttributes(new ArrayList<>());
 		Iterator<String[]> it = attributes.iterator();
 		while (it.hasNext()) {
 			String[] pair = it.next();
@@ -750,6 +749,7 @@ public class SimpleStore implements StoreInterface {
 		HashMap<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		if (tuv != null) {
+			tuv.setAttributes(new ArrayList<>());
 			Iterator<String[]> it = attributes.iterator();
 			while (it.hasNext()) {
 				String[] pair = it.next();

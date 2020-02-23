@@ -43,7 +43,7 @@ _cl.ipcRenderer.on('languages-list', (event, arg) => {
 function changeLanguage() {
     var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
     var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
-    _cl.ipcRenderer.send('change-language', { command: 'changeLanguage', oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
+    _cl.ipcRenderer.send('change-language', { oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
 }
 
 function changeLanguageLoaded(): void {

@@ -70,6 +70,7 @@ public class H2Store implements StoreInterface {
 	private Map<String, PreparedStatement> updateStatements;
 	private Map<String, PreparedStatement> deleteStatements;
 	private PreparedStatement insertTu;
+	private PreparedStatement updateTu;
 	private PreparedStatement selectTus;
 	private SAXBuilder builder;
 	private FileOutputStream out;
@@ -124,6 +125,7 @@ public class H2Store implements StoreInterface {
 		selectTus = conn.prepareStatement("SELECT tuid, tu FROM tu");
 		selectTu = conn.prepareStatement("SELECT tu FROM tu WHERE tuid=?");
 		deleteTu = conn.prepareStatement("DELETE FROM tu WHERE tuid=?");
+		updateTu = conn.prepareStatement("UPDATE tu SET tu=? WHERE tuid=?");
 
 		StringBuilder sbuilder = new StringBuilder();
 		sbuilder.append("CREATE TABLE tunits (tcount INTEGER NOT NULL, tuid VARCHAR(30) NOT NULL");
@@ -398,6 +400,7 @@ public class H2Store implements StoreInterface {
 		updateStatements.clear();
 		deleteStatements.clear();
 		insertTu.close();
+		updateTu.close();
 		selectTu.close();
 		selectTus.close();
 		insertTunit.close();
@@ -446,8 +449,6 @@ public class H2Store implements StoreInterface {
 			seg.setText(value);
 			tuv.addContent(seg);
 		}
-		tuv.setAttribute("changedate", TmxUtils.tmxDate());
-		tuv.setAttribute("changeid", System.getProperty("user.name"));
 		storeTuv(lang, id, tuv);
 		String pure = TmxUtils.pureText(tuv.getChild("seg"), true, null, false, false);
 		updateUnit(id, lang, pure);
@@ -1014,9 +1015,9 @@ public class H2Store implements StoreInterface {
 		if (!tuText.isEmpty()) {
 			Element tu = toElement(tuText);
 			tu.setAttributes(atts);
-			insertTu.setString(1, id);
-			insertTu.setNString(2, tu.toString());
-			insertTu.execute();
+			updateTu.setString(2, id);
+			updateTu.setNString(1, tu.toString());
+			updateTu.execute();
 		}
 	}
 
@@ -1046,9 +1047,9 @@ public class H2Store implements StoreInterface {
 			Element tu = toElement(tuText);
 			content.addAll(tu.getChildren("note"));
 			tu.setChildren(content);
-			insertTu.setString(1, id);
-			insertTu.setNString(2, tu.toString());
-			insertTu.execute();
+			updateTu.setString(2, id);
+			updateTu.setNString(1, tu.toString());
+			updateTu.execute();
 		}
 	}
 
@@ -1077,9 +1078,9 @@ public class H2Store implements StoreInterface {
 			Element tu = toElement(tuText);
 			content.addAll(tu.getChildren("prop"));
 			tu.setChildren(content);
-			insertTu.setString(1, id);
-			insertTu.setNString(2, tu.toString());
-			insertTu.execute();
+			updateTu.setString(2, id);
+			updateTu.setNString(1, tu.toString());
+			updateTu.execute();
 		}
 	}
 

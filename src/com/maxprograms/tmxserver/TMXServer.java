@@ -246,6 +246,9 @@ public class TMXServer implements HttpHandler {
 				case "convertCsv":
 					response = convertCsv(json);
 					break;
+				case "setAttributes":
+					response = setAttributes(json);
+					break;
 				default:
 					JSONObject unknown = new JSONObject();
 					unknown.put(Constants.STATUS, Constants.ERROR);
@@ -280,6 +283,19 @@ public class TMXServer implements HttpHandler {
 				os.write(message.getBytes());
 			}
 		}
+	}
+
+	private String setAttributes(JSONObject json) {
+		List<String[]> attributes = new ArrayList<>();
+		JSONArray array = json.getJSONArray("attributes");
+		for (int i = 0; i < array.length(); i++) {
+			JSONArray pair = array.getJSONArray(i);
+			String[] att = new String[2];
+			att[0] = pair.getString(0);
+			att[1] = pair.getString(1);
+			attributes.add(att);
+		}
+		return service.setAttributes(json.getString("id"), json.getString("lang"), attributes).toString();
 	}
 
 	private String convertCsv(JSONObject json) {

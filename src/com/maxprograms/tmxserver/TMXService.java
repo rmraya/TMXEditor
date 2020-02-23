@@ -425,6 +425,11 @@ public class TMXService implements TMXServiceInterface {
 	@Override
 	public JSONObject getTuData(String id) {
 		JSONObject result = new JSONObject();
+		if (id == null) {
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, "null id");
+			return result;
+		}
 		Comparator<String[]> comparator = new Comparator<>() {
 
 			@Override
@@ -816,18 +821,21 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] setAttributes(String id, String lang, List<String[]> attributes) {
+	public JSONObject setAttributes(String id, String lang, List<String[]> attributes) {
+		JSONObject result = new JSONObject();
 		try {
 			if (lang.isEmpty()) {
 				store.setTuAttributes(id, attributes);
 			} else {
 				store.setTuvAttributes(id, lang, attributes);
 			}
-			return new String[] { Constants.SUCCESS };
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Constants.ERROR, ex.getMessage() };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override
@@ -1371,17 +1379,17 @@ public class TMXService implements TMXServiceInterface {
 			}
 			builder.append("<table class='stripes'>");
 			if (!languages.isEmpty()) {
-				builder.append("<tr>");
+				builder.append("<thead><tr class='dark_background'>");
 				Iterator<String> it = languages.iterator();
 				while (it.hasNext()) {
-					builder.append(
-							"<th class'dark_background'>");
+					builder.append("<th class='dark_background'>");
 					String cell = it.next();
 					builder.append(TextUtils.cleanString(cell));
 					builder.append("</th>");
 				}
-				builder.append("</tr>");
+				builder.append("</tr></thead>");
 			}
+			builder.append("<tbody>");
 			Iterator<String> it = lines.iterator();
 			while (it.hasNext()) {
 				String line = it.next();
@@ -1403,7 +1411,7 @@ public class TMXService implements TMXServiceInterface {
 				}
 				builder.append("</tr>");
 			}
-			builder.append("</table>");
+			builder.append("</tbody></table>");
 
 		} else {
 			builder.append("<pre>");
@@ -1425,6 +1433,7 @@ public class TMXService implements TMXServiceInterface {
 			String columsSeparator, String textDelimiter) {
 		JSONObject result = new JSONObject();
 		try {
+			// TODO implememt new options
 			TMXConverter.csv2tmx(csvFile, tmxFile, languages, charSet, columsSeparator, textDelimiter);
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (IOException e) {

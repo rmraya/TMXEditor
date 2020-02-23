@@ -64,13 +64,12 @@
             </pre>
         </div>
     </div>
-
-    <table class="fill_width">
-        <tr>
-            <td>Detected Columns: <span id="columns">0</span></td>
-            <td>Languages Set: <span id="langs">0</span></td>
-        </tr>
-    </table>
+    <div class="right" style="padding: 4px;">Detected Columns: <span id="columns">0</span></div>
+    <div style="padding: 4px;">
+        <input type="checkbox" id="fixQuotes"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
+        <input type="checkbox" id="optionalDelims"> <label for="optionalDelims" class="noWrap">Optional Text Delimiters</label><br>
+        <input type="checkbox" id="openTMX"> <label for="openTMX">Open Generated TMX File</label>
+    </div>
     <div class="buttonArea">
         <button onclick="refreshPreview(false)">Refresh Preview</button>
         <button onclick="setLanguages()">Set Languages</button>

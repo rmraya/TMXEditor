@@ -40,7 +40,6 @@ _csv.ipcRenderer.on('set-charsets', (event, arg: string[]) => {
     charSets.value = 'UTF-16LE';
     var colSeps = (document.getElementById('colSeps') as HTMLSelectElement);
     colSeps.value = 'TAB';
-    _csv.ipcRenderer.send('get-csvconversion-defaults');
 });
 
 document.addEventListener('keydown', (event) => {
@@ -118,7 +117,6 @@ function refreshPreview(silent: boolean) {
         textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
     }
     var arg = {
-        command: 'previewCsv',
         csvFile: csvFile.value,
         langs: langs,
         charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
@@ -129,11 +127,10 @@ function refreshPreview(silent: boolean) {
 }
 
 _csv.ipcRenderer.on('set-preview', (event, arg: any) => {
+    columns = arg.cols;
     document.getElementById('preview').innerHTML = arg.preview;
-    document.getElementById('columns').innerHTML = arg.cols;
+    document.getElementById('columns').innerHTML = '' + columns;
     document.getElementById('langs').innerHTML = arg.langs;
-    columns = Number.parseInt(arg.cols);
-
 });
 
 function setLanguages() {
@@ -151,7 +148,6 @@ function setLanguages() {
 
 _csv.ipcRenderer.on('csv-languages', (event, arg: string[]) => {
     langs = arg;
-    document.getElementById('langs').innerHTML = '' + langs.length;
     refreshPreview(false);
 });
 
@@ -194,13 +190,14 @@ function convertFile() {
         textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
     }
     var arg = {
-        command: 'convertCsv',
         csvFile: csvFile.value,
         tmxFile: tmxFile.value,
         langs: langs,
         charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
         columnsSeparator: columnsSeparator,
-        textDelimiter: textDelimiter
+        textDelimiter: textDelimiter,
+        fixQuotes: (document.getElementById('fixQuotes') as HTMLInputElement).checked,
+        optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked
     }
     _csv.ipcRenderer.send('convert-csv-tmx', arg);
 }

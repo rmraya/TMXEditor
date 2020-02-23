@@ -41,7 +41,7 @@ _fi.ipcRenderer.on('set-file-properties', (event, arg) => {
     var propsContent: string = '';
     for (let i = 0; i < arg.properties.length; i++) {
         var pair: string[] = arg.properties[i];
-        propsContent = propsContent + '<tr><td>' + pair[0] + '</td><td>' + pair[1] + '</td></tr>'
+        propsContent = propsContent + '<tr><td class="noWrap">' + pair[0] + '</td><td>' + pair[1] + '</td></tr>'
     }
     document.getElementById('propertiesTable').innerHTML = propsContent;
 

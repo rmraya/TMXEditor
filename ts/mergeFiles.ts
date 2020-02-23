@@ -43,7 +43,7 @@ function mergeFiles() {
         _mf.ipcRenderer.send('show-message', { type: 'warning', message: 'Add more TMX files' });
         return;
     }
-    _mf.ipcRenderer.send('merge-tmx-files', { command: 'mergeFiles', merged: file, files: files });
+    _mf.ipcRenderer.send('merge-tmx-files', { merged: file, files: files });
 }
 
 function browseMergedFile() {

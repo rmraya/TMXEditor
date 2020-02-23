@@ -38,7 +38,7 @@ _c.ipcRenderer.on('set-source-language', (event, arg) => {
 
 function consolidate(): void {
     var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-    _c.ipcRenderer.send('consolidate-units', { command: 'consolidateUnits', srcLang: srcLang });
+    _c.ipcRenderer.send('consolidate-units', { srcLang: srcLang });
 }
 
 function consolidateLoaded(): void {

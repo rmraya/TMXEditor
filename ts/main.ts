@@ -27,6 +27,9 @@ var maxPage: number = 0;
 var unitsPage: number = 200;
 var unitsCount: number;
 
+var attributes: Array<string[]>;
+var attributesType: string;
+
 var currentId: string = null;
 var currentLang: string = null;
 var currentCell: Element = null;
@@ -70,7 +73,7 @@ function saveEdit(): void {
         }
         let edited: string = restoretags(textArea.value, currentTags);
         currentCell.innerHTML = edited;
-        ipcRenderer.send('save-data', { command: 'saveTuvData', id: currentId, lang: currentLang, data: edited });
+        ipcRenderer.send('save-data', { id: currentId, lang: currentLang, data: edited });
     }
 }
 
@@ -165,8 +168,13 @@ function openHelp(): void {
 }
 
 function editAttributes(): void {
-    console.log('edit attributes clicked');
-    // TODO
+    if (!fileLoaded) {
+        return;
+    }
+    if (currentId === null || currentId === '') {
+        return;
+    }
+    ipcRenderer.send('edit-attributes', {id: currentId, atts: attributes, type: attributesType});
 }
 
 function editProperties(): void {
@@ -249,6 +257,7 @@ ipcRenderer.on('update-segments', (event, arg) => {
     document.getElementById('attributesTable').innerHTML = '';
     document.getElementById('propertiesTable').innerHTML = '';
     document.getElementById('notesTable').innerHTML = '';
+    currentId = null;
 });
 
 ipcRenderer.on('file-closed', () => {
@@ -362,10 +371,11 @@ function clickListener(event: MouseEvent) {
 }
 
 ipcRenderer.on('update-properties', (event, arg) => {
-    document.getElementById('attributesSpan').innerHTML = arg.type;
+    attributesType = arg.type;
+    document.getElementById('attributesSpan').innerHTML = attributesType;
     var table = document.getElementById('attributesTable');
     table.innerHTML = '';
-    var attributes = arg.attributes;
+    attributes = arg.attributes;
     for (let i = 0; i < attributes.length; i++) {
         let pair = attributes[i];
         let tr = document.createElement('tr');

@@ -73,7 +73,7 @@ public interface TMXServiceInterface {
 
 	JSONObject consolidateUnits(Language lang);
 
-	String[] setAttributes(String currentId, String lang, List<String[]> attributes);
+	JSONObject setAttributes(String currentId, String lang, List<String[]> attributes);
 
 	JSONObject getLoadingProgress();
 
