@@ -33,7 +33,6 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 ## Building
 
 - Checkout this repository.
-- Point your `JAVA_HOME` environment variable to JDK 11
 - Run `ant` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
