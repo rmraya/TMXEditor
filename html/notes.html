@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title id="title">Translation Unit Notes</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="notesLoaded()">
+
+    <div style="padding: 4px;">
+        <div class="panelcontent bordered" style="height: 200px;">
+            <table id="notesTable" class="stripes">
+
+            </table>
+        </div>
+    </div>
+    <div class="buttonArea">
+        <button onclick="addNote()">Add Note</button>
+        <button onclick="deleteNotes()">Delete Selected</button>
+        <button id="save" onclick="saveNotes()">Save Notes</button>
+    </div>
+
+    <script src="../js/notes.js"></script>
+</body>
+
+</html>

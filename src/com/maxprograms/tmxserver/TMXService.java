@@ -1035,18 +1035,21 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] setNotes(String id, String lang, List<String> notes) {
+	public JSONObject setNotes(String id, String lang, List<String> notes) {
+		JSONObject result = new JSONObject();
 		try {
 			if (lang.isEmpty()) {
 				store.setTuNotes(id, notes);
 			} else {
 				store.setTuvNotes(id, lang, notes);
 			}
-			return new String[] { Constants.SUCCESS };
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Constants.ERROR, ex.getMessage() };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override

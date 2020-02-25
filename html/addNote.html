@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Note</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body id="body" onload="addNoteLoaded()">
+
+    <div style="padding: 4px;">
+        <table>
+            <tr>
+                <td style="vertical-align: middle;">
+                    <label for="note">Note</label>
+                </td>
+                <td style="vertical-align: middle;">
+                    <input type="text" id="note" class="fill_width">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="buttonArea">
+        <button onclick="saveNote()">Add Note</button>
+    </div>
+
+    <script src="../js/addNote.js"></script>
+</body>
+
+</html>

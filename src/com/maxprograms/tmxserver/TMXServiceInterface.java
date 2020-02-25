@@ -89,7 +89,7 @@ public interface TMXServiceInterface {
 
 	JSONObject setProperties(String id, String lang, List<String[]> dataList);
 
-	String[] setNotes(String id, String lang, List<String> notes);
+	JSONObject setNotes(String id, String lang, List<String> notes);
 
 	JSONObject cleanCharacters(String file);
 

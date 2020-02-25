@@ -47,6 +47,9 @@ var attributesWindow: BrowserWindow;
 var propertiesWindow: BrowserWindow;
 var propertyEvent: Electron.IpcMainEvent;
 var addPropertyWindow: BrowserWindow;
+var notesWindow: BrowserWindow;
+var addNotesWindow: BrowserWindow
+var notesEvent: Electron.IpcMainEvent;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -66,6 +69,7 @@ var sortOptions: any = {};
 var csvLangArgs: any;
 var attributesArg: any;
 var propertiesArg: any;
+var notesArg: any;
 
 var currentFile: string = '';
 var saved: boolean = true;
@@ -828,7 +832,7 @@ ipcMain.on('edit-properties', (event, arg) => {
         height: getHeihght('propertiesWindow'),
         minimizable: false,
         maximizable: false,
-       resizable: false,
+        resizable: false,
         useContentSize: true,
         show: false,
         icon: './icons/tmxeditor.png',
@@ -902,7 +906,83 @@ ipcMain.on('save-properties', (event, arg) => {
 });
 
 ipcMain.on('edit-notes', (event, arg) => {
-    // TODO
+    notesWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: getWidth('notesWindow'),
+        height: getHeihght('notesWindow'),
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    notesArg = arg;
+    notesWindow.setMenu(null);
+    notesWindow.loadURL('file://' + app.getAppPath() + '/html/notes.html');
+    // notesWindow.webContents.openDevTools();
+    notesWindow.show();
+});
+
+ipcMain.on('get-unit-notes', (event, arg) => {
+    event.sender.send('set-unit-notes', notesArg);
+});
+
+ipcMain.on('show-add-note', (event, arg) => {
+    notesEvent = event;
+    addNotesWindow = new BrowserWindow({
+        parent: notesWindow,
+        width: getWidth('addNotesWindow'),
+        height: getHeihght('addNotesWindow'),
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        modal: true,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    addNotesWindow.setMenu(null);
+    addNotesWindow.loadURL('file://' + app.getAppPath() + '/html/addNote.html');
+    // addNotesWindow.webContents.openDevTools();
+    addNotesWindow.show();
+});
+
+ipcMain.on('add-new-note', (event, arg) => {
+    addNotesWindow.close();
+    notesEvent.sender.send('set-new-note', arg);
+});
+
+ipcMain.on('save-notes', (event, arg) => {
+    contents.send('start-waiting');
+    notesWindow.close();
+    arg.command = 'setNotes';
+    sendRequest(arg,
+        function success(data: any) {
+            contents.send('end-waiting');
+            if (data.status === SUCCESS) {
+                if (arg.lang === '') {
+                    getRowProperties(arg.id);
+                } else {
+                    getCellProperties(arg.id, arg.lang);
+                }
+                saved = false;
+            } else {
+                contents.send('end-waiting');
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
 });
 
 function showSettings(): void {
@@ -2538,6 +2618,8 @@ function getWidth(window: string): number {
                 case 'attributesWindow': { return 630; }
                 case 'propertiesWindow': { return 500; }
                 case 'addPropertyWindow': { return 350; }
+                case 'notesWindow': { return 500; }
+                case 'addNotesWindow': { return 350; }
             }
             break;
         }
@@ -2563,6 +2645,8 @@ function getWidth(window: string): number {
                 case 'attributesWindow': { return 630; }
                 case 'propertiesWindow': { return 500; }
                 case 'addPropertyWindow': { return 350; }
+                case 'notesWindow': { return 500; }
+                case 'addNotesWindow': { return 350; }
             }
             break;
         }
@@ -2588,6 +2672,8 @@ function getWidth(window: string): number {
                 case 'attributesWindow': { return 630; }
                 case 'propertiesWindow': { return 500; }
                 case 'addPropertyWindow': { return 350; }
+                case 'notesWindow': { return 500; }
+                case 'addNotesWindow': { return 350; }
             }
             break;
         }
@@ -2617,7 +2703,9 @@ function getHeihght(window: string): number {
                 case 'csvLanguages': { return 280; }
                 case 'attributesWindow': { return 380; }
                 case 'propertiesWindow': { return 300; }
-                case 'addPropertyWindow': { return 160; }
+                case 'addPropertyWindow': { return 170; }
+                case 'notesWindow': { return 300; }
+                case 'addNotesWindow': { return 140; }
             }
             break;
         }
@@ -2641,8 +2729,10 @@ function getHeihght(window: string): number {
                 case 'convertCSV': { return 530; }
                 case 'csvLanguages': { return 270; }
                 case 'attributesWindow': { return 370; }
-                case 'propertiesWindow': { return 300; }
+                case 'propertiesWindow': { return 290; }
                 case 'addPropertyWindow': { return 160; }
+                case 'notesWindow': { return 290; }
+                case 'addNotesWindow': { return 120; }
             }
             break;
         }
@@ -2668,6 +2758,8 @@ function getHeihght(window: string): number {
                 case 'attributesWindow': { return 380; }
                 case 'propertiesWindow': { return 300; }
                 case 'addPropertyWindow': { return 160; }
+                case 'notesWindow': { return 300; }
+                case 'addNotesWindow': { return 130; }
             }
             break;
         }

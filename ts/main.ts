@@ -430,13 +430,13 @@ ipcRenderer.on('update-properties', (event, arg) => {
     table = document.getElementById('notesTable');
     table.innerHTML = '';
     notes = arg.notes;
-    for (let i = 0; i < properties.length; i++) {
+    for (let i = 0; i < notes.length; i++) {
         let tr = document.createElement('tr');
         table.appendChild(tr);
-        let note = document.createElement('td');
-        note.textContent = notes[i];
-        note.className = 'noWrap';
-        tr.appendChild(note);
+        let n = document.createElement('td');
+        n.textContent = notes[i];
+        n.className = 'noWrap';
+        tr.appendChild(n);
     }
 });
 

@@ -252,6 +252,9 @@ public class TMXServer implements HttpHandler {
 				case "setProperties":
 					response = setProperties(json);
 					break;
+				case "setNotes":
+					response = setNotes(json);
+					break;
 				default:
 					JSONObject unknown = new JSONObject();
 					unknown.put(Constants.STATUS, Constants.ERROR);
@@ -301,6 +304,15 @@ public class TMXServer implements HttpHandler {
 		return service.setAttributes(json.getString("id"), json.getString("lang"), attributes).toString();
 	}
 
+	private String setNotes(JSONObject json) {
+		List<String> notes = new ArrayList<>();
+		JSONArray array = json.getJSONArray("notes");
+		for (int i = 0; i < array.length(); i++) {
+			notes.add(array.getString(i));
+		}
+		return service.setNotes(json.getString("id"), json.getString("lang"), notes).toString();
+	}
+
 	private String setProperties(JSONObject json) {
 		List<String[]> props = new ArrayList<>();
 		JSONArray array = json.getJSONArray("properties");
@@ -321,8 +333,8 @@ public class TMXServer implements HttpHandler {
 			langs.add(array.getString(i));
 		}
 		return service.convertCsv(json.getString("csvFile"), json.getString("tmxFile"), langs,
-				json.getString("charSet"), json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims"))
-				.toString();
+				json.getString("charSet"), json.getString("columnsSeparator"), json.getString("textDelimiter"),
+				json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims")).toString();
 	}
 
 	private String previewCsv(JSONObject json) {
@@ -332,7 +344,8 @@ public class TMXServer implements HttpHandler {
 			langs.add(array.getString(i));
 		}
 		return service.previewCsv(json.getString("csvFile"), langs, json.getString("charSet"),
-				json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims")).toString();
+				json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"),
+				json.getBoolean("optionalDelims")).toString();
 	}
 
 	private String getCharsets() {
