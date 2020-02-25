@@ -44,6 +44,9 @@ var convertCsvWindow: BrowserWindow;
 var csvLanguagesWindow: BrowserWindow;
 var csvEvent: Electron.IpcMainEvent;
 var attributesWindow: BrowserWindow;
+var propertiesWindow: BrowserWindow;
+var propertyEvent: Electron.IpcMainEvent;
+var addPropertyWindow: BrowserWindow;
 
 var contents: webContents;
 var javapath: string = app.getAppPath() + '/bin/java';
@@ -62,6 +65,7 @@ var loadOptions: any = {
 var sortOptions: any = {};
 var csvLangArgs: any;
 var attributesArg: any;
+var propertiesArg: any;
 
 var currentFile: string = '';
 var saved: boolean = true;
@@ -577,6 +581,7 @@ function closeFile() {
                 contents.send('set-status', '');
                 currentFile = '';
                 mainWindow.setTitle('TMXEditor');
+                saved = true;
             } else {
                 dialog.showMessageBox({ type: 'error', message: json.reason });
             }
@@ -814,6 +819,90 @@ ipcMain.on('save-attributes', (event, arg) => {
             dialog.showMessageBox({ type: 'error', message: reason });
         }
     );
+});
+
+ipcMain.on('edit-properties', (event, arg) => {
+    propertiesWindow = new BrowserWindow({
+        parent: mainWindow,
+        width: getWidth('propertiesWindow'),
+        height: getHeihght('propertiesWindow'),
+        minimizable: false,
+        maximizable: false,
+       resizable: false,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    propertiesArg = arg;
+    propertiesWindow.setMenu(null);
+    propertiesWindow.loadURL('file://' + app.getAppPath() + '/html/properties.html');
+    // propertiesWindow.webContents.openDevTools();
+    propertiesWindow.show();
+});
+
+ipcMain.on('get-unit-properties', (event, arg) => {
+    event.sender.send('set-unit-properties', propertiesArg);
+});
+
+ipcMain.on('show-add-property', (event, arg) => {
+    propertyEvent = event;
+    addPropertyWindow = new BrowserWindow({
+        parent: propertiesWindow,
+        width: getWidth('addPropertyWindow'),
+        height: getHeihght('addPropertyWindow'),
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        modal: true,
+        useContentSize: true,
+        show: false,
+        icon: './icons/tmxeditor.png',
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    addPropertyWindow.setMenu(null);
+    addPropertyWindow.loadURL('file://' + app.getAppPath() + '/html/addProperty.html');
+    // addPropertyWindow.webContents.openDevTools();
+    addPropertyWindow.show();
+});
+
+ipcMain.on('add-new-property', (event, arg) => {
+    addPropertyWindow.close();
+    propertyEvent.sender.send('set-new-property', arg);
+});
+
+ipcMain.on('save-properties', (event, arg) => {
+    contents.send('start-waiting');
+    propertiesWindow.close();
+    arg.command = 'setProperties';
+    sendRequest(arg,
+        function success(data: any) {
+            contents.send('end-waiting');
+            if (data.status === SUCCESS) {
+                if (arg.lang === '') {
+                    getRowProperties(arg.id);
+                } else {
+                    getCellProperties(arg.id, arg.lang);
+                }
+                saved = false;
+            } else {
+                contents.send('end-waiting');
+                dialog.showMessageBox({ type: 'error', message: data.reason });
+            }
+        },
+        function error(reason: string) {
+            contents.send('end-waiting');
+            dialog.showMessageBox({ type: 'error', message: reason });
+        }
+    );
+});
+
+ipcMain.on('edit-notes', (event, arg) => {
+    // TODO
 });
 
 function showSettings(): void {
@@ -2447,6 +2536,8 @@ function getWidth(window: string): number {
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
                 case 'attributesWindow': { return 630; }
+                case 'propertiesWindow': { return 500; }
+                case 'addPropertyWindow': { return 350; }
             }
             break;
         }
@@ -2470,6 +2561,8 @@ function getWidth(window: string): number {
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
                 case 'attributesWindow': { return 630; }
+                case 'propertiesWindow': { return 500; }
+                case 'addPropertyWindow': { return 350; }
             }
             break;
         }
@@ -2493,6 +2586,8 @@ function getWidth(window: string): number {
                 case 'convertCSV': { return 600; }
                 case 'csvLanguages': { return 600; }
                 case 'attributesWindow': { return 630; }
+                case 'propertiesWindow': { return 500; }
+                case 'addPropertyWindow': { return 350; }
             }
             break;
         }
@@ -2521,6 +2616,8 @@ function getHeihght(window: string): number {
                 case 'convertCSV': { return 520; }
                 case 'csvLanguages': { return 280; }
                 case 'attributesWindow': { return 380; }
+                case 'propertiesWindow': { return 300; }
+                case 'addPropertyWindow': { return 160; }
             }
             break;
         }
@@ -2544,6 +2641,8 @@ function getHeihght(window: string): number {
                 case 'convertCSV': { return 530; }
                 case 'csvLanguages': { return 270; }
                 case 'attributesWindow': { return 370; }
+                case 'propertiesWindow': { return 300; }
+                case 'addPropertyWindow': { return 160; }
             }
             break;
         }
@@ -2567,6 +2666,8 @@ function getHeihght(window: string): number {
                 case 'convertCSV': { return 520; }
                 case 'csvLanguages': { return 270; }
                 case 'attributesWindow': { return 380; }
+                case 'propertiesWindow': { return 300; }
+                case 'addPropertyWindow': { return 160; }
             }
             break;
         }

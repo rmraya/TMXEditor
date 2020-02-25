@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title id="title">Translation Unit Properties</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body onload="propertiesLoaded()">
+
+    <div style="padding: 4px;">
+        <div class="panelcontent bordered" style="height: 200px;">
+            <table id="propsTable" class="stripes">
+
+            </table>
+        </div>
+    </div>
+    <div class="buttonArea">
+        <button onclick="addProperty()">Add Property</button>
+        <button onclick="deleteProperties()">Delete Selected</button>
+        <button id="save" onclick="saveProperties()">Save Properties</button>
+    </div>
+
+    <script src="../js/properties.js"></script>
+</body>
+
+</html>

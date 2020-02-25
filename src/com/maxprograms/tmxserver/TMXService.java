@@ -1017,18 +1017,21 @@ public class TMXService implements TMXServiceInterface {
 	}
 
 	@Override
-	public String[] setProperties(String id, String lang, List<String[]> dataList) {
+	public JSONObject setProperties(String id, String lang, List<String[]> dataList) {
+		JSONObject result = new JSONObject();
 		try {
 			if (lang.isEmpty()) {
 				store.setTuProperties(id, dataList);
 			} else {
 				store.setTuvProperties(id, lang, dataList);
 			}
-			return new String[] { Constants.SUCCESS };
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
-			return new String[] { Constants.ERROR, ex.getMessage() };
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, ex.getMessage());
 		}
+		return result;
 	}
 
 	@Override

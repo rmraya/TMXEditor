@@ -29,6 +29,8 @@ var unitsCount: number;
 
 var attributes: Array<string[]>;
 var attributesType: string;
+var properties: Array<string[]>;
+var notes: string[];
 
 var currentId: string = null;
 var currentLang: string = null;
@@ -178,13 +180,23 @@ function editAttributes(): void {
 }
 
 function editProperties(): void {
-    console.log('edit properties clicked');
-    // TODO
+    if (!fileLoaded) {
+        return;
+    }
+    if (currentId === null || currentId === '') {
+        return;
+    }
+    ipcRenderer.send('edit-properties', {id: currentId, props: properties, type: attributesType});
 }
 
 function editNotes(): void {
-    console.log('edit notes clicked');
-    // TODO
+    if (!fileLoaded) {
+        return;
+    }
+    if (currentId === null || currentId === '') {
+        return;
+    }
+    ipcRenderer.send('edit-notes', {id: currentId, notes: notes, type: attributesType});
 }
 
 ipcRenderer.on('start-waiting', () => {
@@ -255,8 +267,11 @@ ipcRenderer.on('update-segments', (event, arg) => {
         fixed[i].addEventListener('click', (ev: MouseEvent) => fixedListener(ev));
     }
     document.getElementById('attributesTable').innerHTML = '';
+    document.getElementById('attributesSpan').innerHTML = 'TU';
     document.getElementById('propertiesTable').innerHTML = '';
+    document.getElementById('propertiesSpan').innerHTML = 'TU';
     document.getElementById('notesTable').innerHTML = '';
+    document.getElementById('notesSpan').innerHTML = 'TU';
     currentId = null;
 });
 
@@ -267,8 +282,11 @@ ipcRenderer.on('file-closed', () => {
     document.getElementById('pages').innerHTML = '0';
     document.getElementById('units').innerHTML = '';
     document.getElementById('attributesTable').innerHTML = '';
+    document.getElementById('attributesSpan').innerHTML = 'TU';
     document.getElementById('propertiesTable').innerHTML = '';
+    document.getElementById('propertiesSpan').innerHTML = 'TU';
     document.getElementById('notesTable').innerHTML = '';
+    document.getElementById('notesSpan').innerHTML = 'TU';
     currentPage = 0;
     maxPage = 0;
     fileLoaded = false;
@@ -393,7 +411,7 @@ ipcRenderer.on('update-properties', (event, arg) => {
     document.getElementById('propertiesSpan').innerHTML = arg.type;
     table = document.getElementById('propertiesTable');
     table.innerHTML = '';
-    var properties = arg.properties;
+    properties = arg.properties;
     for (let i = 0; i < properties.length; i++) {
         let pair = properties[i];
         let tr = document.createElement('tr');
@@ -411,12 +429,13 @@ ipcRenderer.on('update-properties', (event, arg) => {
     document.getElementById('notesSpan').innerHTML = arg.type;
     table = document.getElementById('notesTable');
     table.innerHTML = '';
-    var notes = arg.notes;
+    notes = arg.notes;
     for (let i = 0; i < properties.length; i++) {
         let tr = document.createElement('tr');
         table.appendChild(tr);
         let note = document.createElement('td');
         note.textContent = notes[i];
+        note.className = 'noWrap';
         tr.appendChild(note);
     }
 });

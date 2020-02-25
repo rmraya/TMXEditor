@@ -87,7 +87,7 @@ public interface TMXServiceInterface {
 
 	JSONObject getMergeProgress();
 
-	String[] setProperties(String id, String lang, List<String[]> dataList);
+	JSONObject setProperties(String id, String lang, List<String[]> dataList);
 
 	String[] setNotes(String id, String lang, List<String> notes);
 

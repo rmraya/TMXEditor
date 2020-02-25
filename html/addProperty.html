@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Property</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../css/fonts.css">
+</head>
+
+<body id="body" onload="addPropertyLoaded()">
+
+    <div style="padding: 4px;">
+        <table id="propsTable">
+            <tr>
+                <td><label for="type">Type</label></td>
+                <td><input type="text" id="type" class="fill_width"></td>
+            </tr>
+            <tr>
+                <td><label for="value">Value</label></td>
+                <td><input type="text" id="value" class="fill_width"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="buttonArea">
+        <button onclick="saveProperty()">Add Property</button>
+    </div>
+
+    <script src="../js/addProperty.js"></script>
+</body>
+
+</html>
