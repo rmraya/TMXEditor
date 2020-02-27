@@ -23,7 +23,7 @@ You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at 
 
 Ready to use installers and technical support for TMXEditor are available as yearly subscriptions at [Maxprograms Online Store](https://www.maxprograms.com/store/buy.html).
 
-The version of TMXEditor included in the official installers can be used at no cost for 7 days requesting a free Evaluation Key.
+The version of TMXEditor included in the official installers from [TMXEditor's Home Page](https://www.maxprograms.com/products/tmxeditor.html) can be used at no cost for 7 days requesting a free Evaluation Key.
 
 Subscription Keys are issued to be used by one person in one computer. They cannot be shared or transferred to a different machine.
 
