@@ -11,17 +11,23 @@ TMX is a standard XML-based format used for exchanging Translation Memories used
 TMXEditor is available in two modes:
 
 - Personal Use of Source Code
-- Commercial Installers
+- Yearly Subscriptions
 
-Source code of TMXEditor is free for personal use. You can download the source code, modify, compile and use it without limitations in your own computers. You cannot redistribute a version that you compiled or your modifications to the code.
+### Open Source
 
-Ready to use commercial installers are available at [TMXEditor Home Page](https://www.maxprograms.com/products/tmxeditor.html). You can try the commercial version for 30 days at no cost.
-
-Commercial versions of TMXEditor can be installed in as many computers as desired. TMXEditor licenses are designed for use in one computer at a time and can be transferred from one computer to another in just a few seconds.
+Source code of TMXEditor is free for personal use. Anyone can download the source code, compile, modify and use it at no cost in compliance with the accompanying license terms.
 
 You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version there.
 
-Commercial version includes unlimited email support at tech@maxprograms.com
+### Subscriptions
+
+Ready to use installers and technical support for TMXEditor are available as yearly subscriptions at [Maxprograms Online Store](https://www.maxprograms.com/store/buy.html).
+
+The version of TMXEditor included in the official installers can be used at no cost for 7 days requesting a free Evaluation Key.
+
+Subscription Keys are issued to be used by one person in one computer. They cannot be shared or transferred to a different machine.
+
+Subscription version includes unlimited email support at tech@maxprograms.com
 
 ## Requirements
 
@@ -37,7 +43,7 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
 
-### Steps for building:
+### Steps for building
 
 ``` bash
   git clone https://github.com/rmraya/TMXEditor.git
@@ -48,6 +54,5 @@ Commercial version includes unlimited email support at tech@maxprograms.com
 ```
 
 This video shows how to build and launch TMXEditor: [https://maxprograms.com/tutorials/TMXEditor_build.mp4](https://maxprograms.com/tutorials/TMXEditor_build.mp4)
-
 
 Compile once and then simply run `npm start` to start TMXEditor
