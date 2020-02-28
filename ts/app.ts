@@ -242,11 +242,11 @@ function createWindow() {
         { label: 'Support Group', click: function () { showSupportGroup(); } }
     ]);
     var template: MenuItem[] = [
-        new MenuItem({ label: 'File', role: 'fileMenu', submenu: fileMenu }),
-        new MenuItem({ label: 'Edit', role: 'editMenu', submenu: editMenu }),
-        new MenuItem({ label: 'View', role: 'viewMenu', submenu: viewMenu }),
-        new MenuItem({ label: 'Tasks', submenu: tasksMenu }),
-        new MenuItem({ label: 'Help', role: 'help', submenu: helpMenu })
+        new MenuItem({ label: '&File', role: 'fileMenu', submenu: fileMenu }),
+        new MenuItem({ label: '&Edit', role: 'editMenu', submenu: editMenu }),
+        new MenuItem({ label: '&View', role: 'viewMenu', submenu: viewMenu }),
+        new MenuItem({ label: '&Tasks', submenu: tasksMenu }),
+        new MenuItem({ label: '&Help', role: 'help', submenu: helpMenu })
     ];
     if (process.platform === 'darwin') {
         var appleMenu: Menu = Menu.buildFromTemplate([
@@ -269,7 +269,7 @@ function createWindow() {
     } else {
         var help: MenuItem = template.pop();
         template.push(new MenuItem({
-            label: 'Settings', submenu: [
+            label: '&Settings', submenu: [
                 { label: 'Preferences', click: function () { showSettings(); } }
             ]
         }));
