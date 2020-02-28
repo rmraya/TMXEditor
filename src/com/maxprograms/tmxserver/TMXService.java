@@ -71,7 +71,6 @@ import org.xml.sax.SAXException;
 public class TMXService implements TMXServiceInterface {
 
 	protected static final Logger LOGGER = Logger.getLogger(TMXService.class.getName());
-	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	protected StoreInterface store;
 	protected File currentFile;
