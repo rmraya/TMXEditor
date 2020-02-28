@@ -2758,7 +2758,7 @@ function getHeihght(window: string): number {
                 case 'splitFileWindow': { return 160; }
                 case 'mergeFilesWindow': { return 420; }
                 case 'licensesWindow': { return 350; }
-                case 'convertCSV': { return 520; }
+                case 'convertCSV': { return 530; }
                 case 'csvLanguages': { return 270; }
                 case 'attributesWindow': { return 380; }
                 case 'propertiesWindow': { return 300; }
