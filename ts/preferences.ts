@@ -22,12 +22,14 @@ const _p = require("electron");
 _p.ipcRenderer.on('set-preferences', (event, arg) => {
     (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
     (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
+    (document.getElementById('threshold') as HTMLSelectElement).value = '' + arg.threshold;
 });
 
 function savePreferences() {
     var theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
     var indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
-    var prefs: any = { theme: theme, indentation: indent }
+    var threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
+    var prefs: any = { theme: theme, threshold: threshold, indentation: indent }
     _p.ipcRenderer.send('save-preferences', prefs);
 }
 

@@ -659,7 +659,12 @@ function loadPreferences() {
             console.log(err);
         }
     }
-
+    if (currentPreferences.indentation === undefined) {
+        currentPreferences.indentation = 2;
+    }
+    if (currentPreferences.threshold === undefined) {
+        currentPreferences.threshold = 100;
+    }
     if (currentPreferences.theme === 'system') {
         if (nativeTheme.shouldUseDarkColors) {
             currentTheme = app.getAppPath() + '/css/dark.css';
@@ -2689,7 +2694,7 @@ function getHeihght(window: string): number {
                 case 'filtersWindow': { return 310; }
                 case 'consolidateWindow': { return 120; }
                 case 'removeUntranslatedWindow': { return 120; }
-                case 'settingsWindow': { return 150; }
+                case 'settingsWindow': { return 190; }
                 case 'sortUnitsWindow': { return 150; }
                 case 'changeLanguageWindow': { return 160; }
                 case 'newFileWindow': { return 160; }
@@ -2716,7 +2721,7 @@ function getHeihght(window: string): number {
                 case 'filtersWindow': { return 295; }
                 case 'consolidateWindow': { return 110; }
                 case 'removeUntranslatedWindow': { return 110; }
-                case 'settingsWindow': { return 140; }
+                case 'settingsWindow': { return 180; }
                 case 'sortUnitsWindow': { return 140; }
                 case 'changeLanguageWindow': { return 150; }
                 case 'newFileWindow': { return 150; }
@@ -2743,7 +2748,7 @@ function getHeihght(window: string): number {
                 case 'filtersWindow': { return 295; }
                 case 'consolidateWindow': { return 110; }
                 case 'removeUntranslatedWindow': { return 110; }
-                case 'settingsWindow': { return 140; }
+                case 'settingsWindow': { return 180; }
                 case 'sortUnitsWindow': { return 140; }
                 case 'changeLanguageWindow': { return 140; }
                 case 'newFileWindow': { return 140; }

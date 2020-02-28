@@ -72,6 +72,8 @@ public class TMXService implements TMXServiceInterface {
 
 	protected static final Logger LOGGER = Logger.getLogger(TMXService.class.getName());
 
+	private long threshold = 100l;
+
 	protected StoreInterface store;
 	protected File currentFile;
 	private RegistryParser registry;
@@ -130,6 +132,26 @@ public class TMXService implements TMXServiceInterface {
 		Files.delete(f.toPath());
 	}
 
+	private void loadPreferences(File folder) throws IOException {
+		File prefs = new File(folder, "preferences.json");
+		if (!prefs.exists()) {
+			return;
+		}
+		try (FileReader reader = new FileReader(prefs)) {
+			try (BufferedReader buffer = new BufferedReader(reader)) {
+				StringBuilder builder = new StringBuilder();
+				String line = "";
+				while ((line = buffer.readLine()) != null) {
+					builder.append(line);
+				}
+				JSONObject json = new JSONObject(builder.toString());
+				if (json.has("threshold")) {
+					threshold = json.getLong("threshold");
+				}
+			}
+		}
+	}
+
 	@Override
 	public JSONObject openFile(String fileName) {
 		JSONObject result = new JSONObject();
@@ -139,6 +161,7 @@ public class TMXService implements TMXServiceInterface {
 			if (!home.exists()) {
 				Files.createDirectory(home.toPath());
 			}
+			loadPreferences(home);
 			File tmp = new File(home, "tmp");
 			if (tmp.exists()) {
 				removeFile(tmp);
@@ -151,7 +174,7 @@ public class TMXService implements TMXServiceInterface {
 			currentFile = new File(fileName);
 			store = new SimpleStore();
 			long size = currentFile.length();
-			if (size > 100l * 1024 * 1024) {
+			if (size > threshold  * 1024 * 1024) {
 				LanguagesStore langStore = new LanguagesStore();
 				TMXReader reader = new TMXReader(langStore);
 				reader.parse(currentFile);
