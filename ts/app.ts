@@ -2713,7 +2713,7 @@ function getHeihght(window: string): number {
             switch (window) {
                 case 'aboutWindow': { return 360; }
                 case 'replaceTextWindow': { return 190; }
-                case 'filtersWindow': { return 290; }
+                case 'filtersWindow': { return 295; }
                 case 'consolidateWindow': { return 110; }
                 case 'removeUntranslatedWindow': { return 110; }
                 case 'settingsWindow': { return 140; }

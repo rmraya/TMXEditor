@@ -107,4 +107,8 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         applyFilters();
     }
+    if (event.code === 'KeyV' && (event.metaKey|| event.ctrlKey)) {
+        navigator.clipboard.readText().then(
+            clipText => (document.getElementById('filterText') as HTMLInputElement).value += clipText);
+    }
 });
