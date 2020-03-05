@@ -34,11 +34,12 @@ Subscription version includes unlimited email support at tech@maxprograms.com
 - JDK 11 or newer is required for compiling and building. Get it from [AdoptOpenJDK](https://adoptopenjdk.net/).
 - Apache Ant 1.10.7 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
 - Node.js 12.14.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 3.7.5 or newer. Get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- TypeScript 3.8.3 or newer. Get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 
 - Checkout this repository.
+- Point your `JAVA_HOME` environment variable to JDK 11
 - Run `ant` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor

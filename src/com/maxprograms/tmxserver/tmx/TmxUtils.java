@@ -66,6 +66,9 @@ public class TmxUtils {
 
 	public static String pureText(Element seg, boolean clearTags, String filterText, boolean caseSensitive,
 			boolean regExp) throws IOException {
+		if (seg == null) {
+			return "";
+		}
 		if (clearTags) {
 			if (tags != null) {
 				tags.clear();
@@ -209,10 +212,10 @@ public class TmxUtils {
 			return;
 		}
 		File folder = new File(getWorkFolder(), "images");
-		File f = new File(folder, tag + ".svg");
-		if (!f.getParentFile().exists()) {
-			f.getParentFile().mkdirs();
+		if (!folder.exists()) {
+			Files.createDirectories(folder.toPath());
 		}
+		File f = new File(folder, tag + ".svg");
 		if (!f.exists()) {
 			int width = 16;
 			if (tag >= 10) {
