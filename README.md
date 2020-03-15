@@ -29,6 +29,11 @@ Subscription Keys are issued to be used by one person in one computer. They cann
 
 Subscription version includes unlimited email support at tech@maxprograms.com
 
+## Related Projects
+
+- [OpenXLIFF Filters](https://github.com/rmraya/OpenXLIFF)
+- [TMXValidator](https://github.com/rmraya/TMXValidator)
+
 ## Requirements
 
 - JDK 11 or newer is required for compiling and building. Get it from [AdoptOpenJDK](https://adoptopenjdk.net/).
