@@ -1935,9 +1935,15 @@ ipcMain.on('filter-units', () => {
 ipcMain.on('filter-options', (event, arg) => {
     filterOptions = arg;
     filtersWindow.close();
+    setFirstPage();
     loadSegments();
     contents.send('filters-on');
 });
+
+function setFirstPage(): void {
+    loadOptions.start = 0;
+    contents.send('set-first-page');
+}
 
 ipcMain.on('get-filter-options', (event, arg) => {
     event.sender.send('set-filter-options', filterOptions);
@@ -1946,6 +1952,7 @@ ipcMain.on('get-filter-options', (event, arg) => {
 ipcMain.on('clear-filter-options', () => {
     filterOptions = {};
     filtersWindow.close();
+    setFirstPage();
     loadSegments();
     contents.send('filters-off');
 });

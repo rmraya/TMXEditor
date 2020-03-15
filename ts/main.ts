@@ -176,7 +176,7 @@ function editAttributes(): void {
     if (currentId === null || currentId === '') {
         return;
     }
-    ipcRenderer.send('edit-attributes', {id: currentId, atts: attributes, type: attributesType});
+    ipcRenderer.send('edit-attributes', { id: currentId, atts: attributes, type: attributesType });
 }
 
 function editProperties(): void {
@@ -186,7 +186,7 @@ function editProperties(): void {
     if (currentId === null || currentId === '') {
         return;
     }
-    ipcRenderer.send('edit-properties', {id: currentId, props: properties, type: attributesType});
+    ipcRenderer.send('edit-properties', { id: currentId, props: properties, type: attributesType });
 }
 
 function editNotes(): void {
@@ -196,7 +196,7 @@ function editNotes(): void {
     if (currentId === null || currentId === '') {
         return;
     }
-    ipcRenderer.send('edit-notes', {id: currentId, notes: notes, type: attributesType});
+    ipcRenderer.send('edit-notes', { id: currentId, notes: notes, type: attributesType });
 }
 
 ipcRenderer.on('start-waiting', () => {
@@ -446,6 +446,11 @@ function getSegments(): void {
         count: unitsPage
     });
 }
+
+ipcRenderer.on('set-first-page', () => {
+    currentPage = 0;
+    (document.getElementById('page') as HTMLInputElement).value = '1';
+});
 
 function firstPage(): void {
     currentPage = 0;
