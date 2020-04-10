@@ -532,6 +532,7 @@ function openFile(file: string) {
                     contents.send('status-changed', currentStatus);
                 } else if (currentStatus.status === ERROR) {
                     contents.send('end-waiting');
+                    contents.send('set-status', '');
                     clearInterval(intervalObject);
                     dialog.showErrorBox('Error', currentStatus.reason);
                     return;

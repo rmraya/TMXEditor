@@ -174,14 +174,12 @@ public class TMXService implements TMXServiceInterface {
 			currentFile = new File(fileName);
 			store = new SimpleStore();
 			long size = currentFile.length();
-			if (size > threshold  * 1024 * 1024) {
+			if (size > threshold * 1024 * 1024) {
 				LanguagesStore langStore = new LanguagesStore();
 				TMXReader reader = new TMXReader(langStore);
 				reader.parse(currentFile);
 				Set<String> languages = langStore.getLanguages();
 				store = new H2Store(languages);
-			} else {
-				store = new SimpleStore();
 			}
 			parsingError = "";
 			Thread thread = new Thread() {
@@ -863,20 +861,21 @@ public class TMXService implements TMXServiceInterface {
 	@Override
 	public JSONObject getLoadingProgress() {
 		JSONObject result = new JSONObject();
-		if (store != null) {
-			if (parsing) {
-				result.put(Constants.STATUS, Constants.LOADING);
-			} else {
-				result.put(Constants.STATUS, Constants.COMPLETED);
-			}
-			result.put("count", store.getCount());
-			if (!parsingError.isEmpty()) {
-				result.put(Constants.STATUS, Constants.ERROR);
-				result.put(Constants.REASON, parsingError);
-			}
-		} else {
+		if (!parsingError.isEmpty()) {
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, Constants.NULLSTORE);
+			result.put(Constants.REASON, parsingError);
+		} else {
+			if (store != null) {
+				if (parsing) {
+					result.put(Constants.STATUS, Constants.LOADING);
+				} else {
+					result.put(Constants.STATUS, Constants.COMPLETED);
+				}
+				result.put("count", store.getCount());
+			} else {
+				result.put(Constants.STATUS, Constants.ERROR);
+				result.put(Constants.REASON, Constants.NULLSTORE);
+			}
 		}
 		return result;
 	}
