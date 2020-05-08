@@ -2552,7 +2552,7 @@ function getCount() {
 }
 
 function checkUpdates(silent: boolean): void {
-    https.get('https://raw.githubusercontent.com/rmraya/TMXEditor/master/package.json', (res: IncomingMessage) => {
+    https.get('https://raw.githubusercontent.com/rmraya/TMXEditor/master/package.json', { timeout: 1500 }, (res: IncomingMessage) => {
         if (res.statusCode === 200) {
             let rawData = '';
             res.on('data', (chunk: string) => {
