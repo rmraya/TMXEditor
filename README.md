@@ -29,6 +29,13 @@ Subscription Keys are issued to be used by one person in one computer. They cann
 
 Subscription version includes unlimited email support at tech@maxprograms.com
 
+### Differences sumary
+Differences | Open Source | Subscription Based
+-|----------- | -------------
+Ready To Use Installers| No | Yes
+Restricted Features | None | None
+Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at tech@maxprograms.com  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
+
 ## Related Projects
 
 - [OpenXLIFF Filters](https://github.com/rmraya/OpenXLIFF)
