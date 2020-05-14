@@ -17,43 +17,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _cs = require('electron');
+class SourceLanguage {
 
+    electron = require('electron');
 
-_cs.ipcRenderer.on('filter-languages', (event, arg) => {
-    var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    var options: string = '<option value="*all*">Any Language</option>';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-filter-languages');
+        this.electron.ipcRenderer.on('filter-languages', (event, arg) => {
+            this.filterLanguages(arg);
+        });
+        this.electron.ipcRenderer.on('set-source-language', (event, arg) => {
+            (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.changeSrcLanguage();
+            }
+        });
+        document.getElementById('change').addEventListener('click', () => {
+            this.changeSrcLanguage();
+        });
     }
-    language.innerHTML = options;
-    _cs.ipcRenderer.send('get-source-language');
-});
 
-_cs.ipcRenderer.on('set-source-language', (event, arg) => {
-    (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
-});
+    filterLanguages(arg: any): void {
+        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        var options: string = '<option value="*all*">Any Language</option>';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        language.innerHTML = options;
+        this.electron.ipcRenderer.send('get-source-language');
+    }
 
-function changeSrcLanguage() {
-    var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    _cs.ipcRenderer.send('change-source-language', language.value);
+    changeSrcLanguage(): void {
+        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        this.electron.ipcRenderer.send('change-source-language', language.value);
+    }
 }
 
-function srcLanguageLoaded(): void {
-    _cs.ipcRenderer.send('get-theme');
-    _cs.ipcRenderer.send('get-filter-languages');
-}
-
-_cs.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        changeSrcLanguage();
-    }
-});
+new SourceLanguage();

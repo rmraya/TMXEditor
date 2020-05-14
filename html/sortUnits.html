@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="sortUnitsLoaded()">
+<body id="body">
     <div style="padding:4px;">
         <label for="sortLanguage">Sort Language</label>
         <select id="sortLanguage" style="width: 300px;">
@@ -18,8 +18,8 @@
         <label for="descending" checked>Sort Descending</label>
     </div>
     <div class="buttonArea">
-        <button onclick="sort()">Sort Units</button>
-        <button onclick="clearSort()">Clear Sorting</button>
+        <button id="sort">Sort Units</button>
+        <button id="clearSort">Clear Sorting</button>
     </div>
     <script src="../js/sortUnits.js"></script>
 </body>
