@@ -17,84 +17,94 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _n = require('electron');
+class Notes {
 
-var currentId: string;
-var currentType: string;
-var notes: string[];
+    electron = require('electron');
 
-function notesLoaded(): void {
-    _n.ipcRenderer.send('get-theme');
-    _n.ipcRenderer.send('get-unit-notes');
-}
+    currentId: string;
+    currentType: string;
+    notes: string[];
 
-_n.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-unit-notes');
+        this.electron.ipcRenderer.on('set-unit-notes', (event, arg) => {
+            currentId = arg.id;
+            currentType = arg.type;
+            notes = arg.notes;
+            this.drawNotes();
+        });
+        this.electron.ipcRenderer.on('set-new-note', (event, arg) => {
+            notes.push(arg.note);
+            this.drawNotes();
+            (document.getElementById('save') as HTMLButtonElement).focus();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.saveNotes();
+            }
+        });
+        document.getElementById('add').addEventListener('click', () => {
+            this.addNote();
+        });
+        document.getElementById('delete').addEventListener('click', () => {
+            this.deleteNotes();
+        });
+        document.getElementById('save').addEventListener('click', () => {
+            this.saveNotes();
+        });
     }
-    if (event.key === 'Enter') {
-        saveNotes();
-    }
-});
 
-_n.ipcRenderer.on('set-unit-notes', (event, arg) => {
-    currentId = arg.id;
-    currentType = arg.type;
-    notes = arg.notes;
-    drawNotes();
-});
-
-_n.ipcRenderer.on('set-new-note', (event, arg) => {
-    notes.push(arg.note);
-    drawNotes();
-    (document.getElementById('save') as HTMLButtonElement).focus();
-});
-
-function drawNotes() {
-    var rows: string = '';
-    for (let i = 0; i < notes.length; i++) {
-        var note = notes[i];
-        rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + note + '</td></tr>';
-    }
-    document.getElementById('notesTable').innerHTML = rows;
-}
-
-function saveNotes() {
-    var lang = currentType === 'TU' ? '' : currentType;
-    var arg = {
-        id: currentId,
-        lang: lang,
-        notes: notes
-    }
-    _n.ipcRenderer.send('save-notes', arg);
-}
-
-function addNote() {
-    _n.ipcRenderer.send('show-add-note');
-}
-
-function deleteNotes() {
-    var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
-    for (let i = 0; i < collection.length; i++) {
-        var check = collection[i] as HTMLInputElement;
-        if (check.checked) {
-            removeNote(check.parentElement.parentElement.id);
+    drawNotes() {
+        var rows: string = '';
+        for (let i = 0; i < notes.length; i++) {
+            var note = notes[i];
+            rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + note + '</td></tr>';
         }
+        document.getElementById('notesTable').innerHTML = rows;
     }
-    drawNotes();
-    (document.getElementById('save') as HTMLButtonElement).focus();
+
+    saveNotes() {
+        var lang = currentType === 'TU' ? '' : currentType;
+        var arg = {
+            id: currentId,
+            lang: lang,
+            notes: notes
+        }
+        this.electron.ipcRenderer.send('save-notes', arg);
+    }
+
+    addNote() {
+        this.electron.ipcRenderer.send('show-add-note');
+    }
+
+    deleteNotes() {
+        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+        for (let i = 0; i < collection.length; i++) {
+            var check = collection[i] as HTMLInputElement;
+            if (check.checked) {
+                this.removeNote(check.parentElement.parentElement.id);
+            }
+        }
+        this.drawNotes();
+        (document.getElementById('save') as HTMLButtonElement).focus();
+    }
+
+    removeNote(id: string) {
+        var copy: string[] = [];
+        for (let i = 0; i < notes.length; i++) {
+            if (id !== 'note_' + i) {
+                copy.push(notes[i]);
+            }
+        }
+        notes = copy;
+    }
 }
 
-function removeNote(id: string) {
-    var copy: string[] = [];
-    for (let i = 0; i < notes.length; i++) {
-        if (id !== 'note_' + i) {
-            copy.push(notes[i]);
-        }
-    }
-    notes = copy;
-}
+new Notes();
