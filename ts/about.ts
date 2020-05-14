@@ -17,27 +17,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _b = require('electron');
+class About {
 
-function licensesClicked() {
-    _b.ipcRenderer.send('licenses-clicked');
-}
-
-function aboutLoaded(): void {
-    _b.ipcRenderer.send('get-theme');
-    _b.ipcRenderer.send('get-version');
-}
-
-_b.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-_b.ipcRenderer.on('set-version', (event, arg) => {
-    document.getElementById('version').innerHTML = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+    electron = require('electron');
+    
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-version');
+        this.electron.ipcRenderer.on('set-version', (event, arg) => {
+            document.getElementById('version').innerHTML = arg;
+        });
+        document.getElementById('licenses').addEventListener('click', () => {
+            this.electron.ipcRenderer.send('licenses-clicked');
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+        });
     }
-});
+}
+
+new About();
