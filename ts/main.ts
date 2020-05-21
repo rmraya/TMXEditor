@@ -248,6 +248,8 @@ ipcRenderer.on('file-loaded', (event, arg) => {
         maxPage = Math.ceil(unitsCount / unitsPage);
         document.getElementById('pages').innerText = '' + maxPage;
     }
+    document.getElementById('filtering').classList.remove('active');
+    document.getElementById('sorting').classList.remove('active');
     fileLoaded = true;
     firstPage();
 });
@@ -287,6 +289,8 @@ ipcRenderer.on('file-closed', () => {
     document.getElementById('propertiesSpan').innerHTML = 'TU';
     document.getElementById('notesTable').innerHTML = '';
     document.getElementById('notesSpan').innerHTML = 'TU';
+    document.getElementById('filtering').classList.remove('active');
+    document.getElementById('sorting').classList.remove('active');
     currentPage = 0;
     maxPage = 0;
     fileLoaded = false;

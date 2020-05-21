@@ -522,6 +522,8 @@ function openFile(file: string) {
                     contents.send('end-waiting');
                     clearInterval(intervalObject);
                     getFileLanguages();
+                    filterOptions = {};
+                    sortOptions = {};
                     contents.send('file-loaded', currentStatus);
                     currentFile = file;
                     mainWindow.setTitle(currentFile);
