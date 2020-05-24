@@ -2073,6 +2073,7 @@ ipcMain.on('change-language', (event, arg) => {
                     clearInterval(intervalObject);
                     getFileLanguages();
                     loadSegments();
+                    saved = false;
                     return;
                 } else if (currentStatus.status === PROCESSING) {
                     // it's OK, keep waiting
@@ -2245,6 +2246,7 @@ ipcMain.on('change-source-language', (event, arg) => {
     srcLanguageWindow.close();
     sendRequest({ command: 'setSrcLanguage', lang: arg },
         function success(data: any) {
+            saved = false;
             if (data.status !== SUCCESS) {
                 dialog.showMessageBox({ type: 'warning', message: data.reason });
             }

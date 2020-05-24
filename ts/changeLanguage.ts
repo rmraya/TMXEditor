@@ -17,49 +17,53 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _cl = require('electron');
+class ChangeLanguages {
 
-_cl.ipcRenderer.on('filter-languages', (event, arg) => {
-    var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+    electron = require('electron');
+
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-filter-languages');
+        this.electron.ipcRenderer.on('filter-languages', (event, arg) => {
+            var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
+            var options: string = '';
+            for (let i: number = 0; i < arg.length; i++) {
+                let lang: any = arg[i];
+                options = options + '<option value="' + lang.code + '">' + lang.code + ' - ' + lang.name + '</option>'
+            }
+            currentLanguage.innerHTML = options;
+            this.electron.ipcRenderer.send('all-languages');
+        });
+        this.electron.ipcRenderer.on('languages-list', (event, arg) => {
+            var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
+            var options: string = '';
+            for (let i: number = 0; i < arg.length; i++) {
+                let lang: any = arg[i];
+                options = options + '<option value="' + lang.code + '">' + lang.code + ' - ' + lang.name + '</option>'
+            }
+            newLanguage.innerHTML = options;
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.changeLanguage();
+            }
+        });
+        document.getElementById('changeLanguage').addEventListener('click', () => {
+            this.changeLanguage();
+        })
     }
-    currentLanguage.innerHTML = options;
-    _cl.ipcRenderer.send('all-languages');
-});
 
-_cl.ipcRenderer.on('languages-list', (event, arg) => {
-    var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+    changeLanguage() {
+        var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
+        var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
+        this.electron.ipcRenderer.send('change-language', { oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
     }
-    newLanguage.innerHTML = options;
-});
-
-function changeLanguage() {
-    var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
-    var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
-    _cl.ipcRenderer.send('change-language', { oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
 }
 
-function changeLanguageLoaded(): void {
-    _cl.ipcRenderer.send('get-theme');
-    _cl.ipcRenderer.send('get-filter-languages');
-}
-
-_cl.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        changeLanguage();
-    }
-});
+new ChangeLanguages();

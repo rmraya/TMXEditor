@@ -34,11 +34,11 @@ class Notes {
         this.electron.ipcRenderer.on('set-unit-notes', (event, arg) => {
             currentId = arg.id;
             currentType = arg.type;
-            notes = arg.notes;
+            this.notes = arg.notes;
             this.drawNotes();
         });
         this.electron.ipcRenderer.on('set-new-note', (event, arg) => {
-            notes.push(arg.note);
+            this.notes.push(arg.note);
             this.drawNotes();
             (document.getElementById('save') as HTMLButtonElement).focus();
         });
@@ -63,8 +63,9 @@ class Notes {
 
     drawNotes() {
         var rows: string = '';
-        for (let i = 0; i < notes.length; i++) {
-            var note = notes[i];
+        let length = this.notes.length
+        for (let i = 0; i < length; i++) {
+            var note = this.notes[i];
             rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + note + '</td></tr>';
         }
         document.getElementById('notesTable').innerHTML = rows;
@@ -75,7 +76,7 @@ class Notes {
         var arg = {
             id: currentId,
             lang: lang,
-            notes: notes
+            notes: this.notes
         }
         this.electron.ipcRenderer.send('save-notes', arg);
     }
@@ -98,12 +99,13 @@ class Notes {
 
     removeNote(id: string) {
         var copy: string[] = [];
-        for (let i = 0; i < notes.length; i++) {
+        let length = this.notes.length
+        for (let i = 0; i < length; i++) {
             if (id !== 'note_' + i) {
-                copy.push(notes[i]);
+                copy.push(this.notes[i]);
             }
         }
-        notes = copy;
+        this.notes = copy;
     }
 }
 
