@@ -17,86 +17,104 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _pr = require('electron');
+class Properties {
 
-var currentId: string;
-var currentType: string;
-var props: Array<string[]>;
+    electron = require('electron');
 
-function propertiesLoaded(): void {
-    _pr.ipcRenderer.send('get-theme');
-    _pr.ipcRenderer.send('get-unit-properties');
-}
+    currentId: string;
+    currentType: string;
+    props: Array<string[]>;
 
-_pr.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-unit-properties');
+        this.electron.ipcRenderer.on('set-unit-properties', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setUnitProperties(arg);
+        });
+        this.electron.ipcRenderer.on('set-new-property', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setNewProperty(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.saveProperties();
+            }
+        });
+        document.getElementById('addProperty').addEventListener('click', () => {
+            this.addProperty();
+        });
+        document.getElementById('deleteProperties').addEventListener('click', () => {
+            this.deleteProperties();
+        });
+        document.getElementById('save').addEventListener('click', () => {
+            this.saveProperties();
+        });
     }
-    if (event.key === 'Enter') {
-        saveProperties();
+
+    setUnitProperties(arg: any): void {
+        this.currentId = arg.id;
+        this.currentType = arg.type;
+        this.props = arg.props;
+        this.drawProperties();
     }
-});
 
-_pr.ipcRenderer.on('set-unit-properties', (event, arg) => {
-    currentId = arg.id;
-    currentType = arg.type;
-    props = arg.props;
-    drawProperties();
-});
-
-function saveProperties() {
-    var lang = currentType === 'TU' ? '' : currentType;
-    var arg = {
-        id: currentId,
-        lang: lang,
-        properties: props
-    }
-    _pr.ipcRenderer.send('save-properties', arg);
-}
-
-function addProperty() {
-    _pr.ipcRenderer.send('show-add-property');
-}
-
-_pr.ipcRenderer.on('set-new-property', (event, arg) => {
-    var prop:string[] = [arg.type, arg.value];
-    props.push(prop);
-    drawProperties();
-    (document.getElementById('save') as HTMLButtonElement).focus();
-});
-
-function deleteProperties() {
-    var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
-    for (let i = 0; i < collection.length; i++) {
-        var check = collection[i] as HTMLInputElement;
-        if (check.checked) {
-            removeProperty(check.parentElement.parentElement.id);
+    saveProperties(): void {
+        var lang = this.currentType === 'TU' ? '' : this.currentType;
+        var arg = {
+            id: this.currentId,
+            lang: lang,
+            properties: this.props
         }
+        this.electron.ipcRenderer.send('save-properties', arg);
     }
-    drawProperties();
-    (document.getElementById('save') as HTMLButtonElement).focus();
-}
 
-function drawProperties() {
-    var rows: string = '';
-    for (let i = 0; i < props.length; i++) {
-        var pair: string[] = props[i];
-        rows = rows + '<tr id="' + pair[0] + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + pair[0] + '</td><td class="noWrap">' + pair[1] + '</td></tr>';
+    addProperty(): void {
+        this.electron.ipcRenderer.send('show-add-property');
     }
-    document.getElementById('propsTable').innerHTML = rows;
-}
 
-function removeProperty(type: string) {
-    var copy: Array<string[]> = [];
-    for (let i=0 ; i<props.length ; i++) {
-        var pair: string[] = props[i];
-        if (pair[0] !== type) {
-            copy.push(pair);
+    setNewProperty(arg: any): void {
+        var prop: string[] = [arg.type, arg.value];
+        this.props.push(prop);
+        this.drawProperties();
+        (document.getElementById('save') as HTMLButtonElement).focus();
+    }
+
+    deleteProperties(): void {
+        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+        for (let i = 0; i < collection.length; i++) {
+            var check = collection[i] as HTMLInputElement;
+            if (check.checked) {
+                this.removeProperty(check.parentElement.parentElement.id);
+            }
         }
+        this.drawProperties();
+        (document.getElementById('save') as HTMLButtonElement).focus();
     }
-    props = copy;
+
+    drawProperties(): void {
+        var rows: string = '';
+        for (let i = 0; i < this.props.length; i++) {
+            var pair: string[] = this.props[i];
+            rows = rows + '<tr id="' + pair[0] + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + pair[0] + '</td><td class="noWrap">' + pair[1] + '</td></tr>';
+        }
+        document.getElementById('propsTable').innerHTML = rows;
+    }
+
+    removeProperty(type: string): void {
+        var copy: Array<string[]> = [];
+        for (let i = 0; i < this.props.length; i++) {
+            var pair: string[] = this.props[i];
+            if (pair[0] !== type) {
+                copy.push(pair);
+            }
+        }
+        this.props = copy;
+    }
 }
+
+new Properties();

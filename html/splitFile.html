@@ -7,18 +7,18 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="splitFileLoaded()">
+<body id="body">
     <div style="padding:4px;">
         <label for="file">TMX File</label>
         <input type="text" id="file" style="width: 300px;">
-        <Button onclick="browseFiles()">Browse...</Button>
+        <Button id="browseFiles">Browse...</Button>
     </div>
     <div style="padding:4px;">
         <label for="parts">Number of parts</label>
         <input type="number" min="2" id="parts" value="2">
     </div>
     <div class="buttonArea">
-        <button onclick="splitFile()">Split TMX File</button>
+        <button id="splitFile">Split TMX File</button>
     </div>
     <script src="../js/splitFile.js"></script>
 </body>

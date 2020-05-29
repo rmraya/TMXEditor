@@ -23,28 +23,15 @@ class SortUnits {
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
-        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event, arg) => {
-            var sortLanguage: HTMLSelectElement = document.getElementById('sortLanguage') as HTMLSelectElement;
-            var options: string = '';
-            for (let i: number = 0; i < arg.length; i++) {
-                let lang: any = arg[i];
-                options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
-            }
-            sortLanguage.innerHTML = options;
-            this.electron.ipcRenderer.send('get-sort');
+        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.filterLanguages(arg);
         });
-
-        this.electron.ipcRenderer.on('sort-options', (event, arg) => {
-            if (arg.sortLanguage != undefined) {
-                (document.getElementById('sortLanguage') as HTMLSelectElement).value = arg.sortLanguage;
-            }
-            if (arg.ascending != undefined) {
-                (document.getElementById('descending') as HTMLInputElement).checked = !arg.ascending;
-            }
+        this.electron.ipcRenderer.on('sort-options', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.sortOptions(arg);
         });
         document.getElementById('sort').addEventListener('click', () => {
             this.sort();
@@ -60,6 +47,26 @@ class SortUnits {
                 this.sort();
             }
         });
+    }
+
+    filterLanguages(arg: any): void {
+        var sortLanguage: HTMLSelectElement = document.getElementById('sortLanguage') as HTMLSelectElement;
+        var options: string = '';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        sortLanguage.innerHTML = options;
+        this.electron.ipcRenderer.send('get-sort');
+    }
+
+    sortOptions(arg: any): void {
+        if (arg.sortLanguage != undefined) {
+            (document.getElementById('sortLanguage') as HTMLSelectElement).value = arg.sortLanguage;
+        }
+        if (arg.ascending != undefined) {
+            (document.getElementById('descending') as HTMLInputElement).checked = !arg.ascending;
+        }
     }
 
     sort(): void {

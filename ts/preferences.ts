@@ -17,36 +17,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-const _p = require("electron");
+class Preferences {
 
-_p.ipcRenderer.on('set-preferences', (event, arg) => {
-    (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
-    (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
-    (document.getElementById('threshold') as HTMLSelectElement).value = '' + arg.threshold;
-});
+    electron = require("electron");
 
-function savePreferences() {
-    var theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
-    var indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
-    var threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
-    var prefs: any = { theme: theme, threshold: threshold, indentation: indent }
-    _p.ipcRenderer.send('save-preferences', prefs);
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.on('set-preferences', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setPreferences(arg);
+        });
+        this.electron.ipcRenderer.send('get-preferences');
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.savePreferences();
+            }
+        });
+        document.getElementById('savePreferences').addEventListener('click', () => {
+            this.savePreferences();
+        });
+    }
+
+    setPreferences(arg: any): void {
+        (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
+        (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
+        (document.getElementById('threshold') as HTMLSelectElement).value = '' + arg.threshold;
+    }
+
+    savePreferences(): void {
+        var theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
+        var indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
+        var threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
+        var prefs: any = { theme: theme, threshold: threshold, indentation: indent }
+        this.electron.ipcRenderer.send('save-preferences', prefs);
+    }
 }
 
-function preferencesLoaded(): void {
-    _p.ipcRenderer.send('get-theme');
-    _p.ipcRenderer.send('get-preferences');
-}
-
-_p.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        savePreferences();
-    }
-});
+new Preferences();

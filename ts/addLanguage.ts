@@ -17,37 +17,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _al = require('electron');
+class AddLanguage {
 
-_al.ipcRenderer.on('languages-list', (event, arg) => {
-    var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+    electron = require('electron');
+
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('all-languages');
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.languageList(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.addLanguage();
+            }
+        });
+        document.getElementById('addLanguage').addEventListener('click', () => {
+            this.addLanguage();
+        })
     }
-    language.innerHTML = options;
-});
 
-function addLanguage() {
-    var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    _al.ipcRenderer.send('add-language', language.value);
+    languageList(arg: any): void {
+        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        var options: string = '';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        language.innerHTML = options;
+    }
+
+    addLanguage(): void {
+        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        this.electron.ipcRenderer.send('add-language', language.value);
+    }
 }
 
-function addLanguageLoaded(): void {
-    _al.ipcRenderer.send('get-theme');
-    _al.ipcRenderer.send('all-languages');
-}
-
-_al.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        addLanguage();
-    }
-});
+new AddLanguage();

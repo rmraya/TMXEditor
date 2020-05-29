@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="preferencesLoaded()">
+<body id="body">
 
     <div style="padding:4px;" class="fill-width">
         <label for="themeColor">Theme</label>
@@ -18,8 +18,8 @@
         </select>
     </div>
     <div style="padding:4px;" class="fill-width">
-       <label for="threshold">Max File Size for Memory Storage (MB)</label>
-        <select id="threshold"  class="fill-width">
+        <label for="threshold">Max File Size for Memory Storage (MB)</label>
+        <select id="threshold" class="fill-width">
             <option value="100">100</option>
             <option value="200">200</option>
             <option value="500">500</option>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="buttonArea">
-        <button onclick="savePreferences()">Save Preferences</button>
+        <button id="savePreferences">Save Preferences</button>
     </div>
     <script src="../js/preferences.js"></script>
 </body>

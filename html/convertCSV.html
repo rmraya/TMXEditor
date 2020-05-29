@@ -7,18 +7,18 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="convertCSVLoaded()">
+<body id="body">
 
     <table class="fill_width">
         <tr>
             <td style="vertical-align: middle;" class="noWrap"><label for="csvFile">CSV/Text File</label></td>
             <td class="fill_width"><input type="text" id="csvFile" class="fill_width"></td>
-            <td><Button onclick="browseCsvFiles()">Browse...</Button></td>
+            <td><button id="browseCsvFiles">Browse...</button></td>
         </tr>
         <tr>
             <td style="vertical-align: middle;" class="noWrap"><label for="tmxFile">TMX File</label></td>
             <td class="fill_width"> <input type="text" id="tmxFile" class="fill_width"></td>
-            <td><Button onclick="browseTmxFiles()">Browse...</Button></td>
+            <td><button id="browseTmxFiles">Browse...</button></td>
         </tr>
     </table>
     <table class="fill_width">
@@ -29,11 +29,11 @@
         </tr>
         <tr>
             <td>
-                <select id="charSets" class="fill_width" onchange="refreshPreview(true)">
+                <select id="charSets" class="fill_width">
                 </select>
             </td>
             <td>
-                <select id="colSeps" class="fill_width" onchange="refreshPreview(true)">
+                <select id="colSeps" class="fill_width">
                     <option value=",">,</option>
                     <option value=";">;</option>
                     <option value=":">:</option>
@@ -42,7 +42,7 @@
                 </select>
             </td>
             <td>
-                <select id="textDelim" class="fill_width" onchange="refreshPreview(true)">
+                <select id="textDelim" class="fill_width">
                     <option value=""></option>
                     <option value="'">'</option>
                     <option value='"'>"</option>
@@ -67,14 +67,15 @@
     </div>
     <div class="right" style="padding: 4px;">Detected Columns: <span id="columns">0</span></div>
     <div style="padding: 4px;">
-        <input type="checkbox" id="fixQuotes" onchange="refreshPreview(false)"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
-        <input type="checkbox" id="optionalDelims" onchange="refreshPreview(false)"> <label for="optionalDelims" class="noWrap">Optional Text Delimiters</label><br>
+        <input type="checkbox" id="fixQuotes"> <label for="fixQuotes" class="noWrap">Fix Excel Double Quotes</label><br>
+        <input type="checkbox" id="optionalDelims"> <label for="optionalDelims" class="noWrap">Optional Text
+            Delimiters</label><br>
         <input type="checkbox" id="openTMX" checked> <label for="openTMX">Open Generated TMX File</label>
     </div>
     <div class="buttonArea">
-        <button onclick="refreshPreview(false)">Refresh Preview</button>
-        <button onclick="setLanguages()">Set Languages</button>
-        <button id="convert" onclick="convertFile()">Convert CSV to TMX</button>
+        <button id="refreshPreview">Refresh Preview</button>
+        <button id="setLanguages">Set Languages</button>
+        <button id="convert">Convert CSV to TMX</button>
     </div>
 
     <script src="../js/convertCSV.js"></script>

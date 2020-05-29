@@ -17,44 +17,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-const _c = require("electron");
+class Consolidate {
 
-_c.ipcRenderer.on('filter-languages', (event, arg) => {
-    var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+    electron = require("electron");
+
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-filter-languages');
+        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.filterLanguages(arg);
+        });
+        this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
+            if (arg.srcLang !== '*all*') {
+                (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+            }
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.consolidate();
+            }
+        });
+        document.getElementById('consolidate').addEventListener('click', () => {
+            this.consolidate();
+        });
     }
-    sourceLanguage.innerHTML = options;
-    _c.ipcRenderer.send('get-source-language');
-});
 
-_c.ipcRenderer.on('set-source-language', (event, arg) => {
-    if (arg.srcLang !== '*all*') {
-        (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+    filterLanguages(arg: any): void {
+        var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
+        var options: string = '';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        sourceLanguage.innerHTML = options;
+        this.electron.ipcRenderer.send('get-source-language');
     }
-});
 
-function consolidate(): void {
-    var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-    _c.ipcRenderer.send('consolidate-units', { srcLang: srcLang });
+    consolidate(): void {
+        var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
+        this.electron.ipcRenderer.send('consolidate-units', { srcLang: srcLang });
+    }
 }
 
-function consolidateLoaded(): void {
-    _c.ipcRenderer.send('get-theme');
-    _c.ipcRenderer.send('get-filter-languages');
-}
-
-_c.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        consolidate();
-    }
-});
+new Consolidate();

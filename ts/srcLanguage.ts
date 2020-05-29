@@ -23,14 +23,14 @@ class SourceLanguage {
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
-        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event, arg) => {
+        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.filterLanguages(arg);
         });
-        this.electron.ipcRenderer.on('set-source-language', (event, arg) => {
+        this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
         });
         document.addEventListener('keydown', (event) => {

@@ -17,53 +17,59 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _ap = require('electron');
+class AddProperty {
 
-var currentId: string;
-var currentType: string;
+    electron = require('electron');
 
-function addPropertyLoaded(): void {
-    _ap.ipcRenderer.send('get-theme');
-}
+    currentId: string;
+    currentType: string;
 
-_ap.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.saveProperty();
+            }
+        });
+        document.getElementById('saveProperty').addEventListener('click', () => {
+            this.saveProperty();
+        });
     }
-    if (event.key === 'Enter') {
-        saveProperty();
-    }
-});
 
-function saveProperty() {
-    var type: string = (document.getElementById('type') as HTMLInputElement).value;
-    if (type === '') {
-        _ap.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter type' });
-        return;
-    }
-    var value: string = (document.getElementById('value') as HTMLInputElement).value;
-    if (value === '') {
-        _ap.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter value' });
-        return;
-    }
-    if (!validateType(type)) {
-        _ap.ipcRenderer.send('show-message', { type: 'warning', message: 'Invalid type' });
-        return;
-    }
-    _ap.ipcRenderer.send('add-new-property', {type: type, value: value});
-}
-
-function validateType(type: string) : boolean {
-    var length: number = type.length;
-    for (let i=0 ; i<length ; i++) {
-        var c: string = type.charAt(i);
-        if (c === ' ' || c ==='<' || c ==='&') {
-            return false;
+    saveProperty(): void {
+        var type: string = (document.getElementById('type') as HTMLInputElement).value;
+        if (type === '') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter type' });
+            return;
         }
+        var value: string = (document.getElementById('value') as HTMLInputElement).value;
+        if (value === '') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter value' });
+            return;
+        }
+        if (!this.validateType(type)) {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Invalid type' });
+            return;
+        }
+        this.electron.ipcRenderer.send('add-new-property', { type: type, value: value });
     }
-    return true;
+
+    validateType(type: string): boolean {
+        var length: number = type.length;
+        for (let i = 0; i < length; i++) {
+            var c: string = type.charAt(i);
+            if (c === ' ' || c === '<' || c === '&') {
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
+new AddProperty();

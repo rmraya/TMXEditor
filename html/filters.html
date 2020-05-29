@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="filtersLoaded()">
+<body id="body">
     <div>
         <div>
             <div style="padding:4px;">
@@ -28,7 +28,7 @@
                     <label for="regularExpression">Regular Expression</label><br>
                     <input type="checkbox" id="caseSensitiveFilter">
                     <label for="caseSensitiveFilter">Case Sensitive Search</label><br>
-                    <input type="checkbox" id="filterUntranslated" onclick="togleSourceLanguage()">
+                    <input type="checkbox" id="filterUntranslated" >
                     <label for="filterUntranslated">Show Untranslated Units Only</label>
                 </div>
                 <div style="padding:4px;">
@@ -39,8 +39,8 @@
             </div>
         </div>
         <div class="buttonArea">
-            <button onclick="applyFilters()">Apply Filters</button>
-            <button onclick="clearFilters()">Clear Filters</button>
+            <button id="applyFilters">Apply Filters</button>
+            <button id="clearFilters">Clear Filters</button>
         </div>
     </div>
     <script src="../js/filters.js"></script>

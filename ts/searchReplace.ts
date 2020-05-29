@@ -17,48 +17,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-const _s = require("electron");
+class SearchReplace {
 
-_s.ipcRenderer.on('filter-languages', (event, arg) => {
-    var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
-    }
-    language.innerHTML = options;
-});
+    electron = require("electron");
 
-function replace(): void {
-    var searchText: string = (document.getElementById('searchText') as HTMLInputElement).value;
-    var replaceText: string = (document.getElementById('replaceText') as HTMLInputElement).value;
-    var language: string = (document.getElementById('language') as HTMLSelectElement).value;
-    if (searchText.length === 0) {
-        _s.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search' });
-        return;
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('get-filter-languages');
+        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.filterLanguages(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.replace();
+            }
+        });
+        document.getElementById('replace').addEventListener('click', () => {
+            this.replace();
+        })
     }
-    if (replaceText.length === 0) {
-        _s.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter replacement text' });
-        return;
+
+    filterLanguages(arg: any): void {
+        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        var options: string = '';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        language.innerHTML = options;
     }
-    var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
-    _s.ipcRenderer.send('replace-request', { search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
+
+    replace(): void {
+        var searchText: string = (document.getElementById('searchText') as HTMLInputElement).value;
+        var replaceText: string = (document.getElementById('replaceText') as HTMLInputElement).value;
+        var language: string = (document.getElementById('language') as HTMLSelectElement).value;
+        if (searchText.length === 0) {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search' });
+            return;
+        }
+        if (replaceText.length === 0) {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter replacement text' });
+            return;
+        }
+        var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
+        this.electron.ipcRenderer.send('replace-request', { search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
+    }
 }
 
-function searchReplaceLoaded(): void {
-    _s.ipcRenderer.send('get-theme');
-    _s.ipcRenderer.send('get-filter-languages');
-}
-
-_s.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        replace();
-    }
-});
+new SearchReplace();

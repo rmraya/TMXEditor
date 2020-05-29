@@ -7,11 +7,11 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="mergeFilesLoaded()">
+<body id="body">
     <div style="padding:4px;">
         <label for="file">Merged TMX File</label>
         <input type="text" id="file" style="width: 300px;">
-        <Button onclick="browseMergedFile()">Browse...</Button>
+        <Button id="browseMergedFile">Browse...</Button>
     </div>
     <div style="padding:4px;">
         <div style="height: 300px; overflow-y: auto;" class="bordered">
@@ -21,12 +21,12 @@
                 </tr>
             </table>
         </div>
-       
+
     </div>
     <div class="buttonArea">
-        <button onclick="addFiles()">Add Files</button>
-        <button onclick="deleteFiles()">Delete Selected Files</button>
-        <button onclick="mergeFiles()">Merge TMX Files</button>
+        <button id="addFiles">Add Files</button>
+        <button id="deleteFiles">Delete Selected Files</button>
+        <button id="mergeFiles">Merge TMX Files</button>
     </div>
     <script src="../js/mergeFiles.js"></script>
 </body>

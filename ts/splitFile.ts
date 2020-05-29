@@ -17,39 +17,47 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _sf = require('electron');
+class SplitFile {
 
-function splitFileLoaded(): void {
-    _sf.ipcRenderer.send('get-theme');
+    electron = require('electron');
+
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.on('tmx-file', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('file') as HTMLInputElement).value = arg;
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.splitFile();
+            }
+        });
+        document.getElementById('browseFiles').addEventListener('click',()=> {
+            this.browseFiles();
+        });
+        document.getElementById('splitFile').addEventListener('click',()=>{
+            this.splitFile();
+        });
+    }
+
+    splitFile(): void {
+        var file: string = (document.getElementById('file') as HTMLInputElement).value;
+        if (file === '') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file' });
+            return;
+        }
+        var parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
+        this.electron.ipcRenderer.send('split-tmx', { file: file, parts: parts });
+    }
+
+    browseFiles(): void {
+        this.electron.ipcRenderer.send('select-tmx');
+    }
 }
 
-_sf.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-function splitFile() {
-    var file: string = (document.getElementById('file') as HTMLInputElement).value;
-    if (file === '') {
-        _sf.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file' });
-        return;
-    }
-    var parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
-    _sf.ipcRenderer.send('split-tmx', { file: file, parts: parts });
-}
-
-function browseFiles() {
-    _sf.ipcRenderer.send('select-tmx');
-}
-
-_sf.ipcRenderer.on('tmx-file', (event, arg) => {
-    (document.getElementById('file') as HTMLInputElement).value = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        splitFile();
-    }
-});
+new SplitFile();

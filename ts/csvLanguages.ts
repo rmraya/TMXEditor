@@ -17,59 +17,72 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _csl = require('electron');
-var columns: number;
-var options: string = '<option value=""></option>';
+class CsvLanguages {
 
-function csvLanguagesLoaded() {
-    _csl.ipcRenderer.send('get-theme');
-    _csl.ipcRenderer.send('all-languages');
-}
+    electron = require('electron');
 
-_csl.ipcRenderer.on('set-theme', (event, arg: string) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
+    columns: number;
+    options: string = '<option value=""></option>';
 
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('all-languages');
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.languagesList(arg);
+        });
+        this.electron.ipcRenderer.send('get-csv-lang-args');
+        this.electron.ipcRenderer.on('set-csv-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setCsvLangArgs(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.setCsvLanguages();
+            }
+        });
+        document.getElementById('setCsvLanguages').addEventListener('click', () => {
+            this.setCsvLanguages();
+        })
     }
-    if (event.key === 'Enter') {
-        setCsvLanguages();
-    }
-});
 
-function setCsvLanguages() {
-    var langs: string[] = [];
-    for (let i = 0; i < columns; i++) {
-        var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
-        if (lang !== '') {
-            langs.push(lang);
-        } else {
-            _csl.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages' });
-            return;
+    setCsvLanguages(): void {
+        var langs: string[] = [];
+        for (let i = 0; i < this.columns; i++) {
+            var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
+            if (lang !== '') {
+                langs.push(lang);
+            } else {
+                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages' });
+                return;
+            }
+        }
+        this.electron.ipcRenderer.send('set-csv-languages', langs);
+    }
+
+    languagesList(arg: any): void {
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            this.options = this.options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
     }
-    _csl.ipcRenderer.send('set-csv-languages', langs);
+
+    setCsvLangArgs(arg: any): void {
+        this.columns = arg.columns;
+        var rows: string = '';
+        for (let i = 0; i < this.columns; i++) {
+            rows = rows + '<tr><td class="noWrap">Column ' + i + '</td><td><select id="lang_' + i + '">' + this.options + '</select></td></tr>'
+        }
+        document.getElementById('langsTable').innerHTML = rows;
+        var langs: string[] = arg.languages;
+        for (let i = 0; i < langs.length; i++) {
+            (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
+        }
+    }
 }
 
-_csl.ipcRenderer.on('languages-list', (event, arg) => {
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
-    }
-    _csl.ipcRenderer.send('get-csv-lang-args');
-});
-
-_csl.ipcRenderer.on('set-csv-lang-args', (event, arg) => {
-    columns = arg.columns;
-    var rows: string = '';
-    for (let i = 0; i < columns; i++) {
-        rows = rows + '<tr><td class="noWrap">Column ' + i + '</td><td><select id="lang_' + i + '">' + options + '</select></td></tr>'
-    }
-    document.getElementById('langsTable').innerHTML = rows;
-    var langs: string[] = arg.languages;
-    for (let i = 0; i < langs.length; i++) {
-        (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
-    }
-});
+new CsvLanguages();

@@ -111,7 +111,7 @@ public class TMXService implements TMXServiceInterface {
 		return store != null;
 	}
 
-	private static File getPreferencesFolder() {
+	protected static File getPreferencesFolder() {
 		String os = System.getProperty("os.name").toLowerCase();
 		if (os.startsWith("mac")) {
 			return new File(System.getProperty("user.home") + "/Library/Application Support/TMXEditor/");
@@ -119,7 +119,7 @@ public class TMXService implements TMXServiceInterface {
 		if (os.startsWith("windows")) {
 			return new File(System.getenv("AppData") + "\\TMXEditor\\");
 		}
-		return new File(System.getProperty("user.home") + "/.tmxeditor/");
+		return new File(System.getProperty("user.home") + "/.config/TMXEditor/");
 	}
 
 	private static void removeFile(File f) throws IOException {
@@ -206,6 +206,7 @@ public class TMXService implements TMXServiceInterface {
 		} catch (Exception ex) {
 			LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 			parsing = false;
+			parsingError = ex.getMessage();
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, ex.getMessage());
 		}
@@ -861,20 +862,20 @@ public class TMXService implements TMXServiceInterface {
 	@Override
 	public JSONObject getLoadingProgress() {
 		JSONObject result = new JSONObject();
-		if (!parsingError.isEmpty()) {
-			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, parsingError);
+		if (parsing) {
+			result.put(Constants.STATUS, Constants.LOADING);
 		} else {
-			if (store != null) {
-				if (parsing) {
-					result.put(Constants.STATUS, Constants.LOADING);
-				} else {
-					result.put(Constants.STATUS, Constants.COMPLETED);
-				}
-				result.put("count", store.getCount());
-			} else {
+			if (!parsingError.isEmpty()) {
 				result.put(Constants.STATUS, Constants.ERROR);
-				result.put(Constants.REASON, Constants.NULLSTORE);
+				result.put(Constants.REASON, parsingError);
+			} else {
+				if (store != null) {
+					result.put(Constants.STATUS, Constants.COMPLETED);
+					result.put("count", store.getCount());
+				} else {
+					result.put(Constants.STATUS, Constants.ERROR);
+					result.put(Constants.REASON, Constants.NULLSTORE);
+				}
 			}
 		}
 		return result;

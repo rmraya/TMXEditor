@@ -27,22 +27,22 @@ class Notes {
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
-        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('get-unit-notes');
-        this.electron.ipcRenderer.on('set-unit-notes', (event, arg) => {
-            currentId = arg.id;
-            currentType = arg.type;
+        this.electron.ipcRenderer.on('set-unit-notes', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.currentId = arg.id;
+            this.currentType = arg.type;
             this.notes = arg.notes;
             this.drawNotes();
         });
-        this.electron.ipcRenderer.on('set-new-note', (event, arg) => {
+        this.electron.ipcRenderer.on('set-new-note', (event: Electron.IpcRendererEvent, arg: any) => {
             this.notes.push(arg.note);
             this.drawNotes();
             (document.getElementById('save') as HTMLButtonElement).focus();
         });
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 window.close();
             }
@@ -61,7 +61,7 @@ class Notes {
         });
     }
 
-    drawNotes() {
+    drawNotes(): void {
         var rows: string = '';
         let length = this.notes.length
         for (let i = 0; i < length; i++) {
@@ -71,21 +71,21 @@ class Notes {
         document.getElementById('notesTable').innerHTML = rows;
     }
 
-    saveNotes() {
-        var lang = currentType === 'TU' ? '' : currentType;
+    saveNotes(): void {
+        var lang = this.currentType === 'TU' ? '' : this.currentType;
         var arg = {
-            id: currentId,
+            id: this.currentId,
             lang: lang,
             notes: this.notes
         }
         this.electron.ipcRenderer.send('save-notes', arg);
     }
 
-    addNote() {
+    addNote(): void {
         this.electron.ipcRenderer.send('show-add-note');
     }
 
-    deleteNotes() {
+    deleteNotes(): void {
         var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
         for (let i = 0; i < collection.length; i++) {
             var check = collection[i] as HTMLInputElement;
@@ -97,7 +97,7 @@ class Notes {
         (document.getElementById('save') as HTMLButtonElement).focus();
     }
 
-    removeNote(id: string) {
+    removeNote(id: string): void {
         var copy: string[] = [];
         let length = this.notes.length
         for (let i = 0; i < length; i++) {

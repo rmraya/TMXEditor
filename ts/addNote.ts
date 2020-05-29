@@ -17,34 +17,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _an = require('electron');
+class AddNote {
 
-var currentId: string;
-var currentType: string;
+    electron = require('electron');
 
-function addNoteLoaded(): void {
-    _an.ipcRenderer.send('get-theme');
+    currentId: string;
+    currentType: string;
+
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+            (document.getElementById('note') as HTMLInputElement).focus();
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.saveNote();
+            }
+        });
+        document.getElementById('saveNote').addEventListener('click', () => {
+            this.saveNote();
+        });
+    }
+
+    saveNote(): void {
+        var note: string = (document.getElementById('note') as HTMLInputElement).value;
+        if (note === '') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter note' });
+            return;
+        }
+        this.electron.ipcRenderer.send('add-new-note', { note: note });
+    }
 }
 
-_an.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-    (document.getElementById('note') as HTMLInputElement).focus();
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        saveNote();
-    }
-});
-
-function saveNote() {
-    var note: string = (document.getElementById('note') as HTMLInputElement).value;
-    if (note === '') {
-        _an.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter note' });
-        return;
-    }
-    _an.ipcRenderer.send('add-new-note', {note: note});
-}
+new AddNote();

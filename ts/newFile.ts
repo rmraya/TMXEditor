@@ -17,44 +17,53 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _nf = require('electron');
+class NewFile {
 
-_nf.ipcRenderer.on('languages-list', (event, arg) => {
-    var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
-    var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
-    var options: string = '';
-    for (let i: number = 0; i < arg.length; i++) {
-        let lang: any = arg[i];
-        options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
-    }
-    srcLanguage.innerHTML = options;
-    tgtLanguage.innerHTML = options;
-});
+    electron = require('electron');
 
-function createFile() {
-    var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
-    var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
-    if (srcLanguage.value === tgtLanguage.value) {
-        _nf.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages' });
-        return;
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('all-languages');
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.languagesList(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+            if (event.key === 'Enter') {
+                this.createFile();
+            }
+        });
+        document.getElementById('createFile').addEventListener('click', () => {
+            this.createFile();
+        });
     }
-    _nf.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
+
+    languagesList(arg: any): void {
+        var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
+        var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
+        var options: string = '';
+        for (let i: number = 0; i < arg.length; i++) {
+            let lang: any = arg[i];
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+        }
+        srcLanguage.innerHTML = options;
+        tgtLanguage.innerHTML = options;
+    }
+
+    createFile(): void {
+        var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
+        var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
+        if (srcLanguage.value === tgtLanguage.value) {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages' });
+            return;
+        }
+        this.electron.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
+    }
 }
 
-function newFileLoaded(): void {
-    _nf.ipcRenderer.send('get-theme');
-    _nf.ipcRenderer.send('all-languages');
-}
-
-_nf.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
-    }
-    if (event.key === 'Enter') {
-        createFile();
-    }
-});
+new NewFile();

@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body onload="propertiesLoaded()">
+<body id="body">
 
     <div style="padding: 4px;">
         <div class="panelcontent bordered" style="height: 200px;">
@@ -17,9 +17,9 @@
         </div>
     </div>
     <div class="buttonArea">
-        <button onclick="addProperty()">Add Property</button>
-        <button onclick="deleteProperties()">Delete Selected</button>
-        <button id="save" onclick="saveProperties()">Save Properties</button>
+        <button id="addProperty">Add Property</button>
+        <button id="deleteProperties">Delete Selected</button>
+        <button id="save">Save Properties</button>
     </div>
 
     <script src="../js/properties.js"></script>

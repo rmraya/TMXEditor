@@ -170,7 +170,6 @@ public class TmxUtils {
 		return text.toString();
 	}
 
-	
 	protected static String highlight(String string, String target, boolean caseSensitive) {
 		String result = string;
 		int start = -1;

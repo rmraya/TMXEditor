@@ -17,86 +17,101 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-var _fi = require('electron');
+class FileInfo {
 
-function fileInfoLoaded(): void {
-    _fi.ipcRenderer.send('get-theme');
-    _fi.ipcRenderer.send('file-properties');
-}
+    electron = require('electron');
 
-_fi.ipcRenderer.on('set-theme', (event, arg) => {
-    (document.getElementById('theme') as HTMLLinkElement).href = arg;
-});
-
-_fi.ipcRenderer.on('set-file-properties', (event, arg) => {
-    document.getElementById('file').innerHTML = arg.file;
-    document.getElementById('creationtool').innerHTML = arg.attributes.creationtool;
-    document.getElementById('creationtoolversion').innerHTML = arg.attributes.creationtoolversion;
-    document.getElementById('segtype').innerHTML = arg.attributes.segtype;
-    document.getElementById('o-tmf').innerHTML = arg.attributes.o_tmf;
-    document.getElementById('adminlang').innerHTML = arg.attributes.adminlang;
-    document.getElementById('srclang').innerHTML = arg.attributes.srclang;
-    document.getElementById('datatype').innerHTML = arg.attributes.datatype;
-
-    var propsContent: string = '';
-    for (let i = 0; i < arg.properties.length; i++) {
-        var pair: string[] = arg.properties[i];
-        propsContent = propsContent + '<tr><td class="noWrap">' + pair[0] + '</td><td>' + pair[1] + '</td></tr>'
+    constructor() {
+        this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        });
+        this.electron.ipcRenderer.send('file-properties');
+        this.electron.ipcRenderer.on('set-file-properties', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setFileProperties(arg);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                window.close();
+            }
+        });
+        document.getElementById('showAttributes').addEventListener('click', () => {
+            this.showAttributes();
+        });
+        document.getElementById('showProperties').addEventListener('click', () => {
+            this.showProperties();
+        })
+        document.getElementById('showNotes').addEventListener('click', () => {
+            this.showNotes();
+        })
     }
-    document.getElementById('propertiesTable').innerHTML = propsContent;
 
-    var notes: string[] = arg.notes;
-    var notesContent: string = '';
-    for (let i = 0; i < notes.length; i++) {
-        notesContent = notesContent + '<tr><td>' + notes[i] + '</td></tr>'
+    setFileProperties(arg: any): void {
+        document.getElementById('file').innerHTML = arg.file;
+        document.getElementById('creationtool').innerHTML = arg.attributes.creationtool;
+        document.getElementById('creationtoolversion').innerHTML = arg.attributes.creationtoolversion;
+        document.getElementById('segtype').innerHTML = arg.attributes.segtype;
+        document.getElementById('o-tmf').innerHTML = arg.attributes.o_tmf;
+        document.getElementById('adminlang').innerHTML = arg.attributes.adminlang;
+        document.getElementById('srclang').innerHTML = arg.attributes.srclang;
+        document.getElementById('datatype').innerHTML = arg.attributes.datatype;
+
+        var propsContent: string = '';
+        for (let i = 0; i < arg.properties.length; i++) {
+            var pair: string[] = arg.properties[i];
+            propsContent = propsContent + '<tr><td class="noWrap">' + pair[0] + '</td><td>' + pair[1] + '</td></tr>'
+        }
+        document.getElementById('propertiesTable').innerHTML = propsContent;
+
+        var notes: string[] = arg.notes;
+        var notesContent: string = '';
+        for (let i = 0; i < notes.length; i++) {
+            notesContent = notesContent + '<tr><td>' + notes[i] + '</td></tr>'
+        }
+        document.getElementById('notesTable').innerHTML = notesContent;
     }
-    document.getElementById('notesTable').innerHTML = notesContent;
-});
 
-function showAttributes() {
-    document.getElementById('atributesTab').classList.add('selected');
-    document.getElementById('attributes').classList.remove('hiddenTab');
-    document.getElementById('attributes').classList.add('tabContent');
+    showAttributes(): void {
+        document.getElementById('atributesTab').classList.add('selected');
+        document.getElementById('attributes').classList.remove('hiddenTab');
+        document.getElementById('attributes').classList.add('tabContent');
 
-    document.getElementById('propertiesTab').classList.remove('selected');
-    document.getElementById('properties').classList.remove('tabContent');
-    document.getElementById('properties').classList.add('hiddenTab');
+        document.getElementById('propertiesTab').classList.remove('selected');
+        document.getElementById('properties').classList.remove('tabContent');
+        document.getElementById('properties').classList.add('hiddenTab');
 
-    document.getElementById('notesTab').classList.remove('selected');
-    document.getElementById('notes').classList.remove('tabContent');
-    document.getElementById('notes').classList.add('hiddenTab');
-}
-
-function showProperties() {
-    document.getElementById('propertiesTab').classList.add('selected');
-    document.getElementById('properties').classList.remove('hiddenTab');
-    document.getElementById('properties').classList.add('tabContent');
-
-    document.getElementById('atributesTab').classList.remove('selected');
-    document.getElementById('attributes').classList.remove('tabContent');
-    document.getElementById('attributes').classList.add('hiddenTab');
-
-    document.getElementById('notesTab').classList.remove('selected');
-    document.getElementById('notes').classList.remove('tabContent');
-    document.getElementById('notes').classList.add('hiddenTab');
-}
-
-function showNotes() {
-    document.getElementById('notesTab').classList.add('selected');
-    document.getElementById('notes').classList.add('tabContent');
-    document.getElementById('notes').classList.remove('hiddenTab');
-
-    document.getElementById('propertiesTab').classList.remove('selected');
-    document.getElementById('properties').classList.remove('tabContent');
-    document.getElementById('properties').classList.add('hiddenTab');
-    
-    document.getElementById('atributesTab').classList.remove('selected');
-    document.getElementById('attributes').classList.remove('tabContent');
-    document.getElementById('attributes').classList.add('hiddenTab');
-}
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        window.close();
+        document.getElementById('notesTab').classList.remove('selected');
+        document.getElementById('notes').classList.remove('tabContent');
+        document.getElementById('notes').classList.add('hiddenTab');
     }
-});
+
+    showProperties(): void {
+        document.getElementById('propertiesTab').classList.add('selected');
+        document.getElementById('properties').classList.remove('hiddenTab');
+        document.getElementById('properties').classList.add('tabContent');
+
+        document.getElementById('atributesTab').classList.remove('selected');
+        document.getElementById('attributes').classList.remove('tabContent');
+        document.getElementById('attributes').classList.add('hiddenTab');
+
+        document.getElementById('notesTab').classList.remove('selected');
+        document.getElementById('notes').classList.remove('tabContent');
+        document.getElementById('notes').classList.add('hiddenTab');
+    }
+
+    showNotes(): void {
+        document.getElementById('notesTab').classList.add('selected');
+        document.getElementById('notes').classList.add('tabContent');
+        document.getElementById('notes').classList.remove('hiddenTab');
+
+        document.getElementById('propertiesTab').classList.remove('selected');
+        document.getElementById('properties').classList.remove('tabContent');
+        document.getElementById('properties').classList.add('hiddenTab');
+
+        document.getElementById('atributesTab').classList.remove('selected');
+        document.getElementById('attributes').classList.remove('tabContent');
+        document.getElementById('attributes').classList.add('hiddenTab');
+    }
+}
+
+new FileInfo();
