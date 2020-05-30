@@ -44,6 +44,9 @@ class Main {
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
+        this.electron.ipcRenderer.on('request-theme', ()=> {
+           this.electron.ipcRenderer.send('get-theme');
+        });
         this.electron.ipcRenderer.on('set-theme', (event, arg) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });

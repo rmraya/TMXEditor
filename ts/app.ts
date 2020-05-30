@@ -47,7 +47,6 @@ var notesWindow: BrowserWindow;
 var addNotesWindow: BrowserWindow
 var notesEvent: Electron.IpcMainEvent;
 
-var currentTheme: string;
 var filterOptions: any = {};
 var loadOptions: any = {
     start: 0,
@@ -87,6 +86,7 @@ class App {
     static currentFile: string = '';
     static currentDefaults: any;
     static currentPreferences: any;
+    static currentCss: string;
     static currentStatus: any = {};
     static fileLanguages: any[];
     static argFile: string = '';
@@ -94,8 +94,20 @@ class App {
 
     constructor(args: string[]) {
 
+        if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
+            mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
+        }
+
         if (process.platform === 'win32' && args.length > 1 && args[1] !== '.') {
-            App.argFile = args[1];
+            App.argFile = ''
+            for (let i = 1; i < args.length; i++) {
+                if (args[i] !== '.') {
+                    if (App.argFile !== '') {
+                        App.argFile = App.argFile + ' ';
+                    }
+                    App.argFile = App.argFile + args[i];
+                }
+            }
         }
 
         app.allowRendererProcessReuse = true;
@@ -116,10 +128,6 @@ class App {
             App.javapath = App.path.join(app.getAppPath(), 'bin', 'java.exe');
         }
 
-        if (!existsSync(App.path.join(app.getPath('appData'), app.getName()))) {
-            mkdirSync(App.path.join(app.getPath('appData'), app.getName()), { recursive: true });
-        }
-
         App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
         App.ls.stdout.on('data', (data) => {
@@ -131,7 +139,45 @@ class App {
         });
 
         App.ls.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
+            if (code === 0) {
+                var postData: string = JSON.stringify({ command: 'stop' });
+                var options = {
+                    hostname: '127.0.0.1',
+                    port: 8060,
+                    path: '/TMXServer',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Length': Buffer.byteLength(postData)
+                    }
+                };
+                // Make a request
+                var req: ClientRequest = request(options);
+                req.on('response',
+                    function (res: any) {
+                        res.setEncoding('utf-8');
+                        if (res.statusCode !== 200) {
+                            console.log('sendRequest() error: ' + res.statusMessage);
+                        }
+                        var rawData: string = '';
+                        res.on('data', function (chunk: string) {
+                            rawData += chunk;
+                        });
+                        res.on('end', function () {
+                            try {
+                                console.log(rawData);
+                            } catch (e) {
+                                console.log(e.message);
+                            }
+                        });
+                    }
+                );
+                req.write(postData);
+                req.end();
+
+                console.log('Restarting server');
+                App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
+
+            }
         });
 
         var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
@@ -164,7 +210,7 @@ class App {
 
         app.on('ready', function () {
             App.createWindow();
-            App.mainWindow.loadURL(App.path.join('file://', app.getAppPath(), 'index.html'));
+            App.mainWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'index.html'));
             App.mainWindow.on('resize', function () {
                 App.saveDefaults();
             });
@@ -178,13 +224,14 @@ class App {
                 App.close();
             });
             App.checkUpdates(true);
-            App.setTheme();
         });
 
-        nativeTheme.on('updated', () => {
-            App.loadPreferences();
-            App.setTheme();
-        });
+        if (process.platform === 'win32') {
+            nativeTheme.on('updated', () => {
+                App.loadPreferences();
+                App.setTheme();
+            });
+        }
 
         ipcMain.on('licenses-clicked', function () {
             App.showLicenses();
@@ -258,7 +305,7 @@ class App {
             App.setTheme();
         });
         ipcMain.on('get-theme', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-theme', currentTheme);
+            event.sender.send('set-theme', App.currentCss);
         });
         ipcMain.on('create-file', (event: IpcMainEvent, arg: any) => {
             this.createFile(arg);
@@ -523,15 +570,15 @@ class App {
             }));
             template.push(help);
         }
-        if (!existsSync(App.path.join(app.getPath('appData'), app.getName(), 'recent.json'))) {
-            writeFile(App.path.join(app.getPath('appData'), app.getName(), 'recent.json'), '{"files" : []}', function (err) {
+        if (!existsSync(App.path.join(app.getPath('appData'), app.name, 'recent.json'))) {
+            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', function (err) {
                 if (err) {
                     dialog.showMessageBox({ type: 'error', message: err.message });
                     return;
                 }
             });
         }
-        readFile(App.path.join(app.getPath('appData'), app.getName(), 'recent.json'), function (err: Error, buf: Buffer) {
+        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), function (err: Error, buf: Buffer) {
             if (err instanceof Error) {
                 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
                 return;
@@ -893,7 +940,7 @@ class App {
         if (defaults.width === 800 && defaults.height === 600) {
             return;
         }
-        writeFileSync(App.path.join(app.getPath('appData'), app.getName(), 'defaults.json'), JSON.stringify(defaults));
+        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults));
     }
 
     static loadSegments(): void {
@@ -924,9 +971,9 @@ class App {
 
     static loadDefaults(): void {
         App.currentDefaults = { width: 900, height: 700, x: 0, y: 0 };
-        if (existsSync(App.path.join(app.getPath('appData'), app.getName(), 'defaults.json'))) {
+        if (existsSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'))) {
             try {
-                var data: Buffer = readFileSync(App.path.join(app.getPath('appData'), app.getName(), 'defaults.json'));
+                var data: Buffer = readFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'));
                 App.currentDefaults = JSON.parse(data.toString());
             } catch (err) {
                 console.log(err);
@@ -935,50 +982,42 @@ class App {
     }
 
     static savePreferences(): void {
-        writeFileSync(App.path.join(app.getPath('appData'), app.getName(), 'preferences.json'), JSON.stringify(App.currentPreferences));
-        nativeTheme.themeSource = App.currentPreferences.theme;
+        let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
+        writeFileSync(preferencesFile, JSON.stringify(App.currentPreferences));
     }
 
     static loadPreferences() {
         App.currentPreferences = { theme: 'system', indentation: 2 };
-        if (existsSync(App.path.join(app.getPath('appData'), app.getName(), 'preferences.json'))) {
+        let dark: string = '../css/dark.css';
+        let light: string = '../css/light.css';
+        let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
+        if (existsSync(preferencesFile)) {
             try {
-                var data: Buffer = readFileSync(App.path.join(app.getPath('appData'), app.getName(), 'preferences.json'));
+                var data: Buffer = readFileSync(preferencesFile);
                 App.currentPreferences = JSON.parse(data.toString());
             } catch (err) {
                 console.log(err);
             }
         }
-        if (App.currentPreferences.indentation === undefined) {
-            App.currentPreferences.indentation = 2;
-        }
-        if (App.currentPreferences.threshold === undefined) {
-            App.currentPreferences.threshold = 100;
-        }
-        if (App.currentPreferences.theme === undefined) {
-            App.currentPreferences.theme = 'system';
-        }
+
+        nativeTheme.themeSource = App.currentPreferences.theme;
         if (App.currentPreferences.theme === 'system') {
             if (nativeTheme.shouldUseDarkColors) {
-                currentTheme = App.path.join('file://', app.getAppPath(), 'css', 'dark.css');
-                nativeTheme.themeSource = 'dark';
+                App.currentCss = dark;
             } else {
-                currentTheme = App.path.join('file://', app.getAppPath(), 'css', 'light.css');
-                nativeTheme.themeSource = 'light';
+                App.currentCss = light;
             }
         }
         if (App.currentPreferences.theme === 'dark') {
-            currentTheme = App.path.join('file://', app.getAppPath(), 'css', 'dark.css');
-            nativeTheme.themeSource = 'dark';
+            App.currentCss = dark;
         }
         if (App.currentPreferences.theme === 'light') {
-            currentTheme = App.path.join('file://', app.getAppPath(), 'css', 'light.css');
-            nativeTheme.themeSource = 'light';
+            App.currentCss = light;
         }
     }
 
     static saveRecent(file: string): void {
-        readFile(App.path.join(app.getPath('appData'), app.getName(), 'recent.json'), function (err: Error, data: Buffer) {
+        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), function (err: Error, data: Buffer) {
             if (err instanceof Error) {
                 return;
             }
@@ -990,7 +1029,7 @@ class App {
             if (jsonData.files.length > 8) {
                 jsonData.files = jsonData.files.slice(0, 8);
             }
-            writeFile(App.path.join(app.getPath('appData'), app.getName(), 'recent.json'), JSON.stringify(jsonData), function (error) {
+            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData), function (error) {
                 if (error) {
                     dialog.showMessageBox({ type: 'error', message: error.message });
                     return;
@@ -1249,7 +1288,7 @@ class App {
     }
 
     static setTheme(): void {
-        App.contents.send('set-theme', currentTheme);
+        App.contents.send('request-theme');
     }
 
     static createNewFile(): void {
