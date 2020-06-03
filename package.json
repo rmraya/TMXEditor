@@ -1,7 +1,7 @@
 {
     "name": "tmxeditor",
     "productName": "TMXEditor",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "description": "TMX Editor",
     "main": "js/app.js",
     "scripts": {
@@ -20,7 +20,7 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "electron": "^8.3.0",
+        "electron": "^8.3.1",
         "typescript": "^3.9.3"
     }
 }

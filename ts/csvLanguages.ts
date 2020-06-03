@@ -22,7 +22,7 @@ class CsvLanguages {
     electron = require('electron');
 
     columns: number;
-    options: string = '<option value=""></option>';
+    options: string = '<option value="none">Select Language</option>';
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -33,7 +33,7 @@ class CsvLanguages {
         this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
             this.languagesList(arg);
         });
-        this.electron.ipcRenderer.send('get-csv-lang-args');
+
         this.electron.ipcRenderer.on('set-csv-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setCsvLangArgs(arg);
         });
@@ -54,7 +54,7 @@ class CsvLanguages {
         var langs: string[] = [];
         for (let i = 0; i < this.columns; i++) {
             var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
-            if (lang !== '') {
+            if (lang !== 'none') {
                 langs.push(lang);
             } else {
                 this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages' });
@@ -69,6 +69,7 @@ class CsvLanguages {
             let lang: any = arg[i];
             this.options = this.options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
+        this.electron.ipcRenderer.send('get-csv-lang-args');
     }
 
     setCsvLangArgs(arg: any): void {

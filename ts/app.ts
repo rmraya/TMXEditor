@@ -243,7 +243,7 @@ class App {
             App.showHelp();
         });
         ipcMain.on('open-file', function () {
-            this.openFileDialog();
+            App.openFileDialog();
         });
         ipcMain.on('get-segments', function (event: IpcMainEvent, arg: any) {
             loadOptions = arg;
@@ -987,7 +987,7 @@ class App {
     }
 
     static loadPreferences() {
-        App.currentPreferences = { theme: 'system', indentation: 2 };
+        App.currentPreferences = { theme: 'system', indentation: 2, threshold: 100 };
         let dark: string = '../css/dark.css';
         let light: string = '../css/light.css';
         let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
