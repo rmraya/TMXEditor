@@ -35,7 +35,7 @@ Differences | Open Source | Subscription Based
 Ready To Use Installers| No | Yes
 Notarized macOS launcher| No | Yes
 Signed launcher and installer for Windows | No | Yes
-Associate app with `.tmx` extension on Windows and macOS | No | Yes
+Associate app with `.tmx` extension on Windows<br> and macOS | No | Yes
 Restricted Features | None | None
 Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at tech@maxprograms.com  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
 
