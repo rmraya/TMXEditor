@@ -60,22 +60,22 @@ class ConvertCSV {
             this.browseTmxFiles();
         });
         (document.getElementById('charSets') as HTMLSelectElement).addEventListener('change', () => {
-            this.refreshPreview(true);
+            this.refreshPreview();
         });
         (document.getElementById('colSeps') as HTMLSelectElement).addEventListener('change', () => {
-            this.refreshPreview(true);
+            this.refreshPreview();
         });
         (document.getElementById('textDelim') as HTMLSelectElement).addEventListener('change', () => {
-            this.refreshPreview(true);
+            this.refreshPreview();
         });
         (document.getElementById('fixQuotes') as HTMLInputElement).addEventListener('change', () => {
-            this.refreshPreview(false);
+            this.refreshPreview();
         });
         (document.getElementById('optionalDelims') as HTMLInputElement).addEventListener('change', () => {
-            this.refreshPreview(false);
+            this.refreshPreview();
         });
         document.getElementById('refreshPreview').addEventListener('click', () => {
-            this.refreshPreview(false);
+            this.refreshPreview();
         });
         document.getElementById('setLanguages').addEventListener('click', () => {
             this.setLanguages();
@@ -114,7 +114,7 @@ class ConvertCSV {
                 tmxFile.value = arg + '.tmx';
             }
         }
-        this.refreshPreview(false);
+        this.refreshPreview();
     }
 
     browseTmxFiles(): void {
@@ -130,12 +130,9 @@ class ConvertCSV {
         this.electron.ipcRenderer.send('get-converted-tmx', { default: value });
     }
 
-    refreshPreview(silent: boolean): void {
+    refreshPreview(): void {
         var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
-            if (!silent) {
-                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file' });
-            }
             return;
         }
 
@@ -173,7 +170,6 @@ class ConvertCSV {
         this.columns = arg.cols;
         document.getElementById('preview').innerHTML = arg.preview;
         document.getElementById('columns').innerHTML = '' + this.columns;
-        document.getElementById('langs').innerHTML = arg.langs;
     }
 
     setLanguages(): void {
@@ -191,7 +187,7 @@ class ConvertCSV {
 
     csvLanguages(arg: string[]): void {
         this.langs = arg;
-        this.refreshPreview(false);
+        this.refreshPreview();
         (document.getElementById('convert') as HTMLButtonElement).focus();
     }
 

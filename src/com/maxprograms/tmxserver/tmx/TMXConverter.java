@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.maxprograms.tmxserver.Constants;
@@ -38,7 +39,7 @@ public class TMXConverter {
 	}
 
 	public static void csv2tmx(String csvFile, String tmxFile, List<String> languages, String charSet,
-			String columsSeparator, String textDelimiter, boolean fixQuotes, boolean optionalDelims)
+			String columnsSeparator, String textDelimiter, boolean fixQuotes, boolean optionalDelims)
 			throws IOException {
 
 		output = new FileOutputStream(tmxFile);
@@ -83,9 +84,20 @@ public class TMXConverter {
 					}
 					writeString("    <tu creationtool=\"TMXEditor\" creationtoolversion=\"" + Constants.VERSION
 							+ "\" tuid=\"" + (id++) + "\" creationdate=\"" + today + "\">\n");
-					String[] parts = TextUtils.split(line, columsSeparator);
+
+					if (fixQuotes) {
+						line = TextUtils.replaceAll(line, "\"\"", "@?@", false);
+					}
+
+					String[] parts = getParts(line, columnsSeparator, textDelimiter, optionalDelims);
+					if (parts.length != languages.size()) {
+						throw new IOException("Wrong number of columns. Review optional delimiters.");
+					}
 					for (int i = 0; i < parts.length; i++) {
 						String cell = parts[i];
+						if (fixQuotes) {
+							cell = TextUtils.replaceAll(cell, "@?@", "\"", false);
+						}
 						if (!textDelimiter.isEmpty()) {
 							if (optionalDelims) {
 								if (cell.startsWith(textDelimiter) && cell.endsWith(textDelimiter)) {
@@ -97,9 +109,7 @@ public class TMXConverter {
 								cell = cell.substring(0, cell.length() - 1);
 							}
 						}
-						if (fixQuotes) {
-							cell = cell.replaceAll("\\\"\\\"", "\"");
-						}
+
 						writeString("      <tuv xml:lang=\"" + languages.get(i) + "\" creationdate=\"" + today
 								+ "\">\n        <seg>" + TextUtils.cleanString(cell) + "</seg>\n      </tuv>\n");
 					}
@@ -114,5 +124,61 @@ public class TMXConverter {
 
 	private static void writeString(String input) throws IOException {
 		output.write(input.getBytes(StandardCharsets.UTF_8));
+	}
+
+	public static String[] getParts(String line, String columnsSeparator, String textDelimiter,
+			boolean optionalDelims) {
+
+		if (optionalDelims) {
+			List<String> list = new ArrayList<>();
+			String string = "";
+			boolean inDelimited = false;
+			for (int i = 0; i < line.length(); i++) {
+				char c = line.charAt(i);
+				if (textDelimiter.equals("" + c)) {
+					inDelimited = !inDelimited;
+				}
+				if (columnsSeparator.equals("" + c)) {
+					if (!inDelimited) {
+						list.add(string);
+						string = "";
+					} else {
+						string = string + c;
+					}
+					continue;
+				}
+				string = string + c;
+			}
+			if (!string.isEmpty()) {
+				list.add(string);
+			}
+			return list.toArray(new String[list.size()]);
+		} else {
+			String[] parts = TextUtils.split(line, columnsSeparator);
+
+			if (parts.length > 1) {
+				List<String> merged = new ArrayList<>();
+				for (int i = 0; i < parts.length; i++) {
+					String a = parts[i];
+					if (!a.endsWith(textDelimiter)) {
+						while (i < parts.length - 1) {
+							String b = parts[i + 1];
+							if (!b.startsWith(textDelimiter)) {
+								String c = columnsSeparator + b;
+								a = a + c;
+								i++;
+							} else {
+								break;
+							}
+						}
+					}
+					merged.add(a);
+				}
+				if (parts.length != merged.size()) {
+					parts = merged.toArray(new String[merged.size()]);
+				}
+			}
+			return parts;
+		}
 	}
 }

@@ -335,13 +335,15 @@ class Main {
 
     updateLanguages(arg: any): void {
         this.languages = arg;
-        var row = '<tr  class="dark_background"><th class="dark_background fixed"><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th><th class="dark_background fixed">#</th>';
+        var row = '<tr  class="dark_background"><th class="dark_background fixed"><input type="checkbox" id="selectAll"></th><th class="dark_background fixed">#</th>';
         let length: number = this.languages.length;
         for (let index = 0; index < length; ++index) {
             row = row + '<th class="dark_background">' + this.languages[index].code + ' - ' + arg[index].name + '</th>';
         }
-
         document.getElementById('tableHeader').innerHTML = row + '</tr>';
+        document.getElementById('selectAll').addEventListener('click', () => {
+            this.toggleSelectAll();
+        });
     }
 
     fileLoaded(arg: any): void {
@@ -371,6 +373,9 @@ class Main {
         document.getElementById('notesSpan').innerHTML = 'TU';
         document.getElementById('filterUnits').classList.remove('active');
         document.getElementById('sortUnits').classList.remove('active');
+        document.getElementById('selectAll').addEventListener('click', () => {
+            this.toggleSelectAll();
+        });
         this.currentPage = 0;
         this.maxPage = 0;
         this.isLoaded = false;

@@ -696,6 +696,16 @@ class App {
             }
         );
         req.write(postData);
+        req.write(postData, (err: Error) => {
+            if (err) {
+                console.log('Write error:  ' + err.message);
+            }
+        });
+        req.on('error', (err: Error) => {
+            error(err.message);
+            console.log('Error:  ' + err.message);
+            console.log('Params: ' + JSON.stringify(json));
+        });
         req.end();
     }
 

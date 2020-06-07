@@ -1332,6 +1332,12 @@ public class TMXService implements TMXServiceInterface {
 			try (BufferedReader buffer = new BufferedReader(input)) {
 				String line = "";
 				while ((line = buffer.readLine()) != null) {
+					if (line.length() > 2048) {
+						line = line.substring(0, 2047);
+					}
+					if (fixQuotes) {
+						line = TextUtils.replaceAll(line, "\"\"", "\u2033", false);
+					}
 					lines.add(line);
 					if (lines.size() > 10) {
 						break;
@@ -1375,7 +1381,8 @@ public class TMXService implements TMXServiceInterface {
 		if (delimitersOk(lines, columnsSeparator, textDelimiter, optionalDelims)) {
 			if (languages.isEmpty()) {
 				String line = lines.get(0);
-				String[] parts = TextUtils.split(line, columnsSeparator);
+				String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter, optionalDelims);
+
 				try {
 					boolean hasLanguages = true;
 					for (int i = 0; i < parts.length; i++) {
@@ -1421,7 +1428,8 @@ public class TMXService implements TMXServiceInterface {
 			Iterator<String> it = lines.iterator();
 			while (it.hasNext()) {
 				String line = it.next();
-				String[] parts = TextUtils.split(line, columnsSeparator);
+				String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter,   optionalDelims);
+
 				cols = parts.length;
 				builder.append("<tr>");
 				for (int i = 0; i < parts.length; i++) {
@@ -1454,7 +1462,7 @@ public class TMXService implements TMXServiceInterface {
 		} else {
 			builder.append("<pre>");
 			for (int i = 0; i < lines.size(); i++) {
-				builder.append(lines.get(i));
+				builder.append(TextUtils.cleanString(lines.get(i)));
 				builder.append('\n');
 			}
 			builder.append("</pre>");
@@ -1474,7 +1482,7 @@ public class TMXService implements TMXServiceInterface {
 			TMXConverter.csv2tmx(csvFile, tmxFile, languages, charSet, columsSeparator, textDelimiter, fixQuotes,
 					optionalDelims);
 			result.put(Constants.STATUS, Constants.SUCCESS);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
@@ -1591,7 +1599,7 @@ public class TMXService implements TMXServiceInterface {
 		return " %$&+,/:;=?@<>#%".indexOf(ch) >= 0;
 	}
 
-	private static boolean delimitersOk(List<String> lines, String columsSeparator, String textDelimiter,
+	private static boolean delimitersOk(List<String> lines, String columnsSeparator, String textDelimiter,
 			boolean optionalDelims) {
 		int columns = -1;
 		Iterator<String> it = lines.iterator();
@@ -1599,7 +1607,8 @@ public class TMXService implements TMXServiceInterface {
 		String delimiter = "";
 		while (it.hasNext()) {
 			String line = it.next();
-			String[] parts = TextUtils.split(line, columsSeparator);
+			String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter,   optionalDelims);
+			
 			if (!textDelimiter.isEmpty() && !optionalDelims) {
 				for (int i = 0; i < parts.length; i++) {
 					if (!parts[i].startsWith(textDelimiter)) {
