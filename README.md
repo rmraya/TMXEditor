@@ -6,6 +6,10 @@ TMXEditor is an open source desktop application designed for editing TMX (Transl
 
 TMX is a standard XML-based format used for exchanging Translation Memories used by CAT (Computer Assisted Translation) tools. TMXEditor allows editing the content of multilingual TMX files.
 
+#### Convert Excel to TMX with TMXEditor
+
+<a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
+
 ## Licenses
 
 TMXEditor is available in two modes:
