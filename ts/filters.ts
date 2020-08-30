@@ -38,14 +38,6 @@ class Filters {
                 (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
             }
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.applyFilters();
-            }
-        });
         (document.getElementById('filterText') as HTMLInputElement).addEventListener('keydown', (event: KeyboardEvent) => {
             if (process.platform === 'darwin' && event.code === 'KeyV' && (event.metaKey || event.ctrlKey)) {
                 navigator.clipboard.readText().then(
@@ -60,6 +52,11 @@ class Filters {
         });
         document.getElementById('clearFilters').addEventListener('click', ()=> {
             this.clearFilters();
+        });
+
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('filters-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

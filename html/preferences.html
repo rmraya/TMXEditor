@@ -9,27 +9,37 @@
 
 <body id="body">
 
-    <div style="padding:4px;" class="fill-width">
-        <label for="themeColor">Theme</label>
-        <select id="themeColor" style="width: 300px;">
-            <option value="system">System Default</option>
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-        </select>
-    </div>
-    <div style="padding:4px;" class="fill-width">
-        <label for="threshold">Max File Size for Memory Storage (MB)</label>
-        <select id="threshold" class="fill-width">
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="500">500</option>
-            <option value="1000">1000</option>
-        </select>
-    </div>
-    <div style="padding:4px;" class="fill-width">
-        <label for="indentation">Indentation</label>
-        <input type="number" id="indentation" min="0" max="8" value="4">
-    </div>
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="themeColor">Theme</label></td>
+            <td class="middle fill_width">
+                <select id="themeColor" class="fill_width">
+                    <option value="system">System Default</option>
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="threshold">Max File Size for Memory Storage (MB)</label></td>
+            <td class="middle fill_width">
+                <select id="threshold" class="fill_width">
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="indentation">Indentation</label></td>
+            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"></td>
+        </tr>
+    </table>
 
     <div class="buttonArea">
         <button id="savePreferences">Save Preferences</button>

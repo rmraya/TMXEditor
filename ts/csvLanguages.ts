@@ -37,17 +37,13 @@ class CsvLanguages {
         this.electron.ipcRenderer.on('set-csv-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setCsvLangArgs(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.setCsvLanguages();
-            }
-        });
         document.getElementById('setCsvLanguages').addEventListener('click', () => {
             this.setCsvLanguages();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('csvLanguages-height', { width: body.clientWidth, height: body.clientHeight + 20 });
+        });
     }
 
     setCsvLanguages(): void {

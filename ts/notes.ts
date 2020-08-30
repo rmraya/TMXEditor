@@ -42,14 +42,6 @@ class Notes {
             this.drawNotes();
             (document.getElementById('save') as HTMLButtonElement).focus();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.saveNotes();
-            }
-        });
         document.getElementById('add').addEventListener('click', () => {
             this.addNote();
         });
@@ -59,6 +51,10 @@ class Notes {
         document.getElementById('save').addEventListener('click', () => {
             this.saveNotes();
         });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('notes-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     drawNotes(): void {
@@ -66,7 +62,7 @@ class Notes {
         let length = this.notes.length
         for (let i = 0; i < length; i++) {
             var note = this.notes[i];
-            rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + note + '</td></tr>';
+            rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="middle"></td><td class="middle noWrap fill_width">' + note + '</td></tr>';
         }
         document.getElementById('notesTable').innerHTML = rows;
     }

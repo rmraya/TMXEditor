@@ -30,16 +30,12 @@ class AddNote {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
             (document.getElementById('note') as HTMLInputElement).focus();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.saveNote();
-            }
-        });
         document.getElementById('saveNote').addEventListener('click', () => {
             this.saveNote();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('addNote-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

@@ -30,16 +30,12 @@ class Preferences {
             this.setPreferences(arg);
         });
         this.electron.ipcRenderer.send('get-preferences');
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.savePreferences();
-            }
-        });
         document.getElementById('savePreferences').addEventListener('click', () => {
             this.savePreferences();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('preferences-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

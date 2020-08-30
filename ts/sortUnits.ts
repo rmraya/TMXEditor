@@ -39,13 +39,9 @@ class SortUnits {
         document.getElementById('clearSort').addEventListener('click', () => {
             this.clearSort();
         });
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.sort();
-            }
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('sortUnits-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

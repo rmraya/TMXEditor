@@ -33,16 +33,12 @@ class SourceLanguage {
         this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
         });
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.changeSrcLanguage();
-            }
-        });
         document.getElementById('change').addEventListener('click', () => {
             this.changeSrcLanguage();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('srcLanguage-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

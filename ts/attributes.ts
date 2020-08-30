@@ -33,19 +33,15 @@ class Attributes {
         this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.filterLanguages(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.saveAttributes();
-            }
-        });
         this.electron.ipcRenderer.on('set-unit-attributes', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setUnitAttributes(arg);
         });
         document.getElementById('saveAttributes').addEventListener('click', () => {
             this.saveAttributes();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('attributes-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

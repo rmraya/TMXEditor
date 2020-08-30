@@ -30,11 +30,6 @@ class FileInfo {
         this.electron.ipcRenderer.on('set-file-properties', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setFileProperties(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-        });
         document.getElementById('showAttributes').addEventListener('click', () => {
             this.showAttributes();
         });
@@ -43,7 +38,11 @@ class FileInfo {
         })
         document.getElementById('showNotes').addEventListener('click', () => {
             this.showNotes();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('fileInfo-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     setFileProperties(arg: any): void {

@@ -10,7 +10,7 @@
 
 <body id="body" onload="setSizes();" onresize="resizePanels()">
     <header>
-        <div style="padding-top:0px; display:flex;">
+        <div class="toolbar">
             <a id="openFile" class="tooltip">
                 <svg version="1.1" viewBox="0 0 24 24" height="24" width="24">
                     <path style="stroke-width:0.816497" id="path299"
@@ -85,7 +85,7 @@
                 </svg>
                 <span class="tooltiptext bottomTooltip">Sort Units</span>
             </a>
-            <a id="filterUnits" class="tooltip" >
+            <a id="filterUnits" class="tooltip">
                 <svg version="1.1" viewBox="0 0 24 24" height="24" width="24">
                     <path style="stroke-width:0.829702"
                         d="M 18.091348,3.6666667 11.913044,14.119167 v 4.936666 l -0.826087,-0.5 V 14.119167 L 4.9086522,3.6666667 Z M 21,2 H 2 L 9.4347826,14.578333 V 19.5 L 13.565217,22 v -7.421667 z" />
@@ -111,147 +111,156 @@
         </div>
     </header>
 
-    <div id="main">
-        <div style="position: absolute; top: 30px; bottom: 30px; display:flex; width: 100%;">
-            <div id="left-pane" style="width:80vw; overflow: scroll;">
-                <table id="mainTable" class="stripes">
-                    <thead id='tableHeader'>
-                        <tr class="dark_background">
-                            <th class="fixed dark_background">
-                                <input type="checkbox" id="selectAll">
-                            </th>
-                            <th class="fixed dark_background">#</th>
-                            <th class="dark_background">&nbsp;</th>
-                            <th class="dark_background">&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
 
-                    </tbody>
-                </table>
+    <div style="position: absolute; top: 35px; bottom: 35px; display:flex; width: 100%;">
+        <div id="left-pane" style="width:80vw; overflow: scroll;">
+            <table id="mainTable" class="stripes">
+                <thead id='tableHeader'>
+                    <tr class="dark_background">
+                        <th class="fixed dark_background">
+                            <input type="checkbox" id="selectAll">
+                        </th>
+                        <th class="fixed dark_background">#</th>
+                        <th class="dark_background">&nbsp;</th>
+                        <th class="dark_background">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+            </table>
+        </div>
+
+        <div id="divider" class="hdivider" draggable="true" ondragend="hDragEnd(event, 'left-pane', 'right-pane')"
+            ondragstart="hDragStart(event, 'left-pane', 'right-pane')"></div>
+
+        <div id="right-pane" style="width:20vw; min-width: 200px; height: 100%; display: block;">
+
+            <div id="topPanel" class="fill_width" style="height: 34%;">
+                <div class="toolbar">
+                    <span id="attributesSpan">TU</span> 
+                    <span style="margin-left: 4px;">Attributes</span>
+                    <span class="fill_width">&nbsp;</span>
+                    <a id="editAttributes" class="tooltip right">
+                        <svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-edit">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none"
+                                stroke-width="2" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none"
+                                stroke-width="2" />
+                        </svg>
+                        <span class="tooltiptext bottomRightTooltip">Edit Attributes</span>
+                    </a>
+                </div>
+                <div id="attributesPanel" class="panelcontent">
+                    <table class="stripes">
+                        <tbody id="attributesTable">
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div id="divider" class="hdivider" draggable="true" ondragend="hDragEnd(event, 'left-pane', 'right-pane')"
-                ondragstart="hDragStart(event, 'left-pane', 'right-pane')"></div>
+            <div id="topDivider" class="vdivider" draggable="true"
+                ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel', 'attributesPanel', 'propertiesPanel')"
+                ondragstart="vDragStart(event, 'topDivider', 'topPanel', 'centerPanel')"></div>
 
-            <div id="right-pane" style="width:20vw; min-width: 200px; height: 100%; display: block;">
-
-                <div id="topPanel" class="fill_width" style="height: 34%;">
-                    <div class="titlepanel">
-                        <span id="attributesSpan">TU</span> &nbsp;&nbsp;Attributes
-                        <span class="fill_width">&nbsp;</span>
-                        <a id="editAttributes" class="tooltip right">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            <span class="tooltiptext bottomRightTooltip">Edit Attributes</span>
-                        </a>
-                    </div>
-                    <div id="attributesPanel" class="panelcontent">
-                        <table class="stripes">
-                            <tbody id="attributesTable">
-                            </tbody>
-                        </table>
-                    </div>
+            <div id="centerPanel" class="fill_width" style="height: 33%;">
+                <div class="toolbar">
+                    <span id="propertiesSpan">TU</span>
+                    <span style="margin-left: 4px;">Properties</span>
+                    <span class="fill_width">&nbsp;</span>
+                    <a id="editProperties" class="tooltip right">
+                        <svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-edit">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none"
+                                stroke-width="2" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none"
+                                stroke-width="2" />
+                        </svg>
+                        <span class="tooltiptext bottomRightTooltip">Edit Properties</span>
+                    </a>
                 </div>
-
-                <div id="topDivider" class="vdivider" draggable="true"
-                    ondragend="vDragEnd(event, 'topDivider', 'topPanel', 'centerPanel', 'attributesPanel', 'propertiesPanel')"
-                    ondragstart="vDragStart(event, 'topDivider', 'topPanel', 'centerPanel')"></div>
-
-                <div id="centerPanel" class="fill_width" style="height: 33%;">
-                    <div class="titlepanel">
-                        <span id="propertiesSpan">TU</span> &nbsp;&nbsp;Properties
-                        <span class="fill_width">&nbsp;</span>
-                        <a id="editProperties" class="tooltip right">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            <span class="tooltiptext bottomRightTooltip">Edit Properties</span>
-                        </a>
-                    </div>
-                    <div id="propertiesPanel" class="panelcontent">
-                        <table class="stripes">
-                            <tbody id="propertiesTable">
-                            </tbody>
-                        </table>
-                    </div>
+                <div id="propertiesPanel" class="panelcontent">
+                    <table class="stripes">
+                        <tbody id="propertiesTable">
+                        </tbody>
+                    </table>
                 </div>
-
-                <div id="bottomDivider" class="vdivider" draggable="true"
-                    ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel', 'propertiesPanel', 'notesPanel')"
-                    ondragstart="vDragStart(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"></div>
-
-                <div id="bottomPanel" class="fill_width" style="height: 33%;">
-                    <div class="titlepanel">
-                        <span id=notesSpan>TU</span> &nbsp;&nbsp;Notes
-                        <span class="fill_width">&nbsp;</span>
-                        <a id="editNotes" class="tooltip right">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            <span class="tooltiptext bottomRightTooltip">Edit Notes</span>
-                        </a>
-                    </div>
-                    <div id="notesPanel" class="panelcontent">
-                        <table class="stripes">
-                            <tbody id="notesTable">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
+
+            <div id="bottomDivider" class="vdivider" draggable="true"
+                ondragend="vDragEnd(event, 'bottomDivider', 'centerPanel', 'bottomPanel', 'propertiesPanel', 'notesPanel')"
+                ondragstart="vDragStart(event, 'bottomDivider', 'centerPanel', 'bottomPanel')"></div>
+
+            <div id="bottomPanel" class="fill_width" style="height: 33%;">
+                <div class="toolbar">
+                    <span id=notesSpan>TU</span>
+                    <span style="margin-left: 4px;">Notes</span>
+                    <span class="fill_width">&nbsp;</span>
+                    <a id="editNotes" class="tooltip right">
+                        <svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-edit">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none"
+                                stroke-width="2" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none"
+                                stroke-width="2" />
+                        </svg>
+                        <span class="tooltiptext bottomRightTooltip">Edit Notes</span>
+                    </a>
+                </div>
+                <div id="notesPanel" class="panelcontent">
+                    <table class="stripes">
+                        <tbody id="notesTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
+
     <footer>
-        <div style="display: flex;">
+        <div class="toolbar">
             <a id="first" class="tooltip">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" />
-                    <path fill="none" d="M24 24H0V0h24v24z" /></svg>
+                </svg>
                 <span class="tooltiptext topTooltip">First Page</span>
             </a>
             <a id="previous" class="tooltip">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-                    <path d="M0 0h24v24H0z" fill="none" /></svg>
+                </svg>
                 <span class="tooltiptext topTooltip">Previous Page</span>
             </a>
-            <span style="margin-left: 10px; margin-top:2px;">Page</span>
+            <span style="margin-left: 10px; ">Page</span>
             <div class="tooltip">
-                <input id="page" type="number" style="margin-left: 10px; margin-top:2px; width: 50px;" value="0">
+                <input id="page" type="number" style="margin-left: 10px;  width: 50px;" value="0">
                 <span class="tooltiptext topTooltip">Enter page number and press ENTER</span>
             </div>
-            <span style="margin-left: 10px; margin-top:2px;">of </span>
-            <span id="pages" style="width: 60px; margin-left: 10px; margin-top:2px;">0</span>
+            <span style="margin-left: 10px; ">of </span>
+            <span id="pages" style="width: 60px; margin-left: 10px; ">0</span>
             <a id="next" class="tooltip">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                    <path d="M0 0h24v24H0z" fill="none" /></svg>
+                </svg>
                 <span class="tooltiptext topTooltip">Next Page</span>
             </a>
             <a id="last" class="tooltip">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" />
-                    <path fill="none" d="M0 0h24v24H0V0z" /></svg>
+                </svg>
                 <span class="tooltiptext topTooltip">Last Page</span>
             </a>
-            <span style="margin-left: 10px; margin-top:2px;">Units Page</span>
+            <span style="margin-left: 10px; ">Units Page</span>
             <div class="tooltip">
-                <input id="units_page" type="number" style="margin-left: 10px; margin-top:2px; width: 50px;"
-                    value="200">
+                <input id="units_page" type="number" style="margin-left: 10px;  width: 50px;"
+                    value="500">
                 <span class="tooltiptext topTooltip">Enter number of units/page and press ENTER</span>
             </div>
-            <span style="margin-left: 10px; margin-top:2px;">Units: </span>
-            <span id="units" style="margin-left: 10px; margin-top:2px; min-width: 100px;"></span>
+            <span style="margin-left: 10px; ">Units: </span>
+            <span id="units" style="margin-left: 10px;  min-width: 100px;"></span>
         </div>
     </footer>
 

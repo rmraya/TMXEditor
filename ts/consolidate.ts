@@ -35,16 +35,12 @@ class Consolidate {
                 (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
             }
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.consolidate();
-            }
-        });
         document.getElementById('consolidate').addEventListener('click', () => {
             this.consolidate();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('consolidate-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

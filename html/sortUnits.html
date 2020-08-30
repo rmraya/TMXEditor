@@ -8,15 +8,22 @@
 </head>
 
 <body id="body">
-    <div style="padding:4px;">
-        <label for="sortLanguage">Sort Language</label>
-        <select id="sortLanguage" style="width: 300px;">
-        </select>
-    </div>
-    <div style="padding:4px;">
-        <input type="checkbox" id="descending">
-        <label for="descending" checked>Sort Descending</label>
-    </div>
+    <table>
+        <tr>
+            <td class="middle noWrap"><label for="sortLanguage">Sort Language</label></td>
+            <td class="middle fill_width">
+                <select id="sortLanguage" class="fill_width">
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="middle"><input type="checkbox" id="descending"></td>
+            <td class="middle noWrap fill_width"><label for="descending" checked style="margin-top: 2px;">Sort Descending</label></td>
+        </tr>
+    </table>
+
     <div class="buttonArea">
         <button id="sort">Sort Units</button>
         <button id="clearSort">Clear Sorting</button>

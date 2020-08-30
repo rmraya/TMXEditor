@@ -10,13 +10,13 @@ header {
     left: 0px;
     top: 0px;
     right: 0px;
-    height: 29px;
+    height: 34px;
     width: 100%;
 }
 
 footer {
     position: absolute;
-    height: 29px;
+    height: 34px;
     left: 0px;
     bottom: 0px;
     right: 0px;
@@ -26,14 +26,4 @@ footer {
 .divContainer {
     width: 100vh;
     height: 100%;
-}
-
-.divContentArea {
-    position: absolute;
-    left: 0px;
-    top: 31px;
-    right: 0px;
-    bottom: 29px;
-    width: 100%;
-    overflow-y: scroll;
 }

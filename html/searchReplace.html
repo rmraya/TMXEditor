@@ -9,25 +9,27 @@
 
 <body id="body">
 
-    <div style="padding:4px;" class="fill-width">
-        <label for="searchText">Text to Search</label>
-        <input type="text" id="searchText" style="width: 300px;" class="right">
-    </div>
+    <table class="table_width">
+        <tr>
+            <td class="middle noWrap"><label for="searchText">Text to Search</label></td>
+            <td class="middle fill_width"><input type="text" id="searchText" class="table_input"></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="replaceText">Replace with</label></td>
+            <td class="middle fill_width"><input type="text" id="replaceText" class="table_input"></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="language">Language</label></td>
+            <td class="middle fill_width">
+                <select id="language" class="table_input">
+                </select>
+            </td>
+        </tr>
+    </table>
 
-    <div style="padding:4px;" class="fill-width">
-        <label for="replaceText">Replace with</label>
-        <input type="text" id="replaceText" style="width: 300px;" class="right">
-    </div>
-
-    <div style="padding:4px;" class="fill-width">
-        <label for="language">Language</label>
-        <select id="language" style="width: 300px;" class="right">
-        </select>
-    </div>
-
-    <div style="padding:4px;">
-        <input type="checkbox" id="regularExpression">
-        <label for="regularExpression">Regular Expression</label>
+    <div class="row">
+        <input type="checkbox" id="regularExpression" style="margin-left: 10px;">
+        <label for="regularExpression" style="margin-top: 2px;">Regular Expression</label>
     </div>
 
     <div class="buttonArea">

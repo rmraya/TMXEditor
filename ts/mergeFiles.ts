@@ -34,14 +34,6 @@ class MergeFiles {
         this.electron.ipcRenderer.on('tmx-files', (event: Electron.IpcRendererEvent, arg: any) => {
             this.tmxFiles(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.mergeFiles();
-            }
-        });
         document.getElementById('browseMergedFile').addEventListener('click', () => {
             this.browseMergedFile();
         });
@@ -53,6 +45,10 @@ class MergeFiles {
         });
         document.getElementById('mergeFiles').addEventListener('click', () => {
             this.mergeFiles();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('mergeFiles-height', { width: body.clientWidth, height: body.clientHeight + 10 });
         });
     }
 

@@ -30,17 +30,13 @@ class SearchReplace {
         this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.filterLanguages(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.replace();
-            }
-        });
         document.getElementById('replace').addEventListener('click', () => {
             this.replace();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('replaceText-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     filterLanguages(arg: any): void {

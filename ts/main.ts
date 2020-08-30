@@ -26,7 +26,7 @@ class Main {
 
     currentPage: number = 0;
     maxPage: number = 0;
-    unitsPage: number = 200;
+    unitsPage: number = 500;
     unitsCount: number;
 
     attributes: Array<string[]>;
@@ -45,9 +45,9 @@ class Main {
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
         this.electron.ipcRenderer.on('request-theme', ()=> {
-           this.electron.ipcRenderer.send('get-theme');
-        });
-        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
+            this.electron.ipcRenderer.send('get-theme');
+         });
+         this.electron.ipcRenderer.on('set-theme', (event, arg) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.on('save-edit', () => {

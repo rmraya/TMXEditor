@@ -30,17 +30,13 @@ class RemoveLanguage {
         this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.filterLanguages(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.removeLanguage();
-            }
-        });
         document.getElementById('removeLanguage').addEventListener('click', () => {
             this.removeLanguage();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('removeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     filterLanguages(arg: any): void {

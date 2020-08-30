@@ -45,14 +45,6 @@ class ConvertCSV {
         this.electron.ipcRenderer.on('csv-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.csvLanguages(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.convertFile();
-            }
-        });
         document.getElementById('browseCsvFiles').addEventListener('click', () => {
             this.browseCsvFiles();
         });
@@ -82,6 +74,10 @@ class ConvertCSV {
         });
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('convertCsv-height', { width: body.clientWidth, height: body.clientHeight + 10 });
         });
     }
 

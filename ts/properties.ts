@@ -37,14 +37,6 @@ class Properties {
         this.electron.ipcRenderer.on('set-new-property', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setNewProperty(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.saveProperties();
-            }
-        });
         document.getElementById('addProperty').addEventListener('click', () => {
             this.addProperty();
         });
@@ -53,6 +45,10 @@ class Properties {
         });
         document.getElementById('save').addEventListener('click', () => {
             this.saveProperties();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('properties-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

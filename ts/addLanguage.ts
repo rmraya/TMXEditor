@@ -30,17 +30,13 @@ class AddLanguage {
         this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
             this.languageList(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.addLanguage();
-            }
-        });
         document.getElementById('addLanguage').addEventListener('click', () => {
             this.addLanguage();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('addLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     languageList(arg: any): void {

@@ -8,15 +8,19 @@
 </head>
 
 <body id="body">
-    <div style="padding:4px;">
-        <label for="file">TMX File</label>
-        <input type="text" id="file" style="width: 300px;">
-        <Button id="browseFiles">Browse...</Button>
-    </div>
-    <div style="padding:4px;">
-        <label for="parts">Number of parts</label>
-        <input type="number" min="2" id="parts" value="2">
-    </div>
+    <table>
+        <tr>
+            <td class="middle noWrap"><label for="file">TMX File</label></td>
+            <td class="middle fill_width"><input type="text" id="file" class="fill_width"></td>
+            <td class="middle"><Button id="browseFiles">Browse...</Button></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="middle noWrap"><label for="parts">Number of parts</label></td>
+            <td class="middle fill_width"><input type="number" min="2" id="parts" value="2"></td>
+        </tr>
+    </table>
     <div class="buttonArea">
         <button id="splitFile">Split TMX File</button>
     </div>

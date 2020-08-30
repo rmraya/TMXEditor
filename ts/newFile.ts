@@ -30,16 +30,12 @@ class NewFile {
         this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
             this.languagesList(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.createFile();
-            }
-        });
         document.getElementById('createFile').addEventListener('click', () => {
             this.createFile();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('newFile-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

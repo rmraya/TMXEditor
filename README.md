@@ -29,8 +29,6 @@ Ready to use installers and technical support for TMXEditor are available as yea
 
 The version of TMXEditor included in the official installers from [TMXEditor's Home Page](https://www.maxprograms.com/products/tmxeditor.html) can be used at no cost for 7 days requesting a free Evaluation Key.
 
-Subscription Keys are issued to be used by one person in one computer. They cannot be shared or transferred to a different machine.
-
 Subscription version includes unlimited email support at tech@maxprograms.com
 
 ### Differences sumary
@@ -52,8 +50,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 
 - JDK 11 or newer is required for compiling and building. Get it from [AdoptOpenJDK](https://adoptopenjdk.net/).
 - Apache Ant 1.10.7 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
-- Node.js 12.14.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 3.9.3 or newer. Get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- Node.js 12.16.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
 
 ## Building
 

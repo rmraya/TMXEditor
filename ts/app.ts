@@ -19,46 +19,9 @@ SOFTWARE.
 
 import { Buffer } from "buffer";
 import { execFileSync, spawn, ChildProcessWithoutNullStreams } from "child_process";
-import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, webContents, nativeTheme, IpcMainEvent, IpcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, Rectangle, nativeTheme, IpcMainEvent, OpenDialogReturnValue, SaveDialogReturnValue } from "electron";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
 import { ClientRequest, request, IncomingMessage } from "http";
-
-var replaceTextWindow: BrowserWindow;
-var filtersWindow: BrowserWindow;
-var consolidateWindow: BrowserWindow;
-var removeUntranslatedWindow: BrowserWindow;
-var settingsWindow: BrowserWindow;
-var sortUnitsWindow: BrowserWindow;
-var changeLanguageWindow: BrowserWindow;
-var newFileWindow: BrowserWindow;
-var addLanguageWindow: BrowserWindow;
-var removeLanguageWindow: BrowserWindow;
-var srcLanguageWindow: BrowserWindow;
-var splitFileWindow: BrowserWindow;
-var mergeFilesWindow: BrowserWindow;
-var convertCsvWindow: BrowserWindow;
-var csvLanguagesWindow: BrowserWindow;
-var csvEvent: Electron.IpcMainEvent;
-var attributesWindow: BrowserWindow;
-var propertiesWindow: BrowserWindow;
-var propertyEvent: Electron.IpcMainEvent;
-var addPropertyWindow: BrowserWindow;
-var notesWindow: BrowserWindow;
-var addNotesWindow: BrowserWindow
-var notesEvent: Electron.IpcMainEvent;
-
-var filterOptions: any = {};
-var loadOptions: any = {
-    start: 0,
-    count: 200
-};
-var sortOptions: any = {};
-var csvLangArgs: any;
-var attributesArg: any;
-var propertiesArg: any;
-var notesArg: any;
-
-var needsName: boolean = false;
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -74,7 +37,36 @@ class App {
     static https = require('https');
 
     static mainWindow: BrowserWindow;
-    static contents: webContents;
+    static newFileWindow: BrowserWindow;
+    static messagesWindow: BrowserWindow;
+    static aboutWindow: BrowserWindow;
+    static licensesWindow: BrowserWindow;
+    static settingsWindow: BrowserWindow;
+    static fileInfoWindow: BrowserWindow;
+    static attributesWindow: BrowserWindow;
+    static propertiesWindow: BrowserWindow;
+    static addPropertyWindow: BrowserWindow;
+    static notesWindow: BrowserWindow;
+    static addNotesWindow: BrowserWindow;
+    static convertCsvWindow: BrowserWindow;
+    static csvLanguagesWindow: BrowserWindow;
+    static splitFileWindow: BrowserWindow;
+    static mergeFilesWindow: BrowserWindow;
+    static replaceTextWindow: BrowserWindow;
+    static sortUnitsWindow: BrowserWindow;
+    static filtersWindow: BrowserWindow;
+    static addLanguageWindow: BrowserWindow;
+    static changeLanguageWindow: BrowserWindow;
+    static removeLanguageWindow: BrowserWindow;
+    static srcLanguageWindow: BrowserWindow;
+    static removeUntranslatedWindow: BrowserWindow;
+    static consolidateWindow: BrowserWindow;
+
+    static requestEvaluationWindow: BrowserWindow;
+    static registerSubscriptionWindow: BrowserWindow;
+    static registerExpiredWindow: BrowserWindow;
+    static newSubscriptionWindow: BrowserWindow;
+
     static ls: ChildProcessWithoutNullStreams;
     static shouldQuit: boolean = false;
     static stopping: boolean = false;
@@ -91,6 +83,25 @@ class App {
     static fileLanguages: any[];
     static argFile: string = '';
     static isReady: boolean = false;
+
+    static csvEvent: IpcMainEvent;
+    static propertyEvent: IpcMainEvent;
+    static notesEvent: IpcMainEvent;
+
+    static filterOptions: any = {};
+    static loadOptions: any = {
+        start: 0,
+        count: 200
+    };
+    static sortOptions: any = {};
+    static csvLangArgs: any;
+    static attributesArg: any;
+    static propertiesArg: any;
+    static notesArg: any;
+
+    static needsName: boolean = false;
+
+    static verticalPadding: number = 46;
 
     constructor(args: string[]) {
 
@@ -128,6 +139,10 @@ class App {
             App.javapath = App.path.join(app.getAppPath(), 'bin', 'java.exe');
         }
 
+        if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
+            mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
+        }
+
         App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
         App.ls.stdout.on('data', (data) => {
@@ -153,16 +168,16 @@ class App {
                 // Make a request
                 var req: ClientRequest = request(options);
                 req.on('response',
-                    function (res: any) {
+                    (res: any) => {
                         res.setEncoding('utf-8');
                         if (res.statusCode !== 200) {
                             console.log('sendRequest() error: ' + res.statusMessage);
                         }
                         var rawData: string = '';
-                        res.on('data', function (chunk: string) {
+                        res.on('data', (chunk: string) => {
                             rawData += chunk;
                         });
-                        res.on('end', function () {
+                        res.on('end', () => {
                             try {
                                 console.log(rawData);
                             } catch (e) {
@@ -173,17 +188,13 @@ class App {
                 );
                 req.write(postData);
                 req.end();
-
-                console.log('Restarting server');
-                App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
-
             }
         });
 
         var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
         console.log(ck.toString());
 
-        app.on('open-file', function (event, filePath) {
+        app.on('open-file', (event, filePath) => {
             event.preventDefault();
             if (App.isReady) {
                 App.openFile(filePath);
@@ -192,11 +203,11 @@ class App {
             }
         });
 
-        app.on('quit', function (ev: Event) {
+        app.on('quit', () => {
             App.stopServer();
         });
 
-        app.on('window-all-closed', function (ev: Event) {
+        app.on('window-all-closed', () => {
             app.quit();
         });
 
@@ -208,13 +219,13 @@ class App {
         App.loadDefaults();
         App.loadPreferences();
 
-        app.on('ready', function () {
+        app.on('ready', () => {
             App.createWindow();
-            App.mainWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'index.html'));
-            App.mainWindow.on('resize', function () {
+            App.mainWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'index.html'));
+            App.mainWindow.on('resize', () => {
                 App.saveDefaults();
             });
-            App.mainWindow.on('move', function () {
+            App.mainWindow.on('move', () => {
                 App.saveDefaults();
             });
             App.mainWindow.show();
@@ -226,40 +237,44 @@ class App {
             App.checkUpdates(true);
         });
 
-        if (process.platform === 'win32') {
-            nativeTheme.on('updated', () => {
-                App.loadPreferences();
-                App.setTheme();
-            });
-        }
+        nativeTheme.on('updated', () => {
+            if (App.currentPreferences.theme === 'system') {
+                if (nativeTheme.shouldUseDarkColors) {
+                    App.currentCss = 'file://' + App.path.join(app.getAppPath(), 'css', 'dark.css');
+                } else {
+                    App.currentCss = 'file://' + App.path.join(app.getAppPath(), 'css', 'light.css');
+                }
+                App.mainWindow.webContents.send('set-theme', App.currentCss);
+            }
+        });
 
-        ipcMain.on('licenses-clicked', function () {
+        ipcMain.on('licenses-clicked', () => {
             App.showLicenses();
         });
-        ipcMain.on('open-license', function (event, arg: any) {
+        ipcMain.on('open-license', (event: IpcMainEvent, arg: any) => {
             App.openLicense(arg);
         });
         ipcMain.on('show-help', () => {
             App.showHelp();
         });
-        ipcMain.on('open-file', function () {
+        ipcMain.on('open-file', () => {
             App.openFileDialog();
         });
-        ipcMain.on('get-segments', function (event: IpcMainEvent, arg: any) {
-            loadOptions = arg;
+        ipcMain.on('get-segments', (event: IpcMainEvent, arg: any) => {
+            App.loadOptions = arg;
             App.loadSegments();
         });
-        ipcMain.on('get-cell-properties', function (event: IpcMainEvent, arg: any) {
+        ipcMain.on('get-cell-properties', (event: IpcMainEvent, arg: any) => {
             App.getCellProperties(arg.id, arg.lang);
         });
-        ipcMain.on('get-row-properties', function (event: IpcMainEvent, arg: any) {
+        ipcMain.on('get-row-properties', (event: IpcMainEvent, arg: any) => {
             App.getRowProperties(arg.id);
         });
         ipcMain.on('edit-attributes', (event: IpcMainEvent, arg: any) => {
             this.editAttributes(arg);
         });
-        ipcMain.on('get-unit-attributes', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-unit-attributes', attributesArg);
+        ipcMain.on('get-unit-attributes', (event: IpcMainEvent) => {
+            event.sender.send('set-unit-attributes', App.attributesArg);
         });
         ipcMain.on('save-attributes', (event: IpcMainEvent, arg: any) => {
             this.saveAttributes(arg);
@@ -267,11 +282,11 @@ class App {
         ipcMain.on('edit-properties', (event: IpcMainEvent, arg: any) => {
             this.editProperties(arg);
         });
-        ipcMain.on('get-unit-properties', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-unit-properties', propertiesArg);
+        ipcMain.on('get-unit-properties', (event: IpcMainEvent) => {
+            event.sender.send('set-unit-properties', App.propertiesArg);
         });
-        ipcMain.on('show-add-property', (event: IpcMainEvent, arg: any) => {
-            this.showAddProperty(event);
+        ipcMain.on('show-add-property', (event: IpcMainEvent) => {
+            App.showAddProperty(event);
         });
         ipcMain.on('add-new-property', (event: IpcMainEvent, arg: any) => {
             this.addNewProperty(arg);
@@ -280,10 +295,10 @@ class App {
             this.saveProperties(arg);
         });
         ipcMain.on('edit-notes', (event: IpcMainEvent, arg: any) => {
-            this.editNotes(arg);
+            App.editNotes(arg);
         });
         ipcMain.on('get-unit-notes', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-unit-notes', notesArg);
+            event.sender.send('set-unit-notes', App.notesArg);
         });
         ipcMain.on('show-add-note', (event: IpcMainEvent, arg: any) => {
             this.showAddNote(event);
@@ -294,17 +309,17 @@ class App {
         ipcMain.on('save-notes', (event: IpcMainEvent, arg: any) => {
             this.saveNotes(arg);
         });
-        ipcMain.on('get-preferences', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-preferences', (event: IpcMainEvent) => {
             event.sender.send('set-preferences', App.currentPreferences);
         });
         ipcMain.on('save-preferences', (event: IpcMainEvent, arg: any) => {
             App.currentPreferences = arg;
             App.savePreferences();
-            settingsWindow.close();
+            App.settingsWindow.close();
             App.loadPreferences();
             App.setTheme();
         });
-        ipcMain.on('get-theme', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-theme', (event: IpcMainEvent) => {
             event.sender.send('set-theme', App.currentCss);
         });
         ipcMain.on('create-file', (event: IpcMainEvent, arg: any) => {
@@ -322,10 +337,10 @@ class App {
         ipcMain.on('convert-csv-tmx', (event: IpcMainEvent, arg: any) => {
             this.convertCsvTmx(arg);
         });
-        ipcMain.on('get-charsets', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-charsets', (event: IpcMainEvent) => {
             this.getCharsets(event);
         });
-        ipcMain.on('get-csvfile', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-csvfile', (event: IpcMainEvent) => {
             this.getCsvFile(event);
         });
         ipcMain.on('get-converted-tmx', (event: IpcMainEvent, arg: any) => {
@@ -337,8 +352,8 @@ class App {
         ipcMain.on('get-csv-languages', (event: IpcMainEvent, arg: any) => {
             this.getCsvLanguages(event, arg);
         });
-        ipcMain.on('get-csv-lang-args', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-csv-lang-args', csvLangArgs);
+        ipcMain.on('get-csv-lang-args', (event: IpcMainEvent) => {
+            event.sender.send('set-csv-lang-args', App.csvLangArgs);
         });
         ipcMain.on('set-csv-languages', (event: IpcMainEvent, arg: any) => {
             this.setCsvLanguages(arg);
@@ -346,19 +361,19 @@ class App {
         ipcMain.on('show-file-info', () => {
             App.showFileInfo();
         });
-        ipcMain.on('file-properties', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('file-properties', (event: IpcMainEvent) => {
             this.fileProperties(event);
         });
-        ipcMain.on('select-tmx', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('select-tmx', (event: IpcMainEvent) => {
             this.selectTmx(event);
         });
         ipcMain.on('split-tmx', (event: IpcMainEvent, arg: any) => {
             this.splitTmx(arg);
         });
-        ipcMain.on('select-merged-tmx', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('select-merged-tmx', (event: IpcMainEvent) => {
             this.selectMergedTmx(event);
         });
-        ipcMain.on('add-tmx-files', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('add-tmx-files', (event: IpcMainEvent) => {
             this.addTmxFiles(event);
         });
         ipcMain.on('merge-tmx-files', (event: IpcMainEvent, arg: any) => {
@@ -382,8 +397,8 @@ class App {
         ipcMain.on('clear-sort', () => {
             this.clearSort();
         });
-        ipcMain.on('get-sort', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('sort-options', sortOptions);
+        ipcMain.on('get-sort', (event: IpcMainEvent) => {
+            event.sender.send('sort-options', App.sortOptions);
         });
         ipcMain.on('filter-units', () => {
             App.showFilters();
@@ -391,13 +406,13 @@ class App {
         ipcMain.on('filter-options', (event: IpcMainEvent, arg: any) => {
             this.setFilterOptions(arg);
         });
-        ipcMain.on('get-filter-options', (event: IpcMainEvent, arg: any) => {
-            event.sender.send('set-filter-options', filterOptions);
+        ipcMain.on('get-filter-options', (event: IpcMainEvent) => {
+            event.sender.send('set-filter-options', App.filterOptions);
         });
         ipcMain.on('clear-filter-options', () => {
             this.clearFilterOptions();
         });
-        ipcMain.on('get-filter-languages', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-filter-languages', (event: IpcMainEvent) => {
             event.sender.send('filter-languages', App.fileLanguages);
         });
         ipcMain.on('insert-unit', () => {
@@ -409,7 +424,7 @@ class App {
         ipcMain.on('change-language', (event: IpcMainEvent, arg: any) => {
             this.changeLanguage(arg);
         });
-        ipcMain.on('all-languages', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('all-languages', (event: IpcMainEvent) => {
             this.allLanguages(event);
         });
         ipcMain.on('remove-language', (event: IpcMainEvent, arg: any) => {
@@ -418,7 +433,7 @@ class App {
         ipcMain.on('add-language', (event: IpcMainEvent, arg: any) => {
             this.addLanguage(arg);
         });
-        ipcMain.on('get-source-language', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-source-language', (event: IpcMainEvent) => {
             this.getSourceLanguage(event);
         });
         ipcMain.on('change-source-language', (event: IpcMainEvent, arg: any) => {
@@ -430,11 +445,95 @@ class App {
         ipcMain.on('consolidate-units', (event: IpcMainEvent, arg: any) => {
             this.consolidateUnits(arg);
         });
-        ipcMain.on('get-version', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-version', (event: IpcMainEvent) => {
             event.sender.send('set-version', app.name + ' ' + app.getVersion());
         });
         ipcMain.on('show-message', (event: IpcMainEvent, arg: any) => {
-            dialog.showMessageBox(arg);
+            App.showMessage(arg);
+        });
+        ipcMain.on('newFile-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.newFileWindow, arg);
+        });
+        ipcMain.on('about-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.aboutWindow, arg);
+        });
+        ipcMain.on('messages-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.messagesWindow, arg);
+        });
+        ipcMain.on('fileInfo-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.fileInfoWindow, arg);
+        });
+        ipcMain.on('licenses-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.licensesWindow, arg);
+        });
+        ipcMain.on('preferences-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.settingsWindow, arg);
+        });
+        ipcMain.on('attributes-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.attributesWindow, arg);
+        });
+        ipcMain.on('properties-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.propertiesWindow, arg);
+        });
+        ipcMain.on('addProperty-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.addPropertyWindow, arg);
+        });
+        ipcMain.on('notes-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.notesWindow, arg);
+        });
+        ipcMain.on('addNote-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.addNotesWindow, arg);
+        });
+        ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.convertCsvWindow, arg);
+        });
+        ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.csvLanguagesWindow, arg);
+        });
+        ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.splitFileWindow, arg);
+        });
+        ipcMain.on('mergeFiles-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.mergeFilesWindow, arg);
+        });
+        ipcMain.on('replaceText-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.replaceTextWindow, arg);
+        });
+        ipcMain.on('sortUnits-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.sortUnitsWindow, arg);
+        });
+        ipcMain.on('filters-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.filtersWindow, arg);
+        });
+        ipcMain.on('addLanguage-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.addLanguageWindow, arg);
+        });
+        ipcMain.on('changeLanguage-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.changeLanguageWindow, arg);
+        });
+        ipcMain.on('removeLanguage-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.removeLanguageWindow, arg);
+        });
+        ipcMain.on('srcLanguage-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.srcLanguageWindow, arg);
+        });
+        ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.removeUntranslatedWindow, arg);
+        });
+        ipcMain.on('consolidate-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.consolidateWindow, arg);
+        });
+        ipcMain.on('registerSubscription-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.registerSubscriptionWindow, arg);
+        });
+        ipcMain.on('registerExpired-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.registerExpiredWindow, arg);
+        });
+        ipcMain.on('requestEvaluation-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.requestEvaluationWindow, arg);
+        });
+        ipcMain.on('newSubscription-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.newSubscriptionWindow, arg);
         });
     } // end constructor
 
@@ -454,6 +553,36 @@ class App {
         }
     }
 
+    static setHeight(window: BrowserWindow, arg: any) {
+        let rect: Rectangle = window.getBounds();
+        rect.height = arg.height + App.verticalPadding;
+        window.setBounds(rect);
+        window.show();
+    }
+
+    static showMessage(arg: any): void {
+        App.messagesWindow = new BrowserWindow({
+            parent: this.mainWindow,
+            width: 600,
+            useContentSize: true,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            modal: true,
+            show: false,
+            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
+        App.messagesWindow.setMenu(null);
+        App.messagesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'messages.html'));
+        App.messagesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('set-message', arg);
+            event.sender.send('get-height');
+        });
+    }
+
     static createWindow(): void {
         App.mainWindow = new BrowserWindow({
             title: 'TMXEditor',
@@ -468,73 +597,72 @@ class App {
             show: false,
             icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png')
         });
-        App.contents = App.mainWindow.webContents;
         var fileMenu: Menu = Menu.buildFromTemplate([
-            { label: 'New', accelerator: 'CmdOrCtrl+N', click: function () { App.createNewFile(); } },
-            { label: 'Open', accelerator: 'CmdOrCtrl+O', click: function () { App.openFileDialog(); } },
-            { label: 'Close', accelerator: 'CmdOrCtrl+W', click: function () { App.closeFile(); } },
-            { label: 'Save', accelerator: 'CmdOrCtrl+s', click: function () { App.saveFile(); } },
-            { label: 'Save As', click: function () { App.saveAs() } },
+            { label: 'New', accelerator: 'CmdOrCtrl+N', click: () => { App.createNewFile(); } },
+            { label: 'Open', accelerator: 'CmdOrCtrl+O', click: () => { App.openFileDialog(); } },
+            { label: 'Close', accelerator: 'CmdOrCtrl+W', click: () => { App.closeFile(); } },
+            { label: 'Save', accelerator: 'CmdOrCtrl+s', click: () => { App.saveFile(); } },
+            { label: 'Save As', click: () => { App.saveAs() } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Convert CSV/TAB Delimited to TMX', click: function () { App.convertCSV(); } },
-            { label: 'Export as TAB Delimited...', click: function () { App.exportDelimited(); } },
+            { label: 'Convert CSV/TAB Delimited to TMX', click: () => { App.convertCSV(); } },
+            { label: 'Export as TAB Delimited...', click: () => { App.exportDelimited(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'File Properties', click: function () { App.showFileInfo(); } },
+            { label: 'File Properties', click: () => { App.showFileInfo(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Validate TMX File...', click: function () { App.validateFile(); } },
-            { label: 'Clean Invalid Characters...', click: function () { App.cleanCharacters(); } },
+            { label: 'Validate TMX File...', click: () => { App.validateFile(); } },
+            { label: 'Clean Invalid Characters...', click: () => { App.cleanCharacters(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Split TMX File...', click: function () { App.splitFile(); } },
-            { label: 'Merge TMX Files...', click: function () { App.mergeFiles(); } }
+            { label: 'Split TMX File...', click: () => { App.splitFile(); } },
+            { label: 'Merge TMX Files...', click: () => { App.mergeFiles(); } }
         ]);
         var editMenu: Menu = Menu.buildFromTemplate([
-            { label: 'Undo', accelerator: 'CmdOrCtrl+Z', click: function () { App.contents.undo(); } },
+            { label: 'Undo', accelerator: 'CmdOrCtrl+Z', click: () => { App.mainWindow.webContents.undo(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Cut', accelerator: 'CmdOrCtrl+X', click: function () { App.contents.cut(); } },
-            { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: function () { App.contents.copy(); } },
-            { label: 'Paste', accelerator: 'CmdOrCtrl+V', click: function () { App.contents.paste(); } },
-            { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: function () { App.contents.selectAll(); } },
+            { label: 'Cut', accelerator: 'CmdOrCtrl+X', click: () => { App.mainWindow.webContents.cut(); } },
+            { label: 'Copy', accelerator: 'CmdOrCtrl+C', click: () => { App.mainWindow.webContents.copy(); } },
+            { label: 'Paste', accelerator: 'CmdOrCtrl+V', click: () => { App.mainWindow.webContents.paste(); } },
+            { label: 'Select All', accelerator: 'CmdOrCtrl+A', click: () => { App.mainWindow.webContents.selectAll(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Confirm Edit', accelerator: 'Alt+Enter', click: function () { App.saveEdits(); } },
-            { label: 'Cancel Edit', accelerator: 'Esc', click: function () { App.cancelEdit(); } },
+            { label: 'Confirm Edit', accelerator: 'Alt+Enter', click: () => { App.saveEdits(); } },
+            { label: 'Cancel Edit', accelerator: 'Esc', click: () => { App.cancelEdit(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Replace Text...', accelerator: 'CmdOrCtrl+F', click: function () { App.replaceText(); } },
+            { label: 'Replace Text...', accelerator: 'CmdOrCtrl+F', click: () => { App.replaceText(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Insert Unit', click: function () { App.insertUnit(); } },
-            { label: 'Delete Selected Units', click: function () { App.requestDeleteUnits(); } }
+            { label: 'Insert Unit', click: () => { App.insertUnit(); } },
+            { label: 'Delete Selected Units', click: () => { App.requestDeleteUnits(); } }
         ]);
         var viewMenu: Menu = Menu.buildFromTemplate([
-            { label: 'Sort Units', accelerator: 'F5', click: function () { App.sortUnits(); } },
-            { label: 'Filter Units', accelerator: 'F3', click: function () { App.showFilters() } },
+            { label: 'Sort Units', accelerator: 'F5', click: () => { App.sortUnits(); } },
+            { label: 'Filter Units', accelerator: 'F3', click: () => { App.showFilters() } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Show First Page', click: function () { App.firstPage(); } },
-            { label: 'Show Previous Page', click: function () { App.previousPage(); } },
-            { label: 'Show Next Page', click: function () { App.nextPage(); } },
-            { label: 'Show Last Page', click: function () { App.lastPage(); } },
+            { label: 'Show First Page', click: () => { App.firstPage(); } },
+            { label: 'Show Previous Page', click: () => { App.previousPage(); } },
+            { label: 'Show Next Page', click: () => { App.nextPage(); } },
+            { label: 'Show Last Page', click: () => { App.lastPage(); } },
             new MenuItem({ type: 'separator' }),
             new MenuItem({ label: 'Toggle Full Screen', role: 'togglefullscreen' }),
             new MenuItem({ label: 'Toggle Development Tools', accelerator: 'F12', role: 'toggleDevTools' })
         ]);
         var tasksMenu: Menu = Menu.buildFromTemplate([
-            { label: 'Change Language...', click: function () { App.changeLanguageCode(); } },
-            { label: 'Add Language...', click: function () { App.showAddLanguage(); } },
-            { label: 'Remove Language...', click: function () { App.showRemoveLanguage() } },
-            { label: 'Change Source Language...', click: function () { App.showChangeSourceLanguage(); } },
+            { label: 'Change Language...', click: () => { App.changeLanguageCode(); } },
+            { label: 'Add Language...', click: () => { App.showAddLanguage(); } },
+            { label: 'Remove Language...', click: () => { App.showRemoveLanguage() } },
+            { label: 'Change Source Language...', click: () => { App.showChangeSourceLanguage(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Remove All Tags', click: function () { App.removeTags(); } },
-            { label: 'Remove Duplicates', click: function () { App.removeDuplicates(); } },
-            { label: 'Remove Untranslated...', click: function () { App.showRemoveUntranslated(); } },
-            { label: 'Remove Initial/Trailing Spaces', click: function () { App.removeSpaces(); } },
-            { label: 'Consolidate Units...', click: function () { App.showConsolidateUnits(); } }
+            { label: 'Remove All Tags', click: () => { App.removeTags(); } },
+            { label: 'Remove Duplicates', click: () => { App.removeDuplicates(); } },
+            { label: 'Remove Untranslated...', click: () => { App.showRemoveUntranslated(); } },
+            { label: 'Remove Initial/Trailing Spaces', click: () => { App.removeSpaces(); } },
+            { label: 'Consolidate Units...', click: () => { App.showConsolidateUnits(); } }
         ]);
         var helpMenu: Menu = Menu.buildFromTemplate([
-            { label: 'TMXEditor User Guide', accelerator: 'F1', click: function () { App.showHelp(); } },
+            { label: 'TMXEditor User Guide', accelerator: 'F1', click: () => { App.showHelp(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Check for Updates...', click: function () { App.checkUpdates(false); } },
-            { label: 'View Licenses', click: function () { App.showLicenses(); } },
+            { label: 'Check for Updates...', click: () => { App.checkUpdates(false); } },
+            { label: 'View Licenses', click: () => { App.showLicenses(); } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Release History', click: function () { App.showReleaseHistory(); } },
-            { label: 'Support Group', click: function () { App.showSupportGroup(); } }
+            { label: 'Release History', click: () => { App.showReleaseHistory(); } },
+            { label: 'Support Group', click: () => { App.showSupportGroup(); } }
         ]);
         var template: MenuItem[] = [
             new MenuItem({ label: '&File', role: 'fileMenu', submenu: fileMenu }),
@@ -545,10 +673,10 @@ class App {
         ];
         if (process.platform === 'darwin') {
             var appleMenu: Menu = Menu.buildFromTemplate([
-                new MenuItem({ label: 'About...', click: function () { App.showAbout(); } }),
+                new MenuItem({ label: 'About...', click: () => { App.showAbout(); } }),
                 new MenuItem({
                     label: 'Preferences...', submenu: [
-                        { label: 'Settings', accelerator: 'Cmd+,', click: function () { App.showSettings(); } }
+                        { label: 'Settings', accelerator: 'Cmd+,', click: () => { App.showSettings(); } }
                     ]
                 }),
                 new MenuItem({ type: 'separator' }),
@@ -558,27 +686,27 @@ class App {
                     ]
                 }),
                 new MenuItem({ type: 'separator' }),
-                new MenuItem({ label: 'Quit TMXEditor', accelerator: 'Cmd+Q', role: 'quit', click: function () { App.close(); } })
+                new MenuItem({ label: 'Quit TMXEditor', accelerator: 'Cmd+Q', role: 'quit', click: () => { App.close(); } })
             ]);
             template.unshift(new MenuItem({ label: 'TMXEditor', role: 'appMenu', submenu: appleMenu }));
         } else {
             var help: MenuItem = template.pop();
             template.push(new MenuItem({
                 label: '&Settings', submenu: [
-                    { label: 'Preferences', click: function () { App.showSettings(); } }
+                    { label: 'Preferences', click: () => { App.showSettings(); } }
                 ]
             }));
             template.push(help);
         }
         if (!existsSync(App.path.join(app.getPath('appData'), app.name, 'recent.json'))) {
-            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', function (err) {
+            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', (err: Error) => {
                 if (err) {
-                    dialog.showMessageBox({ type: 'error', message: err.message });
+                    App.showMessage({ type: 'error', message: err.message });
                     return;
                 }
             });
         }
-        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), function (err: Error, buf: Buffer) {
+        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, buf: Buffer) => {
             if (err instanceof Error) {
                 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
                 return;
@@ -595,24 +723,24 @@ class App {
                     var file = files[i];
                     if (existsSync(file)) {
                         if (process.platform === 'darwin') {
-                            template[1].submenu.append(new MenuItem({ label: file, click: function () { App.openFile(files[i]); } }));
+                            template[1].submenu.append(new MenuItem({ label: file, click: () => { App.openFile(files[i]); } }));
                         } else {
-                            template[0].submenu.append(new MenuItem({ label: file, click: function () { App.openFile(files[i]); } }));
+                            template[0].submenu.append(new MenuItem({ label: file, click: () => { App.openFile(files[i]); } }));
                         }
                     }
                 }
             }
             if (process.platform == 'win32') {
                 template[0].submenu.append(new MenuItem({ type: 'separator' }));
-                template[0].submenu.append(new MenuItem({ label: 'Exit', accelerator: 'Alt+F4', role: 'quit', click: function () { App.close(); } }));
+                template[0].submenu.append(new MenuItem({ label: 'Exit', accelerator: 'Alt+F4', role: 'quit', click: () => { App.close(); } }));
                 template[5].submenu.append(new MenuItem({ type: 'separator' }));
-                template[5].submenu.append(new MenuItem({ label: 'About...', click: function () { App.showAbout(); } }));
+                template[5].submenu.append(new MenuItem({ label: 'About...', click: () => { App.showAbout(); } }));
             }
             if (process.platform === 'linux') {
                 template[0].submenu.append(new MenuItem({ type: 'separator' }));
-                template[0].submenu.append(new MenuItem({ label: 'Quit', accelerator: 'Ctrl+Q', role: 'quit', click: function () { App.close(); } }));
+                template[0].submenu.append(new MenuItem({ label: 'Quit', accelerator: 'Ctrl+Q', role: 'quit', click: () => { App.close(); } }));
                 template[5].submenu.append(new MenuItem({ type: 'separator' }));
-                template[5].submenu.append(new MenuItem({ label: 'About...', click: function () { App.showAbout(); } }));
+                template[5].submenu.append(new MenuItem({ label: 'About...', click: () => { App.showAbout(); } }));
             }
             Menu.setApplicationMenu(Menu.buildFromTemplate(template));
         });
@@ -644,10 +772,9 @@ class App {
     }
 
     static showAbout(): void {
-        var aboutWindow = new BrowserWindow({
+        App.aboutWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('aboutWindow'),
-            height: App.getHeight('aboutWindow'),
+            width: 620,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -658,9 +785,11 @@ class App {
                 nodeIntegration: true
             }
         });
-        aboutWindow.setMenu(null);
-        aboutWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'about.html'));
-        aboutWindow.show();
+        App.aboutWindow.setMenu(null);
+        App.aboutWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'about.html'));
+        App.aboutWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     static sendRequest(json: any, success: any, error: any): void {
@@ -677,16 +806,16 @@ class App {
         // Make a request
         var req: ClientRequest = request(options);
         req.on('response',
-            function (res: any) {
+            (res: any) => {
                 res.setEncoding('utf-8');
                 if (res.statusCode !== 200) {
                     error('sendRequest() error: ' + res.statusMessage);
                 }
                 var rawData: string = '';
-                res.on('data', function (chunk: string) {
+                res.on('data', (chunk: string) => {
                     rawData += chunk;
                 });
-                res.on('end', function () {
+                res.on('end', () => {
                     try {
                         success(JSON.parse(rawData));
                     } catch (e) {
@@ -695,7 +824,6 @@ class App {
                 });
             }
         );
-        req.write(postData);
         req.write(postData, (err: Error) => {
             if (err) {
                 console.log('Write error:  ' + err.message);
@@ -710,10 +838,9 @@ class App {
     }
 
     static showLicenses(): void {
-        var licensesWindow = new BrowserWindow({
+        App.licensesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('licensesWindow'),
-            height: App.getHeight('licensesWindow'),
+            width: 500,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -724,9 +851,11 @@ class App {
                 nodeIntegration: true
             }
         });
-        licensesWindow.setMenu(null);
-        licensesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'licenses.html'));
-        licensesWindow.show();
+        App.licensesWindow.setMenu(null);
+        App.licensesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'licenses.html'));
+        App.licensesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     static openLicense(arg: any): void {
@@ -734,42 +863,42 @@ class App {
         var title = '';
         switch (arg.type) {
             case 'TMXEditor':
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'license.txt');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'license.txt');
                 title = 'TMXEditor License';
                 break;
             case "electron":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'electron.txt');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
                 title = 'MIT License';
                 break;
             case "TypeScript":
             case "MapDB":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
                 title = 'Apache 2.0';
                 break;
             case "Java":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'java.html');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
                 title = 'GPL2 with Classpath Exception';
                 break;
             case "OpenXLIFF":
             case "TMXValidator":
             case "H2":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
             case "JSON":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'json.txt');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
                 title = 'JSON.org License';
                 break;
             case "jsoup":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'jsoup.txt');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'jsoup.txt');
                 title = 'MIT License';
                 break;
             case "DTDParser":
-                licenseFile = App.path.join('file://', app.getAppPath(), 'html', 'licenses', 'LGPL2.1.txt');
+                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'LGPL2.1.txt');
                 title = 'LGPL 2.1';
                 break;
             default:
-                dialog.showErrorBox('Error', 'Unknow license');
+                App.showMessage({ type: 'error', message: 'Unknown license' });
                 return;
         }
         var licenseWindow = new BrowserWindow({
@@ -785,14 +914,23 @@ class App {
         });
         licenseWindow.setMenu(null);
         licenseWindow.loadURL(licenseFile);
-        licenseWindow.show();
+        licenseWindow.once('ready-to-show', () => {
+            licenseWindow.show();
+        });
+        licenseWindow.webContents.on('did-finish-load', () => {
+            readFile(App.currentCss.substring('file://'.length), (error: Error, data: Buffer) => {
+                if (!error) {
+                    licenseWindow.webContents.insertCSS(data.toString());
+                }
+            });
+        });
     }
 
     static showHelp(): void {
-        shell.openExternal(App.path.join('file://', app.getAppPath(), 'tmxeditor.pdf'),
+        shell.openExternal('file://' + App.path.join(app.getAppPath(), 'tmxeditor.pdf'),
             { activate: true, workingDirectory: app.getAppPath() }
         ).catch((error: Error) => {
-            dialog.showErrorBox('Error', error.message);
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
@@ -804,49 +942,49 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 App.openFile(value.filePaths[0]);
                 App.saveRecent(value.filePaths[0]);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
             console.log(error);
         });
     }
 
     static openFile(file: string): void {
-        App.contents.send('start-waiting');
-        App.contents.send('set-status', 'Opening file...');
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', 'Opening file...');
         App.sendRequest({ command: 'openFile', file: file },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                var intervalObject = setInterval(function () {
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
                         clearInterval(intervalObject);
                         App.getFileLanguages();
-                        filterOptions = {};
-                        sortOptions = {};
-                        App.contents.send('file-loaded', App.currentStatus);
+                        App.filterOptions = {};
+                        App.sortOptions = {};
+                        App.mainWindow.webContents.send('file-loaded', App.currentStatus);
                         App.currentFile = file;
                         App.mainWindow.setTitle(App.currentFile);
                         App.saved = true;
                         App.mainWindow.setDocumentEdited(false);
-                        App.contents.send('end-waiting');
+                        App.mainWindow.webContents.send('end-waiting');
                         return;
                     } else if (App.currentStatus.status === LOADING) {
                         // it's OK, keep waiting
-                        App.contents.send('status-changed', App.currentStatus);
+                        App.mainWindow.webContents.send('status-changed', App.currentStatus);
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'openFile'
                     } else {
-                        App.contents.send('end-waiting');
+                        App.mainWindow.webContents.send('end-waiting');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error loading file');
                         return;
@@ -854,19 +992,19 @@ class App {
                     App.getLoadingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showErrorBox('Error', reason);
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getLoadingProgress(): void {
         App.sendRequest({ command: 'loadingProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
+            (reason: string) => {
                 console.log(reason);
             }
         );
@@ -897,44 +1035,44 @@ class App {
                 return;
             }
         }
-        App.contents.send('set-status', 'Closing file...');
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', 'Closing file...');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'closeFile' },
-            function success(json: any) {
-                App.contents.send('end-waiting');
-                if (json.status === SUCCESS) {
-                    App.contents.send('file-closed');
-                    App.contents.send('set-status', '');
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
+                if (data.status === SUCCESS) {
+                    App.mainWindow.webContents.send('file-closed');
+                    App.mainWindow.webContents.send('set-status', '');
                     App.currentFile = '';
                     App.mainWindow.setTitle('TMXEditor');
                     App.saved = true;
                     App.mainWindow.setDocumentEdited(false);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: json.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getFileLanguages(): void {
-        App.contents.send('set-status', 'Getting languages...');
+        App.mainWindow.webContents.send('set-status', 'Getting languages...');
         App.sendRequest({ command: 'getLanguages' },
-            function success(json: any) {
-                App.contents.send('set-status', '');
-                if (json.status === SUCCESS) {
-                    App.fileLanguages = json.languages;
-                    App.contents.send('update-languages', App.fileLanguages);
+            (data: any) => {
+                App.mainWindow.webContents.send('set-status', '');
+                if (data.status === SUCCESS) {
+                    App.fileLanguages = data.languages;
+                    App.mainWindow.webContents.send('update-languages', App.fileLanguages);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: json.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('set-status', '');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('set-status', '');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -957,24 +1095,24 @@ class App {
         var json: any = {
             command: 'getSegments'
         }
-        Object.assign(json, loadOptions);
-        Object.assign(json, filterOptions);
-        Object.assign(json, sortOptions);
-        App.contents.send('start-waiting');
-        App.contents.send('set-status', 'Loading segments...');
+        Object.assign(json, App.loadOptions);
+        Object.assign(json, App.filterOptions);
+        Object.assign(json, App.sortOptions);
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', 'Loading segments...');
         App.sendRequest(json,
-            function success(data: any) {
-                App.contents.send('set-status', '');
-                App.contents.send('end-waiting');
+            (data: any) => {
+                App.mainWindow.webContents.send('set-status', '');
+                App.mainWindow.webContents.send('end-waiting');
                 if (data.status === SUCCESS) {
-                    App.contents.send('update-segments', data);
+                    App.mainWindow.webContents.send('update-segments', data);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -992,14 +1130,13 @@ class App {
     }
 
     static savePreferences(): void {
-        let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
-        writeFileSync(preferencesFile, JSON.stringify(App.currentPreferences));
+        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(App.currentPreferences));
     }
 
     static loadPreferences() {
         App.currentPreferences = { theme: 'system', indentation: 2, threshold: 100 };
-        let dark: string = '../css/dark.css';
-        let light: string = '../css/light.css';
+        let dark: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'dark.css');
+        let light: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'light.css');
         let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
         if (existsSync(preferencesFile)) {
             try {
@@ -1009,8 +1146,6 @@ class App {
                 console.log(err);
             }
         }
-
-        nativeTheme.themeSource = App.currentPreferences.theme;
         if (App.currentPreferences.theme === 'system') {
             if (nativeTheme.shouldUseDarkColors) {
                 App.currentCss = dark;
@@ -1027,7 +1162,7 @@ class App {
     }
 
     static saveRecent(file: string): void {
-        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), function (err: Error, data: Buffer) {
+        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, data: Buffer) => {
             if (err instanceof Error) {
                 return;
             }
@@ -1039,9 +1174,9 @@ class App {
             if (jsonData.files.length > 8) {
                 jsonData.files = jsonData.files.slice(0, 8);
             }
-            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData), function (error) {
+            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData), (error: Error) => {
                 if (error) {
-                    dialog.showMessageBox({ type: 'error', message: error.message });
+                    App.showMessage({ type: 'error', message: error.message });
                     return;
                 }
             });
@@ -1050,40 +1185,39 @@ class App {
     }
 
     static getCellProperties(id: string, lang: string): void {
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'getTuvData', id: id, lang: lang },
-            function success(json: any) {
-                App.contents.send('end-waiting');
-                json.type = lang;
-                App.contents.send('update-properties', json);
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
+                data.type = lang;
+                App.mainWindow.webContents.send('update-properties', data);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getRowProperties(id: string): void {
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'getTuData', id: id },
-            function success(json: any) {
-                App.contents.send('end-waiting');
-                json.type = 'TU';
-                App.contents.send('update-properties', json);
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
+                data.type = 'TU';
+                App.mainWindow.webContents.send('update-properties', data);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     editAttributes(arg: any): void {
-        attributesWindow = new BrowserWindow({
+        App.attributesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('attributesWindow'),
-            height: App.getHeight('attributesWindow'),
+            width: 630,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1094,19 +1228,21 @@ class App {
                 nodeIntegration: true
             }
         });
-        attributesArg = arg;
-        attributesWindow.setMenu(null);
-        attributesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'attributes.html'));
-        attributesWindow.show();
+        App.attributesArg = arg;
+        App.attributesWindow.setMenu(null);
+        App.attributesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'attributes.html'));
+        App.attributesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     saveAttributes(arg: any): void {
-        App.contents.send('start-waiting');
-        attributesWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
+        App.attributesWindow.close();
         arg.command = 'setAttributes';
         App.sendRequest(arg,
-            function success(data: any) {
-                App.contents.send('end-waiting');
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
                 if (data.status === SUCCESS) {
                     if (arg.lang === '') {
                         App.getRowProperties(arg.id);
@@ -1116,22 +1252,21 @@ class App {
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    App.contents.send('end-waiting');
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     editProperties(arg: any): void {
-        propertiesWindow = new BrowserWindow({
+        App.propertiesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('propertiesWindow'),
-            height: App.getHeight('propertiesWindow'),
+            width: 500,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1142,18 +1277,19 @@ class App {
                 nodeIntegration: true
             }
         });
-        propertiesArg = arg;
-        propertiesWindow.setMenu(null);
-        propertiesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'properties.html'));
-        propertiesWindow.show();
+        App.propertiesArg = arg;
+        App.propertiesWindow.setMenu(null);
+        App.propertiesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'properties.html'));
+        App.propertiesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
-    showAddProperty(event: IpcMainEvent): void {
-        propertyEvent = event;
-        addPropertyWindow = new BrowserWindow({
-            parent: propertiesWindow,
-            width: App.getWidth('addPropertyWindow'),
-            height: App.getHeight('addPropertyWindow'),
+    static showAddProperty(event: IpcMainEvent): void {
+        App.propertyEvent = event;
+        App.addPropertyWindow = new BrowserWindow({
+            parent: App.propertiesWindow,
+            width: 350,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1165,23 +1301,25 @@ class App {
                 nodeIntegration: true
             }
         });
-        addPropertyWindow.setMenu(null);
-        addPropertyWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'addProperty.html'));
-        addPropertyWindow.show();
+        App.addPropertyWindow.setMenu(null);
+        App.addPropertyWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addProperty.html'));
+        App.addPropertyWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     addNewProperty(arg: any): void {
-        addPropertyWindow.close();
-        propertyEvent.sender.send('set-new-property', arg);
+        App.addPropertyWindow.close();
+        App.propertyEvent.sender.send('set-new-property', arg);
     }
 
     saveProperties(arg: any): void {
-        App.contents.send('start-waiting');
-        propertiesWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
+        App.propertiesWindow.close();
         arg.command = 'setProperties';
         App.sendRequest(arg,
-            function success(data: any) {
-                App.contents.send('end-waiting');
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
                 if (data.status === SUCCESS) {
                     if (arg.lang === '') {
                         App.getRowProperties(arg.id);
@@ -1191,22 +1329,21 @@ class App {
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    App.contents.send('end-waiting');
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
-    editNotes(arg: any): void {
-        notesWindow = new BrowserWindow({
+    static editNotes(arg: any): void {
+        App.notesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('notesWindow'),
-            height: App.getHeight('notesWindow'),
+            width: 500,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1217,18 +1354,19 @@ class App {
                 nodeIntegration: true
             }
         });
-        notesArg = arg;
-        notesWindow.setMenu(null);
-        notesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'notes.html'));
-        notesWindow.show();
+        App.notesArg = arg;
+        App.notesWindow.setMenu(null);
+        App.notesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'notes.html'));
+        App.notesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     showAddNote(event: IpcMainEvent): void {
-        notesEvent = event;
-        addNotesWindow = new BrowserWindow({
-            parent: notesWindow,
-            width: App.getWidth('addNotesWindow'),
-            height: App.getHeight('addNotesWindow'),
+        App.notesEvent = event;
+        App.addNotesWindow = new BrowserWindow({
+            parent: App.notesWindow,
+            width: 350,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1240,23 +1378,25 @@ class App {
                 nodeIntegration: true
             }
         });
-        addNotesWindow.setMenu(null);
-        addNotesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'addNote.html'));
-        addNotesWindow.show();
+        App.addNotesWindow.setMenu(null);
+        App.addNotesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addNote.html'));
+        App.addNotesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     addNewNote(arg: any): void {
-        addNotesWindow.close();
-        notesEvent.sender.send('set-new-note', arg);
+        App.addNotesWindow.close();
+        App.notesEvent.sender.send('set-new-note', arg);
     }
 
     saveNotes(arg: any): void {
-        App.contents.send('start-waiting');
-        notesWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
+        App.notesWindow.close();
         arg.command = 'setNotes';
         App.sendRequest(arg,
-            function success(data: any) {
-                App.contents.send('end-waiting');
+            (data: any) => {
+                App.mainWindow.webContents.send('end-waiting');
                 if (data.status === SUCCESS) {
                     if (arg.lang === '') {
                         App.getRowProperties(arg.id);
@@ -1266,22 +1406,21 @@ class App {
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    App.contents.send('end-waiting');
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showSettings(): void {
-        settingsWindow = new BrowserWindow({
+        App.settingsWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('settingsWindow'),
-            height: App.getHeight('settingsWindow'),
+            width: 450,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -1292,20 +1431,21 @@ class App {
                 nodeIntegration: true
             }
         });
-        settingsWindow.setMenu(null);
-        settingsWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'preferences.html'));
-        settingsWindow.show();
+        App.settingsWindow.setMenu(null);
+        App.settingsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'preferences.html'));
+        App.settingsWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     static setTheme(): void {
-        App.contents.send('request-theme');
+        App.mainWindow.webContents.send('request-theme');
     }
 
     static createNewFile(): void {
-        newFileWindow = new BrowserWindow({
+        App.newFileWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('newFileWindow'),
-            height: App.getHeight('newFileWindow'),
+            width: 480,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -1316,13 +1456,15 @@ class App {
                 nodeIntegration: true
             }
         });
-        newFileWindow.setMenu(null);
-        newFileWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'newFile.html'));
-        newFileWindow.show();
+        App.newFileWindow.setMenu(null);
+        App.newFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'newFile.html'));
+        App.newFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     createFile(arg: any): void {
-        newFileWindow.close();
+        App.newFileWindow.close();
         if (App.currentFile !== '' && !App.saved) {
             let response = dialog.showMessageBoxSync(App.mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
             if (response === 0) {
@@ -1331,16 +1473,16 @@ class App {
         }
         arg.command = 'createFile';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     App.openFile(data.path);
-                    needsName = true;
+                    App.needsName = true;
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -1349,18 +1491,18 @@ class App {
         if (App.currentFile === '') {
             return;
         }
-        if (needsName) {
+        if (App.needsName) {
             App.saveAs();
             return;
         }
         App.sendRequest({ command: 'saveFile', file: App.currentFile },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Saving...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Saving...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.saved = true;
                         App.mainWindow.setDocumentEdited(false);
@@ -1375,16 +1517,16 @@ class App {
                     } else if (App.currentStatus.status === SAVING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'saveFile'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error saving file');
                         return;
@@ -1392,18 +1534,18 @@ class App {
                     App.getSavingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getSavingProgress(): void {
         App.sendRequest({ command: 'savingProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
+            (reason: string) => {
                 console.log(reason);
             }
         );
@@ -1417,26 +1559,25 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 App.currentFile = value.filePath;
-                needsName = false;
+                App.needsName = false;
                 App.saveFile();
                 App.mainWindow.setTitle(App.currentFile);
                 App.saveRecent(App.currentFile);
                 App.saved = true;
                 App.mainWindow.setDocumentEdited(false);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     static convertCSV(): void {
-        convertCsvWindow = new BrowserWindow({
+        App.convertCsvWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('convertCSV'),
-            height: App.getHeight('convertCSV'),
+            width: 600,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -1447,16 +1588,18 @@ class App {
                 nodeIntegration: true
             }
         });
-        convertCsvWindow.setMenu(null);
-        convertCsvWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'convertCSV.html'));
-        convertCsvWindow.show();
+        App.convertCsvWindow.setMenu(null);
+        App.convertCsvWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertCSV.html'));
+        App.convertCsvWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     convertCsvTmx(arg: any): void {
-        convertCsvWindow.close();
+        App.convertCsvWindow.close();
         arg.command = 'convertCsv';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     if (arg.openTMX) {
                         if (App.currentFile !== '') {
@@ -1464,29 +1607,29 @@ class App {
                         }
                         App.openFile(arg.tmxFile);
                     } else {
-                        dialog.showMessageBox({ type: 'info', message: 'File converted' });
+                        App.showMessage({ type: 'info', message: 'File converted' });
                     }
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     getCharsets(event: IpcMainEvent): void {
         App.sendRequest({ command: 'getCharsets' },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     event.sender.send('set-charsets', data.charsets);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -1494,15 +1637,15 @@ class App {
     getCsvPreview(event: IpcMainEvent, arg: any): void {
         arg.command = 'previewCsv';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     event.sender.send('set-preview', data);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -1515,12 +1658,12 @@ class App {
                 { name: 'CSV/Text File', extensions: ['csv', 'txt'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('set-csvfile', value.filePaths[0]);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
@@ -1533,23 +1676,22 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('converted-tmx-file', value.filePath);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     getCsvLanguages(event: IpcMainEvent, arg: any): void {
-        csvEvent = event;
-        csvLangArgs = arg;
-        csvLanguagesWindow = new BrowserWindow({
-            parent: convertCsvWindow,
+        App.csvEvent = event;
+        App.csvLangArgs = arg;
+        App.csvLanguagesWindow = new BrowserWindow({
+            parent: App.convertCsvWindow,
             modal: true,
-            width: App.getWidth('csvLanguages'),
-            height: App.getHeight('csvLanguages'),
+            width: 600,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -1560,19 +1702,21 @@ class App {
                 nodeIntegration: true
             }
         });
-        csvLanguagesWindow.setMenu(null);
-        csvLanguagesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'csvLanguages.html'));
-        csvLanguagesWindow.show();
+        App.csvLanguagesWindow.setMenu(null);
+        App.csvLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'csvLanguages.html'));
+        App.csvLanguagesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     setCsvLanguages(arg: any): void {
-        csvLanguagesWindow.close();
-        csvEvent.sender.send('csv-languages', arg);
+        App.csvLanguagesWindow.close();
+        App.csvEvent.sender.send('csv-languages', arg);
     }
 
     static exportDelimited(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
         dialog.showSaveDialog({
@@ -1583,31 +1727,31 @@ class App {
                 { name: 'CSV File', extensions: ['csv'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
-                App.contents.send('start-waiting');
+                App.mainWindow.webContents.send('start-waiting');
                 App.sendRequest({ command: 'exportDelimited', file: value.filePath },
-                    function success(data: any) {
+                    (data: any) => {
                         App.currentStatus = data;
-                        App.contents.send('set-status', 'Exporting...');
-                        var intervalObject = setInterval(function () {
+                        App.mainWindow.webContents.send('set-status', 'Exporting...');
+                        var intervalObject = setInterval(() => {
                             if (App.currentStatus.status === COMPLETED) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showMessageBox(App.mainWindow, { type: 'info', message: 'File exported' });
+                                App.showMessage({ type: 'info', message: 'File exported' });
                                 return;
                             } else if (App.currentStatus.status === ERROR) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showErrorBox('Error', App.currentStatus.reason);
+                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
                                 return;
                             } else if (App.currentStatus.status === SUCCESS) {
                                 // keep waiting
                             } else {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
                                 dialog.showErrorBox('Error', 'Unknown error exporting file');
                                 return;
@@ -1615,37 +1759,36 @@ class App {
                             App.getExportProgress();
                         }, 500);
                     },
-                    function error(reason: string) {
-                        App.contents.send('end-waiting');
-                        dialog.showErrorBox('Error', reason);
+                    (reason: string) => {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.showMessage({ type: 'error', message: reason });
                     }
                 );
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     static getExportProgress(): void {
         App.sendRequest({ command: 'exportProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showFileInfo(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        var fileInfoWindow: BrowserWindow = new BrowserWindow({
+        App.fileInfoWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 550,
-            height: 400,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -1656,22 +1799,24 @@ class App {
                 nodeIntegration: true
             }
         });
-        fileInfoWindow.setMenu(null);
-        fileInfoWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'fileInfo.html'));
-        fileInfoWindow.show();
+        App.fileInfoWindow.setMenu(null);
+        App.fileInfoWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'fileInfo.html'));
+        App.fileInfoWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     fileProperties(event: IpcMainEvent): void {
         App.sendRequest({ command: 'getFileProperties' },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     event.sender.send('set-file-properties', data);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -1683,31 +1828,31 @@ class App {
             filters: [
                 { name: 'TMX File', extensions: ['tmx'] }
             ]
-        }).then(function (value) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
-                App.contents.send('start-waiting');
+                App.mainWindow.webContents.send('start-waiting');
                 App.sendRequest({ command: 'validateFile', file: value.filePaths[0] },
-                    function success(data: any) {
+                    (data: any) => {
                         App.currentStatus = data;
-                        App.contents.send('set-status', 'Validating...');
-                        var intervalObject = setInterval(function () {
+                        App.mainWindow.webContents.send('set-status', 'Validating...');
+                        var intervalObject = setInterval(() => {
                             if (App.currentStatus.status === COMPLETED) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showMessageBox(App.mainWindow, { type: 'info', message: 'File is valid' });
+                                App.showMessage({ type: 'info', message: 'File is valid' });
                                 return;
                             } else if (App.currentStatus.status === ERROR) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showErrorBox('Error', App.currentStatus.reason);
+                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
                                 return;
                             } else if (App.currentStatus.status === SUCCESS) {
                                 // keep waiting
                             } else {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
                                 dialog.showErrorBox('Error', 'Unknown error validating file');
                                 return;
@@ -1715,24 +1860,24 @@ class App {
                             App.getValidatingProgress();
                         }, 500);
                     },
-                    function error(reason: string) {
-                        App.contents.send('end-waiting');
-                        dialog.showMessageBox({ type: 'error', message: reason });
+                    (reason: string) => {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.showMessage({ type: 'error', message: reason });
                     }
                 );
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     static getValidatingProgress(): void {
         App.sendRequest({ command: 'validatingProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -1744,31 +1889,31 @@ class App {
             filters: [
                 { name: 'TMX File', extensions: ['tmx'] }
             ]
-        }).then(function (value) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
-                App.contents.send('start-waiting');
+                App.mainWindow.webContents.send('start-waiting');
                 App.sendRequest({ command: 'cleanCharacters', file: value.filePaths[0] },
-                    function success(data: any) {
+                    (data: any) => {
                         App.currentStatus = data;
-                        App.contents.send('set-status', 'Cleaning...');
-                        var intervalObject = setInterval(function () {
+                        App.mainWindow.webContents.send('set-status', 'Cleaning...');
+                        var intervalObject = setInterval(() => {
                             if (App.currentStatus.status === COMPLETED) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showMessageBox(App.mainWindow, { type: 'info', message: 'File cleaned' });
+                                App.showMessage({ type: 'info', message: 'File cleaned' });
                                 return;
                             } else if (App.currentStatus.status === ERROR) {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
-                                dialog.showErrorBox('Error', App.currentStatus.reason);
+                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
                                 return;
                             } else if (App.currentStatus.status === SUCCESS) {
                                 // keep waiting
                             } else {
-                                App.contents.send('end-waiting');
-                                App.contents.send('set-status', '');
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
                                 clearInterval(intervalObject);
                                 dialog.showErrorBox('Error', 'Unknown error cleaning characters');
                                 return;
@@ -1776,33 +1921,32 @@ class App {
                             App.getCleaningProgress();
                         }, 500);
                     },
-                    function error(reason: string) {
-                        App.contents.send('end-waiting');
-                        dialog.showMessageBox({ type: 'error', message: reason });
+                    (reason: string) => {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.showMessage({ type: 'error', message: reason });
                     }
                 );
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     static getCleaningProgress(): void {
         App.sendRequest({ command: 'cleaningProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static splitFile(): void {
-        splitFileWindow = new BrowserWindow({
+        App.splitFileWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('splitFileWindow'),
-            height: App.getHeight('splitFileWindow'),
+            width: 504,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -1813,38 +1957,40 @@ class App {
                 nodeIntegration: true
             }
         });
-        splitFileWindow.setMenu(null);
-        splitFileWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'splitFile.html'));
-        splitFileWindow.show();
+        App.splitFileWindow.setMenu(null);
+        App.splitFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'splitFile.html'));
+        App.splitFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     splitTmx(arg: any): void {
-        splitFileWindow.close();
+        App.splitFileWindow.close();
         arg.command = 'splitFile';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Splitting...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Splitting...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showMessageBox(App.mainWindow, { type: 'info', message: 'File split' });
+                        App.showMessage({ type: 'info', message: 'File split' });
                         return;
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'replaceText'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error splitting file');
                         return;
@@ -1852,18 +1998,18 @@ class App {
                     App.getSplitProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getSplitProgress(): void {
         App.sendRequest({ command: 'getSplitProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
+            (reason: string) => {
                 console.log(reason);
             }
         );
@@ -1877,20 +2023,19 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('tmx-file', value.filePaths[0]);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     static mergeFiles(): void {
-        mergeFilesWindow = new BrowserWindow({
+        App.mergeFilesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('mergeFilesWindow'),
-            height: App.getHeight('mergeFilesWindow'),
+            width: 560,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -1901,59 +2046,61 @@ class App {
                 nodeIntegration: true
             }
         });
-        mergeFilesWindow.setMenu(null);
-        mergeFilesWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'mergeFiles.html'));
-        mergeFilesWindow.show();
+        App.mergeFilesWindow.setMenu(null);
+        App.mergeFilesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
+        App.mergeFilesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     mergeTmxFiles(arg: any): void {
-        mergeFilesWindow.close();
-        App.contents.send('start-waiting');
+        App.mergeFilesWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
         arg.command = 'mergeFiles';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Merging...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Merging...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showMessageBox(App.mainWindow, { type: 'info', message: 'Files merged' });
+                        App.showMessage({ type: 'info', message: 'Files merged' });
                         return;
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'mergeFiles'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', 'Unknown error merging files');
+                        App.showMessage({ type: 'error', message: 'Unknown error merging files' });
                         return;
                     }
                     App.getMergeProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getMergeProgress(): void {
         App.sendRequest({ command: 'getMergeProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
+            (reason: string) => {
                 console.log(reason);
             }
         );
@@ -1963,14 +2110,14 @@ class App {
         if (App.currentFile === '') {
             return;
         }
-        App.contents.send('save-edit');
+        App.mainWindow.webContents.send('save-edit');
     }
 
     static cancelEdit(): void {
         if (App.currentFile === '') {
             return;
         }
-        App.contents.send('cancel-edit');
+        App.mainWindow.webContents.send('cancel-edit');
     }
 
     addTmxFiles(event: IpcMainEvent): void {
@@ -1981,12 +2128,12 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('tmx-files', value.filePaths);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
@@ -1998,42 +2145,41 @@ class App {
                 { name: 'TMX File', extensions: ['tmx'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
-        }).then(function (value: any) {
+        }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('merged-tmx-file', value.filePath);
             }
-        }).catch(function (error: Error) {
-            dialog.showErrorBox('Error', error.message);
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
         });
     }
 
     saveData(event: IpcMainEvent, arg: any): void {
         arg.command = 'saveTuvData';
         App.sendRequest(arg,
-            function (data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     App.mainWindow.setDocumentEdited(true);
                     App.saved = false;
                     event.sender.send('data-saved', data);
                     return;
                 }
-                dialog.showMessageBox({ type: 'error', message: data.reason });
+                App.showMessage({ type: 'error', message: data.reason });
             },
-            function (reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static replaceText(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        replaceTextWindow = new BrowserWindow({
+        App.replaceTextWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('replaceTextWindow'),
-            height: App.getHeight('replaceTextWindow'),
+            width: 450,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2044,23 +2190,25 @@ class App {
                 nodeIntegration: true
             }
         });
-        replaceTextWindow.setMenu(null);
-        replaceTextWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'searchReplace.html'));
-        replaceTextWindow.show();
+        App.replaceTextWindow.setMenu(null);
+        App.replaceTextWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'searchReplace.html'));
+        App.replaceTextWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     replaceRequest(arg: any): void {
-        replaceTextWindow.close();
-        App.contents.send('start-waiting');
+        App.replaceTextWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
         arg.command = 'replaceText';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Replacing...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Replacing...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.getCount();
@@ -2070,36 +2218,36 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'replaceText'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', 'Unknown error replacing text');
+                        App.showMessage({ type: 'error', message: 'Unknown error replacing text' });
                         return;
                     }
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getProcessingProgress(): void {
         App.sendRequest({ command: 'processingProgress' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
             },
-            function error(reason: string) {
+            (reason: string) => {
                 console.log(reason);
             }
         );
@@ -2107,13 +2255,12 @@ class App {
 
     static sortUnits() {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        sortUnitsWindow = new BrowserWindow({
+        App.sortUnitsWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('sortUnitsWindow'),
-            height: App.getHeight('sortUnitsWindow'),
+            width: 450,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2124,34 +2271,35 @@ class App {
                 nodeIntegration: true
             }
         });
-        sortUnitsWindow.setMenu(null);
-        sortUnitsWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'sortUnits.html'));
-        sortUnitsWindow.show();
+        App.sortUnitsWindow.setMenu(null);
+        App.sortUnitsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'sortUnits.html'));
+        App.sortUnitsWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     setSort(arg: any): void {
-        sortOptions = arg;
-        sortUnitsWindow.close();
+        App.sortOptions = arg;
+        App.sortUnitsWindow.close();
         App.loadSegments();
-        App.contents.send('sort-on');
+        App.mainWindow.webContents.send('sort-on');
     }
 
     clearSort(): void {
-        sortOptions = {};
-        sortUnitsWindow.close();
+        App.sortOptions = {};
+        App.sortUnitsWindow.close();
         App.loadSegments();
-        App.contents.send('sort-off');
+        App.mainWindow.webContents.send('sort-off');
     }
 
     static showFilters(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        filtersWindow = new BrowserWindow({
+        App.filtersWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('filtersWindow'),
-            height: App.getHeight('filtersWindow'),
+            width: 520,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2162,63 +2310,69 @@ class App {
                 nodeIntegration: true
             }
         });
-        filtersWindow.setMenu(null);
-        filtersWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'filters.html'));
-        filtersWindow.show();
+        App.filtersWindow.setMenu(null);
+        App.filtersWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'filters.html'));
+        App.filtersWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     setFilterOptions(arg: any): void {
-        filterOptions = arg;
-        filtersWindow.close();
+        App.filterOptions = arg;
+        App.filtersWindow.close();
         this.setFirstPage();
         App.loadSegments();
-        App.contents.send('filters-on');
+        App.mainWindow.webContents.send('filters-on');
     }
 
     setFirstPage(): void {
-        loadOptions.start = 0;
-        App.contents.send('set-first-page');
+        App.loadOptions.start = 0;
+        App.mainWindow.webContents.send('set-first-page');
     }
 
     clearFilterOptions(): void {
-        filterOptions = {};
-        filtersWindow.close();
+        App.filterOptions = {};
+        App.filtersWindow.close();
         this.setFirstPage();
         App.loadSegments();
-        App.contents.send('filters-off');
+        App.mainWindow.webContents.send('filters-off');
     }
 
     static insertUnit(): void {
+        if (App.currentFile === '') {
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
+            return;
+        }
         App.sendRequest({ command: 'insertUnit' },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
-                    App.contents.send('unit-inserted', data.id);
+                    App.mainWindow.webContents.send('unit-inserted', data.id);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static requestDeleteUnits(): void {
-        App.contents.send('request-delete');
+        App.mainWindow.webContents.send('request-delete');
     }
 
     deleteUnits(arg: any): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
         var selected: string[] = arg;
         if (selected.length === 0) {
-            dialog.showMessageBox({ type: 'warning', message: 'Select units' });
+            App.showMessage({ type: 'warning', message: 'Select units' });
             return;
         }
         App.sendRequest({ command: 'deleteUnits', selected },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     App.getFileLanguages();
                     App.getCount();
@@ -2226,40 +2380,39 @@ class App {
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static firstPage(): void {
-        App.contents.send('first-page');
+        App.mainWindow.webContents.send('first-page');
     }
 
     static previousPage(): void {
-        App.contents.send('previous-page');
+        App.mainWindow.webContents.send('previous-page');
     }
 
     static nextPage(): void {
-        App.contents.send('next-page');
+        App.mainWindow.webContents.send('next-page');
     }
 
     static lastPage(): void {
-        App.contents.send('last-page');
+        App.mainWindow.webContents.send('last-page');
     }
 
     static changeLanguageCode(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        changeLanguageWindow = new BrowserWindow({
+        App.changeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('changeLanguageWindow'),
-            height: App.getHeight('changeLanguageWindow'),
+            width: 490,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2270,22 +2423,24 @@ class App {
                 nodeIntegration: true
             }
         });
-        changeLanguageWindow.setMenu(null);
-        changeLanguageWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'changeLanguage.html'));
-        changeLanguageWindow.show();
+        App.changeLanguageWindow.setMenu(null);
+        App.changeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'changeLanguage.html'));
+        App.changeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     changeLanguage(arg: any): void {
-        changeLanguageWindow.close();
+        App.changeLanguageWindow.close();
         arg.command = 'changeLanguage';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Changing...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Changing...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.getFileLanguages();
                         App.loadSegments();
@@ -2295,53 +2450,52 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'replaceText'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', 'Unknown error changing language code');
+                        App.showMessage({ type: 'error', message: 'Unknown error changing language code' });
                         return;
                     }
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     allLanguages(event: IpcMainEvent): void {
         App.sendRequest({ command: 'getAllLanguages' },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     event.sender.send('languages-list', data.languages);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showRemoveLanguage(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        removeLanguageWindow = new BrowserWindow({
+        App.removeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('removeLanguageWindow'),
-            height: App.getHeight('removeLanguageWindow'),
+            width: 420,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2352,39 +2506,40 @@ class App {
                 nodeIntegration: true
             }
         });
-        removeLanguageWindow.setMenu(null);
-        removeLanguageWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'removeLanguage.html'));
-        removeLanguageWindow.show();
+        App.removeLanguageWindow.setMenu(null);
+        App.removeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeLanguage.html'));
+        App.removeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     removeLanguage(arg: any): void {
-        removeLanguageWindow.close();
+        App.removeLanguageWindow.close();
         App.sendRequest({ command: 'removeLanguage', lang: arg },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     App.getFileLanguages();
                     App.loadSegments();
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showAddLanguage(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        addLanguageWindow = new BrowserWindow({
+        App.addLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('addLanguageWindow'),
-            height: App.getHeight('addLanguageWindow'),
+            width: 420,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2395,39 +2550,40 @@ class App {
                 nodeIntegration: true
             }
         });
-        addLanguageWindow.setMenu(null);
-        addLanguageWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'addLanguage.html'));
-        addLanguageWindow.show();
+        App.addLanguageWindow.setMenu(null);
+        App.addLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addLanguage.html'));
+        App.addLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     addLanguage(arg: any): void {
-        addLanguageWindow.close();
+        App.addLanguageWindow.close();
         App.sendRequest({ command: 'addLanguage', lang: arg },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     App.getFileLanguages();
                     App.loadSegments();
                     App.saved = false;
                     App.mainWindow.setDocumentEdited(true);
                 } else {
-                    dialog.showMessageBox({ type: 'error', message: data.reason });
+                    App.showMessage({ type: 'error', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showChangeSourceLanguage(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        srcLanguageWindow = new BrowserWindow({
+        App.srcLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('srcLanguageWindow'),
-            height: App.getHeight('srcLanguageWindow'),
+            width: 420,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2438,40 +2594,42 @@ class App {
                 nodeIntegration: true
             }
         });
-        srcLanguageWindow.setMenu(null);
-        srcLanguageWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'srcLanguage.html'));
-        srcLanguageWindow.show();
+        App.srcLanguageWindow.setMenu(null);
+        App.srcLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
+        App.srcLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     getSourceLanguage(event: IpcMainEvent): void {
         App.sendRequest({ command: 'getSrcLanguage' },
-            function success(data: any) {
+            (data: any) => {
                 if (data.status === SUCCESS) {
                     event.sender.send('set-source-language', data);
                 } else {
-                    dialog.showMessageBox({ type: 'warning', message: data.reason });
+                    App.showMessage({ type: 'warning', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static removeTags(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'removeTags' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Removing tags...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Removing tags...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.saved = false;
@@ -2480,16 +2638,16 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'removeDuplicates'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error removing tags');
                         return;
@@ -2497,43 +2655,43 @@ class App {
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     changeSourceLanguage(arg: any): void {
-        srcLanguageWindow.close();
+        App.srcLanguageWindow.close();
         App.sendRequest({ command: 'setSrcLanguage', lang: arg },
-            function success(data: any) {
+            (data: any) => {
                 App.saved = false;
                 App.mainWindow.setDocumentEdited(true);
                 if (data.status !== SUCCESS) {
-                    dialog.showMessageBox({ type: 'warning', message: data.reason });
+                    App.showMessage({ type: 'warning', message: data.reason });
                 }
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static removeDuplicates(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'removeDuplicates' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Removing duplicates...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Removing duplicates...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.getCount();
@@ -2543,16 +2701,16 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'removeDuplicates'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error removing duplicates');
                         return;
@@ -2560,33 +2718,32 @@ class App {
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static getCount(): void {
         App.sendRequest({ command: 'getCount' },
-            function success(data: any) {
-                App.contents.send('status-changed', data);
+            (data: any) => {
+                App.mainWindow.webContents.send('status-changed', data);
             },
-            function error(reason: string) {
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showRemoveUntranslated(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        removeUntranslatedWindow = new BrowserWindow({
+        App.removeUntranslatedWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('removeUntranslatedWindow'),
-            height: App.getHeight('removeUntranslatedWindow'),
+            width: 470,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2597,23 +2754,25 @@ class App {
                 nodeIntegration: true
             }
         });
-        removeUntranslatedWindow.setMenu(null);
-        removeUntranslatedWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'removeUntranslated.html'));
-        removeUntranslatedWindow.show();
+        App.removeUntranslatedWindow.setMenu(null);
+        App.removeUntranslatedWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeUntranslated.html'));
+        App.removeUntranslatedWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     removeUntranslated(arg: any): void {
-        removeUntranslatedWindow.close();
-        App.contents.send('start-waiting');
+        App.removeUntranslatedWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
         arg.command = 'removeUntranslated';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Removing units...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Removing units...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.getCount();
@@ -2623,16 +2782,16 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'removeUntranslated'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error removing untranslated units');
                         return;
@@ -2640,27 +2799,27 @@ class App {
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static removeSpaces(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
-        App.contents.send('start-waiting');
+        App.mainWindow.webContents.send('start-waiting');
         App.sendRequest({ command: 'removeSpaces' },
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Removing spaces...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Removing spaces...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.saved = false;
@@ -2669,16 +2828,16 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'removeSpaces'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error removing spaces');
                         return;
@@ -2686,26 +2845,25 @@ class App {
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
 
     static showConsolidateUnits(): void {
         if (App.currentFile === '') {
-            dialog.showMessageBox({ type: 'warning', message: 'Open a TMX file' });
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
             return;
         }
         if (App.fileLanguages.length < 3) {
-            dialog.showMessageBox({ type: 'warning', message: 'File must have at least 3 languages' });
+            App.showMessage({ type: 'warning', message: 'File must have at least 3 languages' });
             return;
         }
-        consolidateWindow = new BrowserWindow({
+        App.consolidateWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: App.getWidth('consolidateWindow'),
-            height: App.getHeight('consolidateWindow'),
+            width: 470,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
@@ -2716,23 +2874,25 @@ class App {
                 nodeIntegration: true
             }
         });
-        consolidateWindow.setMenu(null);
-        consolidateWindow.loadURL(App.path.join('file://', app.getAppPath(), 'html', 'consolidateUnits.html'));
-        consolidateWindow.show();
+        App.consolidateWindow.setMenu(null);
+        App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidateUnits.html'));
+        App.consolidateWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            event.sender.send('get-height');
+        });
     }
 
     consolidateUnits(arg: any): void {
-        consolidateWindow.close();
-        App.contents.send('start-waiting');
+        App.consolidateWindow.close();
+        App.mainWindow.webContents.send('start-waiting');
         arg.command = 'consolidateUnits';
         App.sendRequest(arg,
-            function success(data: any) {
+            (data: any) => {
                 App.currentStatus = data;
-                App.contents.send('set-status', 'Consolidating...');
-                var intervalObject = setInterval(function () {
+                App.mainWindow.webContents.send('set-status', 'Consolidating...');
+                var intervalObject = setInterval(() => {
                     if (App.currentStatus.status === COMPLETED) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.getCount();
@@ -2740,16 +2900,16 @@ class App {
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
                     } else if (App.currentStatus.status === ERROR) {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
-                        dialog.showErrorBox('Error', App.currentStatus.reason);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
                         return;
                     } else if (App.currentStatus.status === SUCCESS) {
                         // ignore status from 'consolidateUnits'
                     } else {
-                        App.contents.send('end-waiting');
-                        App.contents.send('set-status', '');
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error consolidating units');
                         return;
@@ -2757,9 +2917,9 @@ class App {
                     App.getProcessingProgress();
                 }, 500);
             },
-            function error(reason: string) {
-                App.contents.send('end-waiting');
-                dialog.showMessageBox({ type: 'error', message: reason });
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
             }
         );
     }
@@ -2775,17 +2935,10 @@ class App {
                     try {
                         const parsedData = JSON.parse(rawData);
                         if (app.getVersion() !== parsedData.version) {
-                            dialog.showMessageBox(App.mainWindow, {
-                                type: 'info',
-                                title: 'Updates Available',
-                                message: 'Version ' + parsedData.version + ' is available'
-                            });
+                            App.showMessage({ type: 'info', message: 'Version ' + parsedData.version + ' is available' });
                         } else {
                             if (!silent) {
-                                dialog.showMessageBox(App.mainWindow, {
-                                    type: 'info',
-                                    message: 'There are currently no updates available'
-                                });
+                                App.showMessage({ type: 'info', message: 'There are currently no updates available' });
                             }
                         }
                     } catch (e) {
@@ -2811,197 +2964,6 @@ class App {
     static showSupportGroup(): void {
         shell.openExternal('https://groups.io/g/maxprograms/');
     }
-
-    static getWidth(window: string): number {
-        switch (process.platform) {
-            case 'win32': {
-                switch (window) {
-                    case 'aboutWindow': { return 620; }
-                    case 'replaceTextWindow': { return 450; }
-                    case 'filtersWindow': { return 520; }
-                    case 'consolidateWindow': { return 470; }
-                    case 'removeUntranslatedWindow': { return 470; }
-                    case 'settingsWindow': { return 400; }
-                    case 'sortUnitsWindow': { return 450; }
-                    case 'changeLanguageWindow': { return 490; }
-                    case 'newFileWindow': { return 480; }
-                    case 'addLanguageWindow': { return 420; }
-                    case 'removeLanguageWindow': { return 420; }
-                    case 'srcLanguageWindow': { return 420; }
-                    case 'splitFileWindow': { return 504 }
-                    case 'mergeFilesWindow': { return 560 }
-                    case 'licensesWindow': { return 500; }
-                    case 'convertCSV': { return 600; }
-                    case 'csvLanguages': { return 600; }
-                    case 'attributesWindow': { return 630; }
-                    case 'propertiesWindow': { return 500; }
-                    case 'addPropertyWindow': { return 350; }
-                    case 'notesWindow': { return 500; }
-                    case 'addNotesWindow': { return 350; }
-                    case 'registerSubscriptionWindow': { return 650; }
-                    case 'registerExpiredWindow': { return 550; }
-                    case 'requestEvaluationWindow': { return 450; }
-                }
-                break;
-            }
-            case 'darwin': {
-                switch (window) {
-                    case 'aboutWindow': { return 620; }
-                    case 'replaceTextWindow': { return 450; }
-                    case 'filtersWindow': { return 500; }
-                    case 'consolidateWindow': { return 470; }
-                    case 'removeUntranslatedWindow': { return 470; }
-                    case 'settingsWindow': { return 400; }
-                    case 'sortUnitsWindow': { return 450; }
-                    case 'changeLanguageWindow': { return 490; }
-                    case 'newFileWindow': { return 480; }
-                    case 'addLanguageWindow': { return 420; }
-                    case 'removeLanguageWindow': { return 420; }
-                    case 'srcLanguageWindow': { return 420; }
-                    case 'splitFileWindow': { return 500 }
-                    case 'mergeFilesWindow': { return 560 }
-                    case 'licensesWindow': { return 500; }
-                    case 'convertCSV': { return 600; }
-                    case 'csvLanguages': { return 600; }
-                    case 'attributesWindow': { return 630; }
-                    case 'propertiesWindow': { return 500; }
-                    case 'addPropertyWindow': { return 350; }
-                    case 'notesWindow': { return 500; }
-                    case 'addNotesWindow': { return 350; }
-                    case 'registerSubscriptionWindow': { return 650; }
-                    case 'registerExpiredWindow': { return 550; }
-                    case 'requestEvaluationWindow': { return 450; }
-                }
-                break;
-            }
-            case 'linux': {
-                switch (window) {
-                    case 'aboutWindow': { return 620; }
-                    case 'replaceTextWindow': { return 450; }
-                    case 'filtersWindow': { return 520; }
-                    case 'consolidateWindow': { return 470; }
-                    case 'removeUntranslatedWindow': { return 470; }
-                    case 'settingsWindow': { return 400; }
-                    case 'sortUnitsWindow': { return 450; }
-                    case 'changeLanguageWindow': { return 490; }
-                    case 'newFileWindow': { return 480; }
-                    case 'addLanguageWindow': { return 420; }
-                    case 'removeLanguageWindow': { return 420; }
-                    case 'srcLanguageWindow': { return 420; }
-                    case 'splitFileWindow': { return 500 }
-                    case 'mergeFilesWindow': { return 560 }
-                    case 'licensesWindow': { return 500; }
-                    case 'convertCSV': { return 600; }
-                    case 'csvLanguages': { return 600; }
-                    case 'attributesWindow': { return 630; }
-                    case 'propertiesWindow': { return 500; }
-                    case 'addPropertyWindow': { return 350; }
-                    case 'notesWindow': { return 500; }
-                    case 'addNotesWindow': { return 350; }
-                    case 'registerSubscriptionWindow': { return 650; }
-                    case 'registerExpiredWindow': { return 550; }
-                    case 'requestEvaluationWindow': { return 450; }
-                }
-                break;
-            }
-        }
-    }
-
-    static getHeight(window: string): number {
-        switch (process.platform) {
-            case 'win32': {
-                switch (window) {
-                    case 'aboutWindow': { return 380; }
-                    case 'replaceTextWindow': { return 210; }
-                    case 'filtersWindow': { return 310; }
-                    case 'consolidateWindow': { return 120; }
-                    case 'removeUntranslatedWindow': { return 120; }
-                    case 'settingsWindow': { return 190; }
-                    case 'sortUnitsWindow': { return 150; }
-                    case 'changeLanguageWindow': { return 160; }
-                    case 'newFileWindow': { return 160; }
-                    case 'addLanguageWindow': { return 120; }
-                    case 'removeLanguageWindow': { return 120; }
-                    case 'srcLanguageWindow': { return 120; }
-                    case 'splitFileWindow': { return 150; }
-                    case 'mergeFilesWindow': { return 430; }
-                    case 'licensesWindow': { return 360; }
-                    case 'convertCSV': { return 520; }
-                    case 'csvLanguages': { return 280; }
-                    case 'attributesWindow': { return 380; }
-                    case 'propertiesWindow': { return 300; }
-                    case 'addPropertyWindow': { return 170; }
-                    case 'notesWindow': { return 300; }
-                    case 'addNotesWindow': { return 140; }
-                    case 'registerSubscriptionWindow': { return 270; }
-                    case 'registerExpiredWindow': { return 250; }
-                    case 'requestEvaluationWindow': { return 260; }
-                }
-                break;
-            }
-            case 'darwin': {
-                switch (window) {
-                    case 'aboutWindow': { return 360; }
-                    case 'replaceTextWindow': { return 190; }
-                    case 'filtersWindow': { return 290; }
-                    case 'consolidateWindow': { return 110; }
-                    case 'removeUntranslatedWindow': { return 110; }
-                    case 'settingsWindow': { return 180; }
-                    case 'sortUnitsWindow': { return 140; }
-                    case 'changeLanguageWindow': { return 150; }
-                    case 'newFileWindow': { return 150; }
-                    case 'addLanguageWindow': { return 110; }
-                    case 'removeLanguageWindow': { return 110; }
-                    case 'srcLanguageWindow': { return 110; }
-                    case 'splitFileWindow': { return 150; }
-                    case 'mergeFilesWindow': { return 420; }
-                    case 'licensesWindow': { return 350; }
-                    case 'convertCSV': { return 530; }
-                    case 'csvLanguages': { return 270; }
-                    case 'attributesWindow': { return 370; }
-                    case 'propertiesWindow': { return 290; }
-                    case 'addPropertyWindow': { return 160; }
-                    case 'notesWindow': { return 290; }
-                    case 'addNotesWindow': { return 120; }
-                    case 'registerSubscriptionWindow': { return 250; }
-                    case 'registerExpiredWindow': { return 240; }
-                    case 'requestEvaluationWindow': { return 240; }
-                }
-                break;
-            }
-            case 'linux': {
-                switch (window) {
-                    case 'aboutWindow': { return 350; }
-                    case 'replaceTextWindow': { return 210; }
-                    case 'filtersWindow': { return 295; }
-                    case 'consolidateWindow': { return 110; }
-                    case 'removeUntranslatedWindow': { return 110; }
-                    case 'settingsWindow': { return 180; }
-                    case 'sortUnitsWindow': { return 140; }
-                    case 'changeLanguageWindow': { return 140; }
-                    case 'newFileWindow': { return 140; }
-                    case 'addLanguageWindow': { return 110; }
-                    case 'removeLanguageWindow': { return 110; }
-                    case 'srcLanguageWindow': { return 110; }
-                    case 'splitFileWindow': { return 160; }
-                    case 'mergeFilesWindow': { return 420; }
-                    case 'licensesWindow': { return 350; }
-                    case 'convertCSV': { return 530; }
-                    case 'csvLanguages': { return 270; }
-                    case 'attributesWindow': { return 380; }
-                    case 'propertiesWindow': { return 300; }
-                    case 'addPropertyWindow': { return 160; }
-                    case 'notesWindow': { return 300; }
-                    case 'addNotesWindow': { return 130; }
-                    case 'registerSubscriptionWindow': { return 250; }
-                    case 'registerExpiredWindow': { return 240; }
-                    case 'requestEvaluationWindow': { return 240; }
-                }
-                break;
-            }
-        }
-    }
-
 }
 
 new App(process.argv);

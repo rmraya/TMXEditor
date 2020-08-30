@@ -29,16 +29,12 @@ class AddProperty {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.saveProperty();
-            }
-        });
         document.getElementById('saveProperty').addEventListener('click', () => {
             this.saveProperty();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('addProperty-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 

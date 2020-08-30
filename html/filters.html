@@ -8,41 +8,51 @@
 </head>
 
 <body id="body">
-    <div>
-        <div>
-            <div style="padding:4px;">
-                <label for="filterText">Text to Search</label>
-                <input type="text" id="filterText" style="width: 350px;" value="">
-            </div>
-            <div style="padding:4px;">
-                <label for="filterLanguage">Filter Language</label>
-                <select id="filterLanguage" style="width: 300px;">
+    <table>
+        <tr>
+            <td class="middle noWrap"><label for="filterText">Text to Search</label></td>
+            <td class="middle fill_width"><input type="text" id="filterText" class="table_input"></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="filterLanguage">Filter Language</label></td>
+            <td class="middle fill_width">
+                <select id="filterLanguage" class="fill_width">
                 </select>
-            </div>
+            </td>
+        </tr>
+    </table>
 
-            <h4 style="padding-left: 4px; margin: 4px;">Filter Options</h4>
+    <h4 style="padding-left: 4px; margin: 4px;">Filter Options</h4>
 
-            <div class="paddedArea optionBox">
-                <div style="padding:4px;">
-                    <input type="checkbox" id="regularExpression">
-                    <label for="regularExpression">Regular Expression</label><br>
-                    <input type="checkbox" id="caseSensitiveFilter">
-                    <label for="caseSensitiveFilter">Case Sensitive Search</label><br>
-                    <input type="checkbox" id="filterUntranslated" >
-                    <label for="filterUntranslated">Show Untranslated Units Only</label>
-                </div>
-                <div style="padding:4px;">
-                    <label for="sourceLanguage">Source Language</label>
-                    <select id="sourceLanguage" style="width: 300px;" disabled>
+    <div class="paddedArea optionBox">
+        <div class="row">
+            <input type="checkbox" id="regularExpression">
+            <label for="regularExpression" class="noWrap" style="padding-top:4px;">Regular Expression</label>
+        </div>
+        <div class="row">
+            <input type="checkbox" id="caseSensitiveFilter">
+            <label for="caseSensitiveFilter" class="noWrap" style="padding-top:4px;">Case Sensitive Search</label><br>
+        </div>
+        <div class="row">
+            <input type="checkbox" id="filterUntranslated">
+            <label for="filterUntranslated" class="noWrap" style="padding-top:4px;">Show Untranslated Units Only</label>
+        </div>
+        <table>
+            <tr>
+                <td class="middle noWrap"><label for="sourceLanguage">Source Language</label></td>
+                <td class="middle fill_width">
+                    <select id="sourceLanguage" class="fill_width" disabled>
                     </select>
-                </div>
-            </div>
-        </div>
-        <div class="buttonArea">
-            <button id="applyFilters">Apply Filters</button>
-            <button id="clearFilters">Clear Filters</button>
-        </div>
+                </td>
+            </tr>
+        </table>
     </div>
+
+    <div class="buttonArea">
+        <button id="applyFilters">Apply Filters</button>
+        <button id="clearFilters">Clear Filters</button>
+    </div>
+
     <script src="../js/filters.js"></script>
 </body>
 

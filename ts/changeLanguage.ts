@@ -34,16 +34,17 @@ class ChangeLanguages {
             this.languageList(arg)
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
             if (event.key === 'Enter') {
                 this.changeLanguage();
             }
         });
         document.getElementById('changeLanguage').addEventListener('click', () => {
             this.changeLanguage();
-        })
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('changeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        });
     }
 
     languageList(arg: any): void {

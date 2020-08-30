@@ -65,6 +65,7 @@ import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.XMLOutputter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
@@ -146,7 +147,11 @@ public class TMXService implements TMXServiceInterface {
 				}
 				JSONObject json = new JSONObject(builder.toString());
 				if (json.has("threshold")) {
-					threshold = json.getLong("threshold");
+					try {
+						threshold = json.getLong("threshold");
+					} catch (JSONException e) {
+						threshold = 100l;
+					}
 				}
 			}
 		}
@@ -1381,7 +1386,7 @@ public class TMXService implements TMXServiceInterface {
 		if (delimitersOk(lines, columnsSeparator, textDelimiter, optionalDelims)) {
 			if (languages.isEmpty()) {
 				String line = lines.get(0);
-				String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter, optionalDelims);
+				String[] parts = TMXConverter.getParts(line, columnsSeparator, textDelimiter, optionalDelims);
 
 				try {
 					boolean hasLanguages = true;
@@ -1428,7 +1433,7 @@ public class TMXService implements TMXServiceInterface {
 			Iterator<String> it = lines.iterator();
 			while (it.hasNext()) {
 				String line = it.next();
-				String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter,   optionalDelims);
+				String[] parts = TMXConverter.getParts(line, columnsSeparator, textDelimiter, optionalDelims);
 
 				cols = parts.length;
 				builder.append("<tr>");
@@ -1607,8 +1612,8 @@ public class TMXService implements TMXServiceInterface {
 		String delimiter = "";
 		while (it.hasNext()) {
 			String line = it.next();
-			String[] parts = TMXConverter.getParts( line, columnsSeparator,  textDelimiter,   optionalDelims);
-			
+			String[] parts = TMXConverter.getParts(line, columnsSeparator, textDelimiter, optionalDelims);
+
 			if (!textDelimiter.isEmpty() && !optionalDelims) {
 				for (int i = 0; i < parts.length; i++) {
 					if (!parts[i].startsWith(textDelimiter)) {

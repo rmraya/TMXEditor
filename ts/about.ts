@@ -33,10 +33,9 @@ class About {
         document.getElementById('licenses').addEventListener('click', () => {
             this.electron.ipcRenderer.send('licenses-clicked');
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('about-height', { width: body.clientWidth, height: body.clientHeight });
         });
     }
 }

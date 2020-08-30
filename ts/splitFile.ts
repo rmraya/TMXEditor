@@ -29,19 +29,15 @@ class SplitFile {
         this.electron.ipcRenderer.on('tmx-file', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('file') as HTMLInputElement).value = arg;
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                window.close();
-            }
-            if (event.key === 'Enter') {
-                this.splitFile();
-            }
-        });
-        document.getElementById('browseFiles').addEventListener('click',()=> {
+        document.getElementById('browseFiles').addEventListener('click', () => {
             this.browseFiles();
         });
-        document.getElementById('splitFile').addEventListener('click',()=>{
+        document.getElementById('splitFile').addEventListener('click', () => {
             this.splitFile();
+        });
+        this.electron.ipcRenderer.on('get-height', () => {
+            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+            this.electron.ipcRenderer.send('splitFile-height', { width: body.clientWidth, height: body.clientHeight + 10 });
         });
     }
 
