@@ -2,7 +2,7 @@
 
 ![TMXEditor logo](https://www.maxprograms.com/images/tmxeditor_s.png)
 
-TMXEditor is an open source desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
+TMXEditor is a desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
 
 TMX is a standard XML-based format used for exchanging Translation Memories used by CAT (Computer Assisted Translation) tools. TMXEditor allows editing the content of multilingual TMX files.
 
@@ -17,11 +17,11 @@ TMXEditor is available in two modes:
 - Personal Use of Source Code
 - Yearly Subscriptions
 
-### Open Source
+### Personal Use of Source Code
 
 Source code of TMXEditor is free for personal use. Anyone can download the source code, compile, modify and use it at no cost in compliance with the accompanying license terms.
 
-You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the open source version there.
+You can subscribe to [Maxprograms Support](https://groups.io/g/maxprograms/) at Groups.io and request peer assistance for the source code version there.
 
 ### Subscriptions
 
@@ -32,7 +32,7 @@ The version of TMXEditor included in the official installers from [TMXEditor's H
 Subscription version includes unlimited email support at tech@maxprograms.com
 
 ### Differences sumary
-Differences | Open Source | Subscription Based
+Differences | Source Code | Subscription Based
 -|----------- | -------------
 Ready To Use Installers| No | Yes
 Notarized macOS launcher| No | Yes
