@@ -64,6 +64,30 @@ public class TmxUtils {
 		// empty for security
 	}
 
+	public static String replaceTags(String string) {
+		String source = string.replace("&nbsp;", "\u00A0").replace("<br>", "\n");
+		int index = source.indexOf("<img ");
+		int tagNumber = 0;
+		List<String> currentTags = new ArrayList<>();
+		while (index >= 0) {
+			String start = source.substring(0, index);
+			String rest = source.substring(index + 1);
+			int end = rest.indexOf('>');
+			String tag = '<' + rest.substring(0, end) + ">";
+			currentTags.add(tag);
+			source = start + "[[" + tagNumber++ + "]]" + rest.substring(end + 1);
+			index = source.indexOf("<img ");
+		}
+		for (int i = 0; i < currentTags.size(); i++) {
+			String tag = currentTags.get(i);
+			int start = tag.indexOf("title=\"");
+			int end = tag.indexOf("\"", start + 7);
+			String code = tag.substring(start + 7, end);
+			source = source.replace("[[" + i + "]]", restoreAngles(code));
+		}
+		return source;
+	}
+
 	public static String pureText(Element seg, boolean clearTags, String filterText, boolean caseSensitive,
 			boolean regExp) throws IOException {
 		if (seg == null) {
@@ -248,6 +272,13 @@ public class TmxUtils {
 		return res;
 	}
 
+	private static String restoreAngles(String string) {
+		String res = string.replace("\u200B\u2039", "<");
+		res = res.replace("\u200B\u203A", ">");
+		res = res.replace("\u200B\u2033", "\"");
+		return res.replace("&amp;", "&");
+	}
+
 	private static String getTail(Element e) {
 		return "</" + e.getName() + ">";
 	}
@@ -356,7 +387,7 @@ public class TmxUtils {
 		int start = 0;
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if (Character.isSpaceChar(c) || c == '\n' || c == '\t' || c == 'r') {
+			if (Character.isWhitespace(c)) {
 				start++;
 			} else {
 				break;
@@ -365,7 +396,7 @@ public class TmxUtils {
 		int end = text.length();
 		for (int i = text.length(); i > 0; i--) {
 			char c = text.charAt(i - 1);
-			if (Character.isSpaceChar(c) || c == '\n' || c == '\t' || c == 'r') {
+			if (Character.isWhitespace(c)) {
 				end = i - 1;
 			} else {
 				break;

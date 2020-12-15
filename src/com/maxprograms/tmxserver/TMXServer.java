@@ -53,7 +53,7 @@ public class TMXServer implements HttpHandler {
 	public TMXServer(Integer port) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
 		server.createContext("/TMXServer", this);
-		server.setExecutor(new ThreadPoolExecutor(3, 10, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100)));
+		server.setExecutor(new ThreadPoolExecutor(3, 10, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100)));
 		service = new TMXService();
 	}
 

@@ -40,10 +40,16 @@ class CsvLanguages {
         document.getElementById('setCsvLanguages').addEventListener('click', () => {
             this.setCsvLanguages();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('csvLanguages-height', { width: body.clientWidth, height: body.clientHeight + 20 });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.setCsvLanguages();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-csvLanguages');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('csvLanguages-height', { width: body.clientWidth, height: body.clientHeight + 10 });
     }
 
     setCsvLanguages(): void {
@@ -53,7 +59,7 @@ class CsvLanguages {
             if (lang !== 'none') {
                 langs.push(lang);
             } else {
-                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages' });
+                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages', parent: 'csvLanguages' });
                 return;
             }
         }
@@ -72,7 +78,7 @@ class CsvLanguages {
         this.columns = arg.columns;
         var rows: string = '';
         for (let i = 0; i < this.columns; i++) {
-            rows = rows + '<tr><td class="noWrap">Column ' + i + '</td><td><select id="lang_' + i + '">' + this.options + '</select></td></tr>'
+            rows = rows + '<tr><td class="noWrap middle">Column ' + i + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
         }
         document.getElementById('langsTable').innerHTML = rows;
         var langs: string[] = arg.languages;

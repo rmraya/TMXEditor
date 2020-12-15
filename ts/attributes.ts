@@ -39,10 +39,16 @@ class Attributes {
         document.getElementById('saveAttributes').addEventListener('click', () => {
             this.saveAttributes();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('attributes-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.saveAttributes();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-attributes');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('attributes-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     setUnitAttributes(arg: any): void {

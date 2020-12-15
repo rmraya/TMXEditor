@@ -33,10 +33,17 @@ class Preferences {
         document.getElementById('savePreferences').addEventListener('click', () => {
             this.savePreferences();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('preferences-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.savePreferences();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-preferences');
+            }
         });
+        document.getElementById('themeColor') .focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('preferences-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     setPreferences(arg: any): void {

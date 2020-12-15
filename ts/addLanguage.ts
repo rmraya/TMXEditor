@@ -33,10 +33,17 @@ class AddLanguage {
         document.getElementById('addLanguage').addEventListener('click', () => {
             this.addLanguage();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('addLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.addLanguage();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-addLanguage');
+            }
         });
+        document.getElementById('language').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('addLanguage-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     languageList(arg: any): void {

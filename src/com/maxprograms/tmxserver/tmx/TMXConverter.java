@@ -131,7 +131,7 @@ public class TMXConverter {
 
 		if (optionalDelims) {
 			List<String> list = new ArrayList<>();
-			String string = "";
+			StringBuilder string = new StringBuilder();
 			boolean inDelimited = false;
 			for (int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
@@ -140,22 +140,21 @@ public class TMXConverter {
 				}
 				if (columnsSeparator.equals("" + c)) {
 					if (!inDelimited) {
-						list.add(string);
-						string = "";
+						list.add(string.toString());
+						string = new StringBuilder();
 					} else {
-						string = string + c;
+						string.append(c);
 					}
 					continue;
 				}
-				string = string + c;
+				string.append(c);
 			}
-			if (!string.isEmpty()) {
-				list.add(string);
+			if (string.length() != 0) {
+				list.add(string.toString());
 			}
 			return list.toArray(new String[list.size()]);
 		} else {
 			String[] parts = TextUtils.split(line, columnsSeparator);
-
 			if (parts.length > 1) {
 				List<String> merged = new ArrayList<>();
 				for (int i = 0; i < parts.length; i++) {

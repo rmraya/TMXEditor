@@ -120,4 +120,6 @@ public interface TMXServiceInterface {
 	JSONObject getIndentation();
 
 	JSONObject saveIndentation(int value);
+
+	JSONObject processTasks(JSONObject json);
 }

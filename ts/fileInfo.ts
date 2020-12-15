@@ -39,10 +39,12 @@ class FileInfo {
         document.getElementById('showNotes').addEventListener('click', () => {
             this.showNotes();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('fileInfo-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-fileInfo');
+            }
         });
+
     }
 
     setFileProperties(arg: any): void {
@@ -68,6 +70,8 @@ class FileInfo {
             notesContent = notesContent + '<tr><td>' + notes[i] + '</td></tr>'
         }
         document.getElementById('notesTable').innerHTML = notesContent;
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('fileInfo-height', { width: body.clientWidth, height: body.clientHeight + 10 });
     }
 
     showAttributes(): void {

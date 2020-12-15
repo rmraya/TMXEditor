@@ -51,10 +51,13 @@ class Notes {
         document.getElementById('save').addEventListener('click', () => {
             this.saveNotes();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('notes-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-notes');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('notes-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     drawNotes(): void {

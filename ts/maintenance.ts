@@ -17,9 +17,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-class Consolidate {
+class Maintenance {
 
-    electron = require("electron");
+    electron = require('electron');
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -35,23 +35,35 @@ class Consolidate {
                 (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
             }
         });
+        document.getElementById('untranslated').addEventListener('click', () => {
+            this.sourceLanguageEnabled();
+        });
         document.getElementById('consolidate').addEventListener('click', () => {
-            this.consolidate();
+            this.sourceLanguageEnabled();
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-                this.consolidate();
+                this.execute();
             }
             if (event.code === 'Escape') {
-                this.electron.ipcRenderer.send('close-consolidate');
+                this.electron.ipcRenderer.send('close-maintenance');
             }
         });
-        document.getElementById('sourceLanguage').focus();
+        document.getElementById('execute').addEventListener('click', () => {
+            this.execute();
+        });
         let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-        this.electron.ipcRenderer.send('consolidate-height', { width: body.clientWidth, height: body.clientHeight });
+        this.electron.ipcRenderer.send('maintenance-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
-    filterLanguages(arg: any): void {
+    sourceLanguageEnabled(): void {
+        let untranslated: HTMLInputElement = document.getElementById('untranslated') as HTMLInputElement;
+        let consolidate: HTMLInputElement = document.getElementById('consolidate') as HTMLInputElement;
+        let sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
+        sourceLanguage.disabled = !(untranslated.checked || consolidate.checked);
+    }
+
+    filterLanguages(arg: any[]): void {
         let sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
         let options: string = '';
         for (let i: number = 0; i < arg.length; i++) {
@@ -59,13 +71,25 @@ class Consolidate {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         sourceLanguage.innerHTML = options;
+        if (arg.length < 3) {
+            let consolidate: HTMLInputElement = document.getElementById('consolidate') as HTMLInputElement;
+            consolidate.checked = false;
+            consolidate.disabled = true;
+        }
         this.electron.ipcRenderer.send('get-source-language');
     }
 
-    consolidate(): void {
-        let srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-        this.electron.ipcRenderer.send('consolidate-units', { srcLang: srcLang });
+    execute(): void {
+        let params: any = {
+            tags: (document.getElementById('tags') as HTMLInputElement).checked,
+            untranslated: (document.getElementById('untranslated') as HTMLInputElement).checked,
+            duplicates: (document.getElementById('duplicates') as HTMLInputElement).checked,
+            spaces: (document.getElementById('spaces') as HTMLInputElement).checked,
+            consolidate: (document.getElementById('consolidate') as HTMLInputElement).checked,
+            sourceLanguage: (document.getElementById('sourceLanguage') as HTMLSelectElement).value
+        }
+        this.electron.ipcRenderer.send('maintanance-tasks', params);
     }
 }
 
-new Consolidate();
+new Maintenance();

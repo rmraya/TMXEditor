@@ -50,14 +50,21 @@ class Filters {
         document.getElementById('applyFilters').addEventListener('click', () => {
             this.applyFilters();
         });
-        document.getElementById('clearFilters').addEventListener('click', ()=> {
+        document.getElementById('clearFilters').addEventListener('click', () => {
             this.clearFilters();
         });
-
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('filters-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.applyFilters();
+            }
+            if (event.code === 'Escape') {
+                this.clearFilters();
+            }
         });
+        document.getElementById('filterText').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('filters-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     togleSourceLanguage(): void {
@@ -108,7 +115,7 @@ class Filters {
         var filterUntranslated: boolean = (document.getElementById('filterUntranslated') as HTMLInputElement).checked;
         var filterSrcLanguage: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
         if (!filterUntranslated && filterText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search', parent: 'filters' });
             return;
         }
         var filterOptions: any = {

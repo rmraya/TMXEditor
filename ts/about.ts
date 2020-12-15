@@ -20,7 +20,7 @@ SOFTWARE.
 class About {
 
     electron = require('electron');
-    
+
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -33,10 +33,18 @@ class About {
         document.getElementById('licenses').addEventListener('click', () => {
             this.electron.ipcRenderer.send('licenses-clicked');
         });
-        this.electron.ipcRenderer.on('get-height', () => {
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.electron.ipcRenderer.send('licenses-clicked');
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-about');
+            }
+        });
+        setTimeout(() => {
             let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
             this.electron.ipcRenderer.send('about-height', { width: body.clientWidth, height: body.clientHeight });
-        });
+        }, 200);
     }
 }
 

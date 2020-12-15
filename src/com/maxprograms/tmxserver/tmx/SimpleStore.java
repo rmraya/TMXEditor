@@ -54,9 +54,9 @@ public class SimpleStore implements StoreInterface {
 	private Set<String> languages;
 	private long discarded;
 	private int saved;
-	private HashMap<String, Element> tus;
+	private Map<String, Element> tus;
 	private List<String> order;
-	private HashMap<String, HashMap<String, Element>> maps;
+	private Map<String, Map<String, Element>> maps;
 	private SAXBuilder builder;
 	private FileOutputStream out;
 	private long processed;
@@ -110,8 +110,7 @@ public class SimpleStore implements StoreInterface {
 	}
 
 	private void storeTuv(String lang, String id, Element tuv) {
-		HashMap<String, Element> map = maps.get(lang);
-		map.put(id, tuv);
+		maps.get(lang).put(id, tuv);
 	}
 
 	@Override
@@ -229,8 +228,7 @@ public class SimpleStore implements StoreInterface {
 	private String getTuv(String id, String lang, String filterText, boolean caseSensitive, boolean regExp)
 			throws IOException {
 		String result = "";
-		HashMap<String, Element> map = maps.get(lang);
-		Element tuv = map.get(id);
+		Element tuv = maps.get(lang).get(id);
 		if (tuv != null) {
 			result = TmxUtils.pureText(tuv.getChild("seg"), true, filterText, caseSensitive, regExp);
 		}
@@ -249,7 +247,7 @@ public class SimpleStore implements StoreInterface {
 
 	@Override
 	public String saveData(String id, String lang, String value) throws IOException {
-		HashMap<String, Element> map = maps.get(lang);
+		Map<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		String text = value;
 		if (tuv != null) {
@@ -354,7 +352,7 @@ public class SimpleStore implements StoreInterface {
 	public void replaceText(String search, String replace, Language language, boolean regExp) {
 		processed = 0l;
 		Iterator<String> ut = order.iterator();
-		HashMap<String, Element> langsMap = maps.get(language.getCode());
+		Map<String, Element> langsMap = maps.get(language.getCode());
 		while (ut.hasNext()) {
 			String id = ut.next();
 			Element tuv = langsMap.get(id);
@@ -416,7 +414,7 @@ public class SimpleStore implements StoreInterface {
 		String lang = language.getCode();
 		if (!languages.contains(lang)) {
 			languages.add(lang);
-			HashMap<String, Element> map = new HashMap<>();
+			Map<String, Element> map = new HashMap<>();
 			maps.put(lang, map);
 		}
 	}
@@ -456,7 +454,7 @@ public class SimpleStore implements StoreInterface {
 	@Override
 	public void changeLanguage(Language oldLanguage, Language newLanguage) {
 		String newCode = newLanguage.getCode();
-		HashMap<String, Element> map = maps.get(oldLanguage.getCode());
+		Map<String, Element> map = maps.get(oldLanguage.getCode());
 		Set<String> keySet = map.keySet();
 		Iterator<String> it = keySet.iterator();
 		while (it.hasNext()) {
@@ -480,7 +478,7 @@ public class SimpleStore implements StoreInterface {
 		for (int m = 0; m < langs.size() - 1; m++) {
 			String srcLang = langs.get(m);
 			List<Pair> pairs = new ArrayList<>();
-			HashMap<String, Element> map = maps.get(srcLang);
+			Map<String, Element> map = maps.get(srcLang);
 			Set<String> keySet = map.keySet();
 			it = keySet.iterator();
 			while (it.hasNext()) {
@@ -565,13 +563,13 @@ public class SimpleStore implements StoreInterface {
 				if (tuv != null) {
 					Element seg = tuv.getChild("seg");
 					String text = TmxUtils.textOnly(seg);
-					if (text.isEmpty()) {
+					if (text.isBlank()) {
 						maps.get(lang).remove(id);
 						continue;
 					}
 					char start = text.charAt(0);
 					char end = text.charAt(text.length() - 1);
-					if (Character.isSpaceChar(start) || Character.isSpaceChar(end)) {
+					if (Character.isWhitespace(start) || Character.isWhitespace(end)) {
 						TmxUtils.trim(seg);
 						if (!seg.getText().isEmpty()) {
 							maps.get(lang).put(id, tuv);
@@ -590,7 +588,7 @@ public class SimpleStore implements StoreInterface {
 		processed = 0l;
 		String srcLang = language.getCode();
 		List<Pair> pairs = new ArrayList<>();
-		HashMap<String, Element> map = maps.get(srcLang);
+		Map<String, Element> map = maps.get(srcLang);
 		Set<String> keySet = map.keySet();
 		Iterator<String> it = keySet.iterator();
 		while (it.hasNext()) {
@@ -602,11 +600,13 @@ public class SimpleStore implements StoreInterface {
 			}
 		}
 		Collections.sort(pairs);
-		for (int i = 0; i < pairs.size() - 1; i++) {
+		int i = 0;
+		while (i < pairs.size() - 1) {
 			Pair currentPair = pairs.get(i);
-			Pair nextPair = pairs.get(i + 1);
-			if (currentPair.getText().equals(nextPair.getText())) {
-				Element currentSeg = map.get(currentPair.getId()).getChild("seg");
+			Element currentSeg = map.get(currentPair.getId()).getChild("seg");
+			int j = 1;
+			Pair nextPair = pairs.get(i + j);
+			while (currentPair.getText().equals(nextPair.getText())) {
 				Element nextSeg = map.get(nextPair.getId()).getChild("seg");
 				if (currentSeg.equals(nextSeg)) {
 					Iterator<String> lt = languages.iterator();
@@ -623,7 +623,13 @@ public class SimpleStore implements StoreInterface {
 						}
 					}
 				}
+				j++;
+				if (i + j >= pairs.size()) {
+					break;
+				}
+				nextPair = pairs.get(i + j);
 			}
+			i = i + j;
 			processed++;
 		}
 		removeUntranslated(language);
@@ -740,13 +746,12 @@ public class SimpleStore implements StoreInterface {
 
 	@Override
 	public Element getTuv(String id, String lang) {
-		HashMap<String, Element> map = maps.get(lang);
-		return map.get(id);
+		return maps.get(lang).get(id);
 	}
 
 	@Override
 	public void setTuvAttributes(String id, String lang, List<String[]> attributes) {
-		HashMap<String, Element> map = maps.get(lang);
+		Map<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		if (tuv != null) {
 			tuv.setAttributes(new ArrayList<>());
@@ -761,7 +766,7 @@ public class SimpleStore implements StoreInterface {
 
 	@Override
 	public void setTuvProperties(String id, String lang, List<String[]> properties) {
-		HashMap<String, Element> map = maps.get(lang);
+		Map<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		if (tuv != null) {
 			tuv.removeChild("prop");
@@ -784,7 +789,7 @@ public class SimpleStore implements StoreInterface {
 
 	@Override
 	public void setTuvNotes(String id, String lang, List<String> notes) {
-		HashMap<String, Element> map = maps.get(lang);
+		Map<String, Element> map = maps.get(lang);
 		Element tuv = map.get(id);
 		if (tuv != null) {
 			tuv.removeChild("note");

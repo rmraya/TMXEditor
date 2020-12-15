@@ -38,10 +38,17 @@ class RemoveUntranslated {
         document.getElementById('removeUntranslated').addEventListener('click', () => {
             this.removeUntranslated();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('removeUntranslated-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.removeUntranslated();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-removeUntranslated');
+            }
         });
+        document.getElementById('sourceLanguage').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('removeUntranslated-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {

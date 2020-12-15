@@ -48,7 +48,7 @@ public interface StoreInterface {
 
 	void close() throws IOException, SQLException;
 
-	long getCount();
+	long getCount() throws SQLException;
 
 	long getDiscarded();
 

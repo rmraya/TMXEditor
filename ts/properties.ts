@@ -46,10 +46,14 @@ class Properties {
         document.getElementById('save').addEventListener('click', () => {
             this.saveProperties();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('properties-height', { width: body.clientWidth, height: body.clientHeight });
+
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-properties');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('properties-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     setUnitProperties(arg: any): void {

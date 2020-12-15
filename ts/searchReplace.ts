@@ -30,13 +30,22 @@ class SearchReplace {
         this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
             this.filterLanguages(arg);
         });
+        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
+
         document.getElementById('replace').addEventListener('click', () => {
             this.replace();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('replaceText-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.replace();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-replaceText');
+            }
         });
+        document.getElementById('searchText').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('replaceText-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {
@@ -54,11 +63,11 @@ class SearchReplace {
         var replaceText: string = (document.getElementById('replaceText') as HTMLInputElement).value;
         var language: string = (document.getElementById('language') as HTMLSelectElement).value;
         if (searchText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search', parent: 'searchReplace' });
             return;
         }
         if (replaceText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter replacement text' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter replacement text', parent: 'searchReplace' });
             return;
         }
         var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;

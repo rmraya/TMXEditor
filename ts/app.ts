@@ -61,6 +61,8 @@ class App {
     static srcLanguageWindow: BrowserWindow;
     static removeUntranslatedWindow: BrowserWindow;
     static consolidateWindow: BrowserWindow;
+    static updatesWindow: BrowserWindow;
+    static maintenanceWindow: BrowserWindow;
 
     static requestEvaluationWindow: BrowserWindow;
     static registerSubscriptionWindow: BrowserWindow;
@@ -72,6 +74,7 @@ class App {
     static stopping: boolean = false;
 
     static javapath: string = App.path.join(app.getAppPath(), 'bin', 'java');
+    static iconPath: string;
 
     static saved: boolean = true;
     static shouldClose: boolean = false;
@@ -98,10 +101,14 @@ class App {
     static attributesArg: any;
     static propertiesArg: any;
     static notesArg: any;
+    static messageParam: any;
 
     static needsName: boolean = false;
 
     static verticalPadding: number = 46;
+
+    static latestVersion: string;
+    static downloadLink: string;
 
     constructor(args: string[]) {
 
@@ -137,6 +144,7 @@ class App {
 
         if (process.platform == 'win32') {
             App.javapath = App.path.join(app.getAppPath(), 'bin', 'java.exe');
+            App.verticalPadding = 56;
         }
 
         if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
@@ -249,7 +257,7 @@ class App {
         });
 
         ipcMain.on('licenses-clicked', () => {
-            App.showLicenses();
+            App.showLicenses({ from: 'about' });
         });
         ipcMain.on('open-license', (event: IpcMainEvent, arg: any) => {
             App.openLicense(arg);
@@ -315,7 +323,7 @@ class App {
         ipcMain.on('save-preferences', (event: IpcMainEvent, arg: any) => {
             App.currentPreferences = arg;
             App.savePreferences();
-            App.settingsWindow.close();
+            App.destroyWindow(App.settingsWindow);
             App.loadPreferences();
             App.setTheme();
         });
@@ -451,53 +459,104 @@ class App {
         ipcMain.on('show-message', (event: IpcMainEvent, arg: any) => {
             App.showMessage(arg);
         });
+        ipcMain.on('get-message-param', (event: IpcMainEvent) => {
+            event.sender.send('set-message', App.messageParam);
+        });
         ipcMain.on('newFile-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.newFileWindow, arg);
+        });
+        ipcMain.on('close-newFile', () => {
+            App.destroyWindow(App.newFileWindow);
         });
         ipcMain.on('about-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.aboutWindow, arg);
         });
+        ipcMain.on('close-about', () => {
+            App.destroyWindow(App.aboutWindow);
+        });
         ipcMain.on('messages-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.messagesWindow, arg);
+        });
+        ipcMain.on('close-messages', () => {
+            App.destroyWindow(App.messagesWindow);
         });
         ipcMain.on('fileInfo-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.fileInfoWindow, arg);
         });
+        ipcMain.on('close-fileInfo', () => {
+            App.destroyWindow(App.fileInfoWindow);
+        });
         ipcMain.on('licenses-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.licensesWindow, arg);
+        });
+        ipcMain.on('close-licenses', () => {
+            App.destroyWindow(App.licensesWindow);
         });
         ipcMain.on('preferences-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.settingsWindow, arg);
         });
+        ipcMain.on('close-preferences', () => {
+            App.destroyWindow(App.settingsWindow);
+        });
         ipcMain.on('attributes-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.attributesWindow, arg);
+        });
+        ipcMain.on('close-attributes', () => {
+            App.destroyWindow(App.attributesWindow);
         });
         ipcMain.on('properties-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.propertiesWindow, arg);
         });
+        ipcMain.on('close-properties', () => {
+            App.destroyWindow(App.propertiesWindow);
+        });
         ipcMain.on('addProperty-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.addPropertyWindow, arg);
+        });
+        ipcMain.on('close-addProperty', () => {
+            App.destroyWindow(App.addPropertyWindow);
         });
         ipcMain.on('notes-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.notesWindow, arg);
         });
+        ipcMain.on('close-notes', () => {
+            App.destroyWindow(App.notesWindow);
+        });
         ipcMain.on('addNote-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.addNotesWindow, arg);
+        });
+        ipcMain.on('close-addNote', () => {
+            App.destroyWindow(App.addNotesWindow);
         });
         ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.convertCsvWindow, arg);
         });
+        ipcMain.on('close-convertCsv', () => {
+            App.destroyWindow(App.convertCsvWindow);
+        });
         ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.csvLanguagesWindow, arg);
+        });
+        ipcMain.on('close-csvLanguages', () => {
+            App.destroyWindow(App.csvLanguagesWindow);
         });
         ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.splitFileWindow, arg);
         });
+        ipcMain.on('close-splitFile', () => {
+            App.destroyWindow(App.splitFileWindow);
+        });
         ipcMain.on('mergeFiles-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.mergeFilesWindow, arg);
         });
+        ipcMain.on('close-mergeFiles', () => {
+            App.destroyWindow(App.mergeFilesWindow);
+        });
         ipcMain.on('replaceText-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.replaceTextWindow, arg);
+        });
+        ipcMain.on('close-replaceText', () => {
+            App.destroyWindow(App.replaceTextWindow);
         });
         ipcMain.on('sortUnits-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.sortUnitsWindow, arg);
@@ -508,21 +567,69 @@ class App {
         ipcMain.on('addLanguage-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.addLanguageWindow, arg);
         });
+        ipcMain.on('close-addLanguage', () => {
+            App.destroyWindow(App.addLanguageWindow);
+        });
         ipcMain.on('changeLanguage-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.changeLanguageWindow, arg);
+        });
+        ipcMain.on('close-changeLanguage', () => {
+            App.destroyWindow(App.changeLanguageWindow);
         });
         ipcMain.on('removeLanguage-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.removeLanguageWindow, arg);
         });
+        ipcMain.on('close-removeLanguage', () => {
+            App.destroyWindow(App.removeLanguageWindow);
+        });
         ipcMain.on('srcLanguage-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.srcLanguageWindow, arg);
+        });
+        ipcMain.on('close-srcLanguage', () => {
+            App.destroyWindow(App.srcLanguageWindow);
         });
         ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.removeUntranslatedWindow, arg);
         });
+        ipcMain.on('close-removeUntranslated', () => {
+            App.destroyWindow(App.removeUntranslatedWindow);
+        });
         ipcMain.on('consolidate-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.consolidateWindow, arg);
         });
+        ipcMain.on('close-consolidate', () => {
+            App.destroyWindow(App.consolidateWindow);
+        });
+        ipcMain.on('maintenance-dashboard', () => {
+            App.showMaintenanceDashboard();
+        });
+        ipcMain.on('maintenance-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.maintenanceWindow, arg);
+        });
+        ipcMain.on('close-maintenance', () => {
+            App.destroyWindow(App.maintenanceWindow);
+        });
+        ipcMain.on('maintanance-tasks', (event: IpcMainEvent, arg: any) => {
+            App.maintenanceTasks(arg);
+        });
+        ipcMain.on('updates-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.updatesWindow, arg)
+        });
+        ipcMain.on('close-updates', () => {
+            App.destroyWindow(App.updatesWindow);
+        });
+        ipcMain.on('get-versions', (event: IpcMainEvent) => {
+            event.sender.send('set-versions', { current: app.getVersion(), latest: App.latestVersion });
+        });
+        ipcMain.on('download-latest', () => {
+            App.downloadLatest();
+        });
+        ipcMain.on('release-history', () => {
+            App.showReleaseHistory();
+        });
+
+        // Licenses
+
         ipcMain.on('registerSubscription-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.registerSubscriptionWindow, arg);
         });
@@ -535,6 +642,9 @@ class App {
         ipcMain.on('newSubscription-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.newSubscriptionWindow, arg);
         });
+        ipcMain.on('close-newSubscription', () => {
+            App.destroyWindow(App.newSubscriptionWindow);
+        })
     } // end constructor
 
     static stopServer(): void {
@@ -557,12 +667,64 @@ class App {
         let rect: Rectangle = window.getBounds();
         rect.height = arg.height + App.verticalPadding;
         window.setBounds(rect);
-        window.show();
     }
 
+    static destroyWindow(window: BrowserWindow): void {
+        if (window) {
+            try {
+                let parent: BrowserWindow = window.getParentWindow();
+                window.hide();
+                window.destroy();
+                window = undefined;
+                if (parent) {
+                    parent.focus();
+                } else {
+                    App.mainWindow.focus();
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }
     static showMessage(arg: any): void {
+        let parent: BrowserWindow = App.mainWindow;
+        if (arg.parent) {
+            switch (arg.parent) {
+                case 'preferences': parent = App.settingsWindow;
+                    break;
+                case 'replaceText': parent = App.replaceTextWindow;
+                    break;
+                case 'requestEvaluation': parent = App.requestEvaluationWindow;
+                    break;
+                case 'registerSubscription': parent = App.registerSubscriptionWindow;
+                    break;
+                case 'registerExpired': parent = App.registerExpiredWindow;
+                    break;
+                case 'registerNewSubscription': parent = App.newSubscriptionWindow;
+                    break;
+                case 'addNote': parent = App.addNotesWindow;
+                    break;
+                case 'addProperty': parent = App.addPropertyWindow;
+                    break;
+                case 'convertCSV': parent = App.convertCsvWindow;
+                    break;
+                case 'csvLanguages': parent = App.csvLanguagesWindow;
+                    break;
+                case 'filters': parent = App.filtersWindow;
+                    break;
+                case 'mergeFiles': parent = App.mergeFilesWindow;
+                    break;
+                case 'newFile': parent = App.newFileWindow;
+                    break;
+                case 'searchReplace': parent = App.replaceTextWindow;
+                    break;
+                case 'splitFile': parent = App.splitFileWindow;
+                    break;
+                default: parent = App.mainWindow;
+            }
+        }
         App.messagesWindow = new BrowserWindow({
-            parent: this.mainWindow,
+            parent: parent,
             width: 600,
             useContentSize: true,
             minimizable: false,
@@ -570,20 +732,22 @@ class App {
             resizable: false,
             modal: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
+        App.messageParam = arg;
         App.messagesWindow.setMenu(null);
         App.messagesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'messages.html'));
-        App.messagesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('set-message', arg);
-            event.sender.send('get-height');
+        App.messagesWindow.once('ready-to-show', () => {
+            App.messagesWindow.show();
         });
     }
 
     static createWindow(): void {
+        App.iconPath = App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png');
         App.mainWindow = new BrowserWindow({
             title: 'TMXEditor',
             width: App.currentDefaults.width,
@@ -592,10 +756,11 @@ class App {
             y: App.currentDefaults.y,
             useContentSize: true,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             },
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png')
+            icon: App.iconPath
         });
         var fileMenu: Menu = Menu.buildFromTemplate([
             { label: 'New', accelerator: 'CmdOrCtrl+N', click: () => { App.createNewFile(); } },
@@ -635,10 +800,10 @@ class App {
             { label: 'Sort Units', accelerator: 'F5', click: () => { App.sortUnits(); } },
             { label: 'Filter Units', accelerator: 'F3', click: () => { App.showFilters() } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Show First Page', click: () => { App.firstPage(); } },
-            { label: 'Show Previous Page', click: () => { App.previousPage(); } },
-            { label: 'Show Next Page', click: () => { App.nextPage(); } },
-            { label: 'Show Last Page', click: () => { App.lastPage(); } },
+            { label: 'First Page', accelerator: 'CmdOrCtrl+Shift+PageUp', click: () => { App.firstPage(); } },
+            { label: 'Previous Page', accelerator: 'CmdOrCtrl+PageUp', click: () => { App.previousPage(); } },
+            { label: 'Next Page', accelerator: 'CmdOrCtrl+PageDown', click: () => { App.nextPage(); } },
+            { label: 'Last Page', accelerator: 'CmdOrCtrl+Shift+PageDown', click: () => { App.lastPage(); } },
             new MenuItem({ type: 'separator' }),
             new MenuItem({ label: 'Toggle Full Screen', role: 'togglefullscreen' }),
             new MenuItem({ label: 'Toggle Development Tools', accelerator: 'F12', role: 'toggleDevTools' })
@@ -648,6 +813,8 @@ class App {
             { label: 'Add Language...', click: () => { App.showAddLanguage(); } },
             { label: 'Remove Language...', click: () => { App.showRemoveLanguage() } },
             { label: 'Change Source Language...', click: () => { App.showChangeSourceLanguage(); } },
+            new MenuItem({ type: 'separator' }),
+            { label: 'Maintenace Dashboard', click: () => { App.showMaintenanceDashboard(); } },
             new MenuItem({ type: 'separator' }),
             { label: 'Remove All Tags', click: () => { App.removeTags(); } },
             { label: 'Remove Duplicates', click: () => { App.removeDuplicates(); } },
@@ -659,7 +826,7 @@ class App {
             { label: 'TMXEditor User Guide', accelerator: 'F1', click: () => { App.showHelp(); } },
             new MenuItem({ type: 'separator' }),
             { label: 'Check for Updates...', click: () => { App.checkUpdates(false); } },
-            { label: 'View Licenses', click: () => { App.showLicenses(); } },
+            { label: 'View Licenses', click: () => { App.showLicenses({ from: 'menu' }); } },
             new MenuItem({ type: 'separator' }),
             { label: 'Release History', click: () => { App.showReleaseHistory(); } },
             { label: 'Support Group', click: () => { App.showSupportGroup(); } }
@@ -780,15 +947,16 @@ class App {
             resizable: false,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.aboutWindow.setMenu(null);
         App.aboutWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'about.html'));
         App.aboutWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.aboutWindow.show();
         });
     }
 
@@ -837,24 +1005,29 @@ class App {
         req.end();
     }
 
-    static showLicenses(): void {
+    static showLicenses(arg: any): void {
+        let parent: BrowserWindow = App.mainWindow;
+        if (arg.from === 'about' && App.aboutWindow) {
+            parent = App.aboutWindow;
+        }
         App.licensesWindow = new BrowserWindow({
-            parent: App.mainWindow,
-            width: 500,
+            parent: parent,
+            width: 450,
             useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.licensesWindow.setMenu(null);
         App.licensesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'licenses.html'));
         App.licensesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.licensesWindow.show();
         });
     }
 
@@ -907,9 +1080,10 @@ class App {
             height: 400,
             show: false,
             title: title,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         licenseWindow.setMenu(null);
@@ -1079,15 +1253,6 @@ class App {
 
     static saveDefaults(): void {
         var defaults = App.mainWindow.getBounds();
-        if (!App.currentDefaults) {
-            return;
-        }
-        if (defaults.width === App.currentDefaults.width && defaults.height === App.currentDefaults.height && defaults.x === App.currentDefaults.x) {
-            return;
-        }
-        if (defaults.width === 800 && defaults.height === 600) {
-            return;
-        }
         writeFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults));
     }
 
@@ -1118,7 +1283,7 @@ class App {
     }
 
     static loadDefaults(): void {
-        App.currentDefaults = { width: 900, height: 700, x: 0, y: 0 };
+        App.currentDefaults = { width: 950, height: 700, x: 0, y: 0 };
         if (existsSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'))) {
             try {
                 var data: Buffer = readFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'));
@@ -1223,22 +1388,23 @@ class App {
             resizable: false,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.attributesArg = arg;
         App.attributesWindow.setMenu(null);
         App.attributesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'attributes.html'));
         App.attributesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.attributesWindow.show();
         });
     }
 
     saveAttributes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.attributesWindow.close();
+        App.destroyWindow(App.attributesWindow);
         arg.command = 'setAttributes';
         App.sendRequest(arg,
             (data: any) => {
@@ -1272,16 +1438,17 @@ class App {
             resizable: false,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.propertiesArg = arg;
         App.propertiesWindow.setMenu(null);
         App.propertiesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'properties.html'));
         App.propertiesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.propertiesWindow.show();
         });
     }
 
@@ -1296,26 +1463,27 @@ class App {
             modal: true,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.addPropertyWindow.setMenu(null);
         App.addPropertyWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addProperty.html'));
         App.addPropertyWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.addPropertyWindow.show();
         });
     }
 
     addNewProperty(arg: any): void {
-        App.addPropertyWindow.close();
+        App.destroyWindow(App.addPropertyWindow);
         App.propertyEvent.sender.send('set-new-property', arg);
     }
 
     saveProperties(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.propertiesWindow.close();
+        App.destroyWindow(App.propertiesWindow);
         arg.command = 'setProperties';
         App.sendRequest(arg,
             (data: any) => {
@@ -1349,16 +1517,17 @@ class App {
             resizable: false,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.notesArg = arg;
         App.notesWindow.setMenu(null);
         App.notesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'notes.html'));
         App.notesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.notesWindow.show();
         });
     }
 
@@ -1373,26 +1542,27 @@ class App {
             modal: true,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.addNotesWindow.setMenu(null);
         App.addNotesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addNote.html'));
         App.addNotesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.addNotesWindow.show();
         });
     }
 
     addNewNote(arg: any): void {
-        App.addNotesWindow.close();
+        App.destroyWindow(App.addNotesWindow);
         App.notesEvent.sender.send('set-new-note', arg);
     }
 
     saveNotes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.notesWindow.close();
+        App.destroyWindow(App.notesWindow);
         arg.command = 'setNotes';
         App.sendRequest(arg,
             (data: any) => {
@@ -1426,15 +1596,16 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.settingsWindow.setMenu(null);
         App.settingsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'preferences.html'));
         App.settingsWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.settingsWindow.show();
         });
     }
 
@@ -1451,20 +1622,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.newFileWindow.setMenu(null);
         App.newFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'newFile.html'));
         App.newFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.newFileWindow.show();
         });
     }
 
     createFile(arg: any): void {
-        App.newFileWindow.close();
+        App.destroyWindow(App.newFileWindow);
         if (App.currentFile !== '' && !App.saved) {
             let response = dialog.showMessageBoxSync(App.mainWindow, { type: 'question', message: 'Save changes?', buttons: ['Yes', 'No'] });
             if (response === 0) {
@@ -1583,20 +1755,21 @@ class App {
             resizable: true,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.convertCsvWindow.setMenu(null);
         App.convertCsvWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertCSV.html'));
         App.convertCsvWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.convertCsvWindow.show();
         });
     }
 
     convertCsvTmx(arg: any): void {
-        App.convertCsvWindow.close();
+        App.destroyWindow(App.convertCsvWindow);
         arg.command = 'convertCsv';
         App.sendRequest(arg,
             (data: any) => {
@@ -1691,26 +1864,27 @@ class App {
         App.csvLanguagesWindow = new BrowserWindow({
             parent: App.convertCsvWindow,
             modal: true,
-            width: 600,
+            width: 620,
             minimizable: false,
             maximizable: false,
             resizable: true,
             useContentSize: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.csvLanguagesWindow.setMenu(null);
         App.csvLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'csvLanguages.html'));
         App.csvLanguagesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.csvLanguagesWindow.show();
         });
     }
 
     setCsvLanguages(arg: any): void {
-        App.csvLanguagesWindow.close();
+        App.destroyWindow(App.csvLanguagesWindow);
         App.csvEvent.sender.send('csv-languages', arg);
     }
 
@@ -1794,15 +1968,16 @@ class App {
             maximizable: false,
             resizable: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.fileInfoWindow.setMenu(null);
         App.fileInfoWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'fileInfo.html'));
         App.fileInfoWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.fileInfoWindow.show();
         });
     }
 
@@ -1952,20 +2127,21 @@ class App {
             maximizable: false,
             resizable: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.splitFileWindow.setMenu(null);
         App.splitFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'splitFile.html'));
         App.splitFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.splitFileWindow.show();
         });
     }
 
     splitTmx(arg: any): void {
-        App.splitFileWindow.close();
+        App.destroyWindow(App.splitFileWindow);
         arg.command = 'splitFile';
         App.sendRequest(arg,
             (data: any) => {
@@ -2041,20 +2217,21 @@ class App {
             maximizable: false,
             resizable: true,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.mergeFilesWindow.setMenu(null);
         App.mergeFilesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
         App.mergeFilesWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.mergeFilesWindow.show();
         });
     }
 
     mergeTmxFiles(arg: any): void {
-        App.mergeFilesWindow.close();
+        App.destroyWindow(App.mergeFilesWindow);
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'mergeFiles';
         App.sendRequest(arg,
@@ -2185,20 +2362,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.replaceTextWindow.setMenu(null);
         App.replaceTextWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'searchReplace.html'));
         App.replaceTextWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.replaceTextWindow.show();
         });
     }
 
     replaceRequest(arg: any): void {
-        App.replaceTextWindow.close();
+        App.destroyWindow(App.replaceTextWindow);
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'replaceText';
         App.sendRequest(arg,
@@ -2266,28 +2444,29 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.sortUnitsWindow.setMenu(null);
         App.sortUnitsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'sortUnits.html'));
         App.sortUnitsWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.sortUnitsWindow.show();
         });
     }
 
     setSort(arg: any): void {
         App.sortOptions = arg;
-        App.sortUnitsWindow.close();
+        App.destroyWindow(App.sortUnitsWindow);
         App.loadSegments();
         App.mainWindow.webContents.send('sort-on');
     }
 
     clearSort(): void {
         App.sortOptions = {};
-        App.sortUnitsWindow.close();
+        App.destroyWindow(App.sortUnitsWindow);
         App.loadSegments();
         App.mainWindow.webContents.send('sort-off');
     }
@@ -2305,21 +2484,22 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.filtersWindow.setMenu(null);
         App.filtersWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'filters.html'));
         App.filtersWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.filtersWindow.show();
         });
     }
 
     setFilterOptions(arg: any): void {
         App.filterOptions = arg;
-        App.filtersWindow.close();
+        App.destroyWindow(App.filtersWindow);
         this.setFirstPage();
         App.loadSegments();
         App.mainWindow.webContents.send('filters-on');
@@ -2332,7 +2512,7 @@ class App {
 
     clearFilterOptions(): void {
         App.filterOptions = {};
-        App.filtersWindow.close();
+        App.destroyWindow(App.filtersWindow);
         this.setFirstPage();
         App.loadSegments();
         App.mainWindow.webContents.send('filters-off');
@@ -2347,6 +2527,8 @@ class App {
             (data: any) => {
                 if (data.status === SUCCESS) {
                     App.mainWindow.webContents.send('unit-inserted', data.id);
+                    App.saved = false;
+                    App.mainWindow.setDocumentEdited(true);
                 } else {
                     App.showMessage({ type: 'error', message: data.reason });
                 }
@@ -2418,20 +2600,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.changeLanguageWindow.setMenu(null);
         App.changeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'changeLanguage.html'));
         App.changeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.changeLanguageWindow.show();
         });
     }
 
     changeLanguage(arg: any): void {
-        App.changeLanguageWindow.close();
+        App.destroyWindow(App.changeLanguageWindow);
         arg.command = 'changeLanguage';
         App.sendRequest(arg,
             (data: any) => {
@@ -2501,20 +2684,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.removeLanguageWindow.setMenu(null);
         App.removeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeLanguage.html'));
         App.removeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.removeLanguageWindow.show();
         });
     }
 
     removeLanguage(arg: any): void {
-        App.removeLanguageWindow.close();
+        App.destroyWindow(App.removeLanguageWindow);
         App.sendRequest({ command: 'removeLanguage', lang: arg },
             (data: any) => {
                 if (data.status === SUCCESS) {
@@ -2545,20 +2729,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.addLanguageWindow.setMenu(null);
         App.addLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addLanguage.html'));
         App.addLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.addLanguageWindow.show();
         });
     }
 
     addLanguage(arg: any): void {
-        App.addLanguageWindow.close();
+        App.destroyWindow(App.addLanguageWindow);
         App.sendRequest({ command: 'addLanguage', lang: arg },
             (data: any) => {
                 if (data.status === SUCCESS) {
@@ -2589,15 +2774,16 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.srcLanguageWindow.setMenu(null);
         App.srcLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
         App.srcLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.srcLanguageWindow.show();
         });
     }
 
@@ -2663,7 +2849,7 @@ class App {
     }
 
     changeSourceLanguage(arg: any): void {
-        App.srcLanguageWindow.close();
+        App.destroyWindow(App.srcLanguageWindow);
         App.sendRequest({ command: 'setSrcLanguage', lang: arg },
             (data: any) => {
                 App.saved = false;
@@ -2749,20 +2935,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.removeUntranslatedWindow.setMenu(null);
         App.removeUntranslatedWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeUntranslated.html'));
         App.removeUntranslatedWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.removeUntranslatedWindow.show();
         });
     }
 
     removeUntranslated(arg: any): void {
-        App.removeUntranslatedWindow.close();
+        App.destroyWindow(App.removeUntranslatedWindow);
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'removeUntranslated';
         App.sendRequest(arg,
@@ -2869,20 +3056,21 @@ class App {
             maximizable: false,
             resizable: false,
             show: false,
-            icon: App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png'),
+            icon: App.iconPath,
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
         App.consolidateWindow.setMenu(null);
         App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidateUnits.html'));
         App.consolidateWindow.once('ready-to-show', (event: IpcMainEvent) => {
-            event.sender.send('get-height');
+            App.consolidateWindow.show();
         });
     }
 
     consolidateUnits(arg: any): void {
-        App.consolidateWindow.close();
+        App.destroyWindow(App.consolidateWindow);
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'consolidateUnits';
         App.sendRequest(arg,
@@ -2896,6 +3084,8 @@ class App {
                         clearInterval(intervalObject);
                         App.loadSegments();
                         App.getCount();
+                        App.saved = false;
+                        App.mainWindow.setDocumentEdited(true);
                         return;
                     } else if (App.currentStatus.status === PROCESSING) {
                         // it's OK, keep waiting
@@ -2924,37 +3114,75 @@ class App {
         );
     }
 
-    static checkUpdates(silent: boolean): void {
-        App.https.get('https://raw.githubusercontent.com/rmraya/TMXEditor/master/package.json', { timeout: 1500 }, (res: IncomingMessage) => {
-            if (res.statusCode === 200) {
-                let rawData = '';
-                res.on('data', (chunk: string) => {
-                    rawData += chunk;
-                });
-                res.on('end', () => {
-                    try {
-                        const parsedData = JSON.parse(rawData);
-                        if (app.getVersion() !== parsedData.version) {
-                            App.showMessage({ type: 'info', message: 'Version ' + parsedData.version + ' is available' });
-                        } else {
-                            if (!silent) {
-                                App.showMessage({ type: 'info', message: 'There are currently no updates available' });
-                            }
-                        }
-                    } catch (e) {
-                        dialog.showErrorBox('Error', e.message);
-                    }
-                });
-            } else {
-                if (!silent) {
-                    dialog.showErrorBox('Error', 'Updates Request Failed.\nStatus code: ' + res.statusCode);
-                }
-            }
-        }).on('error', (e: any) => {
-            if (!silent) {
-                dialog.showErrorBox('Error', e.message);
+    static showMaintenanceDashboard(): void {
+        if (App.currentFile === '') {
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
+            return;
+        }
+        App.maintenanceWindow = new BrowserWindow({
+            parent: App.mainWindow,
+            width: 470,
+            useContentSize: true,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
             }
         });
+        App.maintenanceWindow.setMenu(null);
+        App.maintenanceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'maintenance.html'));
+        App.maintenanceWindow.once('ready-to-show', (event: IpcMainEvent) => {
+            App.maintenanceWindow.show();
+        });
+    }
+
+    static maintenanceTasks(arg: any): void {
+        App.destroyWindow(App.maintenanceWindow);
+        App.mainWindow.webContents.send('start-waiting');
+        arg.command = 'processTasks';
+        App.sendRequest(arg,
+            (data: any) => {
+                App.currentStatus = data;
+                App.mainWindow.webContents.send('set-status', 'Processing...');
+                var intervalObject = setInterval(() => {
+                    if (App.currentStatus.status === COMPLETED) {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        App.loadSegments();
+                        App.getCount();
+                        App.saved = false;
+                        App.mainWindow.setDocumentEdited(true);
+                        return;
+                    } else if (App.currentStatus.status === PROCESSING) {
+                        // it's OK, keep waiting
+                    } else if (App.currentStatus.status === ERROR) {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
+                        return;
+                    } else if (App.currentStatus.status === SUCCESS) {
+                        // ignore status from 'consolidateUnits'
+                    } else {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        dialog.showErrorBox('Error', 'Unknown error performing maintenance');
+                        return;
+                    }
+                    App.getProcessingProgress();
+                }, 500);
+            },
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
     }
 
     static showReleaseHistory(): void {
@@ -2964,6 +3192,81 @@ class App {
     static showSupportGroup(): void {
         shell.openExternal('https://groups.io/g/maxprograms/');
     }
+
+    static downloadLatest(): void {
+        shell.openExternal(App.downloadLink).catch((reason: any) => {
+            if (reason instanceof Error) {
+                console.log(reason.message);
+            }
+            this.showMessage({ type: 'error', message: 'Unable to download latest version.' });
+        });
+    }
+
+    static checkUpdates(silent: boolean): void {
+        this.https.get('https://maxprograms.com/tmxeditor.json', (res: IncomingMessage) => {
+            if (res.statusCode === 200) {
+                let rawData = '';
+                res.on('data', (chunk: string) => {
+                    rawData += chunk;
+                });
+                res.on('end', () => {
+                    try {
+                        const parsedData = JSON.parse(rawData);
+                        if (app.getVersion() !== parsedData.version) {
+                            App.latestVersion = parsedData.version;
+                            switch (process.platform) {
+                                case 'darwin': App.downloadLink = parsedData.darwin;
+                                    break;
+                                case 'win32': App.downloadLink = parsedData.win32;
+                                    break;
+                                case 'linux': App.downloadLink = parsedData.linux;
+                                    break;
+                            }
+                            App.updatesWindow = new BrowserWindow({
+                                parent: this.mainWindow,
+                                width: 600,
+                                useContentSize: true,
+                                minimizable: false,
+                                maximizable: false,
+                                resizable: false,
+                                show: false,
+                                icon: App.iconPath,
+                                webPreferences: {
+                                    nodeIntegration: true,
+                                    contextIsolation: false
+                                }
+                            });
+                            App.updatesWindow.setMenu(null);
+                            App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
+                            App.updatesWindow.once('ready-to-show', () => {
+                                App.updatesWindow.show();
+                            });
+                        } else {
+                            if (!silent) {
+                                App.showMessage({
+                                    type: 'info',
+                                    message: 'There are currently no updates available'
+                                });
+                            }
+                        }
+                    } catch (e: any) {
+                        console.log(e);
+                        App.showMessage({ type: 'error', message: e.message });
+                    }
+                });
+            } else {
+                if (!silent) {
+                    App.showMessage({ type: 'error', message: 'Updates Request Failed.\nStatus code: ' + res.statusCode });
+                }
+            }
+        }).on('error', (e: any) => {
+            if (!silent) {
+                App.showMessage({ type: 'error', message: e.message });
+            }
+        });
+    }
+
+    
 }
 
 new App(process.argv);

@@ -61,7 +61,6 @@ public class H2Store implements StoreInterface {
 	private long time;
 	private Element header;
 	private Set<String> languages;
-	private long tuCount;
 	private long discarded;
 	private int saved;
 	private Connection conn;
@@ -84,13 +83,15 @@ public class H2Store implements StoreInterface {
 	private PreparedStatement insertTunit;
 	private Statement selectUnits;
 	private PreparedStatement deleteUnit;
+	private Statement stmt;
 	private int indentation;
+	private long lastUnit;
 
-	public H2Store(Set<String> languageSet) throws ClassNotFoundException, SQLException, IOException {
+	public H2Store(Set<String> languageSet) throws SQLException, IOException {
 		langSet = languageSet;
 		time = System.currentTimeMillis();
 		languages = new TreeSet<>();
-		tuCount = 1l;
+		lastUnit = 1l;
 		discarded = 0;
 		builder = new SAXBuilder();
 
@@ -115,10 +116,11 @@ public class H2Store implements StoreInterface {
 	}
 
 	private void createTuTable() throws SQLException {
+
+		stmt = conn.createStatement();
+
 		String query = "CREATE TABLE tu (tuid VARCHAR(30) NOT NULL, tu VARCHAR(6000) NOT NULL,  PRIMARY KEY(tuid) );";
-		try (Statement stmt = conn.createStatement()) {
-			stmt.execute(query);
-		}
+		stmt.execute(query);
 
 		query = "INSERT INTO tu (tuid, tu) VALUES (?, ?)";
 		insertTu = conn.prepareStatement(query);
@@ -137,9 +139,7 @@ public class H2Store implements StoreInterface {
 			sbuilder.append(" VARCHAR(6000) NOT NULL DEFAULT ''");
 		}
 		sbuilder.append(");");
-		try (Statement stmt = conn.createStatement()) {
-			stmt.execute(sbuilder.toString());
-		}
+		stmt.execute(sbuilder.toString());
 
 		sbuilder = new StringBuilder();
 		sbuilder.append("INSERT INTO tunits (tcount, tuid");
@@ -157,6 +157,7 @@ public class H2Store implements StoreInterface {
 		insertTunit = conn.prepareStatement(sbuilder.toString());
 		selectUnits = conn.createStatement();
 		deleteUnit = conn.prepareStatement("DELETE FROM tunits WHERE tuid=?");
+
 	}
 
 	@Override
@@ -190,7 +191,7 @@ public class H2Store implements StoreInterface {
 			insertTu.setNString(2, element.toString());
 			insertTu.execute();
 
-			insertTunit.setLong(1, tuCount);
+			insertTunit.setLong(1, lastUnit);
 			insertTunit.setString(2, tuid);
 			Iterator<String> st = langSet.iterator();
 			int pos = 3;
@@ -204,8 +205,8 @@ public class H2Store implements StoreInterface {
 			}
 			insertTunit.execute();
 
-			tuCount++;
-			if (tuCount % 10000l == 0) {
+			lastUnit++;
+			if (lastUnit % 10000l == 0) {
 				commit();
 			}
 		} else {
@@ -244,10 +245,8 @@ public class H2Store implements StoreInterface {
 	private void createTable(String lang) throws SQLException {
 		String query = "CREATE TABLE " + lang.replace('-', '_')
 				+ "_tuv ( tuid VARCHAR(30) NOT NULL, tuv VARCHAR(2147483647) NOT NULL, pureText VARCHAR(2147483647) NOT NULL, PRIMARY KEY(tuid) );";
-		try (Statement stmt = conn.createStatement()) {
-			stmt.execute(query);
-			conn.commit();
-		}
+		stmt.execute(query);
+		conn.commit();
 
 		query = "INSERT INTO " + lang.replace('-', '_') + "_tuv (tuid, tuv, pureText) VALUES (?, ?, ?)";
 		insertStatements.put(lang, conn.prepareStatement(query));
@@ -283,6 +282,7 @@ public class H2Store implements StoreInterface {
 			Language sortLanguage, boolean ascending) throws IOException, SQLException {
 
 		List<TUnit> result = new ArrayList<>();
+		long number = start + 1l;
 		processed = 0l;
 
 		StringBuilder sbuilder = new StringBuilder();
@@ -332,7 +332,6 @@ public class H2Store implements StoreInterface {
 
 		try (ResultSet rs = selectUnits.executeQuery(sbuilder.toString())) {
 			while (rs.next()) {
-				long number = rs.getLong(1);
 				String tuid = rs.getString(2);
 				Map<String, String> map = new HashMap<>();
 				Iterator<String> it = langSet.iterator();
@@ -352,7 +351,7 @@ public class H2Store implements StoreInterface {
 						map.put(filterLanguage.getCode(), highlighted);
 					}
 				}
-				TUnit unit = new TUnit(number, tuid, map);
+				TUnit unit = new TUnit(number++, tuid, map);
 				result.add(unit);
 				processed++;
 			}
@@ -406,13 +405,20 @@ public class H2Store implements StoreInterface {
 		insertTunit.close();
 		selectUnits.close();
 		deleteUnit.close();
+		stmt.close();
 		conn.close();
 		TmxUtils.deleteFiles(database);
 	}
 
 	@Override
-	public long getCount() {
-		return tuCount;
+	public long getCount() throws SQLException {
+		long count = 0;
+		try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM tunits")) {
+			while (rs.next()) {
+				count = rs.getLong(1);
+			}
+		}
+		return count;
 	}
 
 	@Override
@@ -470,8 +476,11 @@ public class H2Store implements StoreInterface {
 		updateUnit(id, lang, "");
 	}
 
-	private Element toElement(String element) throws SAXException, IOException, ParserConfigurationException {
-		Document d = builder.build(new ByteArrayInputStream(element.getBytes(StandardCharsets.UTF_8)));
+	private Element toElement(String string) throws SAXException, IOException, ParserConfigurationException {
+		if (string == null || string.isBlank()) {
+			return null;
+		}
+		Document d = builder.build(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)));
 		return d.getRootElement();
 	}
 
@@ -491,27 +500,25 @@ public class H2Store implements StoreInterface {
 		writeString(TextUtils.padding(1, indentation) + "<body>\n");
 
 		String query = "SELECT tuid, tu FROM tu";
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					String tuid = rs.getString(1);
-					String tuText = rs.getNString(2);
-					Element tu = toElement(tuText);
-					Iterator<String> langIt = languages.iterator();
-					while (langIt.hasNext()) {
-						String lang = langIt.next();
-						String tuv = getTuvString(tuid, lang);
-						if (!tuv.isEmpty()) {
-							tu.addContent(toElement(tuv));
-						}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				String tuText = rs.getNString(2);
+				Element tu = toElement(tuText);
+				Iterator<String> langIt = languages.iterator();
+				while (langIt.hasNext()) {
+					String lang = langIt.next();
+					String tuv = getTuvString(tuid, lang);
+					if (!tuv.isEmpty()) {
+						tu.addContent(toElement(tuv));
 					}
-					if (tu.getChildren().isEmpty()) {
-						continue;
-					}
-					Indenter.indent(tu, 3, indentation);
-					writeString(TextUtils.padding(2, indentation) + tu.toString() + "\n");
-					saved++;
 				}
+				if (tu.getChildren().isEmpty()) {
+					continue;
+				}
+				Indenter.indent(tu, 3, indentation);
+				writeString(TextUtils.padding(2, indentation) + tu.toString() + "\n");
+				saved++;
 			}
 		}
 		writeString(TextUtils.padding(1, indentation) + "</body>\n");
@@ -579,7 +586,6 @@ public class H2Store implements StoreInterface {
 		deleteUnit.setString(1, tuid);
 		deleteUnit.execute();
 		conn.commit();
-		tuCount--;
 	}
 
 	@Override
@@ -602,11 +608,9 @@ public class H2Store implements StoreInterface {
 		}
 		String query = sb.toString();
 		long total = 0l;
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					total = rs.getLong(1);
-				}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				total = rs.getLong(1);
 			}
 		}
 		if (total == 0l) {
@@ -629,17 +633,15 @@ public class H2Store implements StoreInterface {
 		query = sb.toString();
 		conn.setAutoCommit(false);
 		long count = 0l;
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					String tuid = rs.getString(1);
-					String tuvText = rs.getNString(2);
-					Element tuv = toElement(tuvText);
-					TmxUtils.replaceText(tuv.getChild("seg"), search, replace, regExp);
-					storeTuv(language.getCode(), tuid, tuv);
-					count++;
-					processed = tuCount * count / total;
-				}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				String tuvText = rs.getNString(2);
+				Element tuv = toElement(tuvText);
+				TmxUtils.replaceText(tuv.getChild("seg"), search, replace, regExp);
+				storeTuv(language.getCode(), tuid, tuv);
+				count++;
+				processed = lastUnit * count / total;
 			}
 		}
 		conn.commit();
@@ -663,7 +665,7 @@ public class H2Store implements StoreInterface {
 		storeTU(tu);
 		allowEmpty = false;
 		conn.commit();
-		tuCount++;
+		lastUnit++;
 	}
 
 	@Override
@@ -672,15 +674,13 @@ public class H2Store implements StoreInterface {
 		List<String> selected = new ArrayList<>();
 		String srclang = language.getCode();
 		String query = "SELECT tuid, tu FROM tu";
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					processed++;
-					String tuid = rs.getString(1);
-					boolean matches = isUntranslated(tuid, srclang);
-					if (matches) {
-						selected.add(tuid);
-					}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				processed++;
+				String tuid = rs.getString(1);
+				boolean matches = isUntranslated(tuid, srclang);
+				if (matches) {
+					selected.add(tuid);
 				}
 			}
 		}
@@ -691,8 +691,6 @@ public class H2Store implements StoreInterface {
 			delete(it.next());
 		}
 		conn.commit();
-		selected.clear();
-		selected = null;
 		return result;
 	}
 
@@ -719,9 +717,7 @@ public class H2Store implements StoreInterface {
 			sbuilder.append(" VARCHAR(6000) NOT NULL DEFAULT '' AFTER ");
 			sbuilder.append(last.replace('-', '_'));
 			sbuilder.append(';');
-			try (Statement stmt = conn.createStatement()) {
-				stmt.execute(sbuilder.toString());
-			}
+			stmt.execute(sbuilder.toString());
 		}
 	}
 
@@ -736,17 +732,13 @@ public class H2Store implements StoreInterface {
 			sbuilder.append("ALTER TABLE tunits DROP COLUMN ");
 			sbuilder.append(lang.replace('-', '_'));
 			sbuilder.append(';');
-			try (Statement stmt = conn.createStatement()) {
-				stmt.execute(sbuilder.toString());
-			}
+			stmt.execute(sbuilder.toString());
 		}
 	}
 
 	private void deleteTable(String lang) throws SQLException {
 		String query = "DROP TABLE " + lang.replace('-', '_') + "_tuv;";
-		try (Statement stmt = conn.createStatement()) {
-			stmt.execute(query);
-		}
+		stmt.execute(query);
 
 		insertStatements.get(lang).close();
 		insertStatements.remove(lang);
@@ -765,25 +757,23 @@ public class H2Store implements StoreInterface {
 	public void removeTags() throws SQLException, SAXException, IOException, ParserConfigurationException {
 		processed = 0l;
 		String query = "SELECT tuid, tu FROM tu";
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					String tuid = rs.getString(1);
-					Iterator<String> it = languages.iterator();
-					while (it.hasNext()) {
-						String lang = it.next();
-						String tuvText = getTuvString(tuid, lang);
-						if (!tuvText.isEmpty()) {
-							Element tuv = toElement(tuvText);
-							Element seg = tuv.getChild("seg");
-							if (!seg.getChildren().isEmpty()) {
-								seg.setText(TmxUtils.textOnly(seg));
-								storeTuv(lang, tuid, tuv);
-							}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				Iterator<String> it = languages.iterator();
+				while (it.hasNext()) {
+					String lang = it.next();
+					String tuvText = getTuvString(tuid, lang);
+					if (!tuvText.isEmpty()) {
+						Element tuv = toElement(tuvText);
+						Element seg = tuv.getChild("seg");
+						if (!seg.getChildren().isEmpty()) {
+							seg.setText(TmxUtils.textOnly(seg));
+							storeTuv(lang, tuid, tuv);
 						}
 					}
-					processed++;
 				}
+				processed++;
 			}
 		}
 	}
@@ -797,20 +787,18 @@ public class H2Store implements StoreInterface {
 		conn.setAutoCommit(false);
 		processed = 0l;
 		String query = "SELECT tuid FROM " + oldCode.replace('-', '_') + "_tuv";
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					String tuid = rs.getString(1);
-					String tuvString = getTuvString(tuid, oldCode);
-					if (tuvString != null && !tuvString.isEmpty()) {
-						Element tuv = toElement(tuvString);
-						tuv.setAttribute("xml:lang", newCode);
-						storeTuv(newCode, tuid, tuv);
-					}
-					processed++;
-					if (processed % 10000 == 0) {
-						conn.commit();
-					}
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				String tuvString = getTuvString(tuid, oldCode);
+				if (tuvString != null && !tuvString.isEmpty()) {
+					Element tuv = toElement(tuvString);
+					tuv.setAttribute("xml:lang", newCode);
+					storeTuv(newCode, tuid, tuv);
+				}
+				processed++;
+				if (processed % 10000 == 0) {
+					conn.commit();
 				}
 			}
 		}
@@ -833,7 +821,7 @@ public class H2Store implements StoreInterface {
 			String srcLang = langs.get(i);
 			Set<String> deleteLater = new TreeSet<>();
 			String query = "SELECT pureText, tuid FROM " + srcLang.replace('-', '_') + "_tuv ORDER BY pureText";
-			try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+			try (ResultSet rs = stmt.executeQuery(query)) {
 				String pureA = null;
 				String idA = null;
 				while (rs.next()) {
@@ -894,39 +882,37 @@ public class H2Store implements StoreInterface {
 	public void removeSpaces() throws SAXException, IOException, ParserConfigurationException, SQLException {
 		processed = 0l;
 		String query = "SELECT tuid FROM tu";
-		try (Statement stmt = conn.createStatement()) {
-			try (ResultSet rs = stmt.executeQuery(query)) {
-				while (rs.next()) {
-					String id = rs.getString(1);
-					Iterator<String> it = languages.iterator();
-					while (it.hasNext()) {
-						String lang = it.next();
-						String tuvText = getTuvString(id, lang);
-						if (tuvText.isEmpty()) {
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String id = rs.getString(1);
+				Iterator<String> it = languages.iterator();
+				while (it.hasNext()) {
+					String lang = it.next();
+					String tuvText = getTuvString(id, lang);
+					if (tuvText.isEmpty()) {
+						continue;
+					}
+					Element tuv = toElement(tuvText);
+					if (tuv != null) {
+						Element seg = tuv.getChild("seg");
+						String text = TmxUtils.textOnly(seg);
+						if (text.isBlank()) {
+							deleteTuv(id, lang);
 							continue;
 						}
-						Element tuv = toElement(tuvText);
-						if (tuv != null) {
-							Element seg = tuv.getChild("seg");
-							String text = TmxUtils.textOnly(seg);
-							if (text.isEmpty()) {
+						char start = text.charAt(0);
+						char end = text.charAt(text.length() - 1);
+						if (Character.isWhitespace(start) || Character.isWhitespace(end)) {
+							TmxUtils.trim(seg);
+							if (!seg.getText().isEmpty()) {
+								storeTuv(lang, id, tuv);
+							} else {
 								deleteTuv(id, lang);
-								continue;
-							}
-							char start = text.charAt(0);
-							char end = text.charAt(text.length() - 1);
-							if (Character.isSpaceChar(start) || Character.isSpaceChar(end)) {
-								TmxUtils.trim(seg);
-								if (!seg.getText().isEmpty()) {
-									storeTuv(lang, id, tuv);
-								} else {
-									deleteTuv(id, lang);
-								}
 							}
 						}
 					}
-					processed++;
 				}
+				processed++;
 			}
 		}
 	}
@@ -938,7 +924,7 @@ public class H2Store implements StoreInterface {
 		String srcLang = language.getCode();
 		List<Pair> pairs = new ArrayList<>();
 		String query = "SELECT tuid, tuv FROM " + srcLang.replace('-', '_') + "_tuv";
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+		try (ResultSet rs = stmt.executeQuery(query)) {
 			while (rs.next()) {
 				String id = rs.getString(1);
 				String tuvText = "";
@@ -953,14 +939,15 @@ public class H2Store implements StoreInterface {
 				}
 			}
 		}
-
 		Collections.sort(pairs);
 		conn.setAutoCommit(false);
-		for (int i = 0; i < pairs.size() - 1; i++) {
+		int i = 0;
+		while (i < pairs.size() - 1) {
 			Pair currentPair = pairs.get(i);
-			Pair nextPair = pairs.get(i + 1);
-			if (currentPair.getText().equals(nextPair.getText())) {
-				Element currentSeg = toElement(getTuvString(currentPair.getId(), srcLang)).getChild("seg");
+			Element currentSeg = toElement(getTuvString(currentPair.getId(), srcLang)).getChild("seg");
+			int j = 1;
+			Pair nextPair = pairs.get(i + j);
+			while (currentPair.getText().equals(nextPair.getText())) {
 				Element nextSeg = toElement(getTuvString(nextPair.getId(), srcLang)).getChild("seg");
 				if (currentSeg.equals(nextSeg)) {
 					Iterator<String> lt = languages.iterator();
@@ -969,21 +956,26 @@ public class H2Store implements StoreInterface {
 						if (lang.equals(srcLang)) {
 							continue;
 						}
-						String a = getTuvString(currentPair.getId(), lang);
-						String b = getTuvString(nextPair.getId(), lang);
-						if (a.isEmpty() && !b.isEmpty()) {
-							Element tuv = toElement(b);
-							storeTuv(lang, currentPair.getId(), tuv);
+						Element a = toElement(getTuvString(currentPair.getId(), lang));
+						Element b = toElement(getTuvString(nextPair.getId(), lang));
+						if (a == null && b != null) {
+							storeTuv(lang, currentPair.getId(), b);
+							String pure = TmxUtils.pureText(b.getChild("seg"), true, null, false, false);
+							updateUnit(currentPair.getId(), lang, pure);
 							deleteTuv(nextPair.getId(), lang);
 							conn.commit();
 						}
 					}
 				}
+				j++;
+				if (i + j >= pairs.size()) {
+					break;
+				}
+				nextPair = pairs.get(i + j);
 			}
+			i = i + j;
 			processed++;
 		}
-		pairs.clear();
-		pairs = null;
 		removeUntranslated(language);
 	}
 
@@ -1107,29 +1099,27 @@ public class H2Store implements StoreInterface {
 				exported = 0;
 
 				String query = "SELECT tuid FROM tu";
-				try (Statement stmt = conn.createStatement()) {
-					try (ResultSet rs = stmt.executeQuery(query)) {
-						while (rs.next()) {
-							StringBuilder line = new StringBuilder();
-							String tuid = rs.getString(1);
-							Iterator<String> langIt = languages.iterator();
-							while (langIt.hasNext()) {
-								String lang = langIt.next();
-								String tuv = getTuvString(tuid, lang);
-								String text = " ";
-								if (!tuv.isEmpty()) {
-									Element e = toElement(tuv);
-									text = TmxUtils.cleanLines(TmxUtils.textOnly(e.getChild("seg")));
-								}
-								if (!line.toString().isEmpty()) {
-									line.append('\t');
-								}
-								line.append(text);
+				try (ResultSet rs = stmt.executeQuery(query)) {
+					while (rs.next()) {
+						StringBuilder line = new StringBuilder();
+						String tuid = rs.getString(1);
+						Iterator<String> langIt = languages.iterator();
+						while (langIt.hasNext()) {
+							String lang = langIt.next();
+							String tuv = getTuvString(tuid, lang);
+							String text = " ";
+							if (!tuv.isEmpty()) {
+								Element e = toElement(tuv);
+								text = TmxUtils.cleanLines(TmxUtils.textOnly(e.getChild("seg")));
 							}
-							line.append('\n');
-							cout.write(line.toString());
-							exported++;
+							if (!line.toString().isEmpty()) {
+								line.append('\t');
+							}
+							line.append(text);
 						}
+						line.append('\n');
+						cout.write(line.toString());
+						exported++;
 					}
 				}
 			}

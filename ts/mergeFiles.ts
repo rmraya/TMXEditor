@@ -46,24 +46,31 @@ class MergeFiles {
         document.getElementById('mergeFiles').addEventListener('click', () => {
             this.mergeFiles();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('mergeFiles-height', { width: body.clientWidth, height: body.clientHeight + 10 });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.mergeFiles();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-mergeFiles');
+            }
         });
+        document.getElementById('file').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('mergeFiles-height', { width: body.clientWidth, height: body.clientHeight + 10 });
     }
 
     mergeFiles(): void {
         var file: string = (document.getElementById('file') as HTMLInputElement).value;
         if (file === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select merged TMX file' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select merged TMX file', parent: 'mergeFiles' });
             return;
         }
         if (this.files.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add TMX files' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add TMX files', parent: 'mergeFiles' });
             return;
         }
         if (this.files.length < 2) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add more TMX files' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add more TMX files', parent: 'mergeFiles' });
             return;
         }
         this.electron.ipcRenderer.send('merge-tmx-files', { merged: file, files: this.files });
@@ -111,7 +118,7 @@ class MergeFiles {
             }
         }
         if (selected.length == 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select files' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select files', parent: 'mergeFiles' });
             return;
         }
         var array: string[] = [];

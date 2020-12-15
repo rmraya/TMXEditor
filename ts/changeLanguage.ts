@@ -41,10 +41,17 @@ class ChangeLanguages {
         document.getElementById('changeLanguage').addEventListener('click', () => {
             this.changeLanguage();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('changeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.changeLanguage();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-changeLanguage');
+            }
         });
+        document.getElementById('currentLanguage').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('changeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     languageList(arg: any): void {

@@ -39,10 +39,17 @@ class SortUnits {
         document.getElementById('clearSort').addEventListener('click', () => {
             this.clearSort();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('sortUnits-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.sort();
+            }
+            if (event.code === 'Escape') {
+                this.clearSort();
+            }
         });
+        document.getElementById('sortLanguage').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('sortUnits-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {

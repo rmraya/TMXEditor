@@ -35,16 +35,23 @@ class SplitFile {
         document.getElementById('splitFile').addEventListener('click', () => {
             this.splitFile();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('splitFile-height', { width: body.clientWidth, height: body.clientHeight + 10 });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.splitFile();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-splitFile');
+            }
         });
+        document.getElementById('file').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('splitFile-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     splitFile(): void {
         var file: string = (document.getElementById('file') as HTMLInputElement).value;
         if (file === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'splitFile' });
             return;
         }
         var parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);

@@ -1,28 +1,33 @@
 :root {
-	--normal-background: #ececec;
+	--editing-background: #ffffff;
+	--normal-background: #efefef;
+	--tabHolder-background: #c4c4c4;
+	--tab-background: #e0e0e0;
+	--toolbar-background: #d2d0ce;
+	--even-row-background: #dcdcdc;
+	--odd-row-background: #eaeaea;
 	--normal-color: #373737;
-	--accent-color: #3465aa;
-	--accent-alternative: #0551bb;
-	--accent-contrast: #ffffff;
-	--tooltip-background: #0d47a1;
-	--tooltip-color: #fefefe;
-	--tabHolder-background: #9a9a9a;
-	--tab-background: #dedede;
+	--accent-color: #0073B5;
+	--accent-alternative: #004885;
+	--accent-contrast: #FFFFFF;
+	--tooltip-background: #004885;
+	--tooltip-color: #FFFFFF;
 	--tab-hover: #cdcdcd;
 	--input-background: #fefefe;
 	--input-color: #262626;
 	--focus-border: #f57c00;
 	--disabled-input: #999999;
-	--even-row-background: #ececec;
-	--odd-row-background: #dedede;
-	--selected-row: #b0bec5;
-	--highlight-row: #bbdefb;
-	--highlight-color: #ecf01b;
+	--highlight-row: #d3d3d3;
+	--highlight-color: #dfe0e1;
 	--error-color: #960303;
-	--difference-color: #101010;
-	--difference-background: #bbdefb;
-	--stats-text: #101010;
-	--stats-fill: #90caf9;
+	--difference-color: #373737;
+	--difference-background: #b4d7fe;
+	--stats-text: #000000;
+	--stats-fill: #71afe5;
+	--space-color: #7abff7;
+	--splitting-background: #bbdefb;
+	--even-unit: #02275f;
+	--odd-unit: #e20606;
 }
 
 body {
@@ -30,6 +35,8 @@ body {
 	color: var(--normal-color);
 	fill: var(--normal-color);
 	stroke: var(--normal-color);
+	padding: 0;
+	margin: 0;
 }
 
 .hdivider {
@@ -113,7 +120,7 @@ tbody {
 }
 
 td {
-	padding: 4px;
+	padding: 8px 4px;
 	vertical-align: top;
 	font-size: medium;
 }
@@ -124,14 +131,15 @@ td.list {
 }
 
 td.editing {
-	background-color: var(--normal-background) !important;
+	background-color: var(--editing-background) !important;
+	outline: 1px solid var(--focus-border) !important;
 }
 
 td.fixed {
 	text-align: center;
 	vertical-align: middle;
+	background: var(--highlight-row);
 	color: var(--normal-color);
-	background: var(--input-background);
 	cursor: default !important;
 }
 
@@ -152,7 +160,9 @@ td.final {
 }
 
 tr.selected {
-	background-color: var(--selected-row) !important;
+	border-top: 2px solid var(--focus-border) !important;
+	border-bottom: 2px solid var(--focus-border) !important;
+	background-color: var(--editing-background) !important;
 }
 
 tr.discover:hover {
@@ -177,8 +187,35 @@ th {
 }
 
 .currentRow {
-	border-top: 1px solid var(--focus-border);
-	border-bottom: 1px solid var(--focus-border);
+	border-top: 2px solid var(--focus-border) !important;
+	border-bottom: 2px solid var(--focus-border) !important;
+	background-color: var(--editing-background) !important;
+}
+
+.sourceContainer {
+	background-color: var(--normal-background);
+	padding: 4px;
+	margin: 0;
+	width: 100%;
+	white-space: pre-wrap;
+	border-bottom: 1px solid var(--accent-color);
+}
+
+.targetContainer {
+	background-color: var(--normal-background);
+	padding: 4px;
+	margin: 0;
+	width: 100%;
+	white-space: pre-wrap;
+	border-bottom: 1px solid var(--normal-background);
+}
+
+.machineContainer {
+	background-color: var(--od-row-background);
+	padding: 4px;
+	margin: 0;
+	width: 100%;
+	white-space: pre-wrap;
 }
 
 .fixed {
@@ -191,6 +228,7 @@ th {
 	background-color: var(--accent-color);
 	padding-left: 2px;
 	padding-right: 2px;
+	border-radius: 2px;
 }
 
 .difference {
@@ -198,6 +236,7 @@ th {
 	background-color: var(--difference-background);
 	padding-left: 2px;
 	padding-right: 2px;
+	border-radius: 2px;
 }
 
 .right {
@@ -229,6 +268,10 @@ input {
 
 .table_input {
 	width: calc(100% - 10px);
+}
+
+.table_select {
+	width: calc(100% - 5px);
 }
 
 input:focus {
@@ -302,6 +345,10 @@ button:focus {
 button:hover {
 	background: var(--accent-alternative);
 	border: 1px solid var(--accent-alternative);
+	transition-property: all;
+	transition-duration: 0.5s;
+	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
+	transition-delay: 0s;
 }
 
 .row {
@@ -325,13 +372,17 @@ label {
 	width: 100%;
 }
 
+.form_height {
+	height: 2rem;
+}
+
 .noWrap {
 	white-space: nowrap;
 }
 
 .paddedArea {
 	padding: 4px;
-	margin: 4px;
+	margin: 4px 8px;
 }
 
 .optionBox {
@@ -359,28 +410,17 @@ label {
 .toolbar {
 	display: flex;
 	flex-direction: row;
-	background: var(--tab-background);
+	background: var(--toolbar-background);
 	color: var(--normal-color);
 	fill: var(--accent-color);
 	stroke: var(--accent-color);
-	padding-bottom: 0;
-	padding-top: 0;
-	padding-left: 4px;
-	padding-right: 4px;
+	padding: 2px 4px;
 	justify-content: flex-start;
 	border-top: 1px solid var(--normal-background);
 }
 
-.toolbar span {
-	padding-top: 4px;
-}
-
-.toolbar input {
-	margin-top: 4px;
-}
-
 .toolbar button {
-	padding: 5px;
+	padding: 4px;
 	background: inherit;
 	border: none;
 	outline: none;
@@ -417,8 +457,12 @@ label {
 }
 
 .toolbar a:hover {
-	background-color: var(--input-background);
+	background-color: var(--tab-hover);
 	text-decoration: none !important;
+	transition-property: all;
+	transition-duration: 0.5s;
+	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
+	transition-delay: 0s;
 }
 
 svg {
@@ -434,7 +478,7 @@ svg {
 	flex-flow: row;
 	color: var(--normal-color);
 	background: var(--tabHolder-background);
-	padding: 2px 0 0 8px;
+	padding: 4px 0 0 8px;
 }
 
 .tab {
@@ -460,6 +504,10 @@ svg {
 .tab:hover {
 	background: var(--tab-hover);
 	border-bottom: 3px solid var(--tab-hover);
+	transition-property: all;
+	transition-duration: 0.5s;
+	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
+	transition-delay: 0s;
 }
 
 .selectedTab:hover {
@@ -494,7 +542,6 @@ svg {
 	margin: 0;
 	padding-top: 0;
 	padding-left: 4px;
-	padding-right: 4px;
 	background: var(--accent-color);
 	color: var(--accent-contrast);
 	border-bottom: 1px solid var(--normal-background);
@@ -504,11 +551,6 @@ svg {
 
 .titlepanel a:hover {
 	background: var(--accent-alternative);
-}
-
-.titlepanel a svg {
-	fill: var(--accent-color);
-	stroke: var(--accent-contrast);
 }
 
 .panelcontent {
@@ -626,4 +668,22 @@ svg.stats {
 	dominant-baseline: middle;
 	text-anchor: middle;
 	fill: var(--stats-text);
+}
+
+.space {
+	background: var(--space-color);
+	border-radius: 2px;
+	font-weight: 700;
+}
+
+.splitting {
+	background: var(--splitting-background);
+}
+
+.evenUnit {
+	border-right-color: var(--even-unit) !important;
+}
+
+.oddUnit {
+	border-right-color: var(--odd-unit) !important;
 }

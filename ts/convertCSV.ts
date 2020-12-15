@@ -75,10 +75,13 @@ class ConvertCSV {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('convertCsv-height', { width: body.clientWidth, height: body.clientHeight + 10 });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-convertCsv');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('convertCsv-height', { width: body.clientWidth, height: body.clientHeight + 10 });
     }
 
     setCharsets(arg: string[]): void {
@@ -171,11 +174,11 @@ class ConvertCSV {
     setLanguages(): void {
         var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
             return;
         }
         if (this.columns === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Columns not detected' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Columns not detected', parent: 'convertCSV' });
             return;
         }
         this.electron.ipcRenderer.send('get-csv-languages', { columns: this.columns, languages: this.langs });
@@ -190,20 +193,20 @@ class ConvertCSV {
     convertFile(): void {
         var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
             return;
         }
         var tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'convertCSV' });
             return;
         }
         if (this.langs.length < 2) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages', parent: 'convertCSV' });
             return;
         }
         if (this.langs.length != this.columns) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages for all columns' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages for all columns', parent: 'convertCSV' });
             return;
         }
 

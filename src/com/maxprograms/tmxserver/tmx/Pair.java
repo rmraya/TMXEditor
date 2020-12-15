@@ -30,7 +30,7 @@ public class Pair implements Comparable<Pair> {
 
 	@Override
 	public int compareTo(Pair o) {
-		return text.compareTo(o.text);
+		return text.compareTo(o.getText());
 	}
 
 	public String getId() {
@@ -55,5 +55,10 @@ public class Pair implements Comparable<Pair> {
 	@Override
 	public int hashCode() {
 		return 17 * id.hashCode() * text.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return id.concat(" => ").concat(text);
 	}
 }

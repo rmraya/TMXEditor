@@ -33,10 +33,16 @@ class NewFile {
         document.getElementById('createFile').addEventListener('click', () => {
             this.createFile();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('newFile-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.createFile();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-newFile');
+            }
         });
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('newFile-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     languagesList(arg: any): void {
@@ -55,7 +61,7 @@ class NewFile {
         var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
         var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
         if (srcLanguage.value === tgtLanguage.value) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages', parent: 'newFile' });
             return;
         }
         this.electron.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });

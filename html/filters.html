@@ -8,7 +8,7 @@
 </head>
 
 <body id="body">
-    <table>
+    <table class="fill_width">
         <tr>
             <td class="middle noWrap"><label for="filterText">Text to Search</label></td>
             <td class="middle fill_width"><input type="text" id="filterText" class="table_input"></td>
@@ -16,7 +16,7 @@
         <tr>
             <td class="middle noWrap"><label for="filterLanguage">Filter Language</label></td>
             <td class="middle fill_width">
-                <select id="filterLanguage" class="fill_width">
+                <select id="filterLanguage" class="table_select">
                 </select>
             </td>
         </tr>
@@ -37,11 +37,11 @@
             <input type="checkbox" id="filterUntranslated">
             <label for="filterUntranslated" class="noWrap" style="padding-top:4px;">Show Untranslated Units Only</label>
         </div>
-        <table>
+        <table class="fill_width">
             <tr>
                 <td class="middle noWrap"><label for="sourceLanguage">Source Language</label></td>
                 <td class="middle fill_width">
-                    <select id="sourceLanguage" class="fill_width" disabled>
+                    <select id="sourceLanguage" class="table_select" disabled>
                     </select>
                 </td>
             </tr>
@@ -52,7 +52,8 @@
         <button id="applyFilters">Apply Filters</button>
         <button id="clearFilters">Clear Filters</button>
     </div>
-
+    
+    <script src="../js/keyboardHandler.js"></script>
     <script src="../js/filters.js"></script>
 </body>
 

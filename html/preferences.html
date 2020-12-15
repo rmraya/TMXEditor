@@ -8,36 +8,32 @@
 </head>
 
 <body id="body">
-
     <table class="fill_width">
         <tr>
             <td class="middle noWrap"><label for="themeColor">Theme</label></td>
             <td class="middle fill_width">
-                <select id="themeColor" class="fill_width">
+                <select id="themeColor" class="table_select">
                     <option value="system">System Default</option>
                     <option value="dark">Dark</option>
                     <option value="light">Light</option>
                 </select>
             </td>
         </tr>
-    </table>
-    <table class="fill_width">
         <tr>
-            <td class="middle noWrap"><label for="threshold">Max File Size for Memory Storage (MB)</label></td>
-            <td class="middle fill_width">
-                <select id="threshold" class="fill_width">
+            <td class="middle noWrap"><label for="threshold">Max File size for<br>&nbsp;Memory Storage</label></td>
+            <td class="middle fill_width noWrap">
+                <select id="threshold" >
                     <option value="100">100</option>
                     <option value="200">200</option>
                     <option value="500">500</option>
                     <option value="1000">1000</option>
                 </select>
+                (MB)
             </td>
         </tr>
-    </table>
-    <table class="fill_width">
         <tr>
             <td class="middle noWrap"><label for="indentation">Indentation</label></td>
-            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"></td>
+            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"> spaces</td>
         </tr>
     </table>
 

@@ -33,10 +33,17 @@ class RemoveLanguage {
         document.getElementById('removeLanguage').addEventListener('click', () => {
             this.removeLanguage();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('removeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.removeLanguage();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-removeLanguage');
+            }
         });
+        document.getElementById('language').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('removeLanguage-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {

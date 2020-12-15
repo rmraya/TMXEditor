@@ -36,10 +36,17 @@ class SourceLanguage {
         document.getElementById('change').addEventListener('click', () => {
             this.changeSrcLanguage();
         });
-        this.electron.ipcRenderer.on('get-height', () => {
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('srcLanguage-height', { width: body.clientWidth, height: body.clientHeight });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
+                this.changeSrcLanguage();
+            }
+            if (event.code === 'Escape') {
+                this.electron.ipcRenderer.send('close-srcLanguage');
+            }
         });
+        document.getElementById('language').focus();
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('srcLanguage-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {
