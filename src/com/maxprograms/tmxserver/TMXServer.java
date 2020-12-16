@@ -255,6 +255,9 @@ public class TMXServer implements HttpHandler {
 				case "setNotes":
 					response = setNotes(json);
 					break;
+				case "processTasks":
+					response = processTasks(json);
+					break;
 				default:
 					JSONObject unknown = new JSONObject();
 					unknown.put(Constants.STATUS, Constants.ERROR);
@@ -426,6 +429,10 @@ public class TMXServer implements HttpHandler {
 
 	private String removeTags() {
 		return service.removeTags().toString();
+	}
+
+	private String processTasks(JSONObject json) {
+		return service.processTasks(json).toString();
 	}
 
 	private String createFile(JSONObject json) {
