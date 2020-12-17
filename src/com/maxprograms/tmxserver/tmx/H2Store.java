@@ -900,10 +900,8 @@ public class H2Store implements StoreInterface {
 							deleteTuv(id, lang);
 							continue;
 						}
-						char start = text.charAt(0);
-						char end = text.charAt(text.length() - 1);
-						if (Character.isWhitespace(start) || Character.isWhitespace(end)) {
-							TmxUtils.trim(seg);
+						if (seg != null) {
+							seg.setContent(TmxUtils.stripSegment(seg).getContent());
 							if (!seg.getText().isEmpty()) {
 								storeTuv(lang, id, tuv);
 							} else {

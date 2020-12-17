@@ -562,15 +562,8 @@ public class SimpleStore implements StoreInterface {
 				Element tuv = maps.get(lang).get(id);
 				if (tuv != null) {
 					Element seg = tuv.getChild("seg");
-					String text = TmxUtils.textOnly(seg);
-					if (text.isBlank()) {
-						maps.get(lang).remove(id);
-						continue;
-					}
-					char start = text.charAt(0);
-					char end = text.charAt(text.length() - 1);
-					if (Character.isWhitespace(start) || Character.isWhitespace(end)) {
-						TmxUtils.trim(seg);
+					if (seg != null) {
+						seg.setContent(TmxUtils.stripSegment(seg).getContent());
 						if (!seg.getText().isEmpty()) {
 							maps.get(lang).put(id, tuv);
 						} else {

@@ -379,39 +379,32 @@ public class TmxUtils {
 		element.setContent(newContent);
 	}
 
-	public static void trim(Element element) throws SAXException, IOException, ParserConfigurationException {
-		String tagName = element.getName();
-		String text = element.toString();
+	public static Element stripSegment(Element seg) throws SAXException, IOException, ParserConfigurationException {
+		String text = seg.toString();
 		text = text.substring(text.indexOf('>') + 1);
 		text = text.substring(0, text.lastIndexOf('<'));
-		int start = 0;
-		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			if (Character.isWhitespace(c)) {
-				start++;
+		char[] array = text.toCharArray();
+		for (int i = 0; i < array.length; i++) {
+			char c = array[i];
+			if (c == '\u00A0' || Character.isWhitespace(c)) {
+				array[i] = ' ';
 			} else {
 				break;
 			}
 		}
-		int end = text.length();
-		for (int i = text.length(); i > 0; i--) {
-			char c = text.charAt(i - 1);
-			if (Character.isWhitespace(c)) {
-				end = i - 1;
+		for (int i = array.length - 1; i >= 0; i--) {
+			char c = array[i];
+			if (c == '\u00A0' || Character.isWhitespace(c)) {
+				array[i] = ' ';
 			} else {
 				break;
 			}
 		}
-		if (end < start) {
-			end = start;
-		}
-		String s = text.substring(start, end);
-		text = "<" + tagName + ">" + s + "</" + tagName + ">";
+		text = "<seg>" + new String(array).strip() + "</seg>";
 		if (builder == null) {
 			builder = new SAXBuilder();
 		}
-		Element root = builder.build(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8))).getRootElement();
-		element.setContent(root.getContent());
+		return builder.build(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8))).getRootElement();
 	}
 
 	public static String cleanLines(String string) {

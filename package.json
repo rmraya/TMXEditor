@@ -1,7 +1,7 @@
 {
     "name": "tmxeditor",
     "productName": "TMXEditor",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "TMX Editor",
     "main": "js/app.js",
     "scripts": {
