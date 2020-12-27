@@ -976,10 +976,6 @@ class Main {
             return;
         }
         var x: string = element.tagName;
-        if ('TEXTAREA' === x) {
-            // already editing
-            return;
-        }
         var id: string;
         var lang: string;
         if ('TD' === x || 'INPUT' === x) {

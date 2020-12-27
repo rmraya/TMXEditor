@@ -1273,7 +1273,7 @@ public class TMXService implements TMXServiceInterface {
 				}
 			} else {
 				JSONArray attributes = new JSONArray();
-				attributes.put(lang);
+				attributes.put(new String[] { "xml:lang", lang });
 				result.put("attributes", attributes);
 				result.put("properties", new JSONArray());
 				result.put("notes", new JSONArray());
