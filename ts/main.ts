@@ -42,7 +42,6 @@ class Main {
     currentLang: string = null;
     currentCell: HTMLTableCellElement = null;
     currentContent: string = null;
-    currentTags: string[] = [];
     selectedUnits: string[] = [];
 
     constructor() {
@@ -902,7 +901,6 @@ class Main {
         this.currentLang = null;
         this.currentCell = null;
         this.currentContent = null;
-        this.currentTags = [];
         this.selectedUnits = [];
     }
 
@@ -1159,35 +1157,6 @@ class Main {
             (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);
             this.getSegments();
         }
-    }
-
-    cleanTags(unit: string): string {
-        var index: number = unit.indexOf('<img ');
-        var tagNumber: number = 1;
-        this.currentTags = [];
-        while (index >= 0) {
-            let start: string = unit.slice(0, index);
-            let rest: string = unit.slice(index + 1);
-            let end: number = rest.indexOf('>');
-            let tag: string = '<' + rest.slice(0, end) + '/>';
-            this.currentTags.push(tag);
-            unit = start + '[[' + tagNumber++ + ']]' + rest.slice(end + 1);
-            index = unit.indexOf('<img ');
-        }
-        index = unit.indexOf('<span');
-        while (index >= 0) {
-            let start: string = unit.slice(0, index);
-            let rest: string = unit.slice(index + 1);
-            let end: number = rest.indexOf('>');
-            unit = start + rest.slice(end + 1);
-            index = unit.indexOf('<span');
-        }
-        index = unit.indexOf('</span>');
-        while (index >= 0) {
-            unit = unit.replace('</span>', '');
-            index = unit.indexOf('</span>');
-        }
-        return unit;
     }
 
     toggleSelectAll(): void {

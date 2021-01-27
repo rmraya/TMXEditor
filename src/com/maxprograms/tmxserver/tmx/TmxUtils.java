@@ -380,9 +380,7 @@ public class TmxUtils {
 	}
 
 	public static Element stripSegment(Element seg) throws SAXException, IOException, ParserConfigurationException {
-		String text = seg.toString();
-		text = text.substring(text.indexOf('>') + 1);
-		text = text.substring(0, text.lastIndexOf('<'));
+		String text = textContent(seg);
 		char[] array = text.toCharArray();
 		for (int i = 0; i < array.length; i++) {
 			char c = array[i];
@@ -405,6 +403,24 @@ public class TmxUtils {
 			builder = new SAXBuilder();
 		}
 		return builder.build(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8))).getRootElement();
+	}
+
+	private static String textContent(Element element) {
+		StringBuilder sb = new StringBuilder();
+		List<XMLNode> content = element.getContent();
+		Iterator<XMLNode> it = content.iterator();
+		while (it.hasNext()) {
+			XMLNode node = it.next();
+			if (node.getNodeType() == XMLNode.TEXT_NODE) {
+				TextNode t = (TextNode) node;
+				sb.append(TextUtils.cleanString(t.getText()));
+			}
+			if (node.getNodeType() == XMLNode.ELEMENT_NODE) {
+				Element e = (Element) node;
+				sb.append(e.toString());
+			}
+		}
+		return sb.toString();
 	}
 
 	public static String cleanLines(String string) {
