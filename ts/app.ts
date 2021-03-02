@@ -63,6 +63,8 @@ class App {
     static consolidateWindow: BrowserWindow;
     static updatesWindow: BrowserWindow;
     static maintenanceWindow: BrowserWindow;
+    static convertExcelWindow: BrowserWindow;
+    static excelLanguagesWindow: BrowserWindow;
 
     static requestEvaluationWindow: BrowserWindow;
     static registerSubscriptionWindow: BrowserWindow;
@@ -88,6 +90,7 @@ class App {
     static isReady: boolean = false;
 
     static csvEvent: IpcMainEvent;
+    static excelEvent: IpcMainEvent;
     static propertyEvent: IpcMainEvent;
     static notesEvent: IpcMainEvent;
 
@@ -98,6 +101,7 @@ class App {
     };
     static sortOptions: any = {};
     static csvLangArgs: any;
+    static excelLangArgs: any;
     static attributesArg: any;
     static propertiesArg: any;
     static notesArg: any;
@@ -339,11 +343,17 @@ class App {
         ipcMain.on('save-file', () => {
             App.saveFile();
         })
+        ipcMain.on('convert-excel', () => {
+            App.convertExcel();
+        });
         ipcMain.on('convert-csv', () => {
             App.convertCSV();
         });
         ipcMain.on('convert-csv-tmx', (event: IpcMainEvent, arg: any) => {
             this.convertCsvTmx(arg);
+        });
+        ipcMain.on('convert-excel-tmx', (event: IpcMainEvent, arg: any) => {
+            this.convertExcelTmx(arg);
         });
         ipcMain.on('get-charsets', (event: IpcMainEvent) => {
             this.getCharsets(event);
@@ -351,20 +361,35 @@ class App {
         ipcMain.on('get-csvfile', (event: IpcMainEvent) => {
             this.getCsvFile(event);
         });
+        ipcMain.on('get-excelfile', (event: IpcMainEvent) => {
+            this.getExcelFile(event);
+        });
         ipcMain.on('get-converted-tmx', (event: IpcMainEvent, arg: any) => {
             this.getConvertedTMX(event, arg);
         });
         ipcMain.on('get-csv-preview', (event: IpcMainEvent, arg: any) => {
             this.getCsvPreview(event, arg);
         });
+        ipcMain.on('get-excel-preview', (event: IpcMainEvent, arg: any) => {
+            this.getExcelPreview(event, arg);
+        });
         ipcMain.on('get-csv-languages', (event: IpcMainEvent, arg: any) => {
             this.getCsvLanguages(event, arg);
+        });
+        ipcMain.on('get-excel-languages', (event: IpcMainEvent, arg: any) => {
+            this.getExcelLanguages(event, arg);
         });
         ipcMain.on('get-csv-lang-args', (event: IpcMainEvent) => {
             event.sender.send('set-csv-lang-args', App.csvLangArgs);
         });
         ipcMain.on('set-csv-languages', (event: IpcMainEvent, arg: any) => {
             this.setCsvLanguages(arg);
+        });
+        ipcMain.on('set-excel-languages', (event: IpcMainEvent, arg: any) => {
+            this.setExcelLanguages(arg);
+        });
+        ipcMain.on('get-excel-lang-args', (event: IpcMainEvent) => {
+            event.sender.send('set-excel-lang-args', App.excelLangArgs);
         });
         ipcMain.on('show-file-info', () => {
             App.showFileInfo();
@@ -531,14 +556,26 @@ class App {
         ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.convertCsvWindow, arg);
         });
+        ipcMain.on('convertExcel-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.convertExcelWindow, arg);
+        });
         ipcMain.on('close-convertCsv', () => {
             App.destroyWindow(App.convertCsvWindow);
+        });
+        ipcMain.on('close-convertExcel', () => {
+            App.destroyWindow(App.convertExcelWindow);
         });
         ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.csvLanguagesWindow, arg);
         });
+        ipcMain.on('excelLanguages-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.excelLanguagesWindow, arg);
+        });
         ipcMain.on('close-csvLanguages', () => {
             App.destroyWindow(App.csvLanguagesWindow);
+        });
+        ipcMain.on('close-excelLanguages', () => {
+            App.destroyWindow(App.excelLanguagesWindow);
         });
         ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.splitFileWindow, arg);
@@ -708,7 +745,11 @@ class App {
                     break;
                 case 'convertCSV': parent = App.convertCsvWindow;
                     break;
+                case 'convertExcel': parent = App.convertExcelWindow;
+                    break;
                 case 'csvLanguages': parent = App.csvLanguagesWindow;
+                    break;
+                case 'excelLanguages': parent = App.excelLanguagesWindow;
                     break;
                 case 'filters': parent = App.filtersWindow;
                     break;
@@ -769,8 +810,11 @@ class App {
             { label: 'Save', accelerator: 'CmdOrCtrl+s', click: () => { App.saveFile(); } },
             { label: 'Save As', click: () => { App.saveAs() } },
             new MenuItem({ type: 'separator' }),
-            { label: 'Convert CSV/TAB Delimited to TMX', click: () => { App.convertCSV(); } },
-            { label: 'Export as TAB Delimited...', click: () => { App.exportDelimited(); } },
+            { label: 'Convert Excel File to TMX', click: () => { App.convertExcel(); } },
+            { label: 'Export as Excel File...', click: () => { App.exportExcel(); } },
+            new MenuItem({ type: 'separator' }),
+            { label: 'Convert CSV/TAB Delimited File to TMX', click: () => { App.convertCSV(); } },
+            { label: 'Export as TAB Delimited File...', click: () => { App.exportDelimited(); } },
             new MenuItem({ type: 'separator' }),
             { label: 'File Properties', click: () => { App.showFileInfo(); } },
             new MenuItem({ type: 'separator' }),
@@ -955,7 +999,7 @@ class App {
         });
         App.aboutWindow.setMenu(null);
         App.aboutWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'about.html'));
-        App.aboutWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.aboutWindow.once('ready-to-show', () => {
             App.aboutWindow.show();
         });
     }
@@ -1026,7 +1070,7 @@ class App {
         });
         App.licensesWindow.setMenu(null);
         App.licensesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'licenses.html'));
-        App.licensesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.licensesWindow.once('ready-to-show', () => {
             App.licensesWindow.show();
         });
     }
@@ -1397,7 +1441,7 @@ class App {
         App.attributesArg = arg;
         App.attributesWindow.setMenu(null);
         App.attributesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'attributes.html'));
-        App.attributesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.attributesWindow.once('ready-to-show', () => {
             App.attributesWindow.show();
         });
     }
@@ -1447,7 +1491,7 @@ class App {
         App.propertiesArg = arg;
         App.propertiesWindow.setMenu(null);
         App.propertiesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'properties.html'));
-        App.propertiesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.propertiesWindow.once('ready-to-show', () => {
             App.propertiesWindow.show();
         });
     }
@@ -1471,7 +1515,7 @@ class App {
         });
         App.addPropertyWindow.setMenu(null);
         App.addPropertyWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addProperty.html'));
-        App.addPropertyWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.addPropertyWindow.once('ready-to-show', () => {
             App.addPropertyWindow.show();
         });
     }
@@ -1526,7 +1570,7 @@ class App {
         App.notesArg = arg;
         App.notesWindow.setMenu(null);
         App.notesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'notes.html'));
-        App.notesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.notesWindow.once('ready-to-show', () => {
             App.notesWindow.show();
         });
     }
@@ -1550,7 +1594,7 @@ class App {
         });
         App.addNotesWindow.setMenu(null);
         App.addNotesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addNote.html'));
-        App.addNotesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.addNotesWindow.once('ready-to-show', () => {
             App.addNotesWindow.show();
         });
     }
@@ -1604,7 +1648,7 @@ class App {
         });
         App.settingsWindow.setMenu(null);
         App.settingsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'preferences.html'));
-        App.settingsWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.settingsWindow.once('ready-to-show', () => {
             App.settingsWindow.show();
         });
     }
@@ -1630,7 +1674,7 @@ class App {
         });
         App.newFileWindow.setMenu(null);
         App.newFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'newFile.html'));
-        App.newFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.newFileWindow.once('ready-to-show', () => {
             App.newFileWindow.show();
         });
     }
@@ -1749,10 +1793,10 @@ class App {
     static convertCSV(): void {
         App.convertCsvWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 600,
+            width: 700,
             minimizable: false,
             maximizable: false,
-            resizable: true,
+            resizable: false,
             useContentSize: true,
             show: false,
             icon: App.iconPath,
@@ -1763,14 +1807,60 @@ class App {
         });
         App.convertCsvWindow.setMenu(null);
         App.convertCsvWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertCSV.html'));
-        App.convertCsvWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.convertCsvWindow.once('ready-to-show', () => {
             App.convertCsvWindow.show();
+        });
+    }
+
+    static convertExcel(): void {
+        App.convertExcelWindow = new BrowserWindow({
+            parent: App.mainWindow,
+            width: 700,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            useContentSize: true,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        App.convertExcelWindow.setMenu(null);
+        App.convertExcelWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertExcel.html'));
+        App.convertExcelWindow.once('ready-to-show', () => {
+            App.convertExcelWindow.show();
         });
     }
 
     convertCsvTmx(arg: any): void {
         App.destroyWindow(App.convertCsvWindow);
         arg.command = 'convertCsv';
+        App.sendRequest(arg,
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    if (arg.openTMX) {
+                        if (App.currentFile !== '') {
+                            App.closeFile();
+                        }
+                        App.openFile(arg.tmxFile);
+                    } else {
+                        App.showMessage({ type: 'info', message: 'File converted' });
+                    }
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
+    convertExcelTmx(arg: any): void {
+        App.destroyWindow(App.convertExcelWindow);
+        arg.command = 'convertExcel';
         App.sendRequest(arg,
             (data: any) => {
                 if (data.status === SUCCESS) {
@@ -1823,6 +1913,22 @@ class App {
         );
     }
 
+    getExcelPreview(event: IpcMainEvent, arg: any): void {
+        arg.command = 'previewExcel';
+        App.sendRequest(arg,
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    event.sender.send('set-preview', data.sheets);
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
     getCsvFile(event: IpcMainEvent): void {
         dialog.showOpenDialog({
             title: 'Open CSV/Text File',
@@ -1834,6 +1940,23 @@ class App {
         }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('set-csvfile', value.filePaths[0]);
+            }
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
+        });
+    }
+
+    getExcelFile(event: IpcMainEvent): void {
+        dialog.showOpenDialog({
+            title: 'Open Excel File',
+            properties: ['openFile'],
+            filters: [
+                { name: 'Excel File', extensions: ['xlsx'] },
+                { name: 'Any File', extensions: ['*'] }
+            ]
+        }).then((value: OpenDialogReturnValue) => {
+            if (!value.canceled) {
+                event.sender.send('set-excelfile', value.filePaths[0]);
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
@@ -1863,11 +1986,11 @@ class App {
         App.csvLangArgs = arg;
         App.csvLanguagesWindow = new BrowserWindow({
             parent: App.convertCsvWindow,
-            modal: true,
-            width: 620,
+            modal: false,
+            width: 520,
             minimizable: false,
             maximizable: false,
-            resizable: true,
+            resizable: false,
             useContentSize: true,
             show: false,
             icon: App.iconPath,
@@ -1878,7 +2001,7 @@ class App {
         });
         App.csvLanguagesWindow.setMenu(null);
         App.csvLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'csvLanguages.html'));
-        App.csvLanguagesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.csvLanguagesWindow.once('ready-to-show', () => {
             App.csvLanguagesWindow.show();
         });
     }
@@ -1888,6 +2011,36 @@ class App {
         App.csvEvent.sender.send('csv-languages', arg);
     }
 
+    getExcelLanguages(event: IpcMainEvent, arg: any): void {
+        App.excelEvent = event;
+        App.excelLangArgs = arg;
+        App.excelLanguagesWindow = new BrowserWindow({
+            parent: App.convertExcelWindow,
+            modal: false,
+            width: 520,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            useContentSize: true,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        App.excelLanguagesWindow.setMenu(null);
+        App.excelLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'excelLanguages.html'));
+        App.excelLanguagesWindow.once('ready-to-show', () => {
+            App.excelLanguagesWindow.show();
+        });
+    }
+
+    setExcelLanguages(arg: any): void {
+        App.destroyWindow(App.excelLanguagesWindow);
+        App.excelEvent.sender.send('excel-languages', arg);
+    }
+
     static exportDelimited(): void {
         if (App.currentFile === '') {
             App.showMessage({ type: 'warning', message: 'Open a TMX file' });
@@ -1895,16 +2048,73 @@ class App {
         }
         dialog.showSaveDialog({
             title: 'Export TAB Delimited',
+            defaultPath: this.currentFile.substring(0, this.currentFile.lastIndexOf('.')) + '.csv',
             properties: ['showOverwriteConfirmation', 'createDirectory'],
             filters: [
-                { name: 'Text File', extensions: ['txt'] },
                 { name: 'CSV File', extensions: ['csv'] },
+                { name: 'Text File', extensions: ['txt'] },
                 { name: 'Any File', extensions: ['*'] }
             ]
         }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 App.mainWindow.webContents.send('start-waiting');
                 App.sendRequest({ command: 'exportDelimited', file: value.filePath },
+                    (data: any) => {
+                        App.currentStatus = data;
+                        App.mainWindow.webContents.send('set-status', 'Exporting...');
+                        var intervalObject = setInterval(() => {
+                            if (App.currentStatus.status === COMPLETED) {
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
+                                clearInterval(intervalObject);
+                                App.showMessage({ type: 'info', message: 'File exported' });
+                                return;
+                            } else if (App.currentStatus.status === ERROR) {
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
+                                clearInterval(intervalObject);
+                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
+                                return;
+                            } else if (App.currentStatus.status === SUCCESS) {
+                                // keep waiting
+                            } else {
+                                App.mainWindow.webContents.send('end-waiting');
+                                App.mainWindow.webContents.send('set-status', '');
+                                clearInterval(intervalObject);
+                                dialog.showErrorBox('Error', 'Unknown error exporting file');
+                                return;
+                            }
+                            App.getExportProgress();
+                        }, 500);
+                    },
+                    (reason: string) => {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.showMessage({ type: 'error', message: reason });
+                    }
+                );
+            }
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
+        });
+    }
+
+    static exportExcel(): void {
+        if (App.currentFile === '') {
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
+            return;
+        }
+        dialog.showSaveDialog({
+            title: 'Export Excel File',
+            defaultPath: this.currentFile.substring(0, this.currentFile.lastIndexOf('.')) + '.xlsx',
+            properties: ['showOverwriteConfirmation', 'createDirectory'],
+            filters: [
+                { name: 'Excel File', extensions: ['xlsx'] },
+                { name: 'Any File', extensions: ['*'] }
+            ]
+        }).then((value: SaveDialogReturnValue) => {
+            if (!value.canceled) {
+                App.mainWindow.webContents.send('start-waiting');
+                App.sendRequest({ command: 'exportExcel', file: value.filePath },
                     (data: any) => {
                         App.currentStatus = data;
                         App.mainWindow.webContents.send('set-status', 'Exporting...');
@@ -1976,7 +2186,7 @@ class App {
         });
         App.fileInfoWindow.setMenu(null);
         App.fileInfoWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'fileInfo.html'));
-        App.fileInfoWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.fileInfoWindow.once('ready-to-show', () => {
             App.fileInfoWindow.show();
         });
     }
@@ -2135,7 +2345,7 @@ class App {
         });
         App.splitFileWindow.setMenu(null);
         App.splitFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'splitFile.html'));
-        App.splitFileWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.splitFileWindow.once('ready-to-show', () => {
             App.splitFileWindow.show();
         });
     }
@@ -2225,7 +2435,7 @@ class App {
         });
         App.mergeFilesWindow.setMenu(null);
         App.mergeFilesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
-        App.mergeFilesWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.mergeFilesWindow.once('ready-to-show', () => {
             App.mergeFilesWindow.show();
         });
     }
@@ -2370,7 +2580,7 @@ class App {
         });
         App.replaceTextWindow.setMenu(null);
         App.replaceTextWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'searchReplace.html'));
-        App.replaceTextWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.replaceTextWindow.once('ready-to-show', () => {
             App.replaceTextWindow.show();
         });
     }
@@ -2452,7 +2662,7 @@ class App {
         });
         App.sortUnitsWindow.setMenu(null);
         App.sortUnitsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'sortUnits.html'));
-        App.sortUnitsWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.sortUnitsWindow.once('ready-to-show', () => {
             App.sortUnitsWindow.show();
         });
     }
@@ -2492,7 +2702,7 @@ class App {
         });
         App.filtersWindow.setMenu(null);
         App.filtersWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'filters.html'));
-        App.filtersWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.filtersWindow.once('ready-to-show', () => {
             App.filtersWindow.show();
         });
     }
@@ -2608,7 +2818,7 @@ class App {
         });
         App.changeLanguageWindow.setMenu(null);
         App.changeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'changeLanguage.html'));
-        App.changeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.changeLanguageWindow.once('ready-to-show', () => {
             App.changeLanguageWindow.show();
         });
     }
@@ -2692,7 +2902,7 @@ class App {
         });
         App.removeLanguageWindow.setMenu(null);
         App.removeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeLanguage.html'));
-        App.removeLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.removeLanguageWindow.once('ready-to-show', () => {
             App.removeLanguageWindow.show();
         });
     }
@@ -2737,7 +2947,7 @@ class App {
         });
         App.addLanguageWindow.setMenu(null);
         App.addLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addLanguage.html'));
-        App.addLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.addLanguageWindow.once('ready-to-show', () => {
             App.addLanguageWindow.show();
         });
     }
@@ -2782,7 +2992,7 @@ class App {
         });
         App.srcLanguageWindow.setMenu(null);
         App.srcLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
-        App.srcLanguageWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.srcLanguageWindow.once('ready-to-show', () => {
             App.srcLanguageWindow.show();
         });
     }
@@ -2943,7 +3153,7 @@ class App {
         });
         App.removeUntranslatedWindow.setMenu(null);
         App.removeUntranslatedWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeUntranslated.html'));
-        App.removeUntranslatedWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.removeUntranslatedWindow.once('ready-to-show', () => {
             App.removeUntranslatedWindow.show();
         });
     }
@@ -3064,7 +3274,7 @@ class App {
         });
         App.consolidateWindow.setMenu(null);
         App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidateUnits.html'));
-        App.consolidateWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.consolidateWindow.once('ready-to-show', () => {
             App.consolidateWindow.show();
         });
     }
@@ -3135,7 +3345,7 @@ class App {
         });
         App.maintenanceWindow.setMenu(null);
         App.maintenanceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'maintenance.html'));
-        App.maintenanceWindow.once('ready-to-show', (event: IpcMainEvent) => {
+        App.maintenanceWindow.once('ready-to-show', () => {
             App.maintenanceWindow.show();
         });
     }
@@ -3266,7 +3476,6 @@ class App {
         });
     }
 
-    
 }
 
 new App(process.argv);

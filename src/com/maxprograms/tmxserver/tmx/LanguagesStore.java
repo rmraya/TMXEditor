@@ -208,6 +208,11 @@ public class LanguagesStore implements StoreInterface {
 	public void exportDelimited(String file) {
 		// do nothing
 	}
+	
+	@Override
+	public void exportExcel(String file) {
+		// do nothing
+	}
 
 	@Override
 	public long getExported() {

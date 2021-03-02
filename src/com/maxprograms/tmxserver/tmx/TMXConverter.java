@@ -26,8 +26,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.maxprograms.tmxserver.Constants;
+import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.utils.TextUtils;
 
 public class TMXConverter {
@@ -46,12 +48,10 @@ public class TMXConverter {
 
 		writeString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		writeString(
-				"<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n"); //$NON-NLS-1$
+				"<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n");
 		writeString("<tmx version=\"1.4\">\n");
-		writeString("  <header \n" + "      creationtool=\"" + Constants.APPNAME + "\" \n"
-				+ "      creationtoolversion=\"" + Constants.VERSION + "\"  \n" + "      srclang=\"*all*\" \n"
-				+ "      adminlang=\"en\"  \n" + "      datatype=\"csv\" \n" + "      o-tmf=\"csv\" \n"
-				+ "      segtype=\"block\"\n" + "  />\n");
+		writeString("  <header creationtool=\"" + Constants.APPNAME + "\" creationtoolversion=\"" + Constants.VERSION
+				+ "\" srclang=\"*all*\" adminlang=\"en\" datatype=\"csv\" o-tmf=\"csv\" segtype=\"block\" />\n");
 		writeString("  <body>\n");
 
 		byte[] feff = { -1, -2 }; // UTF-16BE
@@ -82,8 +82,8 @@ public class TMXConverter {
 						}
 						firstLine = false;
 					}
-					writeString("    <tu creationtool=\"TMXEditor\" creationtoolversion=\"" + Constants.VERSION
-							+ "\" tuid=\"" + (id++) + "\" creationdate=\"" + today + "\">\n");
+					writeString("    <tu creationtool=\"" + Constants.APPNAME + "\" creationtoolversion=\""
+							+ Constants.VERSION + "\" tuid=\"" + (id++) + "\" creationdate=\"" + today + "\">\n");
 
 					if (fixQuotes) {
 						line = TextUtils.replaceAll(line, "\"\"", "@?@", false);
@@ -179,5 +179,39 @@ public class TMXConverter {
 			}
 			return parts;
 		}
+	}
+
+	public static void excel2tmx(String tmxFile, Sheet sheet, List<String> langs) throws IOException {
+		output = new FileOutputStream(tmxFile);
+		writeString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		writeString(
+				"<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\" >\n");
+		writeString("<tmx version=\"1.4\">\n");
+		writeString("  <header creationtool=\"" + Constants.APPNAME + "\" creationtoolversion=\"" + Constants.VERSION
+				+ "\" srclang=\"*all*\" adminlang=\"en\" datatype=\"excel\" o-tmf=\"excel\" segtype=\"block\" />\n");
+		writeString("  <body>\n");
+
+		long id = System.currentTimeMillis();
+		String today = TmxUtils.tmxDate();
+		List<String> columns = new ArrayList<>();
+		columns.addAll(sheet.getColumns());
+
+		for (int i = 0; i < sheet.rowsCount(); i++) {
+			Map<String, String> row = sheet.getRow(i);
+			if (row.size() < 2) {
+				continue;
+			}
+			writeString("    <tu creationtool=\"" + Constants.APPNAME + "\" creationtoolversion=\"" + Constants.VERSION
+					+ "\" tuid=\"" + (id++) + "\" creationdate=\"" + today + "\">\n");
+			for (int j = 0; j < columns.size(); j++) {
+				String cell = row.get(columns.get(j));
+				writeString("      <tuv xml:lang=\"" + langs.get(j) + "\" creationdate=\"" + today
+						+ "\">\n        <seg>" + TextUtils.cleanString(cell) + "</seg>\n      </tuv>\n");
+			}
+			writeString("    </tu>\n");
+		}
+		writeString("  </body>\n");
+		writeString("</tmx>");
+		output.close();
 	}
 }

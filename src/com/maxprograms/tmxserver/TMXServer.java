@@ -225,6 +225,9 @@ public class TMXServer implements HttpHandler {
 				case "exportDelimited":
 					response = exportDelimited(json);
 					break;
+				case "exportExcel":
+					response = exportExcel(json);
+					break;
 				case "splitFile":
 					response = splitFile(json);
 					break;
@@ -243,8 +246,14 @@ public class TMXServer implements HttpHandler {
 				case "previewCsv":
 					response = previewCsv(json);
 					break;
+				case "previewExcel":
+					response = previewExcel(json);
+					break;
 				case "convertCsv":
 					response = convertCsv(json);
+					break;
+				case "convertExcel":
+					response = convertExcel(json);
 					break;
 				case "setAttributes":
 					response = setAttributes(json);
@@ -340,6 +349,17 @@ public class TMXServer implements HttpHandler {
 				json.getBoolean("fixQuotes"), json.getBoolean("optionalDelims")).toString();
 	}
 
+	private String convertExcel(JSONObject json) {
+		JSONArray array = json.getJSONArray("langs");
+		List<String> langs = new ArrayList<>();
+		for (int i = 0; i < array.length(); i++) {
+			langs.add(array.getString(i));
+		}
+		return service
+				.convertExcel(json.getString("excelFile"), json.getString("tmxFile"), json.getString("sheet"), langs)
+				.toString();
+	}
+
 	private String previewCsv(JSONObject json) {
 		JSONArray array = json.getJSONArray("langs");
 		List<String> langs = new ArrayList<>();
@@ -349,6 +369,10 @@ public class TMXServer implements HttpHandler {
 		return service.previewCsv(json.getString("csvFile"), langs, json.getString("charSet"),
 				json.getString("columnsSeparator"), json.getString("textDelimiter"), json.getBoolean("fixQuotes"),
 				json.getBoolean("optionalDelims")).toString();
+	}
+
+	private String previewExcel(JSONObject json) {
+		return service.previewExcel(json.getString("excelFile")).toString();
 	}
 
 	private String getCharsets() {
@@ -382,6 +406,10 @@ public class TMXServer implements HttpHandler {
 
 	private String exportDelimited(JSONObject json) {
 		return service.exportDelimited(json.getString("file")).toString();
+	}
+
+	private String exportExcel(JSONObject json) {
+		return service.exportExcel(json.getString("file")).toString();
 	}
 
 	private String setSrcLanguage(JSONObject json) {

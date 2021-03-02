@@ -52,7 +52,8 @@ public interface StoreInterface {
 
 	long getDiscarded();
 
-	String saveData(String id, String lang, String value) throws IOException, SQLException, SAXException, ParserConfigurationException;
+	String saveData(String id, String lang, String value)
+			throws IOException, SQLException, SAXException, ParserConfigurationException;
 
 	void writeFile(File out) throws IOException, SQLException, SAXException, ParserConfigurationException;
 
@@ -113,5 +114,7 @@ public interface StoreInterface {
 	Element getTuv(String id, String lang) throws SQLException, SAXException, IOException, ParserConfigurationException;
 
 	void setIndentation(int indentation);
+
+	void exportExcel(String file) throws IOException, SAXException, ParserConfigurationException, SQLException;
 
 }

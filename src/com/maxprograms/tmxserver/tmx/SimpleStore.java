@@ -37,6 +37,8 @@ import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.maxprograms.tmxserver.Constants;
+import com.maxprograms.tmxserver.excel.ExcelWriter;
+import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
@@ -730,6 +732,50 @@ public class SimpleStore implements StoreInterface {
 				exported++;
 			}
 		}
+	}
+
+	@Override
+	public void exportExcel(String file) throws IOException, SAXException, ParserConfigurationException {
+		exported = 0l;
+		Map<String, String> langsMap = new HashMap<>();
+		Set<String> cols = new TreeSet<>();
+		int i = 0;
+		Iterator<String> it = languages.iterator();
+		while (it.hasNext()) {
+			String lang = it.next();
+			char c = (char) (65 + i++);
+			cols.add("" + c);
+			langsMap.put(lang, "" + c);
+		}
+
+		List<Map<String, String>> rows = new ArrayList<>();
+		Map<String, String> firstRow = new HashMap<>();
+		Iterator<String> langIt = languages.iterator();
+		while (langIt.hasNext()) {
+			String lang = langIt.next();
+			firstRow.put(langsMap.get(lang), lang);
+		}
+		rows.add(firstRow);
+		Iterator<String> tuIt = order.iterator();
+		while (tuIt.hasNext()) {
+			String tuid = tuIt.next();
+			Map<String, String> rowMap = new HashMap<>();
+			langIt = languages.iterator();
+			while (langIt.hasNext()) {
+				String lang = langIt.next();
+				Element tuv = maps.get(lang).get(tuid);
+				String text = "";
+				if (tuv != null) {
+					text = TmxUtils.textOnly(tuv.getChild("seg"));
+				}
+				rowMap.put(langsMap.get(lang), text);
+			}
+			rows.add(rowMap);
+			exported++;
+		}
+		Sheet sheet = new Sheet("Sheet1", cols, rows);
+		ExcelWriter writer = new ExcelWriter();
+		writer.writeFile(file, sheet);
 	}
 
 	@Override

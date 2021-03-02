@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -44,6 +45,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.languages.RegistryParser;
+import com.maxprograms.tmxserver.excel.ExcelReader;
+import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.tmx.CountStore;
@@ -71,7 +74,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
-public class TMXService implements TMXServiceInterface {
+public class TMXService {
 
 	private Logger logger = Logger.getLogger(TMXService.class.getName());
 
@@ -159,7 +162,6 @@ public class TMXService implements TMXServiceInterface {
 		}
 	}
 
-	@Override
 	public JSONObject openFile(String fileName) {
 		JSONObject result = new JSONObject();
 		try {
@@ -191,11 +193,13 @@ public class TMXService implements TMXServiceInterface {
 			}
 			parsingError = "";
 			Thread thread = new Thread() {
+
 				@Override
 				public void run() {
 					try {
 						TMXReader reader = new TMXReader(store);
 						reader.parse(currentFile);
+						store.commit();
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);
 						parsingError = e.getMessage();
@@ -221,7 +225,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getData(int start, int count, String filterText, Language filterLanguage,
 			boolean caseSensitiveFilter, boolean filterUntranslated, boolean regExp, Language filterSrcLanguage,
 			Language sortLanguage, boolean ascending) {
@@ -248,7 +251,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getLanguages() {
 		JSONObject result = new JSONObject();
 		if (parsing) {
@@ -289,7 +291,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getProcessingProgress() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -311,7 +312,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getCount() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -329,7 +329,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject closeFile() {
 		if (store != null) {
 			try {
@@ -337,6 +336,7 @@ public class TMXService implements TMXServiceInterface {
 				store = null;
 				currentFile = null;
 				new Thread() {
+
 					@Override
 					public void run() {
 						System.gc();
@@ -359,7 +359,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject saveData(String id, String lang, String value) {
 		JSONObject result = new JSONObject();
 		try {
@@ -377,7 +376,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject saveFile(String file) {
 		saving = true;
 		currentFile = new File(file);
@@ -387,7 +385,7 @@ public class TMXService implements TMXServiceInterface {
 		savingError = "";
 		try {
 			new Thread() {
-				@Override
+
 				public void run() {
 					try {
 						store.writeFile(currentFile);
@@ -410,7 +408,6 @@ public class TMXService implements TMXServiceInterface {
 		}
 	}
 
-	@Override
 	public JSONObject getFileProperties() {
 		JSONObject result = new JSONObject();
 		if (currentFile != null) {
@@ -457,7 +454,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getTuData(String id) {
 		JSONObject result = new JSONObject();
 		if (id == null) {
@@ -467,7 +463,6 @@ public class TMXService implements TMXServiceInterface {
 		}
 		Comparator<String[]> comparator = new Comparator<>() {
 
-			@Override
 			public int compare(String[] o1, String[] o2) {
 				return o1[0].compareTo(o2[0]);
 			}
@@ -529,7 +524,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject delete(List<String> selected) {
 		JSONObject result = new JSONObject();
 		try {
@@ -543,13 +537,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject replaceText(String search, String replace, Language language, boolean regExp) {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -571,7 +565,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject insertUnit() {
 		JSONObject result = new JSONObject();
 		try {
@@ -587,7 +580,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getAllLanguages() {
 		JSONObject result = new JSONObject();
 		try {
@@ -607,13 +599,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject removeUntranslated(Language lang) {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -635,7 +627,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject addLanguage(Language lang) {
 		JSONObject result = new JSONObject();
 		try {
@@ -649,7 +640,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject removeLanguage(Language lang) {
 		JSONObject result = new JSONObject();
 		try {
@@ -663,13 +653,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject removeTags() {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -691,13 +681,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject changeLanguage(Language oldLanguage, Language newLanguage) {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -718,7 +708,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject createFile(Language srcLang, Language tgtLang) {
 		JSONObject result = new JSONObject();
 		try {
@@ -773,13 +762,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject removeDuplicates() {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -800,13 +789,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject removeSpaces() {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -827,13 +816,13 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject consolidateUnits(Language lang) {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -855,7 +844,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject setAttributes(String id, String lang, List<String[]> attributes) {
 		JSONObject result = new JSONObject();
 		try {
@@ -873,7 +861,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getLoadingProgress() {
 		JSONObject result = new JSONObject();
 		if (parsing) {
@@ -900,7 +887,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getSavingProgress() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -921,7 +907,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject splitFile(String file, int parts) {
 		JSONObject result = new JSONObject();
 		File f = new File(file);
@@ -933,6 +918,7 @@ public class TMXService implements TMXServiceInterface {
 		splitting = true;
 		splitError = "";
 		new Thread() {
+
 			@Override
 			public void run() {
 				try {
@@ -966,7 +952,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getSplitProgress() {
 		JSONObject result = new JSONObject();
 		if (splitting) {
@@ -989,12 +974,12 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject mergeFiles(String merged, List<String> files) {
 		JSONObject result = new JSONObject();
 		merging = true;
 		mergeError = "";
 		new Thread() {
+
 			@Override
 			public void run() {
 				try {
@@ -1041,7 +1026,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getMergeProgress() {
 		JSONObject result = new JSONObject();
 		if (merging) {
@@ -1057,7 +1041,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject setProperties(String id, String lang, List<String[]> dataList) {
 		JSONObject result = new JSONObject();
 		try {
@@ -1075,7 +1058,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject setNotes(String id, String lang, List<String> notes) {
 		JSONObject result = new JSONObject();
 		try {
@@ -1093,12 +1075,12 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject cleanCharacters(String file) {
 		JSONObject result = new JSONObject();
 		cleaning = true;
 		cleaningError = "";
 		new Thread() {
+
 			@Override
 			public void run() {
 				try {
@@ -1114,7 +1096,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject cleaningProgress() {
 		JSONObject result = new JSONObject();
 		if (cleaning) {
@@ -1130,7 +1111,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject setSrcLanguage(Language lang) {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -1145,7 +1125,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getSrcLanguage() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -1177,7 +1156,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject exportDelimited(String file) {
 		JSONObject result = new JSONObject();
 		exporting = true;
@@ -1206,7 +1184,34 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
+	public JSONObject exportExcel(String file) {
+		JSONObject result = new JSONObject();
+		exporting = true;
+		exportingError = "";
+		try {
+			new Thread() {
+
+				@Override
+				public void run() {
+					try {
+						store.exportExcel(file);
+					} catch (Exception ex) {
+						logger.log(Level.SEVERE, ex.getMessage(), ex);
+						exportingError = ex.getMessage();
+					}
+					exporting = false;
+				}
+
+			}.start();
+			result.put(Constants.STATUS, Constants.SUCCESS);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+		}
+		return result;
+	}
+
 	public JSONObject exportProgress() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
@@ -1227,7 +1232,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getTuvData(String id, String lang) {
 		JSONObject result = new JSONObject();
 		try {
@@ -1287,12 +1291,12 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject validateFile(String file) {
 		JSONObject result = new JSONObject();
 		validating = true;
 		validatingError = "";
 		new Thread() {
+
 			@Override
 			public void run() {
 				try {
@@ -1309,7 +1313,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject validatingProgress() {
 		JSONObject result = new JSONObject();
 		if (validating) {
@@ -1325,7 +1328,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getCharsets() {
 		JSONObject result = new JSONObject();
 		TreeMap<String, Charset> charsets = new TreeMap<>(Charset.availableCharsets());
@@ -1341,7 +1343,71 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
+	public JSONObject previewExcel(String excelFile) {
+		JSONObject result = new JSONObject();
+		ExcelReader reader = new ExcelReader();
+		try {
+			JSONArray array = new JSONArray();
+			List<Sheet> sheets = reader.parseFile(excelFile);
+			for (int i = 0; i < sheets.size(); i++) {
+				JSONObject json = new JSONObject();
+				Sheet sheet = sheets.get(i);
+				json.put("name", sheet.getName());
+				Set<String> cols = sheet.getColumns();
+				json.put("columns", cols.size());
+				json.put("rows", sheet.rowsCount());
+				JSONArray data = new JSONArray();
+				JSONArray colsRow = new JSONArray();
+				Iterator<String> it = cols.iterator();
+				while (it.hasNext()) {
+					colsRow.put(it.next());
+				}
+				data.put(colsRow);
+				for (int j = 0; j < 10 && j < sheet.rowsCount(); j++) {
+					Map<String, String> map = sheet.getRow(j);
+					JSONArray row = new JSONArray();
+					it = cols.iterator();
+					while (it.hasNext()) {
+						String cell = map.get(it.next());
+						row.put(cell != null ? cell : "");
+					}
+					data.put(row);
+				}
+				json.put("data", data);
+				Map<String, String> firstRow = sheet.getRow(0);
+				if (firstRow != null && firstRow.size() == cols.size()) {
+					List<String> langs = new ArrayList<>();
+					it = cols.iterator();
+					while (it.hasNext()) {
+						String cell = firstRow.get(it.next());
+						if (cell != null) {
+							Language lang = LangUtils.getLanguage(cell);
+							if (lang != null) {
+								langs.add(lang.getCode());
+							}
+						}
+					}
+					if (langs.size() == cols.size()) {
+						JSONArray langsArray = new JSONArray();
+						for (int j = 0; j < langs.size(); j++) {
+							langsArray.put(langs.get(j));
+						}
+						json.put("langs", langsArray);
+					}
+				}
+				array.put(json);
+			}
+			result.put("sheets", array);
+			result.put(Constants.STATUS, Constants.SUCCESS);
+		} catch (IOException | SAXException | ParserConfigurationException e) {
+			logger.log(Level.SEVERE, "Error reading Excel", e);
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, "Error reading Excel file");
+			return result;
+		}
+		return result;
+	}
+
 	public JSONObject previewCsv(String csvFile, List<String> langs, String charSet, String columnsSeparator,
 			String textDelimiter, boolean fixQuotes, boolean optionalDelims) {
 		JSONObject result = new JSONObject();
@@ -1496,7 +1562,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject convertCsv(String csvFile, String tmxFile, List<String> languages, String charSet,
 			String columsSeparator, String textDelimiter, boolean fixQuotes, boolean optionalDelims) {
 		JSONObject result = new JSONObject();
@@ -1512,7 +1577,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject getIndentation() {
 		JSONObject result = new JSONObject();
 		File home = getPreferencesFolder();
@@ -1550,7 +1614,6 @@ public class TMXService implements TMXServiceInterface {
 		return result;
 	}
 
-	@Override
 	public JSONObject saveIndentation(int value) {
 		JSONObject result = new JSONObject();
 		File home = getPreferencesFolder();
@@ -1679,13 +1742,13 @@ public class TMXService implements TMXServiceInterface {
 		return new Language(code, registry.getTagDescription(code));
 	}
 
-	@Override
 	public JSONObject processTasks(JSONObject json) {
 		JSONObject result = new JSONObject();
 		processing = true;
 		processingError = "";
 		try {
 			new Thread() {
+
 				@Override
 				public void run() {
 					try {
@@ -1717,6 +1780,27 @@ public class TMXService implements TMXServiceInterface {
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			processing = false;
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+		}
+		return result;
+	}
+
+	public JSONObject convertExcel(String excelFile, String tmxFile, String sheetName, List<String> langs) {
+		JSONObject result = new JSONObject();
+		try {
+			ExcelReader reader = new ExcelReader();
+			List<Sheet> sheets = reader.parseFile(excelFile);
+			for (int i = 0; i < sheets.size(); i++) {
+				Sheet sheet = sheets.get(i);
+				if (sheetName.equals(sheet.getName())) {
+					TMXConverter.excel2tmx(tmxFile, sheet, langs);
+					break;
+				}
+			}
+			result.put(Constants.STATUS, Constants.SUCCESS);
+		} catch (IOException | SAXException | ParserConfigurationException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 		}

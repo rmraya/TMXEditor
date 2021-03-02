@@ -17,12 +17,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *****************************************************************************/
 
-class CsvLanguages {
+class ExcelLanguages {
 
     electron = require('electron');
 
-    columns: number;
     options: string = '<option value="none">Select Language</option>';
+    columns: string[];
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -33,36 +33,23 @@ class CsvLanguages {
         this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
             this.languagesList(arg);
         });
-        this.electron.ipcRenderer.on('set-csv-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
-            this.setCsvLangArgs(arg);
+
+        this.electron.ipcRenderer.on('set-excel-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
+            this.setExcelLangArgs(arg);
         });
-        document.getElementById('setCsvLanguages').addEventListener('click', () => {
-            this.setCsvLanguages();
+        document.getElementById('setExcelLanguages').addEventListener('click', () => {
+            this.setExcelLanguages();
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-                this.setCsvLanguages();
+                this.setExcelLanguages();
             }
             if (event.code === 'Escape') {
-                this.electron.ipcRenderer.send('close-csvLanguages');
+                this.electron.ipcRenderer.send('close-excelLanguages');
             }
         });
         let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-        this.electron.ipcRenderer.send('csvLanguages-height', { width: body.clientWidth, height: body.clientHeight });
-    }
-
-    setCsvLanguages(): void {
-        var langs: string[] = [];
-        for (let i = 0; i < this.columns; i++) {
-            var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
-            if (lang !== 'none') {
-                langs.push(lang);
-            } else {
-                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages', parent: 'csvLanguages' });
-                return;
-            }
-        }
-        this.electron.ipcRenderer.send('set-csv-languages', langs);
+        this.electron.ipcRenderer.send('excelLanguages-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     languagesList(arg: any): void {
@@ -70,14 +57,14 @@ class CsvLanguages {
             let lang: any = arg[i];
             this.options = this.options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
-        this.electron.ipcRenderer.send('get-csv-lang-args');
+        this.electron.ipcRenderer.send('get-excel-lang-args');
     }
 
-    setCsvLangArgs(arg: any): void {
+    setExcelLangArgs(arg: any): void {
         this.columns = arg.columns;
         var rows: string = '';
-        for (let i = 0; i < this.columns; i++) {
-            rows = rows + '<tr><td class="noWrap middle">Column ' + i + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
+        for (let i = 0; i < this.columns.length; i++) {
+            rows = rows + '<tr><td class="noWrap middle">Column ' + this.columns[i] + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
         }
         document.getElementById('langsTable').innerHTML = rows;
         var langs: string[] = arg.languages;
@@ -85,6 +72,21 @@ class CsvLanguages {
             (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
         }
     }
+
+    setExcelLanguages(): void {
+        var langs: string[] = [];
+        for (let i = 0; i < this.columns.length; i++) {
+            var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
+            if (lang !== 'none') {
+                langs.push(lang);
+            } else {
+                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages', parent: 'excelLanguages' });
+                return;
+            }
+        }
+        this.electron.ipcRenderer.send('set-excel-languages', langs);
+    }
+
 }
 
-new CsvLanguages();
+new ExcelLanguages();

@@ -239,6 +239,11 @@ public class SplitStore implements StoreInterface {
 	public void exportDelimited(String delimited) {
 		// do nothing
 	}
+	
+	@Override
+	public void exportExcel(String file) {
+		// do nothing
+	}
 
 	@Override
 	public long getExported() {

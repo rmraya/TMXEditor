@@ -75,6 +75,7 @@ class ConvertCSV {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
         });
+        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-convertCsv');
@@ -85,14 +86,14 @@ class ConvertCSV {
     }
 
     setCharsets(arg: string[]): void {
-        var options: string = '';
+        let options: string = '';
         for (let i = 0; i < arg.length; i++) {
             options = options + '<option value="' + arg[i] + '">' + arg[i] + '</option>';
         }
-        var charSets = (document.getElementById('charSets') as HTMLSelectElement);
+        let charSets = (document.getElementById('charSets') as HTMLSelectElement);
         charSets.innerHTML = options;
         charSets.value = 'UTF-16LE';
-        var colSeps = (document.getElementById('colSeps') as HTMLSelectElement);
+        let colSeps = (document.getElementById('colSeps') as HTMLSelectElement);
         colSeps.value = 'TAB';
     }
 
@@ -101,12 +102,12 @@ class ConvertCSV {
     }
 
     setCsvFile(arg: string): void {
-        var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
+        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         csvFile.value = arg;
 
-        var tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            var index: number = arg.lastIndexOf('.');
+            let index: number = arg.lastIndexOf('.');
             if (index !== -1) {
                 tmxFile.value = arg.substring(0, index) + '.tmx';
             } else {
@@ -117,9 +118,9 @@ class ConvertCSV {
     }
 
     browseTmxFiles(): void {
-        var value: string = (document.getElementById('csvFile') as HTMLInputElement).value;
+        let value: string = (document.getElementById('csvFile') as HTMLInputElement).value;
         if (value !== '') {
-            var index: number = value.lastIndexOf('.');
+            let index: number = value.lastIndexOf('.');
             if (index !== -1) {
                 value = value.substring(0, index) + '.tmx';
             } else {
@@ -130,13 +131,13 @@ class ConvertCSV {
     }
 
     refreshPreview(): void {
-        var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
+        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
             return;
         }
 
-        var columnsSeparator: string = '';
-        var customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
+        let columnsSeparator: string = '';
+        let customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
         if (customSep !== '') {
             columnsSeparator = customSep;
         } else {
@@ -146,14 +147,14 @@ class ConvertCSV {
             }
         }
 
-        var textDelimiter: string = '';
-        var customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
+        let textDelimiter: string = '';
+        let customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
         if (customDel !== '') {
             textDelimiter = customDel;
         } else {
             textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
         }
-        var arg = {
+        let arg = {
             csvFile: csvFile.value,
             langs: this.langs,
             charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
@@ -172,7 +173,7 @@ class ConvertCSV {
     }
 
     setLanguages(): void {
-        var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
+        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
             this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
             return;
@@ -191,12 +192,12 @@ class ConvertCSV {
     }
 
     convertFile(): void {
-        var csvFile = (document.getElementById('csvFile') as HTMLInputElement);
+        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
             this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
             return;
         }
-        var tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
             this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'convertCSV' });
             return;
@@ -210,8 +211,8 @@ class ConvertCSV {
             return;
         }
 
-        var columnsSeparator: string = '';
-        var customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
+        let columnsSeparator: string = '';
+        let customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
         if (customSep !== '') {
             columnsSeparator = customSep;
         } else {
@@ -221,14 +222,14 @@ class ConvertCSV {
             }
         }
 
-        var textDelimiter: string = '';
-        var customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
+        let textDelimiter: string = '';
+        let customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
         if (customDel !== '') {
             textDelimiter = customDel;
         } else {
             textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
         }
-        var arg = {
+        let arg = {
             csvFile: csvFile.value,
             tmxFile: tmxFile.value,
             langs: this.langs,

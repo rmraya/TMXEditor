@@ -180,6 +180,11 @@ public class CountStore implements StoreInterface {
 	}
 
 	@Override
+	public void exportExcel(String file) {
+		// do nothing
+	}
+
+	@Override
 	public long getExported() {
 		return 0l;
 	}

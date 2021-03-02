@@ -35,9 +35,11 @@ class TMXContentHandler implements IContentHandler {
 	Deque<Element> stack;
 	private boolean inCDATA = false;
 	private StoreInterface db;
+	private int count;
 
 	public TMXContentHandler(StoreInterface db) {
 		this.db = db;
+		count = 0;
 		stack = new ArrayDeque<>();
 	}
 
@@ -55,9 +57,13 @@ class TMXContentHandler implements IContentHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
-		if (localName.equals("tu")) { //$NON-NLS-1$
+		if (localName.equals("tu")) {
 			try {
 				db.storeTU(current);
+				count++;
+				if (count % 10000 == 0) {
+					db.commit();
+				}
 			} catch (Exception e) {
 				// ignored element
 			}
@@ -110,7 +116,7 @@ class TMXContentHandler implements IContentHandler {
 			stack.push(current);
 		} else {
 			Element child = new Element(qName);
-			if (!qName.equals("ut")) { //$NON-NLS-1$
+			if (!qName.equals("ut")) { 
 				current.addContent(child);
 			}
 			stack.push(current);

@@ -45,6 +45,8 @@ import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 
 import com.maxprograms.tmxserver.Constants;
+import com.maxprograms.tmxserver.excel.ExcelWriter;
+import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
@@ -134,7 +136,7 @@ public class H2Store implements StoreInterface {
 		Iterator<String> it = langSet.iterator();
 		while (it.hasNext()) {
 			String lang = it.next();
-			sbuilder.append(", ");
+			sbuilder.append(", LANG_");
 			sbuilder.append(lang.replace('-', '_'));
 			sbuilder.append(" VARCHAR(6000) NOT NULL DEFAULT ''");
 		}
@@ -146,7 +148,7 @@ public class H2Store implements StoreInterface {
 		it = langSet.iterator();
 		while (it.hasNext()) {
 			String lang = it.next();
-			sbuilder.append(", ");
+			sbuilder.append(", LANG_");
 			sbuilder.append(lang.replace('-', '_'));
 		}
 		sbuilder.append(") VALUES(?,?");
@@ -243,21 +245,21 @@ public class H2Store implements StoreInterface {
 	}
 
 	private void createTable(String lang) throws SQLException {
-		String query = "CREATE TABLE " + lang.replace('-', '_')
+		String query = "CREATE TABLE LANG_" + lang.replace('-', '_')
 				+ "_tuv ( tuid VARCHAR(30) NOT NULL, tuv VARCHAR(2147483647) NOT NULL, pureText VARCHAR(2147483647) NOT NULL, PRIMARY KEY(tuid) );";
 		stmt.execute(query);
 		conn.commit();
 
-		query = "INSERT INTO " + lang.replace('-', '_') + "_tuv (tuid, tuv, pureText) VALUES (?, ?, ?)";
+		query = "INSERT INTO LANG_" + lang.replace('-', '_') + "_tuv (tuid, tuv, pureText) VALUES (?, ?, ?)";
 		insertStatements.put(lang, conn.prepareStatement(query));
 
-		query = "SELECT tuv FROM " + lang.replace('-', '_') + "_tuv WHERE tuid=?";
+		query = "SELECT tuv FROM LANG_" + lang.replace('-', '_') + "_tuv WHERE tuid=?";
 		selectStatements.put(lang, conn.prepareStatement(query));
 
-		query = "UPDATE " + lang.replace('-', '_') + "_tuv SET tuv=?, pureText=? WHERE tuid=?";
+		query = "UPDATE LANG_" + lang.replace('-', '_') + "_tuv SET tuv=?, pureText=? WHERE tuid=?";
 		updateStatements.put(lang, conn.prepareStatement(query));
 
-		query = "DELETE FROM " + lang.replace('-', '_') + "_tuv  WHERE tuid=?";
+		query = "DELETE FROM LANG_" + lang.replace('-', '_') + "_tuv  WHERE tuid=?";
 		deleteStatements.put(lang, conn.prepareStatement(query));
 	}
 
@@ -290,7 +292,7 @@ public class H2Store implements StoreInterface {
 		Iterator<String> lt = langSet.iterator();
 		while (lt.hasNext()) {
 			String lang = lt.next();
-			sbuilder.append(", ");
+			sbuilder.append(", LANG_");
 			sbuilder.append(lang.replace('-', '_'));
 		}
 		sbuilder.append(" FROM tunits");
@@ -462,11 +464,11 @@ public class H2Store implements StoreInterface {
 	}
 
 	private void updateUnit(String id, String lang, String value) throws SQLException {
-		String query = "UPDATE tunits SET " + lang.replace('-', '_') + "=? WHERE tuid=?";
-		try (PreparedStatement stmt = conn.prepareStatement(query)) {
-			stmt.setNString(1, value);
-			stmt.setString(2, id);
-			stmt.execute();
+		String query = "UPDATE tunits SET LANG_" + lang.replace('-', '_') + "=? WHERE tuid=?";
+		try (PreparedStatement update = conn.prepareStatement(query)) {
+			update.setNString(1, value);
+			update.setString(2, id);
+			update.execute();
 		}
 	}
 
@@ -712,7 +714,7 @@ public class H2Store implements StoreInterface {
 				}
 			}
 			StringBuilder sbuilder = new StringBuilder();
-			sbuilder.append("ALTER TABLE tunits ADD COLUMN ");
+			sbuilder.append("ALTER TABLE tunits ADD COLUMN LANG_");
 			sbuilder.append(lang.replace('-', '_'));
 			sbuilder.append(" VARCHAR(6000) NOT NULL DEFAULT '' AFTER ");
 			sbuilder.append(last.replace('-', '_'));
@@ -729,7 +731,7 @@ public class H2Store implements StoreInterface {
 			languages.remove(lang);
 			langSet.remove(lang);
 			StringBuilder sbuilder = new StringBuilder();
-			sbuilder.append("ALTER TABLE tunits DROP COLUMN ");
+			sbuilder.append("ALTER TABLE tunits DROP COLUMN LANG_");
 			sbuilder.append(lang.replace('-', '_'));
 			sbuilder.append(';');
 			stmt.execute(sbuilder.toString());
@@ -737,7 +739,7 @@ public class H2Store implements StoreInterface {
 	}
 
 	private void deleteTable(String lang) throws SQLException {
-		String query = "DROP TABLE " + lang.replace('-', '_') + "_tuv;";
+		String query = "DROP TABLE LANG_" + lang.replace('-', '_') + "_tuv;";
 		stmt.execute(query);
 
 		insertStatements.get(lang).close();
@@ -820,7 +822,7 @@ public class H2Store implements StoreInterface {
 		for (int i = 0; i < langs.size() - 1; i++) {
 			String srcLang = langs.get(i);
 			Set<String> deleteLater = new TreeSet<>();
-			String query = "SELECT pureText, tuid FROM " + srcLang.replace('-', '_') + "_tuv ORDER BY pureText";
+			String query = "SELECT pureText, tuid FROM LANG_" + srcLang.replace('-', '_') + "_tuv ORDER BY pureText";
 			try (ResultSet rs = stmt.executeQuery(query)) {
 				String pureA = null;
 				String idA = null;
@@ -921,7 +923,7 @@ public class H2Store implements StoreInterface {
 		processed = 0l;
 		String srcLang = language.getCode();
 		List<Pair> pairs = new ArrayList<>();
-		String query = "SELECT tuid, tuv FROM " + srcLang.replace('-', '_') + "_tuv";
+		String query = "SELECT tuid, tuv FROM LANG_" + srcLang.replace('-', '_') + "_tuv";
 		try (ResultSet rs = stmt.executeQuery(query)) {
 			while (rs.next()) {
 				String id = rs.getString(1);
@@ -1122,6 +1124,56 @@ public class H2Store implements StoreInterface {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void exportExcel(String file) throws SQLException, SAXException, IOException, ParserConfigurationException {
+		exported = 0l;
+		Map<String, String> langsMap = new HashMap<>();
+		Set<String> cols = new TreeSet<>();
+		int i = 0;
+		Iterator<String> it = languages.iterator();
+		while (it.hasNext()) {
+			String lang = it.next();
+			char c = (char) (65 + i++);
+			cols.add("" + c);
+			langsMap.put(lang, "" + c);
+		}
+
+		List<Map<String, String>> rows = new ArrayList<>();
+		Map<String, String> firstRow = new HashMap<>();
+		Iterator<String> langIt = languages.iterator();
+		while (langIt.hasNext()) {
+			String lang = langIt.next();
+			firstRow.put(langsMap.get(lang), lang);
+		}
+		rows.add(firstRow);
+		String query = "SELECT tuid FROM tu";
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				Map<String, String> rowMap = new HashMap<>();
+				langIt = languages.iterator();
+				while (langIt.hasNext()) {
+					String lang = langIt.next();
+					String tuvText = getTuvString(tuid, lang);
+					Element tuv = null;
+					if (!tuvText.isEmpty()) {
+						tuv = toElement(tuvText);
+					}
+					String text = "";
+					if (tuv != null) {
+						text = TmxUtils.textOnly(tuv.getChild("seg"));
+					}
+					rowMap.put(langsMap.get(lang), text);
+				}
+				rows.add(rowMap);
+				exported++;
+			}
+		}
+		Sheet sheet = new Sheet("Sheet1", cols, rows);
+		ExcelWriter writer = new ExcelWriter();
+		writer.writeFile(file, sheet);
 	}
 
 	@Override
