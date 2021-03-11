@@ -150,8 +150,12 @@ public class SimpleStore implements StoreInterface {
 				processed++;
 			}
 		} else if (filterText != null && !filterText.isEmpty()) {
+			String srclang = filterUntranslated ? filterSrcLanguage.getCode() : "";
 			for (long i = 0; i < tus.size(); i++) {
 				String id = ut.next();
+				if (filterUntranslated && !isUntranslated(id, srclang)) {
+					continue;
+				}
 				String seg = getTuv(id, filterLanguage.getCode(), filterText, caseSensitive, regExp);
 				if (seg.indexOf(TmxUtils.STYLE) != -1) {
 					HashMap<String, String> map = new HashMap<>();
@@ -219,12 +223,12 @@ public class SimpleStore implements StoreInterface {
 			String lang = it.next();
 			if (!lang.equals(srclang)) {
 				String seg = getTuv(id, lang, null, false, false);
-				if (!seg.isEmpty()) {
-					return false;
+				if (seg.isEmpty()) {
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private String getTuv(String id, String lang, String filterText, boolean caseSensitive, boolean regExp)

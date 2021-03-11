@@ -297,7 +297,7 @@ public class H2Store implements StoreInterface {
 		}
 		sbuilder.append(" FROM tunits");
 		if (filterText != null && !filterText.isEmpty()) {
-			sbuilder.append(" WHERE ");
+			sbuilder.append(" WHERE LANG_");
 			sbuilder.append(filterLanguage.getCode().replace('-', '_'));
 			if (regExp) {
 				sbuilder.append(" REGEXP  '");
@@ -312,11 +312,6 @@ public class H2Store implements StoreInterface {
 				sbuilder.append(filterText);
 				sbuilder.append("%'");
 			}
-		}
-		if (filterUntranslated) {
-			sbuilder.append(" WHERE ");
-			sbuilder.append(filterLanguage.getCode().replace('-', '_'));
-			sbuilder.append("=''");
 		}
 		sbuilder.append(" ORDER BY ");
 		if (sortLanguage == null) {
@@ -335,6 +330,9 @@ public class H2Store implements StoreInterface {
 		try (ResultSet rs = selectUnits.executeQuery(sbuilder.toString())) {
 			while (rs.next()) {
 				String tuid = rs.getString(2);
+				if (filterUntranslated && !isUntranslated(tuid, filterSrcLanguage.getCode())) {
+					continue;
+				}
 				Map<String, String> map = new HashMap<>();
 				Iterator<String> it = langSet.iterator();
 				int i = 3;
@@ -367,12 +365,12 @@ public class H2Store implements StoreInterface {
 			String lang = it.next();
 			if (!lang.equals(code)) {
 				String tuvText = getTuvString(tuid, lang);
-				if (!tuvText.isEmpty()) {
-					return false;
+				if (tuvText.isEmpty()) {
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private String getTuvString(String tuid, String lang) throws SQLException {
