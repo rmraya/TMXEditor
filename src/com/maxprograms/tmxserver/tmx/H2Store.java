@@ -341,7 +341,7 @@ public class H2Store implements StoreInterface {
 					String value = rs.getNString(i++);
 					map.put(lang, value);
 				}
-				if (filterText != null) {
+				if (filterText != null && !filterText.isEmpty()) {
 					String s = map.get(filterLanguage.getCode());
 					if (regExp) {
 						String highlighted = TmxUtils.highlightExpression(s, filterText);
@@ -360,17 +360,18 @@ public class H2Store implements StoreInterface {
 	}
 
 	private boolean isUntranslated(String tuid, String code) throws SQLException {
+		int count = 0;
 		Iterator<String> it = languages.iterator();
 		while (it.hasNext()) {
 			String lang = it.next();
 			if (!lang.equals(code)) {
 				String tuvText = getTuvString(tuid, lang);
-				if (tuvText.isEmpty()) {
-					return true;
+				if (!tuvText.isBlank()) {
+					count++;
 				}
 			}
 		}
-		return false;
+		return count == 0;
 	}
 
 	private String getTuvString(String tuid, String lang) throws SQLException {

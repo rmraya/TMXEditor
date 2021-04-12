@@ -218,17 +218,18 @@ public class SimpleStore implements StoreInterface {
 	}
 
 	private boolean isUntranslated(String id, String srclang) throws IOException {
+		int count = 0;
 		Iterator<String> it = languages.iterator();
 		while (it.hasNext()) {
 			String lang = it.next();
 			if (!lang.equals(srclang)) {
 				String seg = getTuv(id, lang, null, false, false);
-				if (seg.isEmpty()) {
-					return true;
+				if (!seg.isBlank()) {
+					count++;
 				}
 			}
 		}
-		return false;
+		return count == 0;
 	}
 
 	private String getTuv(String id, String lang, String filterText, boolean caseSensitive, boolean regExp)
