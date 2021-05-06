@@ -33,6 +33,9 @@ public class TextUtils {
 	}
 
 	public static String cleanString(String string) {
+		if (string == null) {
+			return "";
+		}
 		return string.replace("&", "&amp;").replace("<", "&lt;");
 	}
 

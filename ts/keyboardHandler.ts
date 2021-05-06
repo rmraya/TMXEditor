@@ -31,13 +31,6 @@ class KeyboardHandler {
                 navigator.clipboard.writeText(input.value.substring(start, end));
                 input.setRangeText('');
             }
-            if (type === 'TEXTAREA') {
-                let area: HTMLTextAreaElement = element as HTMLTextAreaElement;
-                let start: number = area.selectionStart;
-                let end: number = area.selectionEnd;
-                navigator.clipboard.writeText(area.value.substring(start, end));
-                area.setRangeText('');
-            }
         }
 
         if ((event.ctrlKey || event.metaKey) && (event.key === 'a' || event.key === 'A')) {
@@ -47,10 +40,6 @@ class KeyboardHandler {
             if (type === 'INPUT' ) {
                 let input: HTMLInputElement = element as HTMLInputElement;
                 input.setSelectionRange(0, input.value.length);
-            }
-            if (type === 'TEXTAREA') {
-                let area: HTMLTextAreaElement = element as HTMLTextAreaElement;
-                area.setSelectionRange(0, area.value.length);
             }
         }
 
@@ -67,17 +56,6 @@ class KeyboardHandler {
                 navigator.clipboard.readText().then(
                     (clipText: string) => {
                         let input: HTMLInputElement = (element as HTMLInputElement);
-                        let currentText: string = input.value;
-                        let start: number = input.selectionStart;
-                        let newText: string = currentText.substring(0, start) + clipText + currentText.substring(start);
-                        input.value = newText;
-                    }
-                );
-            }
-            if (type === 'TEXTAREA') {
-                navigator.clipboard.readText().then(
-                    (clipText: string) => {
-                        let input: HTMLTextAreaElement = (element as HTMLTextAreaElement);
                         let currentText: string = input.value;
                         let start: number = input.selectionStart;
                         let newText: string = currentText.substring(0, start) + clipText + currentText.substring(start);

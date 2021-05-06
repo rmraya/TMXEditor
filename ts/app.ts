@@ -3425,11 +3425,14 @@ class App {
                         if (app.getVersion() !== parsedData.version) {
                             App.latestVersion = parsedData.version;
                             switch (process.platform) {
-                                case 'darwin': App.downloadLink = parsedData.darwin;
+                                case 'darwin':
+                                    App.downloadLink = process.arch === 'arm64' ? parsedData.arm64 : parsedData.darwin;
                                     break;
-                                case 'win32': App.downloadLink = parsedData.win32;
+                                case 'win32':
+                                    App.downloadLink = parsedData.win32;
                                     break;
-                                case 'linux': App.downloadLink = parsedData.linux;
+                                case 'linux':
+                                    App.downloadLink = parsedData.linux;
                                     break;
                             }
                             App.updatesWindow = new BrowserWindow({
