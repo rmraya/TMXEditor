@@ -1,21 +1,15 @@
-/*****************************************************************************
-Copyright (c) 2018-2021 - Maxprograms,  http://www.maxprograms.com/
+/*******************************************************************************
+ * Copyright (c) 2018-2021 Maxprograms.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 1.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/org/documents/epl-v10.html
+ *
+ * Contributors:
+ *     Maxprograms - initial API and implementation
+ *******************************************************************************/
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to compile, 
-modify and use the Software in its executable form without restrictions.
-
-Redistribution of this Software or parts of it in any form (source code or 
-executable binaries) requires prior written permission from Maxprograms.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-SOFTWARE.
-*****************************************************************************/
 package com.maxprograms.tmxserver.tmx;
 
 import java.io.ByteArrayInputStream;
@@ -96,7 +90,7 @@ public class SimpleStore implements StoreInterface {
 			}
 			if (!languages.contains(lang)) {
 				languages.add(lang);
-				HashMap<String, Element> map = new HashMap<>();
+				Map<String, Element> map = new HashMap<>();
 				maps.put(lang, map);
 			}
 			storeTuv(lang, id, tuv);
@@ -140,7 +134,7 @@ public class SimpleStore implements StoreInterface {
 		if (filterText == null && !filterUntranslated) {
 			for (long i = 0; i < tus.size(); i++) {
 				String id = ut.next();
-				HashMap<String, String> map = new HashMap<>();
+				Map<String, String> map = new HashMap<>();
 				Iterator<String> it = languages.iterator();
 				while (it.hasNext()) {
 					String lang = it.next();
@@ -158,7 +152,7 @@ public class SimpleStore implements StoreInterface {
 				}
 				String seg = getTuv(id, filterLanguage.getCode(), filterText, caseSensitive, regExp);
 				if (seg.indexOf(TmxUtils.STYLE) != -1) {
-					HashMap<String, String> map = new HashMap<>();
+					Map<String, String> map = new HashMap<>();
 					Iterator<String> it = languages.iterator();
 					while (it.hasNext()) {
 						String lang = it.next();
@@ -177,7 +171,7 @@ public class SimpleStore implements StoreInterface {
 			for (long i = 0; i < tus.size(); i++) {
 				String id = ut.next();
 				if (isUntranslated(id, srclang)) {
-					HashMap<String, String> map = new HashMap<>();
+					Map<String, String> map = new HashMap<>();
 					Iterator<String> it = languages.iterator();
 					while (it.hasNext()) {
 						String lang = it.next();

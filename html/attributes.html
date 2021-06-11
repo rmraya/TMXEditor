@@ -9,81 +9,85 @@
 
 <body id="body">
 
-    <table class="fill_width">
-        <tr>
-            <td class="middle">
-                <label for="tuid" class="noWrap">Translation Unit Identifier</label>
-                <input type="text" id="tuid" class="table_input" readonly>
-            </td>
-            <td class="middle">
-                <label for="srclang" class="noWrap">Source Language</label>
-                <select id="srclang" class="table_select" >
-                </select>
-            </td>
-            <td class="middle">
-                <label for="segtype" class="noWrap">Segment Type</label>
-                <select id="segtype" class="table_select" >
-                    <option value=""></option>
-                    <option value="block">block</option>
-                    <option value="paragraph">paragraph</option>
-                    <option value="sentence">sentence</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="middle">
-                <label for="datatype" class="noWrap">Data Type</label>
-                <input type="text" id="datatype" class="table_input">
-            </td>
-            <td class="middle">
-                <label for="o-encoding" class="noWrap">Original Encoding</label>
-                <input type="text" id="o-encoding" class="table_input">
-            </td>
-            <td class="middle">
-                <label for="o-tmf" class="noWrap">Translation Memory Format</label>
-                <input type="text" id="o-tmf" class="table_input">
-            </td>
-        </tr>
-        <tr>
-            <td class="middle">
-                <label for="creationdate" class="noWrap">Creation Date</label>
-                <input type="text" id="creationdate" class="table_input">
-            </td>
-            <td class="middle">
-                <label for="creationid" class="noWrap">Creation Identifier</label>
-                <input type="text" id="creationid" class="table_input">
-            </td>
-            <td class="middle">
-                <label for="creationtool" class="noWrap">Creation Tool</label>
-                <input type="text" id="creationtool" class="table_input">
-            </td>
-        </tr>
-        <tr>
-            <td class="middle">
-                <label for="changedate" class="noWrap">Change Date</label>
-                <input type="text" id="changedate" class="table_input"></td>
-            <td class="middle">
-                <label for="changeid" class="noWrap">Change Identifier</label>
-                <input type="text" id="changeid" class="table_input">
-            </td>
-            <td class="middle">
-                <label for="creationtoolversion" class="noWrap">Creation Tool Version</label>
-                <input type="text" id="creationtoolversion" class="table_input">
-            </td>
-        </tr>
-        <tr>
-            <td class="middle">
-                <label for="lastusagedate" class="noWrap">Last Usage Date</label>
-                <input type="text" id="lastusagedate" class="table_input"></td>
-            </td>
-            <td class="middle">
-                <label for="usagecount" class="noWrap">Usage Count</label>
-                <input type="text" id="usagecount" class="table_input"></td>
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-    </table>
-
+    <div style="padding: 8px;">
+        <table class="fill_width">
+            <tr>
+                <td class="middle">
+                    <label for="tuid" class="noWrap">Translation Unit Identifier</label>
+                    <input type="text" id="tuid" class="table_input" readonly>
+                </td>
+                <td class="middle">
+                    <label for="srclang" class="noWrap">Source Language</label>
+                    <select id="srclang" class="table_select">
+                    </select>
+                </td>
+                <td class="middle">
+                    <label for="segtype" class="noWrap">Segment Type</label>
+                    <select id="segtype" class="table_select">
+                        <option value=""></option>
+                        <option value="block">block</option>
+                        <option value="paragraph">paragraph</option>
+                        <option value="sentence">sentence</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="middle">
+                    <label for="datatype" class="noWrap">Data Type</label>
+                    <input type="text" id="datatype" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="o-encoding" class="noWrap">Original Encoding</label>
+                    <input type="text" id="o-encoding" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="o-tmf" class="noWrap">Translation Memory Format</label>
+                    <input type="text" id="o-tmf" class="table_input">
+                </td>
+            </tr>
+            <tr>
+                <td class="middle">
+                    <label for="creationdate" class="noWrap">Creation Date</label>
+                    <input type="text" id="creationdate" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="creationid" class="noWrap">Creation Identifier</label>
+                    <input type="text" id="creationid" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="creationtool" class="noWrap">Creation Tool</label>
+                    <input type="text" id="creationtool" class="table_input">
+                </td>
+            </tr>
+            <tr>
+                <td class="middle">
+                    <label for="changedate" class="noWrap">Change Date</label>
+                    <input type="text" id="changedate" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="changeid" class="noWrap">Change Identifier</label>
+                    <input type="text" id="changeid" class="table_input">
+                </td>
+                <td class="middle">
+                    <label for="creationtoolversion" class="noWrap">Creation Tool Version</label>
+                    <input type="text" id="creationtoolversion" class="table_input">
+                </td>
+            </tr>
+            <tr>
+                <td class="middle">
+                    <label for="lastusagedate" class="noWrap">Last Usage Date</label>
+                    <input type="text" id="lastusagedate" class="table_input">
+                </td>
+                </td>
+                <td class="middle">
+                    <label for="usagecount" class="noWrap">Usage Count</label>
+                    <input type="text" id="usagecount" class="table_input">
+                </td>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        </table>
+    </div>
     <div class="buttonArea">
         <button id="saveAttributes">Save Attributes</button>
     </div>

@@ -1,21 +1,14 @@
-/*****************************************************************************
-Copyright (c) 2018-2021 - Maxprograms,  http://www.maxprograms.com/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to compile, 
-modify and use the Software in its executable form without restrictions.
-
-Redistribution of this Software or parts of it in any form (source code or 
-executable binaries) requires prior written permission from Maxprograms.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-SOFTWARE.
-*****************************************************************************/
+/*******************************************************************************
+ * Copyright (c) 2018-2021 Maxprograms.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 1.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/org/documents/epl-v10.html
+ *
+ * Contributors:
+ *     Maxprograms - initial API and implementation
+ *******************************************************************************/
 
 class Main {
 
@@ -43,6 +36,11 @@ class Main {
     currentCell: HTMLTableCellElement = null;
     currentContent: string = null;
     selectedUnits: string[] = [];
+
+    static EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M2.25 15.75H5.0625L13.3575 7.45502L10.545 4.64252L2.25 12.9375V15.75ZM3.75 13.56L10.545 6.76502L11.235 7.45502L4.44 14.25H3.75V13.56Z" />' +
+        '<path d="M13.7775 2.46751C13.485 2.17501 13.0125 2.17501 12.72 2.46751L11.3475 3.84001L14.16 6.65251L15.5325 5.28001C15.825 4.98751 15.825 4.51501 15.5325 4.22251L13.7775 2.46751Z" />' +
+        '</svg>';
 
     constructor() {
 
@@ -147,7 +145,7 @@ class Main {
 
         let openFile: HTMLAnchorElement = document.createElement('a');
         openFile.classList.add('tooltip');
-        openFile.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.816497" id="path299" d="m 20.0575,11.2 -1.154167,7.2 H 5.0966667 L 3.9425,11.2 Z M 8.6433333,4 h -5.81 l 0.595,4 H 5.1125 L 4.755,5.6 H 7.8333333 C 8.76,6.7104 9.46,7.2 11.3975,7.2 h 7.735833 L 18.966667,8 h 1.7 l 0.5,-2.4 H 11.3975 C 9.7491667,5.6 9.6966667,5.2664 8.6433333,4 Z M 22,9.6 H 2 L 3.6666667,20 H 20.333333 Z" /></svg>' +
+        openFile.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  id="path299" d="m 20.0575,11.2 -1.154167,7.2 H 5.0966667 L 3.9425,11.2 Z M 8.6433333,4 h -5.81 l 0.595,4 H 5.1125 L 4.755,5.6 H 7.8333333 C 8.76,6.7104 9.46,7.2 11.3975,7.2 h 7.735833 L 18.966667,8 h 1.7 l 0.5,-2.4 H 11.3975 C 9.7491667,5.6 9.6966667,5.2664 8.6433333,4 Z M 22,9.6 H 2 L 3.6666667,20 H 20.333333 Z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Open File</span>';
         openFile.addEventListener('click', () => {
             this.openFile();
@@ -156,7 +154,7 @@ class Main {
 
         let newFile: HTMLAnchorElement = document.createElement('a');
         newFile.classList.add('tooltip');
-        newFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.825723" d="m 21,16.166667 h -2.454545 v -2.5 h -1.636364 v 2.5 h -2.454546 v 1.666666 h 2.454546 v 2.5 h 1.636364 v -2.5 H 21 Z m -5.727273,4.166666 V 22 H 3 V 2 h 8.336455 c 2.587909,0 8.027181,6.0191667 8.027181,8.011667 V 12 h -1.636363 v -1.285833 c 0,-3.4225003 -4.909091,-2.0475003 -4.909091,-2.0475003 0,0 1.242,-5 -2.158364,-5 H 4.6363636 V 20.333333 Z" /></svg>' +
+        newFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  d="m 21,16.166667 h -2.454545 v -2.5 h -1.636364 v 2.5 h -2.454546 v 1.666666 h 2.454546 v 2.5 h 1.636364 v -2.5 H 21 Z m -5.727273,4.166666 V 22 H 3 V 2 h 8.336455 c 2.587909,0 8.027181,6.0191667 8.027181,8.011667 V 12 h -1.636363 v -1.285833 c 0,-3.4225003 -4.909091,-2.0475003 -4.909091,-2.0475003 0,0 1.242,-5 -2.158364,-5 H 4.6363636 V 20.333333 Z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">New File</span>';
         newFile.addEventListener('click', () => {
             this.newFile();
@@ -165,7 +163,7 @@ class Main {
 
         let saveFile: HTMLAnchorElement = document.createElement('a');
         saveFile.classList.add('tooltip');
-        saveFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.805077" d="m 13.555556,3.6666667 v 9.1666663 h 1.952222 L 12,17.008333 8.4922222,12.833333 H 10.444444 V 3.6666667 Z M 15.111111,2 H 8.8888889 v 9.166667 H 5 L 12,19.5 19,11.166667 h -3.888889 z m 2.333333,15.833333 v 2.5 H 6.5555556 v -2.5 H 5 V 22 h 14 v -4.166667 z" /></svg>' +
+        saveFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  d="m 13.555556,3.6666667 v 9.1666663 h 1.952222 L 12,17.008333 8.4922222,12.833333 H 10.444444 V 3.6666667 Z M 15.111111,2 H 8.8888889 v 9.166667 H 5 L 12,19.5 19,11.166667 h -3.888889 z m 2.333333,15.833333 v 2.5 H 6.5555556 v -2.5 H 5 V 22 h 14 v -4.166667 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Save File</span>';
         saveFile.addEventListener('click', () => {
             this.saveFile();
@@ -174,7 +172,7 @@ class Main {
 
         let showFileInfo: HTMLAnchorElement = document.createElement('a');
         showFileInfo.classList.add('tooltip');
-        showFileInfo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 0.833333,15 h -1.666666 v -6.666667 h 1.666666 z M 12,6.7916667 c 0.575,0 1.041667,0.4666666 1.041667,1.0416666 C 13.041667,8.4083333 12.575,8.875 12,8.875 c -0.575,0 -1.041667,-0.4666667 -1.041667,-1.0416667 0,-0.575 0.466667,-1.0416666 1.041667,-1.0416666 z" /></svg>' +
+        showFileInfo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 0.833333,15 h -1.666666 v -6.666667 h 1.666666 z M 12,6.7916667 c 0.575,0 1.041667,0.4666666 1.041667,1.0416666 C 13.041667,8.4083333 12.575,8.875 12,8.875 c -0.575,0 -1.041667,-0.4666667 -1.041667,-1.0416667 0,-0.575 0.466667,-1.0416666 1.041667,-1.0416666 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">File Properties</span>';
         showFileInfo.addEventListener('click', () => {
             this.showFileInfo();
@@ -188,7 +186,7 @@ class Main {
 
         let saveEdit: HTMLAnchorElement = document.createElement('a');
         saveEdit.classList.add('tooltip');
-        saveEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 3.660833,6.25 -4.7025,4.82 L 8.755,10.981667 7.2083333,12.53 l 3.7499997,3.636667 6.25,-6.369167 z" /></svg>' +
+        saveEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 3.660833,6.25 -4.7025,4.82 L 8.755,10.981667 7.2083333,12.53 l 3.7499997,3.636667 6.25,-6.369167 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Confirm Edit</span>';
         saveEdit.addEventListener('click', () => {
             this.saveEdit();
@@ -197,7 +195,7 @@ class Main {
 
         let cancelEdit: HTMLAnchorElement = document.createElement('a');
         cancelEdit.classList.add('tooltip');
-        cancelEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,13.781667 -3.826667,-3.79 L 16.961667,8.1691667 15.781667,7 11.994167,10.824167 8.1708333,7.0383333 7,8.2091667 10.8275,12.0025 7.0383333,15.829167 8.2091667,17 12.005,13.17 l 3.825833,3.791667 z" /></svg>' +
+        cancelEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,13.781667 -3.826667,-3.79 L 16.961667,8.1691667 15.781667,7 11.994167,10.824167 8.1708333,7.0383333 7,8.2091667 10.8275,12.0025 7.0383333,15.829167 8.2091667,17 12.005,13.17 l 3.825833,3.791667 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Cancel Edit</span>';
         cancelEdit.addEventListener('click', () => {
             this.cancelEdit();
@@ -211,7 +209,7 @@ class Main {
 
         let replaceText: HTMLAnchorElement = document.createElement('a');
         replaceText.classList.add('tooltip');
-        replaceText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 13.515011,15.871667 C 12.454179,16.535833 11.243347,16.918333 10.013349,17 L 9.5658494,15.3475 c 1.7358316,-0.01583 3.4433286,-0.7925 4.5749936,-2.27 1.779165,-2.325 1.519998,-5.575 -0.479166,-7.615 L 12.185013,7.3908333 10.710015,2 h 5.537492 l -1.564164,2.1275 c 2.562496,2.4508333 3.067496,6.3825 1.185831,9.385 L 22,19.643333 19.643336,22 Z M 4.3283562,14.935 C 2.8025249,13.480833 2.0050259,11.496667 2.000026,9.5 1.9958593,7.91 2.4933586,6.315 3.5333573,4.9566667 4.8975221,3.175 6.9091862,2.1516667 8.9908502,2.0158333 l 0.4533327,1.6508334 c -1.7391644,0.0125 -3.4516622,0.8241666 -4.584994,2.305 C 3.0766912,8.3008333 3.3408575,11.559167 5.3500216,13.6 L 6.828353,11.669167 8.3100177,17 H 2.7775249 Z" /></svg>' +
+        replaceText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 13.515011,15.871667 C 12.454179,16.535833 11.243347,16.918333 10.013349,17 L 9.5658494,15.3475 c 1.7358316,-0.01583 3.4433286,-0.7925 4.5749936,-2.27 1.779165,-2.325 1.519998,-5.575 -0.479166,-7.615 L 12.185013,7.3908333 10.710015,2 h 5.537492 l -1.564164,2.1275 c 2.562496,2.4508333 3.067496,6.3825 1.185831,9.385 L 22,19.643333 19.643336,22 Z M 4.3283562,14.935 C 2.8025249,13.480833 2.0050259,11.496667 2.000026,9.5 1.9958593,7.91 2.4933586,6.315 3.5333573,4.9566667 4.8975221,3.175 6.9091862,2.1516667 8.9908502,2.0158333 l 0.4533327,1.6508334 c -1.7391644,0.0125 -3.4516622,0.8241666 -4.584994,2.305 C 3.0766912,8.3008333 3.3408575,11.559167 5.3500216,13.6 L 6.828353,11.669167 8.3100177,17 H 2.7775249 Z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Replace Text</span>';
         replaceText.addEventListener('click', () => {
             this.replaceText();
@@ -225,7 +223,7 @@ class Main {
 
         let insertUnit: HTMLAnchorElement = document.createElement('a');
         insertUnit.classList.add('tooltip');
-        insertUnit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 12.833333 V 17 H 11.166667 V 12.833333 H 7 v -1.666666 h 4.166667 V 7 h 1.666666 v 4.166667 H 17 Z" /></svg>' +
+        insertUnit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 12.833333 V 17 H 11.166667 V 12.833333 H 7 v -1.666666 h 4.166667 V 7 h 1.666666 v 4.166667 H 17 Z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Insert Unit</span>';
         insertUnit.addEventListener('click', () => {
             this.insertUnit();
@@ -234,7 +232,7 @@ class Main {
 
         let deleteUnits: HTMLAnchorElement = document.createElement('a');
         deleteUnits.classList.add('tooltip');
-        deleteUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 7 v -1.666666 h 10 z" /></svg>' +
+        deleteUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 7 v -1.666666 h 10 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Delete Selected Units</span>';
         deleteUnits.addEventListener('click', () => {
             this.deleteUnits();
@@ -249,7 +247,7 @@ class Main {
         let sortUnits: HTMLAnchorElement = document.createElement('a');
         sortUnits.id = 'sortUnits';
         sortUnits.classList.add('tooltip');
-        sortUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.805077" d="m 8.666667,10.444444 v 3.111112 H 12 L 7,19 2,13.555556 H 5.333333 V 10.444444 H 2 L 7,5 12,10.444444 Z M 22,14.333333 h -8.333333 v 1.555556 H 22 Z M 22,19 H 13.666667 V 17.444444 H 22 Z m 0,-6.222222 H 13.666667 V 11.222222 H 22 Z M 22,9.6666667 H 13.666667 V 8.1111111 H 22 Z M 22,6.5555556 H 13.666667 V 5 H 22 Z" /></svg>' +
+        sortUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="m 8.666667,10.444444 v 3.111112 H 12 L 7,19 2,13.555556 H 5.333333 V 10.444444 H 2 L 7,5 12,10.444444 Z M 22,14.333333 h -8.333333 v 1.555556 H 22 Z M 22,19 H 13.666667 V 17.444444 H 22 Z m 0,-6.222222 H 13.666667 V 11.222222 H 22 Z M 22,9.6666667 H 13.666667 V 8.1111111 H 22 Z M 22,6.5555556 H 13.666667 V 5 H 22 Z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Sort Units</span>';
         sortUnits.addEventListener('click', () => {
             this.sortUnits();
@@ -259,7 +257,7 @@ class Main {
         let filterUnits: HTMLAnchorElement = document.createElement('a');
         filterUnits.id = 'filterUnits';
         filterUnits.classList.add('tooltip');
-        filterUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.829702" d="M 18.091348,3.6666667 11.913044,14.119167 v 4.936666 l -0.826087,-0.5 V 14.119167 L 4.9086522,3.6666667 Z M 21,2 H 2 L 9.4347826,14.578333 V 19.5 L 13.565217,22 v -7.421667 z" /></svg>' +
+        filterUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 18.091348,3.6666667 11.913044,14.119167 v 4.936666 l -0.826087,-0.5 V 14.119167 L 4.9086522,3.6666667 Z M 21,2 H 2 L 9.4347826,14.578333 V 19.5 L 13.565217,22 v -7.421667 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Filter Units</span>';
         filterUnits.addEventListener('click', () => {
             this.filterUnits();
@@ -287,7 +285,7 @@ class Main {
 
         let convertCSV: HTMLAnchorElement = document.createElement('a');
         convertCSV.classList.add('tooltip');
-        convertCSV.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.802308" d="M 18.617507,14.296663 H 22 v 1.549444 H 18.617507 V 19 h -1.661751 v -3.153893 h -3.382494 v -1.549444 h 3.382494 V 11.14277 h 1.661751 z m -6.647003,4.648332 H 2 v -1.549444 h 9.970504 z m 0,-3.117481 H 2 V 14.27807 h 9.970504 z m 0,-3.080295 H 2 v -1.549444 h 9.970504 z M 21.941008,9.6483316 H 2 V 8.0988877 h 19.941008 z m 0,-3.0988877 H 2 V 5 h 19.941008 z" /></svg>' +
+        convertCSV.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 18.617507,14.296663 H 22 v 1.549444 H 18.617507 V 19 h -1.661751 v -3.153893 h -3.382494 v -1.549444 h 3.382494 V 11.14277 h 1.661751 z m -6.647003,4.648332 H 2 v -1.549444 h 9.970504 z m 0,-3.117481 H 2 V 14.27807 h 9.970504 z m 0,-3.080295 H 2 v -1.549444 h 9.970504 z M 21.941008,9.6483316 H 2 V 8.0988877 h 19.941008 z m 0,-3.0988877 H 2 V 5 h 19.941008 z" /></svg>' +
             '<span class="tooltiptext bottomTooltip">Convert CSV File to TMX</span>';
         convertCSV.addEventListener('click', () => {
             this.convertCSV();
@@ -310,7 +308,7 @@ class Main {
 
         let openHelp: HTMLAnchorElement = document.createElement('a');
         openHelp.classList.add('tooltip');
-        openHelp.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path style="stroke-width:0.833333" d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 1.041667,14.166667 c 0,0.575 -0.465834,1.041666 -1.041667,1.041666 -0.574167,0 -1.041667,-0.466666 -1.041667,-1.041666 0,-0.575 0.4675,-1.041667 1.041667,-1.041667 0.575833,0 1.041667,0.466667 1.041667,1.041667 z M 14.2025,7.835 C 13.695833,7.3216667 12.94,7.0391667 12.076667,7.0391667 10.26,7.0391667 9.085,8.3308333 9.085,10.330833 h 1.675833 c 0,-1.238333 0.690834,-1.6774997 1.281667,-1.6774997 0.528333,0 1.089167,0.3508334 1.136667,1.0216667 0.05167,0.705833 -0.325,1.064167 -0.801667,1.5175 -1.176667,1.119167 -1.198333,1.660833 -1.193333,2.89 H 12.855 c -0.01083,-0.553333 0.025,-1.0025 0.779167,-1.815 0.564166,-0.608333 1.265833,-1.365 1.28,-2.5183333 0.0092,-0.77 -0.236667,-1.4325 -0.711667,-1.9141667 z" /></svg>' +
+        openHelp.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 1.041667,14.166667 c 0,0.575 -0.465834,1.041666 -1.041667,1.041666 -0.574167,0 -1.041667,-0.466666 -1.041667,-1.041666 0,-0.575 0.4675,-1.041667 1.041667,-1.041667 0.575833,0 1.041667,0.466667 1.041667,1.041667 z M 14.2025,7.835 C 13.695833,7.3216667 12.94,7.0391667 12.076667,7.0391667 10.26,7.0391667 9.085,8.3308333 9.085,10.330833 h 1.675833 c 0,-1.238333 0.690834,-1.6774997 1.281667,-1.6774997 0.528333,0 1.089167,0.3508334 1.136667,1.0216667 0.05167,0.705833 -0.325,1.064167 -0.801667,1.5175 -1.176667,1.119167 -1.198333,1.660833 -1.193333,2.89 H 12.855 c -0.01083,-0.553333 0.025,-1.0025 0.779167,-1.815 0.564166,-0.608333 1.265833,-1.365 1.28,-2.5183333 0.0092,-0.77 -0.236667,-1.4325 -0.711667,-1.9141667 z" /></svg>' +
             '<span class="tooltiptext bottomRightTooltip">User Guide</span>';
         openHelp.addEventListener('click', () => {
             this.openHelp();
@@ -357,24 +355,25 @@ class Main {
     }
 
     buildTable(leftPanel: HTMLDivElement): void {
-        leftPanel.classList.add('divContainer');
+
+        let tableContainer: HTMLDivElement = document.createElement('div');
+        tableContainer.classList.add('leftPaddedPanel');
+        leftPanel.appendChild(tableContainer);
 
         let mainTable: HTMLTableElement = document.createElement('table');
         mainTable.id = 'mainTable';
         mainTable.classList.add('stripes');
-        leftPanel.appendChild(mainTable);
+        tableContainer.appendChild(mainTable);
 
         let thead: HTMLTableSectionElement = document.createElement('thead');
         thead.id = 'tableHeader';
         mainTable.appendChild(thead);
 
         let tr: HTMLTableRowElement = document.createElement('tr');
-        tr.classList.add('dark_background');
         thead.appendChild(tr);
 
         let th1: HTMLTableHeaderCellElement = document.createElement('th');
         th1.classList.add('fixed');
-        th1.classList.add('dark_background');
         tr.appendChild(th1);
 
         let selectAll: HTMLInputElement = document.createElement('input');
@@ -386,11 +385,9 @@ class Main {
         th1.appendChild(selectAll);
 
         let th2: HTMLTableHeaderCellElement = document.createElement('th');
-        th2.classList.add('dark_background');
         tr.appendChild(th2);
 
         let th3: HTMLTableHeaderCellElement = document.createElement('th');
-        th3.classList.add('dark_background');
         tr.appendChild(th3);
 
         let tableBody: HTMLTableSectionElement = document.createElement('tbody');
@@ -399,7 +396,22 @@ class Main {
     }
 
     buildRightPanels(rightPanel: HTMLDivElement): void {
-        let divider: ThreeHorizontalPanels = new ThreeHorizontalPanels(rightPanel);
+        let panelsContainer: HTMLDivElement = document.createElement('div');
+        panelsContainer.classList.add('rightPaddedPanel');
+        rightPanel.appendChild(panelsContainer);
+
+        let config: any = { attributes: true, childList: false, subtree: false };
+        let observer = new MutationObserver((mutationsList) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'attributes') {
+                    panelsContainer.style.height = rightPanel.clientHeight + 'px';
+                    panelsContainer.style.width = rightPanel.clientWidth + 'px';
+                }
+            }
+        });
+        observer.observe(rightPanel, config);
+
+        let divider: ThreeHorizontalPanels = new ThreeHorizontalPanels(panelsContainer);
 
         this.createAttributesPanel(divider.topPanel());
         this.createPropertiesPanel(divider.centerPanel());
@@ -409,36 +421,44 @@ class Main {
     createAttributesPanel(topPanel: HTMLDivElement): void {
         topPanel.id = 'topPanel';
 
-        let toolbar: HTMLDivElement = document.createElement('div');
-        toolbar.classList.add('toolbar');
-        topPanel.appendChild(toolbar);
+        let panelsContainer: HTMLDivElement = document.createElement('div');
+        panelsContainer.classList.add('topPaddedPanel');
+        topPanel.appendChild(panelsContainer);
 
-        let attributesSpan: HTMLSpanElement = document.createElement('span');
-        attributesSpan.id = 'attributesSpan';
-        attributesSpan.classList.add('noWrap');
-        attributesSpan.innerText = 'TU';
-        toolbar.appendChild(attributesSpan);
+        let titleTable: HTMLTableElement = document.createElement('table');
+        titleTable.classList.add('titlePanel');
+        panelsContainer.appendChild(titleTable);
 
-        let span: HTMLSpanElement = document.createElement('span');
-        span.innerText = 'Attributes';
-        span.classList.add('fill_width');
-        span.style.marginLeft = '4px';
-        toolbar.appendChild(span);
+        let tableRow: HTMLTableRowElement = document.createElement('tr');
+        titleTable.appendChild(tableRow);
+
+        let attributesCell: HTMLTableCellElement = document.createElement('td');
+        attributesCell.id = 'attributesSpan';
+        attributesCell.classList.add('noWrap');
+        attributesCell.innerText = 'TU';
+        tableRow.appendChild(attributesCell);
+
+        let cell: HTMLTableCellElement = document.createElement('td');
+        cell.innerText = 'Attributes';
+        cell.classList.add('fill_width');
+        cell.style.marginLeft = '4px';
+        tableRow.appendChild(cell);
+
+        let editCell: HTMLTableCellElement = document.createElement('td');
+        tableRow.appendChild(editCell);
 
         let editAttributes: HTMLAnchorElement = document.createElement('a');
         editAttributes.id = 'editAttributes';
-        editAttributes.classList.add('tooltip');
-        editAttributes.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke-width="2" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke-width="2" /></svg>' +
-            '<span class="tooltiptext bottomRightTooltip">Edit Attributes</span>';
+        editAttributes.innerHTML = Main.EDIT;
         editAttributes.addEventListener('click', () => {
             this.editAttributes();
         });
-        toolbar.appendChild(editAttributes);
+        editCell.appendChild(editAttributes);
 
         let attributesPanel: HTMLDivElement = document.createElement('div');
         attributesPanel.id = 'attributesPanel';
         attributesPanel.classList.add('divContainer');
-        topPanel.appendChild(attributesPanel);
+        panelsContainer.appendChild(attributesPanel);
 
         let table: HTMLTableElement = document.createElement('table');
         table.classList.add('stripes');
@@ -452,8 +472,8 @@ class Main {
         let observer = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
-                    attributesPanel.style.height = (topPanel.clientHeight - toolbar.clientHeight) + 'px';
-                    attributesPanel.style.width = topPanel.clientWidth + 'px';
+                    attributesPanel.style.height = (panelsContainer.clientHeight - titleTable.clientHeight) + 'px';
+                    attributesPanel.style.width = panelsContainer.clientWidth + 'px';
                 }
             }
         });
@@ -463,35 +483,43 @@ class Main {
     createPropertiesPanel(centerPanel: HTMLDivElement): void {
         centerPanel.id = 'centerPanel';
 
-        let toolbar: HTMLDivElement = document.createElement('div');
-        toolbar.classList.add('toolbar');
-        centerPanel.appendChild(toolbar);
+        let panelsContainer: HTMLDivElement = document.createElement('div');
+        panelsContainer.classList.add('centerPaddedPanel');
+        centerPanel.appendChild(panelsContainer);
 
-        let propertiesSpan: HTMLSpanElement = document.createElement('span');
-        propertiesSpan.id = 'propertiesSpan';
-        propertiesSpan.classList.add('noWrap');
-        propertiesSpan.innerText = 'TU';
-        toolbar.appendChild(propertiesSpan);
+        let titleTable: HTMLTableElement = document.createElement('table');
+        titleTable.classList.add('titlePanel');
+        panelsContainer.appendChild(titleTable);
 
-        let span: HTMLSpanElement = document.createElement('span');
-        span.innerText = 'Properties';
-        span.classList.add('fill_width');
-        span.style.marginLeft = '4px';
-        toolbar.appendChild(span);
+        let tableRow: HTMLTableRowElement = document.createElement('tr');
+        titleTable.appendChild(tableRow);
+
+        let propertiesCell: HTMLTableCellElement = document.createElement('td');
+        propertiesCell.id = 'propertiesSpan';
+        propertiesCell.classList.add('noWrap');
+        propertiesCell.innerText = 'TU';
+        tableRow.appendChild(propertiesCell);
+
+        let cell: HTMLTableCellElement = document.createElement('td');
+        cell.innerText = 'Properties';
+        cell.classList.add('fill_width');
+        cell.style.marginLeft = '4px';
+        tableRow.appendChild(cell);
+
+        let editCell: HTMLTableCellElement = document.createElement('td');
+        tableRow.appendChild(editCell);
 
         let editProperties: HTMLAnchorElement = document.createElement('a');
         editProperties.id = 'editProperties';
-        editProperties.classList.add('tooltip');
-        editProperties.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke-width="2" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke-width="2" /></svg>' +
-            '<span class="tooltiptext bottomRightTooltip">Edit Properties</span>';
+        editProperties.innerHTML = Main.EDIT;
         editProperties.addEventListener('click', () => {
             this.editProperties();
         });
-        toolbar.appendChild(editProperties);
+        editCell.appendChild(editProperties);
 
         let propertiesPanel: HTMLDivElement = document.createElement('div');
         propertiesPanel.id = 'propertiesPanel';
-        centerPanel.appendChild(propertiesPanel);
+        panelsContainer.appendChild(propertiesPanel);
 
         let table: HTMLTableElement = document.createElement('table');
         table.classList.add('stripes');
@@ -505,8 +533,8 @@ class Main {
         let observer = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
-                    propertiesPanel.style.height = (centerPanel.clientHeight - toolbar.clientHeight) + 'px';
-                    propertiesPanel.style.width = centerPanel.clientWidth + 'px';
+                    propertiesPanel.style.height = (panelsContainer.clientHeight - titleTable.clientHeight) + 'px';
+                    propertiesPanel.style.width = panelsContainer.clientWidth + 'px';
                 }
             }
         });
@@ -516,35 +544,43 @@ class Main {
     createNotesPanel(bottomPanel: HTMLDivElement): void {
         bottomPanel.id = 'bottomPanel';
 
-        let toolbar: HTMLDivElement = document.createElement('div');
-        toolbar.classList.add('toolbar');
-        bottomPanel.appendChild(toolbar);
+        let panelsContainer: HTMLDivElement = document.createElement('div');
+        panelsContainer.classList.add('bottomPaddedPanel');
+        bottomPanel.appendChild(panelsContainer);
 
-        let notesSpan: HTMLSpanElement = document.createElement('span');
-        notesSpan.id = 'notesSpan';
-        notesSpan.classList.add('noWrap');
-        notesSpan.innerText = 'TU';
-        toolbar.appendChild(notesSpan);
+        let titleTable: HTMLTableElement = document.createElement('table');
+        titleTable.classList.add('titlePanel');
+        panelsContainer.appendChild(titleTable);
 
-        let span: HTMLSpanElement = document.createElement('span');
-        span.innerText = 'Notes';
-        span.classList.add('fill_width');
-        span.style.marginLeft = '4px';
-        toolbar.appendChild(span);
+        let tableRow: HTMLTableRowElement = document.createElement('tr');
+        titleTable.appendChild(tableRow);
+
+        let notesCell: HTMLTableCellElement = document.createElement('td');
+        notesCell.id = 'notesSpan';
+        notesCell.classList.add('noWrap');
+        notesCell.innerText = 'TU';
+        tableRow.appendChild(notesCell);
+
+        let cell: HTMLTableCellElement = document.createElement('td');
+        cell.innerText = 'Notes';
+        cell.classList.add('fill_width');
+        cell.style.marginLeft = '4px';
+        tableRow.appendChild(cell);
+
+        let editCell: HTMLTableCellElement = document.createElement('td');
+        tableRow.appendChild(editCell);
 
         let editNotes: HTMLAnchorElement = document.createElement('a');
         editNotes.id = 'editNotes';
-        editNotes.classList.add('tooltip');
-        editNotes.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke-width="2" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke-width="2" /></svg>' +
-            '<span class="tooltiptext bottomRightTooltip">Edit Notes</span>';
+        editNotes.innerHTML = Main.EDIT;
         editNotes.addEventListener('click', () => {
             this.editNotes();
         });
-        toolbar.appendChild(editNotes);
+        editCell.appendChild(editNotes);
 
         let notesPanel: HTMLDivElement = document.createElement('div');
         notesPanel.id = 'notesPanel';
-        bottomPanel.appendChild(notesPanel);
+        panelsContainer.appendChild(notesPanel);
 
         let table: HTMLTableElement = document.createElement('table');
         table.classList.add('stripes');
@@ -558,8 +594,8 @@ class Main {
         let observer = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
-                    notesPanel.style.height = (bottomPanel.clientHeight - toolbar.clientHeight) + 'px';
-                    notesPanel.style.width = bottomPanel.clientWidth + 'px';
+                    notesPanel.style.height = (panelsContainer.clientHeight - titleTable.clientHeight) + 'px';
+                    notesPanel.style.width = panelsContainer.clientWidth + 'px';
                 }
             }
         });
@@ -853,10 +889,10 @@ class Main {
 
     updateLanguages(arg: any): void {
         this.languages = arg;
-        var row = '<tr class="dark_background"><th class="dark_background fixed"><input type="checkbox" id="selectAll"></th><th class="dark_background fixed">#</th>';
+        var row = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
         let length: number = this.languages.length;
         for (let index = 0; index < length; ++index) {
-            row = row + '<th class="dark_background">' + this.languages[index].code + ' - ' + arg[index].name + '</th>';
+            row = row + '<th>' + this.languages[index].code + ' - ' + arg[index].name + '</th>';
         }
         document.getElementById('tableHeader').innerHTML = row + '</tr>';
         document.getElementById('selectAll').addEventListener('click', () => {
@@ -879,7 +915,7 @@ class Main {
 
     fileClosed(): void {
         document.getElementById("tableBody").innerHTML = '';
-        document.getElementById("tableHeader").innerHTML = '<tr class="dark_background"><th class="fixed dark_background"><input type="checkbox" id="selectAll"></th><th class="fixed dark_background">#</th><th class="dark_background">&nbsp;</th><th class="dark_background">&nbsp;</th></tr>';
+        document.getElementById("tableHeader").innerHTML = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th><th>&nbsp;</th><th>&nbsp;</th></tr>';
         (document.getElementById('page') as HTMLInputElement).value = '0';
         document.getElementById('pages').innerHTML = '0';
         document.getElementById('units').innerHTML = '';

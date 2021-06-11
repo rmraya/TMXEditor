@@ -2,7 +2,7 @@
 
 ![TMXEditor logo](https://www.maxprograms.com/images/tmxeditor_s.png)
 
-TMXEditor is a desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
+TMXEditor is an open source desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
 
 TMX is a standard XML-based format used for exchanging Translation Memories used by CAT (Computer Assisted Translation) tools. TMXEditor allows editing the content of multilingual TMX files.
 
