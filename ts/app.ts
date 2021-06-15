@@ -1294,6 +1294,9 @@ class App {
     }
 
     static loadSegments(): void {
+        if (App.currentFile === '') {
+            return;
+        }
         var json: any = {
             command: 'getSegments'
         }

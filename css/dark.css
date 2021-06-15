@@ -207,7 +207,7 @@ th {
 }
 
 .machineContainer {
-	background-color: var(--od-row-background);
+	background-color: var(--gray190);
 	padding: 4px;
 	margin: 0;
 	width: 100%;
@@ -220,7 +220,7 @@ th {
 }
 
 .highlighted {
-	color: var(--highlight-color);
+	color: var(--gray40);
 	background-color: var(--themePrimary);
 	padding-left: 2px;
 	padding-right: 2px;
@@ -381,8 +381,6 @@ label {
 	stroke: var(--themePrimary);
 	padding: 2px 4px;
 	justify-content: flex-start;
-	border-top: 1px solid var(--gray190);
-	overflow: hidden;
 }
 
 .toolbar button {
@@ -423,18 +421,25 @@ label {
 }
 
 .toolbar a:hover {
-	background-color: var(--tab-hover);
+	background-color: var(--gray160);
 	text-decoration: none !important;
 	transition-property: all;
 	transition-duration: 0.5s;
 	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
 	transition-delay: 0s;
+	border-radius: 2px;
 }
 
 svg {
 	fill: var(--white);
 	stroke: var(--white);
 	stroke-width: 0.1;
+}
+
+th svg {
+	margin-top: 4px;
+	fill: var(--gray10) !important;
+	stroke: var(--gray10) !important;
 }
 
 /* tabs */
@@ -564,7 +569,7 @@ svg {
 }
 
 .highlight {
-	color: var(--highlight-color);
+	color: var(--gray40);
 }
 
 .active svg {

@@ -207,7 +207,7 @@ th {
 }
 
 .machineContainer {
-	background-color: var(--od-row-background);
+	background-color: var(--grey30);
 	padding: 4px;
 	margin: 0;
 	width: 100%;
@@ -380,7 +380,6 @@ label {
 	stroke: var(--themePrimary);
 	padding: 2px 4px;
 	justify-content: flex-start;
-	overflow: hidden;
 }
 
 .toolbar button {
@@ -421,18 +420,25 @@ label {
 }
 
 .toolbar a:hover {
-	background-color: var(--tab-hover);
+	background-color: var(--gray20);
 	text-decoration: none !important;
 	transition-property: all;
 	transition-duration: 0.5s;
 	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
 	transition-delay: 0s;
+	border-radius: 2px;
 }
 
 svg {
 	fill: var(--black);
 	stroke: var(--black);
 	stroke-width: 0.1;
+}
+
+th svg {
+	margin-top: 4px;
+	fill: var(--gray10) !important;
+	stroke: var(--gray10) !important;
 }
 
 /* tabs */
