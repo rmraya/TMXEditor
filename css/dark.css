@@ -5,7 +5,7 @@
 }
 
 body {
-	background: var(--gray160);
+	background: var(--gray150);
 	color: var(--gray10);
 	fill: var(--gray10);
 	stroke: var(--gray10);
@@ -80,7 +80,7 @@ table {
 thead {
 	height: 24px;
 	background: var(--themePrimary);
-	border-radius: 2px 2px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
 	color: var(--white);
 }
 
@@ -155,6 +155,7 @@ th {
 .titlePanel {
 	margin: 0;
 	padding: 0;
+	border-radius: 4px 4px 0px 0px;
 	background: var(--themeDark);
 	color: var(--white);
 	fill: var(--white);
@@ -268,6 +269,10 @@ input:focus {
 	border: 1px solid var(--themePrimary);
 }
 
+input:focus+label {
+	color: var(--themePrimary);
+}
+
 input:disabled {
 	background-color: var(--gray90);
 }
@@ -315,6 +320,7 @@ button {
 
 button:focus {
 	outline: none !important;
+	background: var(--themeDarkAlt);
 }
 
 button:hover {
@@ -451,6 +457,7 @@ th svg {
 	background: var(--gray150);
 	margin: 0;
 	padding: 0;
+	border-bottom: 2px solid var(--gray130);
 }
 
 .tab {
@@ -473,10 +480,14 @@ th svg {
 	border-right: 1px solid var(--gray150) !important;
 }
 
+.tabBackground {
+	background: var(--gray130);
+}
+
 .tab:hover {
-	color: var(--gray10);
-	fill: var(--gray10);
-	stroke: var(--gray10);
+	color: var(--themeTertiary);
+	fill: var(--themeTertiary);
+	stroke: var(--themeTertiary);
 }
 
 .selectedTab:hover {
@@ -503,8 +514,8 @@ th svg {
 	display: block;
 }
 
-.hiddenTab {
-	display: none;
+.lighter {
+	background-color: var(--gray150);
 }
 
 .panel {
@@ -579,6 +590,7 @@ th svg {
 
 .bordered {
 	border: 1px solid var(--white) !important;
+	border-radius: 4px;
 }
 
 .error {
@@ -603,15 +615,13 @@ th svg {
 }
 
 .paddedPanel {
-	margin-top: 8px;
-	margin-right: 4px;
-	margin-left: 8px;
-	margin-bottom: 8px;
-	border-radius: 2px;
-	width: calc(100% - 12px);
+	margin: 8px;
+	border-radius: 4px;
+	width: calc(100% - 16px);
 	height: calc(100% - 16px);
 	overflow: auto;
-	box-shadow: 0px 2px 4px var(--black);
+	background: var(--gray160);
+	border: 1px solid var(--black);
 }
 
 .leftPaddedPanel {
@@ -619,11 +629,12 @@ th svg {
 	margin-right: 4px;
 	margin-left: 8px;
 	margin-bottom: 8px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 16px);
 	overflow: auto;
-	box-shadow: 0px 2px 4px var(--black);
+	background: var(--gray160);
+	border: 1px solid var(--black);
 }
 
 .rightPaddedPanel {
@@ -637,10 +648,11 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 4px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
-	box-shadow: 0px 2px 4px var(--black);
+	background: var(--gray160);
+	border: 1px solid var(--black);
 }
 
 .centerPaddedPanel {
@@ -648,10 +660,11 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 4px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 8px);
-	box-shadow: 0px 2px 4px var(--black);
+	background: var(--gray160);
+	border: 1px solid var(--black);
 }
 
 .bottomPaddedPanel {
@@ -659,8 +672,9 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 8px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
-	box-shadow: 0px 2px 4px var(--black);
+	background: var(--gray160);
+	border: 1px solid var(--black);
 }

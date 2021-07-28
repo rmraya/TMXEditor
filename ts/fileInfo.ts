@@ -41,7 +41,6 @@ class FileInfo {
     }
 
     setFileProperties(arg: any): void {
-        document.getElementById('file').innerHTML = arg.file;
         document.getElementById('creationtool').innerHTML = arg.attributes.creationtool;
         document.getElementById('creationtoolversion').innerHTML = arg.attributes.creationtoolversion;
         document.getElementById('segtype').innerHTML = arg.attributes.segtype;
@@ -68,45 +67,45 @@ class FileInfo {
     }
 
     showAttributes(): void {
-        document.getElementById('atributesTab').classList.add('selected');
-        document.getElementById('attributes').classList.remove('hiddenTab');
+        document.getElementById('atributesTab').classList.add('selectedTab');
+        document.getElementById('attributes').classList.remove('hidden');
         document.getElementById('attributes').classList.add('tabContent');
 
-        document.getElementById('propertiesTab').classList.remove('selected');
+        document.getElementById('propertiesTab').classList.remove('selectedTab');
         document.getElementById('properties').classList.remove('tabContent');
-        document.getElementById('properties').classList.add('hiddenTab');
+        document.getElementById('properties').classList.add('hidden');
 
-        document.getElementById('notesTab').classList.remove('selected');
+        document.getElementById('notesTab').classList.remove('selectedTab');
         document.getElementById('notes').classList.remove('tabContent');
-        document.getElementById('notes').classList.add('hiddenTab');
+        document.getElementById('notes').classList.add('hidden');
     }
 
     showProperties(): void {
-        document.getElementById('propertiesTab').classList.add('selected');
-        document.getElementById('properties').classList.remove('hiddenTab');
+        document.getElementById('propertiesTab').classList.add('selectedTab');
+        document.getElementById('properties').classList.remove('hidden');
         document.getElementById('properties').classList.add('tabContent');
 
-        document.getElementById('atributesTab').classList.remove('selected');
+        document.getElementById('atributesTab').classList.remove('selectedTab');
         document.getElementById('attributes').classList.remove('tabContent');
-        document.getElementById('attributes').classList.add('hiddenTab');
+        document.getElementById('attributes').classList.add('hidden');
 
-        document.getElementById('notesTab').classList.remove('selected');
+        document.getElementById('notesTab').classList.remove('selectedTab');
         document.getElementById('notes').classList.remove('tabContent');
-        document.getElementById('notes').classList.add('hiddenTab');
+        document.getElementById('notes').classList.add('hidden');
     }
 
     showNotes(): void {
-        document.getElementById('notesTab').classList.add('selected');
+        document.getElementById('notesTab').classList.add('selectedTab');
         document.getElementById('notes').classList.add('tabContent');
-        document.getElementById('notes').classList.remove('hiddenTab');
+        document.getElementById('notes').classList.remove('hidden');
 
-        document.getElementById('propertiesTab').classList.remove('selected');
+        document.getElementById('propertiesTab').classList.remove('selectedTab');
         document.getElementById('properties').classList.remove('tabContent');
-        document.getElementById('properties').classList.add('hiddenTab');
+        document.getElementById('properties').classList.add('hidden');
 
-        document.getElementById('atributesTab').classList.remove('selected');
+        document.getElementById('atributesTab').classList.remove('selectedTab');
         document.getElementById('attributes').classList.remove('tabContent');
-        document.getElementById('attributes').classList.add('hiddenTab');
+        document.getElementById('attributes').classList.add('hidden');
     }
 }
 

@@ -689,6 +689,50 @@ public class H2Store implements StoreInterface {
 	}
 
 	@Override
+	public void removeSameAsSource(Language language)
+			throws SQLException, SAXException, IOException, ParserConfigurationException {
+		processed = 0l;
+		List<String> selected = new ArrayList<>();
+		String srclang = language.getCode();
+		String query = "SELECT tuid, tu FROM tu";
+		try (ResultSet rs = stmt.executeQuery(query)) {
+			while (rs.next()) {
+				String tuid = rs.getString(1);
+				String tuv = getTuvString(tuid, srclang);
+				if (!tuv.isEmpty()) {
+					Element srcTuv = toElement(tuv);
+					Element src = srcTuv.getChild("seg");
+					Iterator<String> langIt = languages.iterator();
+					int count = 0;
+					while (langIt.hasNext()) {
+						String lang = langIt.next();
+						if (!lang.equals(srclang)) {
+							tuv = getTuvString(tuid, lang);
+							if (!tuv.isEmpty()) {
+								Element tgt = toElement(tuv).getChild("seg");
+								if (src.equals(tgt)) {
+									deleteTuv(tuid, lang);
+								} else {
+									count++;
+								}
+							}
+						}
+					}
+					if (count == 0) {
+						selected.add(tuid);
+					}
+				}
+				processed++;
+			}
+		}
+		Iterator<String> it = selected.iterator();
+		while (it.hasNext()) {
+			delete(it.next());
+		}
+		selected.clear();
+	}
+
+	@Override
 	public void addLanguage(Language language) throws IOException, SQLException {
 		String lang = language.getCode();
 		if (!languages.contains(lang)) {

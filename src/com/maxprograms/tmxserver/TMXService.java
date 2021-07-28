@@ -621,6 +621,34 @@ public class TMXService {
 		return result;
 	}
 
+	public JSONObject removeSameAsSource(Language lang) {
+		JSONObject result = new JSONObject();
+		processing = true;
+		processingError = "";
+		try {
+			new Thread() {
+
+				@Override
+				public void run() {
+					try {
+						store.removeSameAsSource(lang);
+					} catch (Exception e) {
+						logger.log(Level.SEVERE, e.getMessage(), e);
+						processingError = e.getMessage();
+					}
+					processing = false;
+				}
+			}.start();
+			result.put(Constants.STATUS, Constants.SUCCESS);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			processing = false;
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+		}
+		return result;
+	}
+
 	public JSONObject addLanguage(Language lang) {
 		JSONObject result = new JSONObject();
 		try {

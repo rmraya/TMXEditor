@@ -68,6 +68,8 @@ public interface StoreInterface {
 
 	long removeUntranslated(Language lang) throws IOException, SQLException;
 
+	void removeSameAsSource(Language lang) throws IOException, SQLException, SAXException, ParserConfigurationException;
+
 	void addLanguage(Language lang) throws IOException, SQLException;
 
 	void removeLanguage(Language lang) throws IOException, SQLException;

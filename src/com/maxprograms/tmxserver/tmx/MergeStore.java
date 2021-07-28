@@ -136,6 +136,11 @@ public class MergeStore implements StoreInterface {
 	}
 
 	@Override
+	public void removeSameAsSource(Language lang) {
+		// do nothing
+	}
+
+	@Override
 	public void addLanguage(Language lang) {
 		// do nothing
 	}

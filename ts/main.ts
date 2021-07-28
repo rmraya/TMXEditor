@@ -318,6 +318,7 @@ class Main {
 
     createCenterPanel(): void {
         this.mainPanel = document.getElementById('mainPanel') as HTMLDivElement;
+        this.mainPanel.classList.add('lighter');
 
         let split: VerticalSplit = new VerticalSplit(this.mainPanel);
         split.setWeights([80, 20]);
@@ -983,7 +984,6 @@ class Main {
         }
         var x: string = element.tagName;
         var id: string;
-        var lang: string;
         if ('TD' === x || 'INPUT' === x) {
             var composed = event.composedPath();
             if ('TR' === (composed[0] as Element).tagName) {
@@ -993,7 +993,6 @@ class Main {
             } else if ('TR' === (composed[2] as Element).tagName) {
                 id = (composed[2] as Element).id;
             }
-            lang = (event.target as Element).getAttribute('lang');
         }
         if (id) {
             this.currentId = id;

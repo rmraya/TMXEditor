@@ -411,6 +411,46 @@ public class SimpleStore implements StoreInterface {
 	}
 
 	@Override
+	public void removeSameAsSource(Language language) throws IOException {
+		processed = 0l;
+		List<String> selected = new ArrayList<>();
+		String srclang = language.getCode();
+		Iterator<String> ut = order.iterator();
+		while (ut.hasNext()) {
+			String tuid = ut.next();
+			Element srcTuv = maps.get(srclang).get(tuid);
+			if (srcTuv != null) {
+				Element src = srcTuv.getChild("seg");
+				Iterator<String> langIt = languages.iterator();
+				int count = 0;
+				while (langIt.hasNext()) {
+					String lang = langIt.next();
+					if (!lang.equals(srclang)) {
+						Element tuv = maps.get(lang).get(tuid);
+						if (tuv != null) {
+							Element tgt = tuv.getChild("seg");
+							if (src.equals(tgt)) {
+								maps.get(lang).remove(tuid);
+							} else {
+								count++;
+							}
+						}
+					}
+				}
+				if (count == 0) {
+					selected.add(tuid);
+				}
+			}
+			processed++;
+		}
+		Iterator<String> it = selected.iterator();
+		while (it.hasNext()) {
+			delete(it.next());
+		}
+		selected.clear();
+	}
+
+	@Override
 	public void addLanguage(Language language) {
 		String lang = language.getCode();
 		if (!languages.contains(lang)) {

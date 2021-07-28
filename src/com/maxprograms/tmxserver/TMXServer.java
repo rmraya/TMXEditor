@@ -171,6 +171,9 @@ public class TMXServer implements HttpHandler {
 				case "removeUntranslated":
 					response = removeUntranslated(json.getString("srcLang"));
 					break;
+				case "removeSameAsSource":
+					response = removeSameAsSource(json.getString("srcLang"));
+					break;
 				case "replaceText":
 					response = replaceText(json);
 					break;
@@ -555,6 +558,19 @@ public class TMXServer implements HttpHandler {
 		try {
 			Language lang = service.getLanguage(srcLang);
 			return service.removeUntranslated(lang).toString();
+		} catch (IOException e) {
+			logger.log(Level.ERROR, e);
+			JSONObject result = new JSONObject();
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, e.getMessage());
+			return result.toString();
+		}
+	}
+
+	private String removeSameAsSource(String srcLang) {
+		try {
+			Language lang = service.getLanguage(srcLang);
+			return service.removeSameAsSource(lang).toString();
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();

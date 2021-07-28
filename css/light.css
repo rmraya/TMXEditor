@@ -80,7 +80,7 @@ table {
 thead {
 	height: 24px;
 	background: var(--themePrimary);
-	border-radius: 2px 2px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
 	color: var(--white);
 }
 
@@ -114,7 +114,7 @@ td.editing {
 td.fixed {
 	text-align: center;
 	vertical-align: middle;
-	background-color: var(--gray10) !important;
+	background-color: var(--white) !important;
 	cursor: default !important;
 }
 
@@ -155,6 +155,7 @@ th {
 .titlePanel {
 	margin: 0;
 	padding: 0;
+	border-radius: 4px 4px 0px 0px;
 	background: var(--themeDark);
 	color: var(--white);
 	fill: var(--white);
@@ -267,6 +268,10 @@ input:focus {
 	border: 1px solid var(--themePrimary);
 }
 
+input:focus+label {
+	color: var(--themePrimary);
+}
+
 input:disabled {
 	background-color: var(--gray90);
 }
@@ -314,6 +319,7 @@ button {
 
 button:focus {
 	outline: none !important;
+	background: var(--themeDarkAlt);
 }
 
 button:hover {
@@ -450,6 +456,7 @@ th svg {
 	background: var(--gray30);
 	margin: 0;
 	padding: 0;
+	border-bottom: 2px solid var(--gray50);
 }
 
 .tab {
@@ -472,10 +479,14 @@ th svg {
 	border-right: 1px solid var(--gray60) !important;
 }
 
+.tabBackground {
+	background: var(--gray50);
+}
+
 .tab:hover {
-	color: var(--black);
-	fill: var(--black);
-	stroke: var(--black);
+	color: var(--themePrimary);
+	fill: var(--themePrimary);
+	stroke: var(--themePrimary);
 }
 
 .selectedTab:hover {
@@ -502,8 +513,8 @@ th svg {
 	display: block;
 }
 
-.hiddenTab {
-	display: none;
+.lighter {
+	background-color: var(--gray10);
 }
 
 .panel {
@@ -578,6 +589,7 @@ th svg {
 
 .bordered {
 	border: 1px solid var(--black) !important;
+	border-radius: 4px;
 }
 
 .error {
@@ -602,15 +614,13 @@ th svg {
 }
 
 .paddedPanel {
-	margin-top: 8px;
-	margin-right: 8px;
-	margin-left: 8px;
-	margin-bottom: 8px;
-	border-radius: 2px;
-	width: calc(100% - 12px);
+	margin: 8px;
+	border-radius: 4px;
+	width: calc(100% - 16px);
 	height: calc(100% - 16px);
 	overflow: auto;
-	box-shadow: 0px 2px 4px var(--gray130);
+	background: var(--gray30);
+	border: 1px solid var(--gray130);
 }
 
 .leftPaddedPanel {
@@ -618,11 +628,12 @@ th svg {
 	margin-right: 4px;
 	margin-left: 8px;
 	margin-bottom: 8px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 16px);
 	overflow: auto;
-	box-shadow: 0px 2px 4px var(--gray130);
+	background: var(--gray30);
+	border: 1px solid var(--gray130);
 }
 
 .rightPaddedPanel {
@@ -636,10 +647,11 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 4px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
-	box-shadow: 0px 2px 4px var(--gray130);
+	background: var(--gray30);
+	border: 1px solid var(--gray130);
 }
 
 .centerPaddedPanel {
@@ -647,10 +659,11 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 4px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 8px);
-	box-shadow: 0px 2px 4px var(--gray130);
+	background: var(--gray30);
+	border: 1px solid var(--gray130);
 }
 
 .bottomPaddedPanel {
@@ -658,8 +671,9 @@ th svg {
 	margin-right: 8px;
 	margin-left: 4px;
 	margin-bottom: 8px;
-	border-radius: 2px;
+	border-radius: 4px;
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
-	box-shadow: 0px 2px 4px var(--gray130);
+	background: var(--gray30);
+	border: 1px solid var(--gray130);
 }

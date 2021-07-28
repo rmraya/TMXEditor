@@ -10,11 +10,10 @@
  *     Maxprograms - initial API and implementation
  *******************************************************************************/
 
-import { Buffer } from "buffer";
-import { execFileSync, spawn, ChildProcessWithoutNullStreams } from "child_process";
-import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem, shell, Rectangle, nativeTheme, IpcMainEvent, OpenDialogReturnValue, SaveDialogReturnValue } from "electron";
+import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_process";
+import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, Menu, MenuItem, nativeTheme, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, shell } from "electron";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
-import { ClientRequest, request, IncomingMessage } from "http";
+import fetch from "node-fetch";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -27,7 +26,6 @@ const PROCESSING: string = 'Processing';
 class App {
 
     static path = require('path');
-    static https = require('https');
 
     static mainWindow: BrowserWindow;
     static newFileWindow: BrowserWindow;
@@ -53,6 +51,7 @@ class App {
     static removeLanguageWindow: BrowserWindow;
     static srcLanguageWindow: BrowserWindow;
     static removeUntranslatedWindow: BrowserWindow;
+    static removeSameAsSourceWindow: BrowserWindow;
     static consolidateWindow: BrowserWindow;
     static updatesWindow: BrowserWindow;
     static maintenanceWindow: BrowserWindow;
@@ -158,41 +157,17 @@ class App {
             console.error(`stderr: ${data}`);
         });
 
-        App.ls.on('close', (code) => {
+        App.ls.on('close', (code: number) => {
             if (code === 0) {
-                var postData: string = JSON.stringify({ command: 'stop' });
-                var options = {
-                    hostname: '127.0.0.1',
-                    port: 8060,
-                    path: '/TMXServer',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Content-Length': Buffer.byteLength(postData)
-                    }
-                };
-                // Make a request
-                var req: ClientRequest = request(options);
-                req.on('response',
-                    (res: any) => {
-                        res.setEncoding('utf-8');
-                        if (res.statusCode !== 200) {
-                            console.log('sendRequest() error: ' + res.statusMessage);
-                        }
-                        var rawData: string = '';
-                        res.on('data', (chunk: string) => {
-                            rawData += chunk;
-                        });
-                        res.on('end', () => {
-                            try {
-                                console.log(rawData);
-                            } catch (e) {
-                                console.log(e.message);
-                            }
-                        });
+                App.sendRequest({ command: 'stop' },
+                    () => {
+                        console.log('Restarting server');
+                        App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
+                    },
+                    (reason: string) => {
+                        console.log('Error restarting server: ' + reason);
                     }
                 );
-                req.write(postData);
-                req.end();
             }
         });
 
@@ -468,6 +443,9 @@ class App {
         ipcMain.on('remove-untranslated', (event: IpcMainEvent, arg: any) => {
             this.removeUntranslated(arg);
         });
+        ipcMain.on('remove-sameAsSource', (event: IpcMainEvent, arg: any) => {
+            this.removeSameAsSource(arg);
+        });
         ipcMain.on('consolidate-units', (event: IpcMainEvent, arg: any) => {
             this.consolidateUnits(arg);
         });
@@ -620,6 +598,12 @@ class App {
         });
         ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.removeUntranslatedWindow, arg);
+        });
+        ipcMain.on('removeSameAsSource-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.removeSameAsSourceWindow, arg);
+        });
+        ipcMain.on('close-removeSameAsSource', () => {
+            App.destroyWindow(App.removeSameAsSourceWindow);
         });
         ipcMain.on('close-removeUntranslated', () => {
             App.destroyWindow(App.removeUntranslatedWindow);
@@ -856,6 +840,7 @@ class App {
             { label: 'Remove All Tags', click: () => { App.removeTags(); } },
             { label: 'Remove Duplicates', click: () => { App.removeDuplicates(); } },
             { label: 'Remove Untranslated...', click: () => { App.showRemoveUntranslated(); } },
+            { label: 'Remove Translation Same as Source...', click: () => { App.showRemoveSameAsSource(); } },
             { label: 'Remove Initial/Trailing Spaces', click: () => { App.removeSpaces(); } },
             { label: 'Consolidate Units...', click: () => { App.showConsolidateUnits(); } }
         ]);
@@ -997,49 +982,20 @@ class App {
         });
     }
 
-    static sendRequest(json: any, success: any, error: any): void {
-        var postData: string = JSON.stringify(json);
-        var options = {
-            hostname: '127.0.0.1',
-            port: 8060,
-            path: '/TMXServer',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(postData)
-            }
-        };
-        // Make a request
-        var req: ClientRequest = request(options);
-        req.on('response',
-            (res: any) => {
-                res.setEncoding('utf-8');
-                if (res.statusCode !== 200) {
-                    error('sendRequest() error: ' + res.statusMessage);
-                }
-                var rawData: string = '';
-                res.on('data', (chunk: string) => {
-                    rawData += chunk;
-                });
-                res.on('end', () => {
-                    try {
-                        success(JSON.parse(rawData));
-                    } catch (e) {
-                        error(e.message);
-                    }
-                });
-            }
-        );
-        req.write(postData, (err: Error) => {
-            if (err) {
-                console.log('Write error:  ' + err.message);
-            }
+    static sendRequest(params: any, success: Function, error: Function): void {
+        fetch('http://127.0.0.1:8060/TMXServer', {
+            method: 'POST',
+            headers: [
+                ['Content-Type', 'application/json'],
+                ['Accept', 'application/json']
+            ],
+            body: JSON.stringify(params)
+        }).then(async (response) => {
+            let json: any = await response.json();
+            success(json);
+        }).catch((reason: any) => {
+            error(JSON.stringify(reason));
         });
-        req.on('error', (err: Error) => {
-            error(err.message);
-            console.log('Error:  ' + err.message);
-            console.log('Params: ' + JSON.stringify(json));
-        });
-        req.end();
     }
 
     static showLicenses(arg: any): void {
@@ -3154,6 +3110,32 @@ class App {
         });
     }
 
+    static showRemoveSameAsSource(): void {
+        if (App.currentFile === '') {
+            App.showMessage({ type: 'warning', message: 'Open a TMX file' });
+            return;
+        }
+        App.removeSameAsSourceWindow = new BrowserWindow({
+            parent: App.mainWindow,
+            width: 470,
+            useContentSize: true,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        App.removeSameAsSourceWindow.setMenu(null);
+        App.removeSameAsSourceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeSameAsSource.html'));
+        App.removeSameAsSourceWindow.once('ready-to-show', () => {
+            App.removeSameAsSourceWindow.show();
+        });
+    }
+
     removeUntranslated(arg: any): void {
         App.destroyWindow(App.removeUntranslatedWindow);
         App.mainWindow.webContents.send('start-waiting');
@@ -3187,6 +3169,51 @@ class App {
                         App.mainWindow.webContents.send('set-status', '');
                         clearInterval(intervalObject);
                         dialog.showErrorBox('Error', 'Unknown error removing untranslated units');
+                        return;
+                    }
+                    App.getProcessingProgress();
+                }, 500);
+            },
+            (reason: string) => {
+                App.mainWindow.webContents.send('end-waiting');
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
+    removeSameAsSource(arg: any): void {
+        App.destroyWindow(App.removeSameAsSourceWindow);
+        App.mainWindow.webContents.send('start-waiting');
+        arg.command = 'removeSameAsSource';
+        App.sendRequest(arg,
+            (data: any) => {
+                App.currentStatus = data;
+                App.mainWindow.webContents.send('set-status', 'Removing entries...');
+                var intervalObject = setInterval(() => {
+                    if (App.currentStatus.status === COMPLETED) {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        App.loadSegments();
+                        App.getCount();
+                        App.saved = false;
+                        App.mainWindow.setDocumentEdited(true);
+                        return;
+                    } else if (App.currentStatus.status === PROCESSING) {
+                        // it's OK, keep waiting
+                    } else if (App.currentStatus.status === ERROR) {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
+                        return;
+                    } else if (App.currentStatus.status === SUCCESS) {
+                        // ignore status from 'removeSameAsSource'
+                    } else {
+                        App.mainWindow.webContents.send('end-waiting');
+                        App.mainWindow.webContents.send('set-status', '');
+                        clearInterval(intervalObject);
+                        dialog.showErrorBox('Error', 'Unknown error removing entries with translation same as source');
                         return;
                     }
                     App.getProcessingProgress();
@@ -3409,72 +3436,60 @@ class App {
     }
 
     static checkUpdates(silent: boolean): void {
-        this.https.get('https://maxprograms.com/tmxeditor.json', (res: IncomingMessage) => {
-            if (res.statusCode === 200) {
-                let rawData = '';
-                res.on('data', (chunk: string) => {
-                    rawData += chunk;
-                });
-                res.on('end', () => {
-                    try {
-                        const parsedData = JSON.parse(rawData);
-                        if (app.getVersion() !== parsedData.version) {
-                            App.latestVersion = parsedData.version;
-                            switch (process.platform) {
-                                case 'darwin':
-                                    App.downloadLink = process.arch === 'arm64' ? parsedData.arm64 : parsedData.darwin;
-                                    break;
-                                case 'win32':
-                                    App.downloadLink = parsedData.win32;
-                                    break;
-                                case 'linux':
-                                    App.downloadLink = parsedData.linux;
-                                    break;
-                            }
-                            App.updatesWindow = new BrowserWindow({
-                                parent: this.mainWindow,
-                                width: 600,
-                                useContentSize: true,
-                                minimizable: false,
-                                maximizable: false,
-                                resizable: false,
-                                show: false,
-                                icon: App.iconPath,
-                                webPreferences: {
-                                    nodeIntegration: true,
-                                    contextIsolation: false
-                                }
-                            });
-                            App.updatesWindow.setMenu(null);
-                            App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
-                            App.updatesWindow.once('ready-to-show', () => {
-                                App.updatesWindow.show();
-                            });
-                        } else {
-                            if (!silent) {
-                                App.showMessage({
-                                    type: 'info',
-                                    message: 'There are currently no updates available'
-                                });
-                            }
-                        }
-                    } catch (e: any) {
-                        console.log(e);
-                        App.showMessage({ type: 'error', message: e.message });
+        fetch('https://maxprograms.com/tmxeditor.json', {
+            method: 'GET'
+        }).then(async (response) => {
+            let parsedData: any = await response.json();
+            if (app.getVersion() !== parsedData.version) {
+                App.latestVersion = parsedData.version;
+                switch (process.platform) {
+                    case 'darwin':
+                        App.downloadLink = process.arch === 'arm64' ? parsedData.arm64 : parsedData.darwin;
+                        break;
+                    case 'win32':
+                        App.downloadLink = parsedData.win32;
+                        break;
+                    case 'linux':
+                        App.downloadLink = parsedData.linux;
+                        break;
+                }
+                App.updatesWindow = new BrowserWindow({
+                    parent: this.mainWindow,
+                    width: 600,
+                    useContentSize: true,
+                    minimizable: false,
+                    maximizable: false,
+                    resizable: false,
+                    show: false,
+                    icon: this.iconPath,
+                    webPreferences: {
+                        nodeIntegration: true,
+                        contextIsolation: false
                     }
+                });
+                App.updatesWindow.setMenu(null);
+                App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
+                App.updatesWindow.once('ready-to-show', () => {
+                    App.updatesWindow.show();
                 });
             } else {
                 if (!silent) {
-                    App.showMessage({ type: 'error', message: 'Updates Request Failed.\nStatus code: ' + res.statusCode });
+                    App.showMessage({
+                        type: 'info',
+                        message: 'There are currently no updates available'
+                    });
                 }
             }
-        }).on('error', (e: any) => {
+        }).catch((reason: any) => {
             if (!silent) {
-                App.showMessage({ type: 'error', message: e.message });
+                App.showMessage({
+                    type: 'error',
+                    message: reason.message
+                });
             }
         });
     }
 
-}
+}    
 
 new App(process.argv);
