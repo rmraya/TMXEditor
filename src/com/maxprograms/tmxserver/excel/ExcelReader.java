@@ -37,6 +37,7 @@ import org.xml.sax.SAXException;
 
 public class ExcelReader {
 
+    private static String SEP = System.getProperty("file.separator");
     private SAXBuilder builder;
     private List<String> strings;
     private List<Sheet> sheets;
@@ -58,7 +59,7 @@ public class ExcelReader {
         try (ZipInputStream in = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry entry = null;
             while ((entry = in.getNextEntry()) != null) {
-                File tmp = new File(folder, entry.getName());
+                File tmp = new File(folder, getFileName(entry));
                 if (!tmp.getParentFile().exists()) {
                     Files.createDirectories(tmp.getParentFile().toPath());
                 }
@@ -90,8 +91,19 @@ public class ExcelReader {
         return sheets;
     }
 
+    private String getFileName(ZipEntry entry) {
+        String name = entry.getName();
+        if ("/".equals(SEP) && name.indexOf("\\") != -1) {
+            return name.replace('\\', '/');
+        }
+        if ("\\".equals(SEP) && name.indexOf("/") != -1) {
+            return name.replace('/', '\\');
+        }
+        return name;
+    }
+
     private String getWorkBook(File folder) throws SAXException, IOException, ParserConfigurationException {
-        File relsFile = new File(folder, "/_rels/.rels");
+        File relsFile = new File(folder, "_rels" + SEP + ".rels");
         Document doc = builder.build(relsFile);
         Element root = doc.getRootElement();
         List<Element> relationships = root.getChildren("Relationship");
@@ -109,7 +121,7 @@ public class ExcelReader {
     private String getSharedStrings(String workbookFile)
             throws SAXException, IOException, ParserConfigurationException {
         File workbook = new File(workbookFile);
-        Document doc = builder.build(new File(workbook.getParentFile(), "_rels/workbook.xml.rels"));
+        Document doc = builder.build(new File(workbook.getParentFile(), "_rels" + SEP + "workbook.xml.rels"));
         Element root = doc.getRootElement();
         List<Element> relationships = root.getChildren("Relationship");
         Iterator<Element> it = relationships.iterator();
@@ -128,7 +140,7 @@ public class ExcelReader {
         List<String[]> result = new ArrayList<>();
         File workbook = new File(workbookFile);
         Map<String, String> map = new HashMap<>();
-        Document doc = builder.build(new File(workbook.getParentFile(), "_rels/workbook.xml.rels"));
+        Document doc = builder.build(new File(workbook.getParentFile(), "_rels" + SEP + "workbook.xml.rels"));
         Element root = doc.getRootElement();
         List<Element> relationships = root.getChildren("Relationship");
         Iterator<Element> it = relationships.iterator();
@@ -192,7 +204,7 @@ public class ExcelReader {
             throws SAXException, IOException, ParserConfigurationException {
         List<Map<String, String>> data = new ArrayList<>();
         Set<String> cols = new TreeSet<>();
-        Document doc = builder.build(new File(folder, "xl/" + location));
+        Document doc = builder.build(new File(folder, "xl" + SEP + location));
         Element root = doc.getRootElement();
         Element sheetData = root.getChild("sheetData");
         List<Element> rows = sheetData.getChildren("row");

@@ -124,8 +124,6 @@ class App {
             }
         }
 
-        app.allowRendererProcessReuse = true;
-
         if (!app.requestSingleInstanceLock()) {
             app.quit();
         } else {
@@ -140,7 +138,6 @@ class App {
 
         if (process.platform == 'win32') {
             App.javapath = App.path.join(app.getAppPath(), 'bin', 'java.exe');
-            App.verticalPadding = 56;
         }
 
         if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
@@ -744,7 +741,6 @@ class App {
         App.messagesWindow = new BrowserWindow({
             parent: parent,
             width: 600,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -753,7 +749,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.messageParam = arg;
@@ -772,10 +769,10 @@ class App {
             height: App.currentDefaults.height,
             x: App.currentDefaults.x,
             y: App.currentDefaults.y,
-            useContentSize: true,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             },
             show: false,
             icon: App.iconPath
@@ -967,12 +964,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.aboutWindow.setMenu(null);
@@ -1006,7 +1003,6 @@ class App {
         App.licensesWindow = new BrowserWindow({
             parent: parent,
             width: 450,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1014,7 +1010,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.licensesWindow.setMenu(null);
@@ -1076,7 +1073,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         licenseWindow.setMenu(null);
@@ -1378,16 +1376,16 @@ class App {
     editAttributes(arg: any): void {
         App.attributesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 630,
+            width: 670,
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.attributesArg = arg;
@@ -1432,12 +1430,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.propertiesArg = arg;
@@ -1457,12 +1455,12 @@ class App {
             maximizable: false,
             resizable: false,
             modal: true,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.addPropertyWindow.setMenu(null);
@@ -1511,12 +1509,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.notesArg = arg;
@@ -1536,12 +1534,12 @@ class App {
             maximizable: false,
             resizable: false,
             modal: true,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.addNotesWindow.setMenu(null);
@@ -1587,7 +1585,6 @@ class App {
         App.settingsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 450,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1595,7 +1592,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.settingsWindow.setMenu(null);
@@ -1613,7 +1611,6 @@ class App {
         App.newFileWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 480,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1621,7 +1618,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.newFileWindow.setMenu(null);
@@ -1749,12 +1747,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.convertCsvWindow.setMenu(null);
@@ -1771,12 +1769,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.convertExcelWindow.setMenu(null);
@@ -1943,12 +1941,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.csvLanguagesWindow.setMenu(null);
@@ -1973,12 +1971,12 @@ class App {
             minimizable: false,
             maximizable: false,
             resizable: false,
-            useContentSize: true,
             show: false,
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.excelLanguagesWindow.setMenu(null);
@@ -2125,7 +2123,6 @@ class App {
         App.fileInfoWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 550,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2133,7 +2130,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.fileInfoWindow.setMenu(null);
@@ -2284,7 +2282,6 @@ class App {
         App.splitFileWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 504,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2292,7 +2289,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.splitFileWindow.setMenu(null);
@@ -2374,7 +2372,6 @@ class App {
         App.mergeFilesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 560,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2382,7 +2379,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.mergeFilesWindow.setMenu(null);
@@ -2519,7 +2517,6 @@ class App {
         App.replaceTextWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 450,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2527,7 +2524,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.replaceTextWindow.setMenu(null);
@@ -2601,7 +2599,6 @@ class App {
         App.sortUnitsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 450,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2609,7 +2606,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.sortUnitsWindow.setMenu(null);
@@ -2641,7 +2639,6 @@ class App {
         App.filtersWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 520,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2649,7 +2646,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.filtersWindow.setMenu(null);
@@ -2757,7 +2755,6 @@ class App {
         App.changeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 490,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2765,7 +2762,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.changeLanguageWindow.setMenu(null);
@@ -2841,7 +2839,6 @@ class App {
         App.removeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2849,7 +2846,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.removeLanguageWindow.setMenu(null);
@@ -2886,7 +2884,6 @@ class App {
         App.addLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2894,7 +2891,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.addLanguageWindow.setMenu(null);
@@ -2931,7 +2929,6 @@ class App {
         App.srcLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2939,7 +2936,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.srcLanguageWindow.setMenu(null);
@@ -3092,7 +3090,6 @@ class App {
         App.removeUntranslatedWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3100,7 +3097,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.removeUntranslatedWindow.setMenu(null);
@@ -3118,7 +3116,6 @@ class App {
         App.removeSameAsSourceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3126,7 +3123,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.removeSameAsSourceWindow.setMenu(null);
@@ -3284,7 +3282,6 @@ class App {
         App.consolidateWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3292,7 +3289,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.consolidateWindow.setMenu(null);
@@ -3355,7 +3353,6 @@ class App {
         App.maintenanceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            useContentSize: true,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3363,7 +3360,8 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                nativeWindowOpen: true
             }
         });
         App.maintenanceWindow.setMenu(null);
@@ -3456,7 +3454,6 @@ class App {
                 App.updatesWindow = new BrowserWindow({
                     parent: this.mainWindow,
                     width: 600,
-                    useContentSize: true,
                     minimizable: false,
                     maximizable: false,
                     resizable: false,
@@ -3464,7 +3461,8 @@ class App {
                     icon: this.iconPath,
                     webPreferences: {
                         nodeIntegration: true,
-                        contextIsolation: false
+                        contextIsolation: false,
+                        nativeWindowOpen: true
                     }
                 });
                 App.updatesWindow.setMenu(null);
@@ -3490,6 +3488,6 @@ class App {
         });
     }
 
-}    
+}
 
 new App(process.argv);

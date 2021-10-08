@@ -15,6 +15,7 @@ package com.maxprograms.tmxserver.tmx;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import com.maxprograms.xml.Catalog;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.IContentHandler;
@@ -164,6 +165,11 @@ class TMXContentHandler implements IContentHandler {
 	@Override
 	public Document getDocument() {
 		return null;
+	}
+
+	@Override
+	public void setCatalog(Catalog arg0) {
+		// do nothing		
 	}
 
 }

@@ -2,6 +2,7 @@
 @import "./neutrals.css";
 :root {
 	--error-color: #960303;
+	font-size: 16px;
 }
 
 body {
@@ -250,17 +251,18 @@ input {
 	background-color: var(--gray20);
 	color: var(--gray190);
 	border: 1px solid var(--gray190);
-	margin-top: 3px;
-	height: 1.4rem;
-	font-size: 1rem;
+	height: 22px;
+	font-size: 14px;
+	padding: 2px 4px;
+	border-radius: 2px;
 }
 
 .table_input {
-	width: calc(100% - 10px);
+	width: calc(100% - 14px);
 }
 
 .table_select {
-	width: calc(100% - 5px);
+	width: calc(100% - 4px);
 }
 
 input:focus {
@@ -277,19 +279,17 @@ input:disabled {
 }
 
 input[type=number] {
-	font-size: 0.8em;
-	width: 40px;
-	margin: 0;
-	padding: 0;
-	padding-left: 2px;
+	font-size: 14px;
+	padding: 2px 4px;
 }
 
 select {
 	background-color: var(--gray20);
 	color: var(--gray190);
 	border: 1px solid var(--gray190);
-	font-size: 1em;
-	height: 1.6em;
+	font-size: 14px;
+	height: 28px;
+	padding: 2px 4px;
 	border-radius: 2px;
 }
 
@@ -299,7 +299,7 @@ select:focus {
 }
 
 option {
-	font-size: 1em;
+	font-size: 14px;
 	background-color: var(--gray20);
 	color: var(--gray190);
 }
@@ -309,11 +309,11 @@ button {
 	background: var(--themePrimary);
 	border: 1px solid var(--themePrimary);
 	border-radius: 2px;
-	font-size: 1em;
+	font-size: 14px;
 	text-align: center;
-	margin: 3px;
-	padding-left: 4px;
-	padding-right: 4px;
+	margin: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
 	white-space: nowrap;
 }
 
@@ -369,9 +369,7 @@ label {
 .buttonArea {
 	display: flex;
 	flex-direction: row;
-	padding: 10px;
-	padding-left: 16px;
-	padding-right: 16px;
+	padding: 8px 16px;
 	justify-content: flex-end;
 }
 
@@ -386,6 +384,7 @@ label {
 	stroke: var(--themePrimary);
 	padding: 2px 4px;
 	justify-content: flex-start;
+	vertical-align: middle;
 }
 
 .toolbar button {
@@ -397,7 +396,7 @@ label {
 	fill: inherit;
 	stroke: inherit;
 	text-align: left;
-	font-size: 0.8em;
+	font-size: 12px;
 	vertical-align: middle;
 	box-shadow: none;
 }
@@ -433,6 +432,10 @@ label {
 	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
 	transition-delay: 0s;
 	border-radius: 2px;
+}
+
+.toolbar input {
+	height: 18px !important;
 }
 
 svg {
@@ -540,6 +543,8 @@ th svg {
 .tooltip {
 	position: relative;
 	display: inline-block;
+	margin: 0px;
+	padding: 0px;
 }
 
 .tooltip .tooltiptext {
@@ -620,7 +625,6 @@ th svg {
 	height: calc(100% - 16px);
 	overflow: auto;
 	background: var(--gray30);
-	border: 1px solid var(--gray130);
 }
 
 .leftPaddedPanel {
@@ -633,7 +637,6 @@ th svg {
 	height: calc(100% - 16px);
 	overflow: auto;
 	background: var(--gray30);
-	border: 1px solid var(--gray130);
 }
 
 .rightPaddedPanel {
@@ -651,7 +654,6 @@ th svg {
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
 	background: var(--gray30);
-	border: 1px solid var(--gray130);
 }
 
 .centerPaddedPanel {
@@ -663,7 +665,6 @@ th svg {
 	width: calc(100% - 12px);
 	height: calc(100% - 8px);
 	background: var(--gray30);
-	border: 1px solid var(--gray130);
 }
 
 .bottomPaddedPanel {
@@ -675,5 +676,25 @@ th svg {
 	width: calc(100% - 12px);
 	height: calc(100% - 12px);
 	background: var(--gray30);
-	border: 1px solid var(--gray130);
+}
+
+::-webkit-scrollbar {
+	mix-blend-mode: lighten;
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+	min-height: 30px !important;
+	background-color: var(--gray90);
+	border-radius: 6px;
+}
+
+::-webkit-scrollbar-corner {
+	background-color: inherit;
+	border-radius: inherit;
+}
+
+::-webkit-scrollbar-button {
+	border-radius: inherit;
 }

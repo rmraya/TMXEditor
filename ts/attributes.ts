@@ -40,8 +40,6 @@ class Attributes {
                 this.electron.ipcRenderer.send('close-attributes');
             }
         });
-        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-        this.electron.ipcRenderer.send('attributes-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     setUnitAttributes(arg: any): void {
@@ -65,10 +63,10 @@ class Attributes {
         }
 
         if (this.currentType !== 'TU') {
-            (document.getElementById('tuid') as HTMLInputElement).disabled = true;
-            (document.getElementById('segtype') as HTMLSelectElement).disabled = true;
-            (document.getElementById('srclang') as HTMLSelectElement).disabled = true;
+            (document.getElementById('topRow') as HTMLTableRowElement).style.display = 'none';
         }
+        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
+        this.electron.ipcRenderer.send('attributes-height', { width: body.clientWidth, height: body.clientHeight });
     }
 
     filterLanguages(arg: any): void {

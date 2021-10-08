@@ -21,11 +21,11 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
+import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
 
@@ -42,8 +43,8 @@ import org.xml.sax.SAXException;
 
 public class ExcelWriter {
 
+    private static String SEP = System.getProperty("file.separator");
     private Map<Integer, String> columnIndex;
-
     private SAXBuilder builder;
 
     public ExcelWriter() {
@@ -79,7 +80,7 @@ public class ExcelWriter {
     }
 
     private void setSheetName(File folder, String name) throws SAXException, IOException, ParserConfigurationException {
-        File workbook = new File(folder, "xl/workbook.xml");
+        File workbook = new File(folder, "xl" + SEP + "workbook.xml");
         Document doc = builder.build(workbook);
         Element root = doc.getRootElement();
         Element sheets = root.getChild("sheets");
@@ -87,22 +88,24 @@ public class ExcelWriter {
         sheet.setAttribute("name", name);
         try (FileOutputStream out = new FileOutputStream(workbook)) {
             XMLOutputter outputter = new XMLOutputter();
+            outputter.preserveSpace(true);
+            Indenter.indent(root, 2);
             outputter.output(doc, out);
         }
     }
 
     private void setStrings(File folder, Sheet sheet) throws SAXException, IOException, ParserConfigurationException {
-        File sharedStrings = new File(folder, "xl/sharedStrings.xml");
+        File sharedStrings = new File(folder, "xl" + SEP + "sharedStrings.xml");
         Document stringsDoc = builder.build(sharedStrings);
         Element sst = stringsDoc.getRootElement();
         sst.setContent(new ArrayList<>());
 
-        File sheetXml = new File(folder, "xl/worksheets/sheet1.xml");
+        File sheetXml = new File(folder, "xl" + SEP + "worksheets" + SEP + "sheet1.xml");
         Document sheetDoc = builder.build(sheetXml);
         Element sheetData = sheetDoc.getRootElement().getChild("sheetData");
         sheetData.setContent(new ArrayList<>());
 
-        Set<String> unique = new TreeSet<>();
+        Map<String, Integer> unique = new HashMap<>();
         Set<String> cols = sheet.getColumns();
         int rowsCount = sheet.rowsCount();
         int stringCount = 0;
@@ -119,24 +122,25 @@ public class ExcelWriter {
                 String column = it.next();
                 String cell = map.get(column);
                 if (cell != null && !cell.isEmpty()) {
+                    if (!unique.containsKey(cell)) {
+                        Element si = new Element("si");
+                        Element t = new Element("t");
+                        t.addContent(TextUtils.cleanString(cell));
+                        if (cell.indexOf("\n") != -1) {
+                            t.setAttribute("xml:space", "preserve");
+                        }
+                        si.addContent(t);
+                        sst.addContent(si);
+                        unique.put(cell, unique.size());
+                    }
+
                     Element c = new Element("c");
                     c.setAttribute("r", columnIndex.get(colCount) + (i + 1));
-                    Element si = new Element("si");
-                    Element t = new Element("t");
-                    t.addContent(TextUtils.cleanString(cell));
-                    si.addContent(t);
-                    sst.addContent(si);
-
                     c.setAttribute("t", "s");
-                    if (cell.indexOf("\n") != -1) {
-                        c.setAttribute("s", "1");
-                        t.setAttribute("xml:space", "preserve");
-                    }
                     Element v = new Element("v");
-                    v.addContent("" + stringCount);
+                    v.addContent("" + unique.get(cell));
                     c.addContent(v);
 
-                    unique.add(cell);
                     stringCount++;
                     row.addContent(c);
                 }
@@ -149,10 +153,14 @@ public class ExcelWriter {
 
         try (FileOutputStream out = new FileOutputStream(sharedStrings)) {
             XMLOutputter outputter = new XMLOutputter();
+            outputter.preserveSpace(true);
+            Indenter.indent(sst, 2);
             outputter.output(stringsDoc, out);
         }
         try (FileOutputStream out = new FileOutputStream(sheetXml)) {
             XMLOutputter outputter = new XMLOutputter();
+            outputter.preserveSpace(true);
+            Indenter.indent(sheetDoc.getRootElement(), 2);
             outputter.output(sheetDoc, out);
         }
     }
@@ -189,7 +197,7 @@ public class ExcelWriter {
                     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs)
                             throws IOException {
                         if (!sourcePath.equals(dir)) {
-                            zipOutput.putNextEntry(new ZipEntry(sourcePath.relativize(dir).toString() + "/"));
+                            zipOutput.putNextEntry(new ZipEntry(sourcePath.relativize(dir).toString() + SEP));
                             zipOutput.closeEntry();
                         }
                         return FileVisitResult.CONTINUE;
