@@ -11,9 +11,9 @@
  *******************************************************************************/
 
 import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_process";
-import { app, BrowserWindow, dialog, ipcMain, IpcMainEvent, Menu, MenuItem, nativeTheme, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, shell } from "electron";
-import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync } from "fs";
-import fetch from "node-fetch";
+import { app, BrowserWindow, ClientRequest, dialog, ipcMain, IpcMainEvent, Menu, MenuItem, nativeTheme, net, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, session, shell } from "electron";
+import { IncomingMessage } from "electron/main";
+import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync, appendFileSync, unlinkSync } from "fs";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -759,6 +759,9 @@ class App {
         App.messagesWindow.once('ready-to-show', () => {
             App.messagesWindow.show();
         });
+        App.messagesWindow.on('close', () => {
+            parent.focus();
+        });
     }
 
     static createWindow(): void {
@@ -977,22 +980,41 @@ class App {
         App.aboutWindow.once('ready-to-show', () => {
             App.aboutWindow.show();
         });
+        App.aboutWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static sendRequest(params: any, success: Function, error: Function): void {
-        fetch('http://127.0.0.1:8060/TMXServer', {
-            method: 'POST',
-            headers: [
-                ['Content-Type', 'application/json'],
-                ['Accept', 'application/json']
-            ],
-            body: JSON.stringify(params)
-        }).then(async (response) => {
-            let json: any = await response.json();
-            success(json);
-        }).catch((reason: any) => {
-            error(JSON.stringify(reason));
+        let options: any = {
+            url: 'http://127.0.0.1:8060/TMXServer',
+            method: 'POST'
+        }
+        let request: ClientRequest = net.request(options);
+        let responseData: string = '';
+        request.setHeader('Content-Type', 'application/json');
+        request.setHeader('Accept', 'application/json');
+        request.on('response', (response: IncomingMessage) => {
+            response.on('error', (e: Error) => {
+                error(e.message);
+            });
+            response.on('aborted', () => {
+                error('Request aborted');
+            });
+            response.on('end', () => {
+                try {
+                    let json = JSON.parse(responseData);
+                    success(json);
+                } catch (reason: any) {
+                    error(JSON.stringify(reason));
+                }
+            });
+            response.on('data', (chunk: Buffer) => {
+                responseData += chunk.toString();
+            });
         });
+        request.write(JSON.stringify(params));
+        request.end();
     }
 
     static showLicenses(arg: any): void {
@@ -1018,6 +1040,9 @@ class App {
         App.licensesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'licenses.html'));
         App.licensesWindow.once('ready-to-show', () => {
             App.licensesWindow.show();
+        });
+        App.licensesWindow.on('close', () => {
+            parent.focus();
         });
     }
 
@@ -1065,7 +1090,7 @@ class App {
                 return;
         }
         var licenseWindow = new BrowserWindow({
-            parent: App.mainWindow,
+            parent: App.licensesWindow,
             width: 680,
             height: 400,
             show: false,
@@ -1088,6 +1113,9 @@ class App {
                     licenseWindow.webContents.insertCSS(data.toString());
                 }
             });
+        });
+        licenseWindow.on('close', () => {
+            App.licensesWindow.focus();
         });
     }
 
@@ -1394,6 +1422,9 @@ class App {
         App.attributesWindow.once('ready-to-show', () => {
             App.attributesWindow.show();
         });
+        App.attributesWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     saveAttributes(arg: any): void {
@@ -1444,6 +1475,9 @@ class App {
         App.propertiesWindow.once('ready-to-show', () => {
             App.propertiesWindow.show();
         });
+        App.propertiesWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static showAddProperty(event: IpcMainEvent): void {
@@ -1467,6 +1501,9 @@ class App {
         App.addPropertyWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addProperty.html'));
         App.addPropertyWindow.once('ready-to-show', () => {
             App.addPropertyWindow.show();
+        });
+        App.addPropertyWindow.on('close', () => {
+            App.propertiesWindow.focus();
         });
     }
 
@@ -1523,6 +1560,9 @@ class App {
         App.notesWindow.once('ready-to-show', () => {
             App.notesWindow.show();
         });
+        App.notesWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     showAddNote(event: IpcMainEvent): void {
@@ -1546,6 +1586,9 @@ class App {
         App.addNotesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addNote.html'));
         App.addNotesWindow.once('ready-to-show', () => {
             App.addNotesWindow.show();
+        });
+        App.addNotesWindow.on('close', () => {
+            App.notesWindow.focus();
         });
     }
 
@@ -1601,6 +1644,9 @@ class App {
         App.settingsWindow.once('ready-to-show', () => {
             App.settingsWindow.show();
         });
+        App.settingsWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static setTheme(): void {
@@ -1626,6 +1672,9 @@ class App {
         App.newFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'newFile.html'));
         App.newFileWindow.once('ready-to-show', () => {
             App.newFileWindow.show();
+        });
+        App.newFileWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -1760,6 +1809,9 @@ class App {
         App.convertCsvWindow.once('ready-to-show', () => {
             App.convertCsvWindow.show();
         });
+        App.convertCsvWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static convertExcel(): void {
@@ -1781,6 +1833,9 @@ class App {
         App.convertExcelWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertExcel.html'));
         App.convertExcelWindow.once('ready-to-show', () => {
             App.convertExcelWindow.show();
+        });
+        App.convertExcelWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -1954,6 +2009,9 @@ class App {
         App.csvLanguagesWindow.once('ready-to-show', () => {
             App.csvLanguagesWindow.show();
         });
+        App.csvLanguagesWindow.on('close', () => {
+            App.convertCsvWindow.focus();
+        });
     }
 
     setCsvLanguages(arg: any): void {
@@ -1983,6 +2041,9 @@ class App {
         App.excelLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'excelLanguages.html'));
         App.excelLanguagesWindow.once('ready-to-show', () => {
             App.excelLanguagesWindow.show();
+        });
+        App.excelLanguagesWindow.on('close', () => {
+            App.convertExcelWindow.focus();
         });
     }
 
@@ -2138,6 +2199,9 @@ class App {
         App.fileInfoWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'fileInfo.html'));
         App.fileInfoWindow.once('ready-to-show', () => {
             App.fileInfoWindow.show();
+        });
+        App.fileInfoWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -2298,6 +2362,9 @@ class App {
         App.splitFileWindow.once('ready-to-show', () => {
             App.splitFileWindow.show();
         });
+        App.splitFileWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     splitTmx(arg: any): void {
@@ -2387,6 +2454,9 @@ class App {
         App.mergeFilesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
         App.mergeFilesWindow.once('ready-to-show', () => {
             App.mergeFilesWindow.show();
+        });
+        App.mergeFilesWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -2533,6 +2603,9 @@ class App {
         App.replaceTextWindow.once('ready-to-show', () => {
             App.replaceTextWindow.show();
         });
+        App.replaceTextWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     replaceRequest(arg: any): void {
@@ -2615,6 +2688,9 @@ class App {
         App.sortUnitsWindow.once('ready-to-show', () => {
             App.sortUnitsWindow.show();
         });
+        App.sortUnitsWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     setSort(arg: any): void {
@@ -2654,6 +2730,9 @@ class App {
         App.filtersWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'filters.html'));
         App.filtersWindow.once('ready-to-show', () => {
             App.filtersWindow.show();
+        });
+        App.filtersWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -2771,6 +2850,9 @@ class App {
         App.changeLanguageWindow.once('ready-to-show', () => {
             App.changeLanguageWindow.show();
         });
+        App.changeLanguageWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     changeLanguage(arg: any): void {
@@ -2855,6 +2937,9 @@ class App {
         App.removeLanguageWindow.once('ready-to-show', () => {
             App.removeLanguageWindow.show();
         });
+        App.removeLanguageWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     removeLanguage(arg: any): void {
@@ -2900,6 +2985,9 @@ class App {
         App.addLanguageWindow.once('ready-to-show', () => {
             App.addLanguageWindow.show();
         });
+        App.addLanguageWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     addLanguage(arg: any): void {
@@ -2944,6 +3032,9 @@ class App {
         App.srcLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
         App.srcLanguageWindow.once('ready-to-show', () => {
             App.srcLanguageWindow.show();
+        });
+        App.srcLanguageWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -3106,6 +3197,9 @@ class App {
         App.removeUntranslatedWindow.once('ready-to-show', () => {
             App.removeUntranslatedWindow.show();
         });
+        App.removeUntranslatedWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static showRemoveSameAsSource(): void {
@@ -3131,6 +3225,9 @@ class App {
         App.removeSameAsSourceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeSameAsSource.html'));
         App.removeSameAsSourceWindow.once('ready-to-show', () => {
             App.removeSameAsSourceWindow.show();
+        });
+        App.removeSameAsSourceWindow.on('close', () => {
+            App.mainWindow.focus();
         });
     }
 
@@ -3298,6 +3395,9 @@ class App {
         App.consolidateWindow.once('ready-to-show', () => {
             App.consolidateWindow.show();
         });
+        App.consolidateWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     consolidateUnits(arg: any): void {
@@ -3369,6 +3469,9 @@ class App {
         App.maintenanceWindow.once('ready-to-show', () => {
             App.maintenanceWindow.show();
         });
+        App.maintenanceWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
     }
 
     static maintenanceTasks(arg: any): void {
@@ -3425,66 +3528,128 @@ class App {
     }
 
     static downloadLatest(): void {
-        shell.openExternal(App.downloadLink).catch((reason: any) => {
-            if (reason instanceof Error) {
-                console.log(reason.message);
-            }
-            this.showMessage({ type: 'error', message: 'Unable to download latest version.' });
+        let downloadsFolder = app.getPath('downloads');
+        let url: URL = new URL(App.downloadLink);
+        let path: string = url.pathname;
+        path = path.substring(path.lastIndexOf('/') + 1);
+        let file: string = downloadsFolder + (process.platform === 'win32' ? '\\' : '/') + path;
+        if (existsSync(file)) {
+            unlinkSync(file);
+        }
+        let request: Electron.ClientRequest = net.request({
+            url: App.downloadLink,
+            session: session.defaultSession
         });
+        App.mainWindow.webContents.send('set-status', 'Downloading...');
+        App.updatesWindow.destroy();
+        request.on('response', (response: IncomingMessage) => {
+            let fileSize = Number.parseInt(response.headers['content-length'] as string);
+            let received: number = 0;
+            response.on('data', (chunk: Buffer) => {
+                received += chunk.length;
+                if (process.platform === 'win32' || process.platform === 'darwin') {
+                    App.mainWindow.setProgressBar(received / fileSize);
+                }
+                App.mainWindow.webContents.send('set-status', 'Downloaded: ' + Math.trunc(received * 100 / fileSize) + '%');
+                appendFileSync(file, chunk);
+            });
+            response.on('end', () => {
+                App.mainWindow.webContents.send('set-status', '');
+                dialog.showMessageBox({
+                    type: 'info',
+                    message: 'Update downloaded'
+                });
+                if (process.platform === 'win32' || process.platform === 'darwin') {
+                    App.mainWindow.setProgressBar(0);
+                    shell.openPath(file).then(() => {
+                        app.quit();
+                    }).catch((reason: string) => {
+                        dialog.showErrorBox('Error', reason);
+                    });
+                }
+                if (process.platform === 'linux') {
+                    shell.showItemInFolder(file);
+                }
+            });
+            response.on('error', (reason: string) => {
+                App.mainWindow.webContents.send('set-status', '');
+                dialog.showErrorBox('Error', reason);
+                if (process.platform === 'win32' || process.platform === 'darwin') {
+                    App.mainWindow.setProgressBar(0);
+                }
+            });
+        });
+        request.end();
     }
 
     static checkUpdates(silent: boolean): void {
-        fetch('https://maxprograms.com/tmxeditor.json', {
-            method: 'GET'
-        }).then(async (response) => {
-            let parsedData: any = await response.json();
-            if (app.getVersion() !== parsedData.version) {
-                App.latestVersion = parsedData.version;
-                switch (process.platform) {
-                    case 'darwin':
-                        App.downloadLink = process.arch === 'arm64' ? parsedData.arm64 : parsedData.darwin;
-                        break;
-                    case 'win32':
-                        App.downloadLink = parsedData.win32;
-                        break;
-                    case 'linux':
-                        App.downloadLink = parsedData.linux;
-                        break;
-                }
-                App.updatesWindow = new BrowserWindow({
-                    parent: this.mainWindow,
-                    width: 600,
-                    minimizable: false,
-                    maximizable: false,
-                    resizable: false,
-                    show: false,
-                    icon: this.iconPath,
-                    webPreferences: {
-                        nodeIntegration: true,
-                        contextIsolation: false,
-                        nativeWindowOpen: true
+        session.defaultSession.clearCache().then(() => {
+            let request: Electron.ClientRequest = net.request({
+                url: 'https://maxprograms.com/tmxeditor.json',
+                session: session.defaultSession
+            });
+            request.on('response', (response: IncomingMessage) => {
+                let responseData: string = '';
+                response.on('data', (chunk: Buffer) => {
+                    responseData += chunk;
+                });
+                response.on('end', () => {
+                    try {
+                        let parsedData = JSON.parse(responseData);
+                        if (app.getVersion() !== parsedData.version) {
+                            App.latestVersion = parsedData.version;
+                            switch (process.platform) {
+                                case 'darwin':
+                                    App.downloadLink = process.arch === 'arm64' ? parsedData.arm64 : parsedData.darwin;
+                                    break;
+                                case 'win32':
+                                    App.downloadLink = parsedData.win32;
+                                    break;
+                                case 'linux':
+                                    App.downloadLink = parsedData.linux;
+                                    break;
+                            }
+                            App.updatesWindow = new BrowserWindow({
+                                parent: App.mainWindow,
+                                width: 600,
+                                minimizable: false,
+                                maximizable: false,
+                                resizable: false,
+                                show: false,
+                                icon: this.iconPath,
+                                webPreferences: {
+                                    nodeIntegration: true,
+                                    contextIsolation: false,
+                                    nativeWindowOpen: true
+                                }
+                            });
+                            App.updatesWindow.setMenu(null);
+                            App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
+                            App.updatesWindow.once('ready-to-show', () => {
+                                App.updatesWindow.show();
+                            });
+                            App.updatesWindow.on('close', () => {
+                                App.mainWindow.focus();
+                            });
+                        } else {
+                            if (!silent) {
+                                App.showMessage({
+                                    type: 'info',
+                                    message: 'There are currently no updates available'
+                                });
+                            }
+                        }
+                    } catch (reason: any) {
+                        if (!silent) {
+                            App.showMessage({
+                                type: 'error',
+                                message: reason.message
+                            });
+                        }
                     }
                 });
-                App.updatesWindow.setMenu(null);
-                App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
-                App.updatesWindow.once('ready-to-show', () => {
-                    App.updatesWindow.show();
-                });
-            } else {
-                if (!silent) {
-                    App.showMessage({
-                        type: 'info',
-                        message: 'There are currently no updates available'
-                    });
-                }
-            }
-        }).catch((reason: any) => {
-            if (!silent) {
-                App.showMessage({
-                    type: 'error',
-                    message: reason.message
-                });
-            }
+            });
+            request.end();
         });
     }
 

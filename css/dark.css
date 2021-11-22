@@ -65,10 +65,11 @@ a:hover {
 	left: calc(40% - 100px);
 	width: 200px;
 	margin: auto;
-	background-color: var(--themeDarker);
+	background-color: var(--themePrimary);
 	color: var(--white);
 	padding: 20px;
-	border: 1px solid var(--white);
+	border-radius: 8px;
+	box-shadow: 0px 4px 8px var(--gray190);
 }
 
 /* tables */
@@ -308,7 +309,7 @@ button {
 	color: var(--white);
 	background: var(--themePrimary);
 	border: 1px solid var(--themePrimary);
-	border-radius: 2px;
+	border-radius: 4px;
 	font-size: 14px;
 	text-align: center;
 	margin: 4px;
