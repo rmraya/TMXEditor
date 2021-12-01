@@ -264,6 +264,9 @@ public class TMXServer implements HttpHandler {
 				case "processTasks":
 					response = processTasks(json);
 					break;
+				case "systemInfo":
+					response = getSystemInformation();
+					break;
 				default:
 					JSONObject unknown = new JSONObject();
 					unknown.put(Constants.STATUS, Constants.ERROR);
@@ -721,4 +724,12 @@ public class TMXServer implements HttpHandler {
 	private String getTuvData(String id, String lang) {
 		return service.getTuvData(id, lang).toString();
 	}
+
+	private static String getSystemInformation() {
+        JSONObject result = new JSONObject();
+        result.put("tmxeditor", Constants.VERSION + " Build: " + Constants.BUILD);
+        result.put("openxliff", com.maxprograms.converters.Constants.VERSION + " Build: " + com.maxprograms.converters.Constants.BUILD);
+        result.put("java", System.getProperty("java.version") + " Vendor: " + System.getProperty("java.vendor"));
+        return result.toString();
+    }
 }

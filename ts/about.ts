@@ -23,13 +23,15 @@ class About {
         this.electron.ipcRenderer.on('set-version', (event: Electron.IpcRendererEvent, arg: any) => {
             document.getElementById('version').innerHTML = arg;
         });
+        document.getElementById('system').addEventListener('click', () => {
+            this.electron.ipcRenderer.send('system-info-clicked');
+            document.getElementById('system').blur();
+        });
         document.getElementById('licenses').addEventListener('click', () => {
             this.electron.ipcRenderer.send('licenses-clicked');
+            document.getElementById('licenses').blur();
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-                this.electron.ipcRenderer.send('licenses-clicked');
-            }
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-about');
             }

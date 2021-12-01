@@ -14,6 +14,7 @@ import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_proce
 import { app, BrowserWindow, ClientRequest, dialog, ipcMain, IpcMainEvent, Menu, MenuItem, nativeTheme, net, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, session, shell } from "electron";
 import { IncomingMessage } from "electron/main";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync, appendFileSync, unlinkSync } from "fs";
+import { Locations, Point } from "./locations";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -57,6 +58,7 @@ class App {
     static maintenanceWindow: BrowserWindow;
     static convertExcelWindow: BrowserWindow;
     static excelLanguagesWindow: BrowserWindow;
+    static systemInfoWindow: BrowserWindow;
 
     static requestEvaluationWindow: BrowserWindow;
     static registerSubscriptionWindow: BrowserWindow;
@@ -106,6 +108,8 @@ class App {
     static latestVersion: string;
     static downloadLink: string;
 
+    static locations: Locations;
+
     constructor(args: string[]) {
 
         if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
@@ -146,6 +150,8 @@ class App {
 
         App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
 
+        App.locations = new Locations(App.path.join(app.getPath('appData'), app.name, 'locations.json'));
+
         App.ls.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
@@ -168,8 +174,7 @@ class App {
             }
         });
 
-        var ck: Buffer = execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
-        console.log(ck.toString());
+        execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
 
         app.on('open-file', (event, filePath) => {
             event.preventDefault();
@@ -212,6 +217,12 @@ class App {
                 App.close();
             });
             App.checkUpdates(true);
+            if (process.platform === 'darwin' && app.runningUnderARM64Translation) {
+                App.showMessage({
+                    type: 'warning',
+                    message: 'You are running a version for Macs with Intel processors on a Mac with Apple M1 chipset.'
+                });
+            }
         });
 
         nativeTheme.on('updated', () => {
@@ -467,6 +478,19 @@ class App {
         ipcMain.on('close-about', () => {
             App.destroyWindow(App.aboutWindow);
         });
+        ipcMain.on('system-info-clicked', () => {
+            App.showSystemInfo();
+        });
+        ipcMain.on('close-systemInfo', () => {
+            App.destroyWindow(App.systemInfoWindow);
+        });
+        ipcMain.on('systemInfo-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.systemInfoWindow, arg);
+        });
+        ipcMain.on('get-system-info', (event: IpcMainEvent) => {
+            App.getSystemInformation(event);
+        });
+
         ipcMain.on('messages-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.messagesWindow, arg);
         });
@@ -762,6 +786,7 @@ class App {
         App.messagesWindow.on('close', () => {
             parent.focus();
         });
+        App.setLocation(App.messagesWindow, 'messages.html');
     }
 
     static createWindow(): void {
@@ -983,6 +1008,7 @@ class App {
         App.aboutWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.aboutWindow, 'about.html');
     }
 
     static sendRequest(params: any, success: Function, error: Function): void {
@@ -1017,6 +1043,44 @@ class App {
         request.end();
     }
 
+    static showSystemInfo() {
+        this.systemInfoWindow = new BrowserWindow({
+            parent: App.aboutWindow,
+            width: 430,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            show: false,
+            icon: this.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+                nativeWindowOpen: true
+            }
+        });
+        this.systemInfoWindow.setMenu(null);
+        this.systemInfoWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'systemInfo.html'));
+        this.systemInfoWindow.once('ready-to-show', () => {
+            this.systemInfoWindow.show();
+        });
+        this.systemInfoWindow.on('close', () => {
+            App.aboutWindow.focus();
+        });
+        App.setLocation(App.systemInfoWindow, 'systemInfo.html');
+    }
+
+    static getSystemInformation(event: IpcMainEvent) {
+        this.sendRequest({ command: 'systemInfo' },
+            (data: any) => {
+                data.electron = process.versions.electron;
+                event.sender.send('set-system-info', data);
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
     static showLicenses(arg: any): void {
         let parent: BrowserWindow = App.mainWindow;
         if (arg.from === 'about' && App.aboutWindow) {
@@ -1044,6 +1108,7 @@ class App {
         App.licensesWindow.on('close', () => {
             parent.focus();
         });
+        App.setLocation(App.licensesWindow, 'licenses.html');
     }
 
     static openLicense(arg: any): void {
@@ -1117,6 +1182,7 @@ class App {
         licenseWindow.on('close', () => {
             App.licensesWindow.focus();
         });
+        App.setLocation(licenseWindow, 'license.html');
     }
 
     static showHelp(): void {
@@ -1425,6 +1491,7 @@ class App {
         App.attributesWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.attributesWindow, 'attributes.html');
     }
 
     saveAttributes(arg: any): void {
@@ -1478,6 +1545,7 @@ class App {
         App.propertiesWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.propertiesWindow, 'properties.html');
     }
 
     static showAddProperty(event: IpcMainEvent): void {
@@ -1505,6 +1573,7 @@ class App {
         App.addPropertyWindow.on('close', () => {
             App.propertiesWindow.focus();
         });
+        App.setLocation(App.addPropertyWindow, 'addProperty.html');
     }
 
     addNewProperty(arg: any): void {
@@ -1563,6 +1632,7 @@ class App {
         App.notesWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.notesWindow, 'notes.html');
     }
 
     showAddNote(event: IpcMainEvent): void {
@@ -1590,6 +1660,7 @@ class App {
         App.addNotesWindow.on('close', () => {
             App.notesWindow.focus();
         });
+        App.setLocation(App.addNotesWindow, 'addNote.html');
     }
 
     addNewNote(arg: any): void {
@@ -1647,6 +1718,7 @@ class App {
         App.settingsWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.settingsWindow, 'preferences.html');
     }
 
     static setTheme(): void {
@@ -1676,6 +1748,7 @@ class App {
         App.newFileWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.newFileWindow, 'newFile.html');
     }
 
     createFile(arg: any): void {
@@ -1812,6 +1885,7 @@ class App {
         App.convertCsvWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.convertCsvWindow, 'convertCSV.html');
     }
 
     static convertExcel(): void {
@@ -1837,6 +1911,7 @@ class App {
         App.convertExcelWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.convertExcelWindow, 'convertExcel.html');
     }
 
     convertCsvTmx(arg: any): void {
@@ -2012,6 +2087,7 @@ class App {
         App.csvLanguagesWindow.on('close', () => {
             App.convertCsvWindow.focus();
         });
+        App.setLocation(App.csvLanguagesWindow, 'csvLanguages.html');
     }
 
     setCsvLanguages(arg: any): void {
@@ -2045,6 +2121,7 @@ class App {
         App.excelLanguagesWindow.on('close', () => {
             App.convertExcelWindow.focus();
         });
+        App.setLocation(App.excelLanguagesWindow, 'excelLanguages.html');
     }
 
     setExcelLanguages(arg: any): void {
@@ -2203,6 +2280,7 @@ class App {
         App.fileInfoWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.fileInfoWindow, 'fileInfo.html');
     }
 
     fileProperties(event: IpcMainEvent): void {
@@ -2365,6 +2443,7 @@ class App {
         App.splitFileWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.splitFileWindow, 'splitFile.html');
     }
 
     splitTmx(arg: any): void {
@@ -2458,6 +2537,7 @@ class App {
         App.mergeFilesWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.mergeFilesWindow, 'mergeFiles.html');
     }
 
     mergeTmxFiles(arg: any): void {
@@ -2606,6 +2686,7 @@ class App {
         App.replaceTextWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.replaceTextWindow, 'searchReplace.html');
     }
 
     replaceRequest(arg: any): void {
@@ -2691,6 +2772,7 @@ class App {
         App.sortUnitsWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.sortUnitsWindow, 'sortUnits.html');
     }
 
     setSort(arg: any): void {
@@ -2734,6 +2816,7 @@ class App {
         App.filtersWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.filtersWindow, 'filters.html');
     }
 
     setFilterOptions(arg: any): void {
@@ -2853,6 +2936,7 @@ class App {
         App.changeLanguageWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.changeLanguageWindow, 'changeLanguage.html');
     }
 
     changeLanguage(arg: any): void {
@@ -2940,6 +3024,7 @@ class App {
         App.removeLanguageWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.removeLanguageWindow, 'removeLanguage.html');
     }
 
     removeLanguage(arg: any): void {
@@ -2988,6 +3073,7 @@ class App {
         App.addLanguageWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.addLanguageWindow, 'addLanguage.html');
     }
 
     addLanguage(arg: any): void {
@@ -3036,6 +3122,7 @@ class App {
         App.srcLanguageWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.srcLanguageWindow, 'srcLanguage.html');
     }
 
     getSourceLanguage(event: IpcMainEvent): void {
@@ -3200,6 +3287,7 @@ class App {
         App.removeUntranslatedWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.removeUntranslatedWindow, 'removeUntranslated.html');
     }
 
     static showRemoveSameAsSource(): void {
@@ -3229,6 +3317,7 @@ class App {
         App.removeSameAsSourceWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.removeSameAsSourceWindow, 'removeSameAsSource.html');
     }
 
     removeUntranslated(arg: any): void {
@@ -3398,6 +3487,7 @@ class App {
         App.consolidateWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.consolidateWindow, 'consolidateUnits.html');
     }
 
     consolidateUnits(arg: any): void {
@@ -3472,6 +3562,7 @@ class App {
         App.maintenanceWindow.on('close', () => {
             App.mainWindow.focus();
         });
+        App.setLocation(App.maintenanceWindow, 'maintenance.html');
     }
 
     static maintenanceTasks(arg: any): void {
@@ -3580,6 +3671,17 @@ class App {
             });
         });
         request.end();
+    }
+
+    static setLocation(window: BrowserWindow, key: string): void {
+        if (App.locations.hasLocation(key)) {
+            let position: Point = App.locations.getLocation(key);
+            window.setPosition(position.x, position.y, true);
+        }
+        window.addListener('moved', () => {
+            let bounds: Rectangle = window.getBounds();
+            App.locations.setLocation(key, bounds.x, bounds.y);
+        });
     }
 
     static checkUpdates(silent: boolean): void {
