@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2021 Maxprograms.
+ * Copyright (c) 2018-2022 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -1592,6 +1592,11 @@ public class TMXService {
 					optionalDelims);
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
+			try {
+				Files.deleteIfExists(new File(tmxFile).toPath());
+			} catch (IOException e1) {
+				// do nothing
+			}
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
@@ -1822,6 +1827,11 @@ public class TMXService {
 			}
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (IOException | SAXException | ParserConfigurationException e) {
+			try {
+				Files.deleteIfExists(new File(tmxFile).toPath());
+			} catch (IOException e1) {
+				// do nothing
+			}
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());

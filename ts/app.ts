@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2021 Maxprograms.
+ * Copyright (c) 2018-2022 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -65,9 +65,9 @@ class App {
     static registerExpiredWindow: BrowserWindow;
     static newSubscriptionWindow: BrowserWindow;
 
-    static ls: ChildProcessWithoutNullStreams;
+    ls: ChildProcessWithoutNullStreams;
+    stopping: boolean = false;
     static shouldQuit: boolean = false;
-    static stopping: boolean = false;
 
     static javapath: string = App.path.join(app.getAppPath(), 'bin', 'java');
     static iconPath: string;
@@ -148,33 +148,18 @@ class App {
             mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
-        App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
+        this.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
+        execFileSync(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.CheckURL', 'http://localhost:8060/TMXServer'], { cwd: app.getAppPath(), windowsHide: true });
 
         App.locations = new Locations(App.path.join(app.getPath('appData'), app.name, 'locations.json'));
 
-        App.ls.stdout.on('data', (data) => {
+        this.ls.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
 
-        App.ls.stderr.on('data', (data) => {
+        this.ls.stderr.on('data', (data) => {
             console.error(`stderr: ${data}`);
         });
-
-        App.ls.on('close', (code: number) => {
-            if (code === 0) {
-                App.sendRequest({ command: 'stop' },
-                    () => {
-                        console.log('Restarting server');
-                        App.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath() });
-                    },
-                    (reason: string) => {
-                        console.log('Error restarting server: ' + reason);
-                    }
-                );
-            }
-        });
-
-        execFileSync('bin/java', ['--module-path', 'lib', '-m', 'openxliff/com.maxprograms.server.CheckURL', 'http://localhost:8060/TMXserver'], { cwd: app.getAppPath() });
 
         app.on('open-file', (event, filePath) => {
             event.preventDefault();
@@ -185,8 +170,15 @@ class App {
             }
         });
 
+        app.on('before-quit', (event: Event) => {
+            if (!this.ls.killed) {
+                event.preventDefault();
+                this.stopServer();
+            }
+        });
+
         app.on('quit', () => {
-            App.stopServer();
+            app.quit();
         });
 
         app.on('window-all-closed', () => {
@@ -682,11 +674,21 @@ class App {
         })
     } // end constructor
 
-    static stopServer(): void {
-        if (!this.stopping) {
-            this.stopping = true;
-            App.ls.kill(15);
-        }
+    stopServer(): void {
+        let instance: App = this;
+        App.sendRequest({ command: 'stop' },
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    instance.ls.kill();
+                    app.quit();
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
     }
 
     static mainLoaded(): void {
@@ -773,8 +775,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.messageParam = arg;
@@ -799,8 +800,7 @@ class App {
             y: App.currentDefaults.y,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             },
             show: false,
             icon: App.iconPath
@@ -996,8 +996,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.aboutWindow.setMenu(null);
@@ -1054,8 +1053,7 @@ class App {
             icon: this.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         this.systemInfoWindow.setMenu(null);
@@ -1096,8 +1094,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.licensesWindow.setMenu(null);
@@ -1163,8 +1160,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         licenseWindow.setMenu(null);
@@ -1391,13 +1387,14 @@ class App {
         let dark: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'dark.css');
         let light: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'light.css');
         let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
-        if (existsSync(preferencesFile)) {
-            try {
-                var data: Buffer = readFileSync(preferencesFile);
-                App.currentPreferences = JSON.parse(data.toString());
-            } catch (err) {
-                console.log(err);
-            }
+        if (!existsSync(preferencesFile)) {
+            this.savePreferences();
+        }
+        try {
+            var data: Buffer = readFileSync(preferencesFile);
+            App.currentPreferences = JSON.parse(data.toString());
+        } catch (err) {
+            console.log(err);
         }
         if (App.currentPreferences.theme === 'system') {
             if (nativeTheme.shouldUseDarkColors) {
@@ -1478,8 +1475,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.attributesArg = arg;
@@ -1532,8 +1528,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.propertiesArg = arg;
@@ -1561,8 +1556,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.addPropertyWindow.setMenu(null);
@@ -1619,8 +1613,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.notesArg = arg;
@@ -1648,8 +1641,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.addNotesWindow.setMenu(null);
@@ -1706,8 +1698,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.settingsWindow.setMenu(null);
@@ -1736,8 +1727,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.newFileWindow.setMenu(null);
@@ -1873,8 +1863,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.convertCsvWindow.setMenu(null);
@@ -1899,8 +1888,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.convertExcelWindow.setMenu(null);
@@ -2075,8 +2063,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.csvLanguagesWindow.setMenu(null);
@@ -2109,8 +2096,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.excelLanguagesWindow.setMenu(null);
@@ -2268,8 +2254,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.fileInfoWindow.setMenu(null);
@@ -2431,8 +2416,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.splitFileWindow.setMenu(null);
@@ -2525,8 +2509,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.mergeFilesWindow.setMenu(null);
@@ -2674,8 +2657,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.replaceTextWindow.setMenu(null);
@@ -2760,8 +2742,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.sortUnitsWindow.setMenu(null);
@@ -2804,8 +2785,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.filtersWindow.setMenu(null);
@@ -2924,8 +2904,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.changeLanguageWindow.setMenu(null);
@@ -3012,8 +2991,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.removeLanguageWindow.setMenu(null);
@@ -3061,8 +3039,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.addLanguageWindow.setMenu(null);
@@ -3110,8 +3087,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.srcLanguageWindow.setMenu(null);
@@ -3275,8 +3251,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.removeUntranslatedWindow.setMenu(null);
@@ -3305,8 +3280,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.removeSameAsSourceWindow.setMenu(null);
@@ -3475,8 +3449,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.consolidateWindow.setMenu(null);
@@ -3550,8 +3523,7 @@ class App {
             icon: App.iconPath,
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,
-                nativeWindowOpen: true
+                contextIsolation: false
             }
         });
         App.maintenanceWindow.setMenu(null);
@@ -3721,8 +3693,7 @@ class App {
                                 icon: this.iconPath,
                                 webPreferences: {
                                     nodeIntegration: true,
-                                    contextIsolation: false,
-                                    nativeWindowOpen: true
+                                    contextIsolation: false
                                 }
                             });
                             App.updatesWindow.setMenu(null);

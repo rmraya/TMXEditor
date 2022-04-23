@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2021 Maxprograms.
+ * Copyright (c) 2018-2022 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -288,10 +288,6 @@ public class TMXServer implements HttpHandler {
 						os.write(array, 0, read);
 					}
 				}
-			}
-			if ("stop".equals(command)) {
-				logger.log(Level.INFO, "Stopping server");
-				System.exit(0);
 			}
 		} catch (IOException e) {
 			logger.log(Level.ERROR, e);

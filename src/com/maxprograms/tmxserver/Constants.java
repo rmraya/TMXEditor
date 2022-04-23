@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2021 Maxprograms.
+ * Copyright (c) 2018-2022 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -19,8 +19,8 @@ public class Constants {
 	}
 
 	public static final String APPNAME = "TMXEditor";
-	public static final String VERSION = "2.9.0";
-	public static final String BUILD = "20211201_0811";
+	public static final String VERSION = "2.10.0";
+	public static final String BUILD = "20220423_1037";
 
 	public static final String REASON = "reason";
 	public static final String STATUS = "status";
