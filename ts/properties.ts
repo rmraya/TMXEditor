@@ -109,5 +109,3 @@ class Properties {
         this.props = copy;
     }
 }
-
-new Properties();

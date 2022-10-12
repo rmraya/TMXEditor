@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/fonts.css">
 </head>
 
-<body id="body">
+<body id="body" onload="new Preferences();">
     <table class="fill_width">
         <tr>
             <td class="middle noWrap"><label for="themeColor">Theme</label></td>
@@ -22,7 +22,7 @@
         <tr>
             <td class="middle noWrap"><label for="threshold">Max File size for<br>&nbsp;Memory Storage</label></td>
             <td class="middle fill_width noWrap">
-                <select id="threshold" >
+                <select id="threshold">
                     <option value="100">100</option>
                     <option value="200">200</option>
                     <option value="500">500</option>

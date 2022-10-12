@@ -58,5 +58,3 @@ class SourceLanguage {
         this.electron.ipcRenderer.send('change-source-language', language.value);
     }
 }
-
-new SourceLanguage();

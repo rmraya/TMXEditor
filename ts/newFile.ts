@@ -60,5 +60,3 @@ class NewFile {
         this.electron.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });
     }
 }
-
-new NewFile();

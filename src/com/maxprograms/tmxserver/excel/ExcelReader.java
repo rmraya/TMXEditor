@@ -63,7 +63,7 @@ public class ExcelReader {
                 if (!tmp.getParentFile().exists()) {
                     Files.createDirectories(tmp.getParentFile().toPath());
                 }
-                if (entry.isDirectory()) {
+                if (entry.isDirectory() || entry.getName().endsWith(SEP)) {
                     Files.createDirectories(tmp.toPath());
                 } else {
                     try (FileOutputStream output = new FileOutputStream(tmp.getAbsolutePath())) {

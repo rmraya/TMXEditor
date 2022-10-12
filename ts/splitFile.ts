@@ -55,5 +55,3 @@ class SplitFile {
         this.electron.ipcRenderer.send('select-tmx');
     }
 }
-
-new SplitFile();

@@ -32,14 +32,13 @@ import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.maxprograms.tmxserver.utils.TextUtils;
+import org.xml.sax.SAXException;
+
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
-
-import org.xml.sax.SAXException;
 
 public class ExcelWriter {
 
@@ -125,7 +124,7 @@ public class ExcelWriter {
                     if (!unique.containsKey(cell)) {
                         Element si = new Element("si");
                         Element t = new Element("t");
-                        t.addContent(TextUtils.cleanString(cell));
+                        t.addContent(cell);
                         if (cell.indexOf("\n") != -1) {
                             t.setAttribute("xml:space", "preserve");
                         }

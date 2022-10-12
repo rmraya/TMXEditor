@@ -108,5 +108,3 @@ class FileInfo {
         document.getElementById('attributes').classList.add('hidden');
     }
 }
-
-new FileInfo();

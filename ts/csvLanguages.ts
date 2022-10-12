@@ -79,5 +79,3 @@ class CsvLanguages {
         }
     }
 }
-
-new CsvLanguages();

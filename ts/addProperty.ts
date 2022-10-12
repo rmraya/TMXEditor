@@ -66,5 +66,3 @@ class AddProperty {
         return true;
     }
 }
-
-new AddProperty();

@@ -60,5 +60,3 @@ class Consolidate {
         this.electron.ipcRenderer.send('consolidate-units', { srcLang: srcLang });
     }
 }
-
-new Consolidate();

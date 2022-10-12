@@ -221,5 +221,3 @@ class ConvertExcel {
         this.electron.ipcRenderer.send('convert-excel-tmx', arg);
     }
 }
-
-new ConvertExcel();

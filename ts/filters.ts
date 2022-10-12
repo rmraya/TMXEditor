@@ -126,5 +126,3 @@ class Filters {
         this.electron.ipcRenderer.send('clear-filter-options');
     }
 }
-
-new Filters();

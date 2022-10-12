@@ -67,5 +67,3 @@ class SearchReplace {
         this.electron.ipcRenderer.send('replace-request', { search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
     }
 }
-
-new SearchReplace();

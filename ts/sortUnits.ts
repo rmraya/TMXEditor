@@ -75,5 +75,3 @@ class SortUnits {
         this.electron.ipcRenderer.send('clear-sort');
     }
 }
-
-new SortUnits();

@@ -210,7 +210,7 @@ class Main {
         let replaceText: HTMLAnchorElement = document.createElement('a');
         replaceText.classList.add('tooltip');
         replaceText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 13.515011,15.871667 C 12.454179,16.535833 11.243347,16.918333 10.013349,17 L 9.5658494,15.3475 c 1.7358316,-0.01583 3.4433286,-0.7925 4.5749936,-2.27 1.779165,-2.325 1.519998,-5.575 -0.479166,-7.615 L 12.185013,7.3908333 10.710015,2 h 5.537492 l -1.564164,2.1275 c 2.562496,2.4508333 3.067496,6.3825 1.185831,9.385 L 22,19.643333 19.643336,22 Z M 4.3283562,14.935 C 2.8025249,13.480833 2.0050259,11.496667 2.000026,9.5 1.9958593,7.91 2.4933586,6.315 3.5333573,4.9566667 4.8975221,3.175 6.9091862,2.1516667 8.9908502,2.0158333 l 0.4533327,1.6508334 c -1.7391644,0.0125 -3.4516622,0.8241666 -4.584994,2.305 C 3.0766912,8.3008333 3.3408575,11.559167 5.3500216,13.6 L 6.828353,11.669167 8.3100177,17 H 2.7775249 Z" /></svg>' +
-        '<span class="tooltiptext bottomTooltip">Replace Text</span>';
+            '<span class="tooltiptext bottomTooltip">Replace Text</span>';
         replaceText.addEventListener('click', () => {
             this.replaceText();
         });
@@ -305,6 +305,15 @@ class Main {
             this.convertExcel();
         });
         this.topBar.appendChild(convertExcel);
+
+        let convertSDLTM: HTMLAnchorElement = document.createElement('a');
+        convertSDLTM.classList.add('tooltip');
+        convertSDLTM.innerHTML = '<svg version="1.1" width="24" height="24" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" 	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"> <path d="M20.8,6.8V4.4c0-0.1,0.1-0.6-0.3-1c-0.3-0.4-0.7-0.5-0.8-0.5c-3.8,0-7.5,0-11.3,0C8.2,3,7.9,3.1,7.6,3.4 	C7.4,3.7,7.3,4,7.3,4.1c0,0.6,0,1.1-0.1,1.7h1.5V4.7c0,0,0-0.1,0.1-0.2C8.9,4.4,8.9,4.3,9,4.3c1.7,0,3.4,0,5,0c0,0.5,0,1,0,1.5 	c0.3,0,0.6,0,1,0.1c0.2,0,0.8,0.2,1.3,0.7c0.4,0.4,0.6,0.9,0.6,1.1c0,1.7,0,3,0,3.3c0,0.1,0,0.3-0.2,0.6c-0.1,0.1-0.2,0.3-0.2,0.3 	c0.1,0.1,0.2,0.2,0.3,0.4c0,0,0.1,0.1,0.1,0.3c0.1,0.3,0.1,1.6,0.1,3.4c0,0.1-0.1,0.4-0.2,0.6c-0.1,0.2-0.2,0.3-0.3,0.4 	c0.1,0.1,0.3,0.4,0.4,0.7c0.1,0.4,0.1,0.7,0.1,0.8h2.4c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4c0.8,0,1.4-0.6,1.4-1.4V9.6 	c0-0.8-0.6-1.4-1.4-1.4C20.1,8.2,20.8,7.6,20.8,6.8z"/> <path d="M16.2,10.6V8.2c0-0.8-0.6-1.4-1.4-1.4H4c-0.8,0-1.4,0.6-1.4,1.4v2.4C2.7,11.3,3.3,12,4,12c-0.8,0-1.4,0.6-1.4,1.4v2.4 	c0,0.8,0.6,1.4,1.4,1.4c-0.8,0-1.4,0.6-1.4,1.4V21c0,0.8,0.6,1.4,1.4,1.4h10.8c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4 	c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4C15.6,12,16.2,11.3,16.2,10.6z M9.4,20.9h-5c0,0-0.1,0-0.2-0.1 	c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V20.9z M9.4,15.7h-5 	c0,0-0.1,0-0.2-0.1c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V15.7z M9.4,10.5 	h-5c0,0-0.1,0-0.2-0.1c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V10.5z"/> </svg> ' +
+            '<span class="tooltiptext bottomTooltip">Convert SDLTM File to TMX</span>';
+        convertSDLTM.addEventListener('click', () => {
+            this.convertSDLTM();
+        });
+        this.topBar.appendChild(convertSDLTM);
 
         let filler: HTMLSpanElement = document.createElement('span');
         filler.classList.add('fill_width');
@@ -836,6 +845,10 @@ class Main {
 
     convertExcel(): void {
         this.electron.ipcRenderer.send('convert-excel');
+    }
+
+    convertSDLTM(): void {
+        this.electron.ipcRenderer.send('convert-sdltm');
     }
 
     openHelp(): void {

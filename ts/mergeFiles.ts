@@ -129,5 +129,3 @@ class MergeFiles {
         document.getElementById('table').innerHTML = rows;
     }
 }
-
-new MergeFiles();

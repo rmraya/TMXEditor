@@ -60,5 +60,3 @@ class RemoveUntranslated {
         this.electron.ipcRenderer.send('remove-untranslated', { srcLang: srcLang });
     }
 }
-
-new RemoveUntranslated();

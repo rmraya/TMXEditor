@@ -12,9 +12,15 @@
 
 package com.maxprograms.tmxserver.models;
 
+import java.io.IOException;
 import java.io.Serializable;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.JSONObject;
+import org.xml.sax.SAXException;
+
+import com.maxprograms.languages.LanguageUtils;
 
 public class Language implements Serializable, Comparable<Language> {
 
@@ -48,10 +54,8 @@ public class Language implements Serializable, Comparable<Language> {
 		return name;
 	}
 
-	public boolean isBidi() {
-		return code.startsWith("ar") || code.startsWith("fa") || code.startsWith("az") || code.startsWith("ur")
-				|| code.startsWith("pa-PK") || code.startsWith("ps") || code.startsWith("prs") || code.startsWith("ug")
-				|| code.startsWith("he") || code.startsWith("ji") || code.startsWith("yi");
+	public boolean isBidi() throws SAXException, IOException, ParserConfigurationException {
+		return LanguageUtils.isBiDi(code);
 	}
 
 	public boolean isCJK() {

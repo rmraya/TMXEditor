@@ -42,5 +42,3 @@ class About {
         }, 200);
     }
 }
-
-new About();

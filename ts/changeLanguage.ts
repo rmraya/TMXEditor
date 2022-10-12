@@ -74,5 +74,3 @@ class ChangeLanguages {
         this.electron.ipcRenderer.send('change-language', { oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
     }
 }
-
-new ChangeLanguages();

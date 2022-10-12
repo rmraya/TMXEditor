@@ -60,5 +60,3 @@ class removeSameAsSource {
         this.electron.ipcRenderer.send('remove-sameAsSource', { srcLang: srcLang });
     }
 }
-
-new removeSameAsSource();

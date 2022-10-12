@@ -34,7 +34,7 @@ class Preferences {
                 this.electron.ipcRenderer.send('close-preferences');
             }
         });
-        document.getElementById('themeColor') .focus();
+        document.getElementById('themeColor').focus();
         let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
         this.electron.ipcRenderer.send('preferences-height', { width: body.clientWidth, height: body.clientHeight });
     }
@@ -53,5 +53,3 @@ class Preferences {
         this.electron.ipcRenderer.send('save-preferences', prefs);
     }
 }
-
-new Preferences();

@@ -84,5 +84,3 @@ class Maintenance {
         this.electron.ipcRenderer.send('maintanance-tasks', params);
     }
 }
-
-new Maintenance();

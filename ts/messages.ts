@@ -59,4 +59,3 @@ class Messages {
     }
 }
 
-new Messages();

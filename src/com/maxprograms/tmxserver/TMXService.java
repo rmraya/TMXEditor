@@ -379,7 +379,7 @@ public class TMXService {
 		savingError = "";
 		try {
 			new Thread() {
-
+				@Override
 				public void run() {
 					try {
 						store.writeFile(currentFile);

@@ -54,5 +54,3 @@ class RemoveLanguage {
         this.electron.ipcRenderer.send('remove-language', language.value);
     }
 }
-
-new RemoveLanguage();

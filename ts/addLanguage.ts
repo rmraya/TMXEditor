@@ -54,5 +54,3 @@ class AddLanguage {
         this.electron.ipcRenderer.send('add-language', language.value);
     }
 }
-
-new AddLanguage();

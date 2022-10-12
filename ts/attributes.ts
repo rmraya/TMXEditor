@@ -167,5 +167,3 @@ class Attributes {
         this.electron.ipcRenderer.send('save-attributes', arg);
     }
 }
-
-new Attributes();

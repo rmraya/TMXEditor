@@ -236,5 +236,3 @@ class ConvertCSV {
         this.electron.ipcRenderer.send('convert-csv-tmx', arg);
     }
 }
-
-new ConvertCSV();

@@ -47,5 +47,3 @@ class AddNote {
         this.electron.ipcRenderer.send('add-new-note', { note: note });
     }
 }
-
-new AddNote();

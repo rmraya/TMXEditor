@@ -100,5 +100,3 @@ class Notes {
         this.notes = copy;
     }
 }
-
-new Notes();

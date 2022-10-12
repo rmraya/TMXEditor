@@ -15,6 +15,7 @@ import { app, BrowserWindow, ClientRequest, dialog, ipcMain, IpcMainEvent, Menu,
 import { IncomingMessage } from "electron/main";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync, appendFileSync, unlinkSync } from "fs";
 import { Locations, Point } from "./locations";
+import { TMReader } from "sdltm";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -41,6 +42,7 @@ class App {
     static notesWindow: BrowserWindow;
     static addNotesWindow: BrowserWindow;
     static convertCsvWindow: BrowserWindow;
+    static convertSDLTMWindow: BrowserWindow;
     static csvLanguagesWindow: BrowserWindow;
     static splitFileWindow: BrowserWindow;
     static mergeFilesWindow: BrowserWindow;
@@ -148,7 +150,7 @@ class App {
             mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
-        this.ls = spawn(App.javapath, ['-cp', 'lib/h2-1.4.200.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
+        this.ls = spawn(App.javapath, ['-cp', 'lib/h2-2.1.214.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
         execFileSync(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.CheckURL', 'http://localhost:8060/TMXServer'], { cwd: app.getAppPath(), windowsHide: true });
 
         App.locations = new Locations(App.path.join(app.getPath('appData'), app.name, 'locations.json'));
@@ -314,8 +316,14 @@ class App {
         ipcMain.on('convert-excel', () => {
             App.convertExcel();
         });
+        ipcMain.on('convert-sdltm-tmx', (event: IpcMainEvent, arg: any) => {
+            this.convertSdltmTmx(arg);
+        });
         ipcMain.on('convert-csv', () => {
             App.convertCSV();
+        });
+        ipcMain.on('convert-sdltm', () => {
+            App.convertSDLTM();
         });
         ipcMain.on('convert-csv-tmx', (event: IpcMainEvent, arg: any) => {
             this.convertCsvTmx(arg);
@@ -328,6 +336,9 @@ class App {
         });
         ipcMain.on('get-csvfile', (event: IpcMainEvent) => {
             this.getCsvFile(event);
+        });
+        ipcMain.on('get-sdltmfile', (event: IpcMainEvent) => {
+            this.getSdltmFile(event);
         });
         ipcMain.on('get-excelfile', (event: IpcMainEvent) => {
             this.getExcelFile(event);
@@ -537,11 +548,17 @@ class App {
         ipcMain.on('close-addNote', () => {
             App.destroyWindow(App.addNotesWindow);
         });
+        ipcMain.on('convertSdltm-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.convertSDLTMWindow, arg);
+        });
         ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.convertCsvWindow, arg);
         });
         ipcMain.on('convertExcel-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.convertExcelWindow, arg);
+        });
+        ipcMain.on('close-convertSdltm', () => {
+            App.destroyWindow(App.convertSDLTMWindow);
         });
         ipcMain.on('close-convertCsv', () => {
             App.destroyWindow(App.convertCsvWindow);
@@ -743,6 +760,8 @@ class App {
                     break;
                 case 'addProperty': parent = App.addPropertyWindow;
                     break;
+                case 'convertSDLTM': parent = App.convertSDLTMWindow;
+                    break;
                 case 'convertCSV': parent = App.convertCsvWindow;
                     break;
                 case 'convertExcel': parent = App.convertExcelWindow;
@@ -817,6 +836,8 @@ class App {
             new MenuItem({ type: 'separator' }),
             { label: 'Convert CSV/TAB Delimited File to TMX', click: () => { App.convertCSV(); } },
             { label: 'Export as TAB Delimited File...', click: () => { App.exportDelimited(); } },
+            new MenuItem({ type: 'separator' }),
+            { label: 'Convert SDLTM File to TMX', click: () => { App.convertSDLTM(); } },
             new MenuItem({ type: 'separator' }),
             { label: 'File Properties', click: () => { App.showFileInfo(); } },
             new MenuItem({ type: 'separator' }),
@@ -1877,6 +1898,31 @@ class App {
         App.setLocation(App.convertCsvWindow, 'convertCSV.html');
     }
 
+    static convertSDLTM(): void {
+        App.convertSDLTMWindow = new BrowserWindow({
+            parent: App.mainWindow,
+            width: 700,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        App.convertSDLTMWindow.setMenu(null);
+        App.convertSDLTMWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertSDLTM.html'));
+        App.convertSDLTMWindow.once('ready-to-show', () => {
+            App.convertSDLTMWindow.show();
+        });
+        App.convertSDLTMWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
+        App.setLocation(App.convertSDLTMWindow, 'convertSDLTM.html');
+    }
+
     static convertExcel(): void {
         App.convertExcelWindow = new BrowserWindow({
             parent: App.mainWindow,
@@ -1924,6 +1970,34 @@ class App {
                 App.showMessage({ type: 'error', message: reason });
             }
         );
+    }
+
+    convertSdltmTmx(arg: any): void {
+        App.destroyWindow(App.convertSDLTMWindow);
+        App.mainWindow.webContents.send('set-status', 'Converting...');
+        try {
+
+            new TMReader(arg.sdltmFile, arg.tmxFile, { productName: app.name, version: app.getVersion() }, (data: any) => {
+                App.mainWindow.webContents.send('set-status', '');
+                if (data.status === SUCCESS) {
+                    if (arg.openTMX) {
+                        if (App.currentFile !== '') {
+                            App.closeFile();
+                        }
+                        App.openFile(arg.tmxFile);
+                    } else {
+                        App.showMessage({ type: 'info', message: 'Converted ' + data.count + ' entries' });
+                    }
+                }
+                if (data.status === ERROR) {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            App.showMessage({ type: 'error', message: err.message });
+            return;
+        }
     }
 
     convertExcelTmx(arg: any): void {
@@ -2008,6 +2082,23 @@ class App {
         }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 event.sender.send('set-csvfile', value.filePaths[0]);
+            }
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
+        });
+    }
+
+    getSdltmFile(event: IpcMainEvent): void {
+        dialog.showOpenDialog({
+            title: 'Open SDLTM File',
+            properties: ['openFile'],
+            filters: [
+                { name: 'SDLTM File', extensions: ['sdltm'] },
+                { name: 'Any File', extensions: ['*'] }
+            ]
+        }).then((value: OpenDialogReturnValue) => {
+            if (!value.canceled) {
+                event.sender.send('set-sdltmfile', value.filePaths[0]);
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
@@ -3453,14 +3544,14 @@ class App {
             }
         });
         App.consolidateWindow.setMenu(null);
-        App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidateUnits.html'));
+        App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidate.html'));
         App.consolidateWindow.once('ready-to-show', () => {
             App.consolidateWindow.show();
         });
         App.consolidateWindow.on('close', () => {
             App.mainWindow.focus();
         });
-        App.setLocation(App.consolidateWindow, 'consolidateUnits.html');
+        App.setLocation(App.consolidateWindow, 'consolidate.html');
     }
 
     consolidateUnits(arg: any): void {
