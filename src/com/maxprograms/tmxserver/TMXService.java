@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -23,7 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,6 +36,11 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xml.sax.SAXException;
+
 import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.excel.ExcelReader;
@@ -44,8 +48,7 @@ import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.tmx.CountStore;
-import com.maxprograms.tmxserver.tmx.H2Store;
-import com.maxprograms.tmxserver.tmx.LanguagesStore;
+import com.maxprograms.tmxserver.tmx.MapDBStore;
 import com.maxprograms.tmxserver.tmx.MergeStore;
 import com.maxprograms.tmxserver.tmx.SimpleStore;
 import com.maxprograms.tmxserver.tmx.SplitStore;
@@ -62,11 +65,6 @@ import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.XMLOutputter;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xml.sax.SAXException;
 
 public class TMXService {
 
@@ -142,6 +140,9 @@ public class TMXService {
 				StringBuilder builder = new StringBuilder();
 				String line = "";
 				while ((line = buffer.readLine()) != null) {
+					if (!builder.isEmpty()) {
+						builder.append('\n');
+					}
 					builder.append(line);
 				}
 				JSONObject json = new JSONObject(builder.toString());
@@ -178,12 +179,8 @@ public class TMXService {
 			store = new SimpleStore();
 			long size = currentFile.length();
 			if (size > threshold * 1024 * 1024) {
-				logger.log(Level.INFO, "Using H2 store");
-				LanguagesStore langStore = new LanguagesStore();
-				TMXReader reader = new TMXReader(langStore);
-				reader.parse(currentFile);
-				Set<String> languages = langStore.getLanguages();
-				store = new H2Store(languages);
+				logger.log(Level.INFO, "Using MapDB store");
+				store = new MapDBStore();
 			}
 			parsingError = "";
 			Thread thread = new Thread() {
@@ -309,13 +306,8 @@ public class TMXService {
 	public JSONObject getCount() {
 		JSONObject result = new JSONObject();
 		if (store != null) {
-			try {
-				result.put("count", store.getCount());
-				result.put(Constants.STATUS, Constants.SUCCESS);
-			} catch (SQLException sql) {
-				result.put(Constants.STATUS, Constants.ERROR);
-				result.put(Constants.REASON, sql.getMessage());
-			}
+			result.put("count", store.getCount());
+			result.put(Constants.STATUS, Constants.SUCCESS);
 		} else {
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, Constants.NULLSTORE);
@@ -887,19 +879,15 @@ public class TMXService {
 		JSONObject result = new JSONObject();
 		if (parsing) {
 			result.put(Constants.STATUS, Constants.LOADING);
+			result.put(Constants.LOADED, store.getCount());
 		} else {
 			if (!parsingError.isEmpty()) {
 				result.put(Constants.STATUS, Constants.ERROR);
 				result.put(Constants.REASON, parsingError);
 			} else {
 				if (store != null) {
-					try {
-						result.put(Constants.STATUS, Constants.COMPLETED);
-						result.put("count", store.getCount());
-					} catch (SQLException sql) {
-						result.put(Constants.STATUS, Constants.ERROR);
-						result.put(Constants.REASON, sql.getMessage());
-					}
+					result.put(Constants.STATUS, Constants.COMPLETED);
+					result.put("count", store.getCount());
 				} else {
 					result.put(Constants.STATUS, Constants.ERROR);
 					result.put(Constants.REASON, Constants.NULLSTORE);

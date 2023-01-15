@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -150,7 +150,7 @@ class App {
             mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
-        this.ls = spawn(App.javapath, ['-cp', 'lib/h2-2.1.214.jar', '--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
+        this.ls = spawn(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
         execFileSync(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.CheckURL', 'http://localhost:8060/TMXServer'], { cwd: app.getAppPath(), windowsHide: true });
 
         App.locations = new Locations(App.path.join(app.getPath('appData'), app.name, 'locations.json'));
@@ -1141,7 +1141,6 @@ class App {
                 licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
                 title = 'MIT License';
                 break;
-            case "TypeScript":
             case "MapDB":
                 licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
                 title = 'Apache 2.0';
@@ -1151,8 +1150,9 @@ class App {
                 title = 'GPL2 with Classpath Exception';
                 break;
             case "OpenXLIFF":
+            case "XMLJava":
+            case "sdltm":
             case "TMXValidator":
-            case "H2":
                 licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
@@ -1236,6 +1236,7 @@ class App {
             (data: any) => {
                 App.currentStatus = data;
                 var intervalObject = setInterval(() => {
+                    let lastCount: number = 0;
                     if (App.currentStatus.status === COMPLETED) {
                         clearInterval(intervalObject);
                         App.getFileLanguages();
@@ -1251,6 +1252,10 @@ class App {
                     } else if (App.currentStatus.status === LOADING) {
                         // it's OK, keep waiting
                         App.mainWindow.webContents.send('status-changed', App.currentStatus);
+                        if (App.currentStatus.Loaded !== lastCount) {
+                            App.mainWindow.webContents.send('set-status', 'Loaded ' + App.currentStatus.Loaded + ' units...');
+                            lastCount = App.currentStatus.Loaded;
+                        }
                     } else if (App.currentStatus.status === ERROR) {
                         App.mainWindow.webContents.send('end-waiting');
                         App.mainWindow.webContents.send('set-status', '');
@@ -1355,7 +1360,7 @@ class App {
 
     static saveDefaults(): void {
         var defaults = App.mainWindow.getBounds();
-        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults));
+        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults, undefined, 4));
     }
 
     static loadSegments(): void {
@@ -1400,7 +1405,7 @@ class App {
     }
 
     static savePreferences(): void {
-        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(App.currentPreferences));
+        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(App.currentPreferences, undefined, 4));
     }
 
     static loadPreferences() {
@@ -1445,7 +1450,7 @@ class App {
             if (jsonData.files.length > 8) {
                 jsonData.files = jsonData.files.slice(0, 8);
             }
-            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData), (error: Error) => {
+            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData, undefined, 4), (error: Error) => {
                 if (error) {
                     App.showMessage({ type: 'error', message: error.message });
                     return;
@@ -3819,4 +3824,8 @@ class App {
 
 }
 
-new App(process.argv);
+try {
+    new App(process.argv);
+} catch (e) {
+    console.log("Unable to instantiate App();");
+}

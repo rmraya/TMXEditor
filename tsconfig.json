@@ -11,7 +11,9 @@
             "*": [
                 "node_modules/*"
             ]
-        }
+        },
+        "forceConsistentCasingInFileNames": true,
+        "strict": false
     },
     "include": [
         "ts/**/*"

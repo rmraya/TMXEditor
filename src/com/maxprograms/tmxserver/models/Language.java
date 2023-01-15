@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -59,7 +59,7 @@ public class Language implements Serializable, Comparable<Language> {
 	}
 
 	public boolean isCJK() {
-		return code.startsWith("zh") || code.startsWith("ja") || code.startsWith("ko") || code.startsWith("vi");
+		return LanguageUtils.isCJK(code);
 	}
 
 	@Override
@@ -74,11 +74,10 @@ public class Language implements Serializable, Comparable<Language> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Language)) {
-			return false;
+		if (obj instanceof Language lang) {
+			return code.equals(lang.getCode()) && name.equals(lang.getName());
 		}
-		Language lang = (Language) obj;
-		return code.equals(lang.getCode()) && name.equals(lang.getName());
+		return false;
 	}
 
 	@Override

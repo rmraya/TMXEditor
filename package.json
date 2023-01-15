@@ -1,7 +1,7 @@
 {
     "name": "tmxeditor",
     "productName": "TMXEditor",
-    "version": "2.11.0",
+    "version": "2.12.0",
     "description": "TMX Editor",
     "main": "js/app.js",
     "scripts": {
@@ -19,8 +19,7 @@
         "url": "https://github.com/rmraya/TMXEditor.git"
     },
     "devDependencies": {
-        "electron": "^21.1.0",
-        "typescript": "^4.8.4"
+        "electron": "^22.0.2"
     },
     "dependencies": {
         "sdltm": "^1.0.2"

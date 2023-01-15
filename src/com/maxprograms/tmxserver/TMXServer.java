@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -28,21 +28,20 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 public class TMXServer implements HttpHandler {
 
 	private static Logger logger = System.getLogger(TMXServer.class.getName());
 	private HttpServer server;
 	private TMXService service;
-	private boolean debug;
 
 	public TMXServer(Integer port) throws IOException {
 		server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -53,7 +52,6 @@ public class TMXServer implements HttpHandler {
 
 	public static void main(String[] args) {
 		String port = "8050";
-		boolean shouldDebug = false;
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			if (arg.equals("-version")) {
@@ -63,21 +61,13 @@ public class TMXServer implements HttpHandler {
 			if (arg.equals("-port") && (i + 1) < args.length) {
 				port = args[i + 1];
 			}
-			if (arg.equals("-debug")) {
-				shouldDebug = true;
-			}
 		}
 		try {
 			TMXServer instance = new TMXServer(Integer.valueOf(port));
-			instance.setDebug(shouldDebug);
 			instance.run();
 		} catch (Exception e) {
 			logger.log(Level.ERROR, "Server error", e);
 		}
-	}
-
-	private void setDebug(boolean value) {
-		debug = value;
 	}
 
 	private void run() {
@@ -94,9 +84,6 @@ public class TMXServer implements HttpHandler {
 			}
 			if (request.isBlank()) {
 				throw new IOException("Empty request");
-			}
-			if (debug) {
-				logger.log(Level.INFO, request);
 			}
 			String response = "";
 			JSONObject json = new JSONObject(request);
@@ -273,9 +260,6 @@ public class TMXServer implements HttpHandler {
 					unknown.put(Constants.REASON, "Unknown command");
 					unknown.put("received", json.toString());
 					response = unknown.toString();
-			}
-			if (debug) {
-				logger.log(Level.INFO, response);
 			}
 			t.getResponseHeaders().add("content-type", "application/json; charset=utf-8");
 			byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
@@ -722,10 +706,13 @@ public class TMXServer implements HttpHandler {
 	}
 
 	private static String getSystemInformation() {
-        JSONObject result = new JSONObject();
-        result.put("tmxeditor", Constants.VERSION + " Build: " + Constants.BUILD);
-        result.put("openxliff", com.maxprograms.converters.Constants.VERSION + " Build: " + com.maxprograms.converters.Constants.BUILD);
-        result.put("java", System.getProperty("java.version") + " Vendor: " + System.getProperty("java.vendor"));
-        return result.toString();
-    }
+		JSONObject result = new JSONObject();
+		result.put("tmxeditor", Constants.VERSION + " Build: " + Constants.BUILD);
+		result.put("openxliff",
+				com.maxprograms.converters.Constants.VERSION + " Build: " + com.maxprograms.converters.Constants.BUILD);
+		result.put("xmljava",
+				com.maxprograms.xml.Constants.VERSION + " Build: " + com.maxprograms.xml.Constants.BUILD);
+		result.put("java", System.getProperty("java.version") + " Vendor: " + System.getProperty("java.vendor"));
+		return result.toString();
+	}
 }

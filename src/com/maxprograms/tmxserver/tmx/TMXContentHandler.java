@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -56,7 +56,7 @@ class TMXContentHandler implements IContentHandler {
 			try {
 				db.storeTU(current);
 				count++;
-				if (count % 10000 == 0) {
+				if (count % 20000 == 0) {
 					db.commit();
 				}
 			} catch (Exception e) {

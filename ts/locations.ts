@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -57,7 +57,7 @@ export class Locations {
         });
         text = text.substr(0, text.length - 1) + '}'
         let json = JSON.parse(text);
-        writeFile(this.file, JSON.stringify(json), (err: Error) => {
+        writeFile(this.file, JSON.stringify(json, undefined, 4), (err: Error) => {
             if (err) throw err;
         });
     }

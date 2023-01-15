@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -19,8 +19,8 @@ public class Constants {
 	}
 
 	public static final String APPNAME = "TMXEditor";
-	public static final String VERSION = "2.11.0";
-	public static final String BUILD = "20221012_1622";
+	public static final String VERSION = "2.12.0";
+	public static final String BUILD = "20230114_0957";
 
 	public static final String REASON = "reason";
 	public static final String STATUS = "status";
@@ -33,5 +33,6 @@ public class Constants {
 	public static final String SAVING = "Saving";
 	public static final String PROCESSING = "Processing";
 	public static final String NULLSTORE = "Null Store";
+    public static final String LOADED = "Loaded";
 
 }

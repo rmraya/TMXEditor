@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -23,8 +23,7 @@ class Updates {
         this.electron.ipcRenderer.on('set-versions', (event: Electron.IpcRendererEvent, arg: any) => {
             document.getElementById('current').innerText = arg.current;
             document.getElementById('latest').innerText = arg.latest;
-            let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-            this.electron.ipcRenderer.send('updates-height', { width: body.clientWidth, height: body.clientHeight });
+            this.electron.ipcRenderer.send('updates-height', { width: document.body.clientWidth, height: document.body.clientHeight });
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {

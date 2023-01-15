@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -35,6 +35,7 @@ class SystemInformation {
     setInfo(info: any) {
         document.getElementById('tmxeditor').innerText = info.tmxeditor;
         document.getElementById('openxliff').innerText = info.openxliff;
+        document.getElementById('xmljava').innerText = info.xmljava;
         document.getElementById('java').innerText = info.java;
         document.getElementById('electron').innerText = info.electron;
     }

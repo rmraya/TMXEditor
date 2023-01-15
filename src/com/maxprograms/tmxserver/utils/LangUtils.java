@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -13,20 +13,17 @@
 package com.maxprograms.tmxserver.utils;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.models.Language;
-import com.maxprograms.xml.Document;
-import com.maxprograms.xml.Element;
-import com.maxprograms.xml.SAXBuilder;
-
-import org.xml.sax.SAXException;
 
 public class LangUtils {
 
@@ -39,16 +36,12 @@ public class LangUtils {
 
 	public static List<Language> getAllLanguages() throws SAXException, IOException, ParserConfigurationException {
 		if (languages == null) {
+			List<com.maxprograms.languages.Language> langs = LanguageUtils.getAllLanguages();
 			languages = new ArrayList<>();
-			URL url = LangUtils.class.getResource("lang_list.xml");
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(url);
-			Element root = doc.getRootElement();
-			List<Element> list = root.getChildren();
-			Iterator<Element> it = list.iterator();
+			Iterator<com.maxprograms.languages.Language> it = langs.iterator();
 			while (it.hasNext()) {
-				Element child = it.next();
-				Language lang = new Language(child.getAttributeValue("code"), child.getText());
+				com.maxprograms.languages.Language child = it.next();
+				Language lang = new Language(child.getCode(), child.getDescription());
 				languages.add(lang);
 			}
 		}

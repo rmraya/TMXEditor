@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -25,23 +25,23 @@ class Licenses {
         document.getElementById('electron').addEventListener('click', () => {
             this.openLicense('electron');
         });
-        document.getElementById('TypeScript').addEventListener('click', () => {
-            this.openLicense('TypeScript');
-        });
         document.getElementById('Java').addEventListener('click', () => {
             this.openLicense('Java');
         });
         document.getElementById('OpenXLIFF').addEventListener('click', () => {
             this.openLicense('OpenXLIFF');
         });
+        document.getElementById('XMLJava').addEventListener('click', () => {
+            this.openLicense('XMLJava');
+        });
+        document.getElementById('sdltm').addEventListener('click', () => {
+            this.openLicense('sdltm');
+        });
         document.getElementById('TMXValidator').addEventListener('click', () => {
             this.openLicense('TMXValidator');
         });
         document.getElementById('JSON').addEventListener('click', () => {
             this.openLicense('JSON');
-        });
-        document.getElementById('H2').addEventListener('click', () => {
-            this.openLicense('H2');
         });
         document.getElementById('MapDB').addEventListener('click', () => {
             this.openLicense('MapDB');
@@ -57,8 +57,7 @@ class Licenses {
                 this.electron.ipcRenderer.send('close-licenses');
             }
         });
-        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-        this.electron.ipcRenderer.send('licenses-height', { width: body.clientWidth, height: body.clientHeight });
+        this.electron.ipcRenderer.send('licenses-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     openLicense(type: string): void {

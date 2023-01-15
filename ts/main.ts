@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -86,10 +86,10 @@ class Main {
             document.getElementById('filterUnits').classList.remove('active');
         });
         this.electron.ipcRenderer.on('start-waiting', () => {
-            document.getElementById('body').classList.add("wait");
+            document.body.classList.add("wait");
         });
         this.electron.ipcRenderer.on('end-waiting', () => {
-            document.getElementById('body').classList.remove("wait");
+            document.body.classList.remove("wait");
         });
         this.electron.ipcRenderer.on('set-status', (event, arg) => {
             this.setStatus(arg);
@@ -387,7 +387,7 @@ class Main {
         let tr: HTMLTableRowElement = document.createElement('tr');
         thead.appendChild(tr);
 
-        let th1: HTMLTableHeaderCellElement = document.createElement('th');
+        let th1: HTMLTableCellElement = document.createElement('th');
         th1.classList.add('fixed');
         tr.appendChild(th1);
 
@@ -399,10 +399,10 @@ class Main {
         });
         th1.appendChild(selectAll);
 
-        let th2: HTMLTableHeaderCellElement = document.createElement('th');
+        let th2: HTMLTableCellElement = document.createElement('th');
         tr.appendChild(th2);
 
-        let th3: HTMLTableHeaderCellElement = document.createElement('th');
+        let th3: HTMLTableCellElement = document.createElement('th');
         tr.appendChild(th3);
 
         let tableBody: HTMLTableSectionElement = document.createElement('tbody');
@@ -1063,7 +1063,6 @@ class Main {
     }
 
     updateProperties(arg: any): void {
-        console.log(JSON.stringify(arg))
         this.attributesType = arg.type;
         document.getElementById('attributesSpan').innerHTML = this.attributesType;
         var table = document.getElementById('attributesTable');
@@ -1258,5 +1257,3 @@ class Main {
         document.getElementById('tableBody').insertBefore(tr, document.getElementById('tableBody').firstChild);
     }
 }
-
-new Main();

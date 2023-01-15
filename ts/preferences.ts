@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2022 Maxprograms.
+ * Copyright (c) 2023 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -35,8 +35,7 @@ class Preferences {
             }
         });
         document.getElementById('themeColor').focus();
-        let body: HTMLBodyElement = document.getElementById('body') as HTMLBodyElement;
-        this.electron.ipcRenderer.send('preferences-height', { width: body.clientWidth, height: body.clientHeight });
+        this.electron.ipcRenderer.send('preferences-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     setPreferences(arg: any): void {
