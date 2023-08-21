@@ -13,7 +13,8 @@
             ]
         },
         "forceConsistentCasingInFileNames": true,
-        "strict": false
+        "strict": false,
+        "esModuleInterop": true
     },
     "include": [
         "ts/**/*"

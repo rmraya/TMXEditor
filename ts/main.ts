@@ -31,10 +31,10 @@ class Main {
     properties: Array<string[]>;
     notes: string[];
 
-    currentId: string = null;
-    currentLang: string = null;
-    currentCell: HTMLTableCellElement = null;
-    currentContent: string = null;
+    currentId: string;
+    currentLang: string;
+    currentCell: HTMLTableCellElement;
+    currentContent: string;
     selectedUnits: string[] = [];
 
     static EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
@@ -74,16 +74,16 @@ class Main {
             this.deleteUnits();
         });
         this.electron.ipcRenderer.on('sort-on', () => {
-            document.getElementById('sortUnits').classList.add('active');
+            (document.getElementById('sortUnits') as HTMLAnchorElement).classList.add('active');
         });
         this.electron.ipcRenderer.on('sort-off', () => {
-            document.getElementById('sortUnits').classList.remove('active');
+            (document.getElementById('sortUnits') as HTMLAnchorElement).classList.remove('active');
         });
         this.electron.ipcRenderer.on('filters-on', () => {
-            document.getElementById('filterUnits').classList.add('active');
+            (document.getElementById('filterUnits') as HTMLAnchorElement).classList.add('active');
         });
         this.electron.ipcRenderer.on('filters-off', () => {
-            document.getElementById('filterUnits').classList.remove('active');
+            (document.getElementById('filterUnits') as HTMLAnchorElement).classList.remove('active');
         });
         this.electron.ipcRenderer.on('start-waiting', () => {
             document.body.classList.add("wait");
@@ -361,7 +361,7 @@ class Main {
                 event.cancelBubble = true;
                 this.lastPage();
             }
-            if (this.currentCell !== null && (event.key === 'PageDown' || event.key === 'PageUp') && !(event.ctrlKey || event.metaKey)) {
+            if (this.currentCell && (event.key === 'PageDown' || event.key === 'PageUp') && !(event.ctrlKey || event.metaKey)) {
                 // prevent scrolling while editing
                 event.preventDefault();
                 event.cancelBubble = true;
@@ -859,7 +859,7 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentId === null || this.currentId === '') {
+        if (!this.currentId || this.currentId === null || this.currentId === '') {
             return;
         }
         this.electron.ipcRenderer.send('edit-attributes', { id: this.currentId, atts: this.attributes, type: this.attributesType });
@@ -869,7 +869,7 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentId === null || this.currentId === '') {
+        if (!this.currentId || this.currentId === null || this.currentId === '') {
             return;
         }
         this.electron.ipcRenderer.send('edit-properties', { id: this.currentId, props: this.properties, type: this.attributesType });
@@ -879,7 +879,7 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentId === null || this.currentId === '') {
+        if (!this.currentId || this.currentId === null || this.currentId === '') {
             return;
         }
         this.electron.ipcRenderer.send('edit-notes', { id: this.currentId, notes: this.notes, type: this.attributesType });
@@ -952,10 +952,10 @@ class Main {
         this.maxPage = 0;
         this.isLoaded = false;
 
-        this.currentId = null;
-        this.currentLang = null;
-        this.currentCell = null;
-        this.currentContent = null;
+        this.currentId = undefined;
+        this.currentLang = undefined;
+        this.currentCell = undefined;
+        this.currentContent = undefined;
         this.selectedUnits = [];
     }
 
@@ -983,7 +983,7 @@ class Main {
         document.getElementById('propertiesSpan').innerHTML = 'TU';
         document.getElementById('notesTable').innerHTML = '';
         document.getElementById('notesSpan').innerHTML = 'TU';
-        this.currentId = null;
+        this.currentId = undefined;
         this.setStatus('');
     }
 
@@ -1040,15 +1040,15 @@ class Main {
             }
             lang = (event.target as Element).getAttribute('lang');
         }
-        if (this.currentCell !== null && this.currentCell.isContentEditable && (this.currentId !== id || this.currentLang !== lang)) {
+        if (this.currentCell && this.currentCell.isContentEditable && (this.currentId !== id || this.currentLang !== lang)) {
             this.saveEdit();
         }
 
         if (id) {
             this.currentId = id;
             if (this.currentCell) {
-                this.currentCell = null;
-                this.currentContent = null;
+                this.currentCell = undefined;
+                this.currentContent = undefined;
             }
             if (lang) {
                 this.currentLang = lang;
@@ -1130,7 +1130,7 @@ class Main {
     }
 
     firstPage(): void {
-        if (this.currentCell !== null && this.currentCell.isContentEditable) {
+        if (this.currentCell && this.currentCell.isContentEditable) {
             this.saveEdit();
         }
         this.currentPage = 0;
@@ -1140,7 +1140,7 @@ class Main {
 
     previousPage(): void {
         if (this.currentPage > 0) {
-            if (this.currentCell !== null && this.currentCell.isContentEditable) {
+            if (this.currentCell && this.currentCell.isContentEditable) {
                 this.saveEdit();
             }
             this.currentPage--;
@@ -1151,7 +1151,7 @@ class Main {
 
     nextPage(): void {
         if (this.currentPage < this.maxPage - 1) {
-            if (this.currentCell !== null && this.currentCell.isContentEditable) {
+            if (this.currentCell && this.currentCell.isContentEditable) {
                 this.saveEdit();
             }
             this.currentPage++;
@@ -1161,7 +1161,7 @@ class Main {
     }
 
     lastPage(): void {
-        if (this.currentCell !== null && this.currentCell.isContentEditable) {
+        if (this.currentCell && this.currentCell.isContentEditable) {
             this.saveEdit();
         }
         this.currentPage = this.maxPage - 1;
@@ -1184,7 +1184,7 @@ class Main {
             (document.getElementById('units_page') as HTMLInputElement).value = '' + this.unitsPage;
             this.maxPage = Math.ceil(this.unitsCount / this.unitsPage);
             document.getElementById('pages').innerText = '' + this.maxPage;
-            if (this.currentCell !== null && this.currentCell.isContentEditable) {
+            if (this.currentCell && this.currentCell.isContentEditable) {
                 this.saveEdit();
             }
             this.firstPage();
@@ -1203,7 +1203,7 @@ class Main {
             if (this.currentPage > this.maxPage - 1) {
                 this.currentPage = this.maxPage - 1;
             }
-            if (this.currentCell !== null && this.currentCell.isContentEditable) {
+            if (this.currentCell && this.currentCell.isContentEditable) {
                 this.saveEdit();
             }
             (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);

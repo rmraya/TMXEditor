@@ -16,6 +16,7 @@ import { IncomingMessage } from "electron/main";
 import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync, appendFileSync, unlinkSync } from "fs";
 import { Locations, Point } from "./locations";
 import { TMReader } from "sdltm";
+import path from "path";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -26,8 +27,6 @@ const SAVING: string = 'Saving';
 const PROCESSING: string = 'Processing';
 
 class App {
-
-    static path = require('path');
 
     static mainWindow: BrowserWindow;
     static newFileWindow: BrowserWindow;
@@ -71,7 +70,7 @@ class App {
     stopping: boolean = false;
     static shouldQuit: boolean = false;
 
-    static javapath: string = App.path.join(app.getAppPath(), 'bin', 'java');
+    static javapath: string = path.join(app.getAppPath(), 'bin', 'java');
     static iconPath: string;
 
     static saved: boolean = true;
@@ -114,8 +113,8 @@ class App {
 
     constructor(args: string[]) {
 
-        if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
-            mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
+        if (!existsSync(path.join(app.getPath('appData'), app.name))) {
+            mkdirSync(path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
         if (process.platform === 'win32' && args.length > 1 && args[1] !== '.') {
@@ -143,17 +142,17 @@ class App {
         }
 
         if (process.platform == 'win32') {
-            App.javapath = App.path.join(app.getAppPath(), 'bin', 'java.exe');
+            App.javapath = path.join(app.getAppPath(), 'bin', 'java.exe');
         }
 
-        if (!existsSync(App.path.join(app.getPath('appData'), app.name))) {
-            mkdirSync(App.path.join(app.getPath('appData'), app.name), { recursive: true });
+        if (!existsSync(path.join(app.getPath('appData'), app.name))) {
+            mkdirSync(path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
         this.ls = spawn(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060'], { cwd: app.getAppPath(), windowsHide: true });
         execFileSync(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.CheckURL', 'http://localhost:8060/TMXServer'], { cwd: app.getAppPath(), windowsHide: true });
 
-        App.locations = new Locations(App.path.join(app.getPath('appData'), app.name, 'locations.json'));
+        App.locations = new Locations(path.join(app.getPath('appData'), app.name, 'locations.json'));
 
         this.ls.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
@@ -197,7 +196,7 @@ class App {
 
         app.on('ready', () => {
             App.createWindow();
-            App.mainWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'index.html'));
+            App.mainWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'index.html'));
             App.mainWindow.on('resize', () => {
                 App.saveDefaults();
             });
@@ -222,9 +221,9 @@ class App {
         nativeTheme.on('updated', () => {
             if (App.currentPreferences.theme === 'system') {
                 if (nativeTheme.shouldUseDarkColors) {
-                    App.currentCss = 'file://' + App.path.join(app.getAppPath(), 'css', 'dark.css');
+                    App.currentCss = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
                 } else {
-                    App.currentCss = 'file://' + App.path.join(app.getAppPath(), 'css', 'light.css');
+                    App.currentCss = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
                 }
                 App.mainWindow.webContents.send('set-theme', App.currentCss);
             }
@@ -799,7 +798,7 @@ class App {
         });
         App.messageParam = arg;
         App.messagesWindow.setMenu(null);
-        App.messagesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'messages.html'));
+        App.messagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'messages.html'));
         App.messagesWindow.once('ready-to-show', () => {
             App.messagesWindow.show();
         });
@@ -810,7 +809,7 @@ class App {
     }
 
     static createWindow(): void {
-        App.iconPath = App.path.join(app.getAppPath(), 'icons', 'tmxeditor.png');
+        App.iconPath = path.join(app.getAppPath(), 'icons', 'tmxeditor.png');
         App.mainWindow = new BrowserWindow({
             title: 'TMXEditor',
             width: App.currentDefaults.width,
@@ -925,23 +924,25 @@ class App {
             ]);
             template.unshift(new MenuItem({ label: 'TMXEditor', role: 'appMenu', submenu: appleMenu }));
         } else {
-            var help: MenuItem = template.pop();
+            var help: MenuItem | undefined = template.pop();
             template.push(new MenuItem({
                 label: '&Settings', submenu: [
                     { label: 'Preferences', click: () => { App.showSettings(); } }
                 ]
             }));
-            template.push(help);
+            if (help) {
+                template.push(help);
+            }
         }
-        if (!existsSync(App.path.join(app.getPath('appData'), app.name, 'recent.json'))) {
-            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', (err: Error) => {
+        if (!existsSync(path.join(app.getPath('appData'), app.name, 'recent.json'))) {
+            writeFile(path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', (err: Error) => {
                 if (err) {
                     App.showMessage({ type: 'error', message: err.message });
                     return;
                 }
             });
         }
-        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, buf: Buffer) => {
+        readFile(path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, buf: Buffer) => {
             if (err instanceof Error) {
                 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
                 return;
@@ -950,9 +951,15 @@ class App {
             var files = jsonData.files;
             if (files !== undefined && files.length > 0) {
                 if (process.platform === 'darwin') {
-                    template[1].submenu.append(new MenuItem({ type: 'separator' }));
+                    let item: MenuItem = template[1];
+                    if (item.submenu) {
+                        item.submenu.append(new MenuItem({ type: 'separator' }));
+                    }
                 } else {
-                    template[0].submenu.append(new MenuItem({ type: 'separator' }));
+                    let item: MenuItem = template[0];
+                    if (item.submenu) {
+                        item.submenu.append(new MenuItem({ type: 'separator' }));
+                    }
                 }
                 for (let i: number = 0; i < files.length; i++) {
                     var file = files[i];
@@ -1021,7 +1028,7 @@ class App {
             }
         });
         App.aboutWindow.setMenu(null);
-        App.aboutWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'about.html'));
+        App.aboutWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'about.html'));
         App.aboutWindow.once('ready-to-show', () => {
             App.aboutWindow.show();
         });
@@ -1078,7 +1085,7 @@ class App {
             }
         });
         this.systemInfoWindow.setMenu(null);
-        this.systemInfoWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'systemInfo.html'));
+        this.systemInfoWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'systemInfo.html'));
         this.systemInfoWindow.once('ready-to-show', () => {
             this.systemInfoWindow.show();
         });
@@ -1119,7 +1126,7 @@ class App {
             }
         });
         App.licensesWindow.setMenu(null);
-        App.licensesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'licenses.html'));
+        App.licensesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'licenses.html'));
         App.licensesWindow.once('ready-to-show', () => {
             App.licensesWindow.show();
         });
@@ -1134,38 +1141,38 @@ class App {
         var title = '';
         switch (arg.type) {
             case 'TMXEditor':
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
             case "electron":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
                 title = 'MIT License';
                 break;
             case "MapDB":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
                 title = 'Apache 2.0';
                 break;
             case "Java":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
                 title = 'GPL2 with Classpath Exception';
                 break;
             case "OpenXLIFF":
             case "XMLJava":
             case "sdltm":
             case "TMXValidator":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
             case "JSON":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
                 title = 'JSON.org License';
                 break;
             case "jsoup":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'jsoup.txt');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'jsoup.txt');
                 title = 'MIT License';
                 break;
             case "DTDParser":
-                licenseFile = 'file://' + App.path.join(app.getAppPath(), 'html', 'licenses', 'LGPL2.1.txt');
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'LGPL2.1.txt');
                 title = 'LGPL 2.1';
                 break;
             default:
@@ -1190,7 +1197,7 @@ class App {
             licenseWindow.show();
         });
         licenseWindow.webContents.on('did-finish-load', () => {
-            readFile(App.currentCss.substring('file://'.length), (error: Error, data: Buffer) => {
+            readFile(App.currentCss.substring('file://'.length), (error: NodeJS.ErrnoException, data: Buffer) => {
                 if (!error) {
                     licenseWindow.webContents.insertCSS(data.toString());
                 }
@@ -1203,7 +1210,7 @@ class App {
     }
 
     static showHelp(): void {
-        shell.openExternal('file://' + App.path.join(app.getAppPath(), 'tmxeditor.pdf'),
+        shell.openExternal('file://' + path.join(app.getAppPath(), 'tmxeditor.pdf'),
             { activate: true, workingDirectory: app.getAppPath() }
         ).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
@@ -1360,7 +1367,7 @@ class App {
 
     static saveDefaults(): void {
         var defaults = App.mainWindow.getBounds();
-        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults, undefined, 4));
+        writeFileSync(path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults, undefined, 4));
     }
 
     static loadSegments(): void {
@@ -1394,9 +1401,9 @@ class App {
 
     static loadDefaults(): void {
         App.currentDefaults = { width: 950, height: 700, x: 0, y: 0 };
-        if (existsSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'))) {
+        if (existsSync(path.join(app.getPath('appData'), app.name, 'defaults.json'))) {
             try {
-                var data: Buffer = readFileSync(App.path.join(app.getPath('appData'), app.name, 'defaults.json'));
+                var data: Buffer = readFileSync(path.join(app.getPath('appData'), app.name, 'defaults.json'));
                 App.currentDefaults = JSON.parse(data.toString());
             } catch (err) {
                 console.log(err);
@@ -1405,14 +1412,14 @@ class App {
     }
 
     static savePreferences(): void {
-        writeFileSync(App.path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(App.currentPreferences, undefined, 4));
+        writeFileSync(path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(App.currentPreferences, undefined, 4));
     }
 
     static loadPreferences() {
         App.currentPreferences = { theme: 'system', indentation: 2, threshold: 200 };
-        let dark: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'dark.css');
-        let light: string = 'file://' + App.path.join(app.getAppPath(), 'css', 'light.css');
-        let preferencesFile = App.path.join(app.getPath('appData'), app.name, 'preferences.json');
+        let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
+        let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
+        let preferencesFile = path.join(app.getPath('appData'), app.name, 'preferences.json');
         if (!existsSync(preferencesFile)) {
             this.savePreferences();
         }
@@ -1438,7 +1445,7 @@ class App {
     }
 
     static saveRecent(file: string): void {
-        readFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, data: Buffer) => {
+        readFile(path.join(app.getPath('appData'), app.name, 'recent.json'), (err: Error, data: Buffer) => {
             if (err instanceof Error) {
                 return;
             }
@@ -1450,7 +1457,7 @@ class App {
             if (jsonData.files.length > 8) {
                 jsonData.files = jsonData.files.slice(0, 8);
             }
-            writeFile(App.path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData, undefined, 4), (error: Error) => {
+            writeFile(path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData, undefined, 4), (error: Error) => {
                 if (error) {
                     App.showMessage({ type: 'error', message: error.message });
                     return;
@@ -1506,7 +1513,7 @@ class App {
         });
         App.attributesArg = arg;
         App.attributesWindow.setMenu(null);
-        App.attributesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'attributes.html'));
+        App.attributesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'attributes.html'));
         App.attributesWindow.once('ready-to-show', () => {
             App.attributesWindow.show();
         });
@@ -1559,7 +1566,7 @@ class App {
         });
         App.propertiesArg = arg;
         App.propertiesWindow.setMenu(null);
-        App.propertiesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'properties.html'));
+        App.propertiesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'properties.html'));
         App.propertiesWindow.once('ready-to-show', () => {
             App.propertiesWindow.show();
         });
@@ -1586,7 +1593,7 @@ class App {
             }
         });
         App.addPropertyWindow.setMenu(null);
-        App.addPropertyWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addProperty.html'));
+        App.addPropertyWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'addProperty.html'));
         App.addPropertyWindow.once('ready-to-show', () => {
             App.addPropertyWindow.show();
         });
@@ -1644,7 +1651,7 @@ class App {
         });
         App.notesArg = arg;
         App.notesWindow.setMenu(null);
-        App.notesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'notes.html'));
+        App.notesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'notes.html'));
         App.notesWindow.once('ready-to-show', () => {
             App.notesWindow.show();
         });
@@ -1671,7 +1678,7 @@ class App {
             }
         });
         App.addNotesWindow.setMenu(null);
-        App.addNotesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addNote.html'));
+        App.addNotesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'addNote.html'));
         App.addNotesWindow.once('ready-to-show', () => {
             App.addNotesWindow.show();
         });
@@ -1728,7 +1735,7 @@ class App {
             }
         });
         App.settingsWindow.setMenu(null);
-        App.settingsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'preferences.html'));
+        App.settingsWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'preferences.html'));
         App.settingsWindow.once('ready-to-show', () => {
             App.settingsWindow.show();
         });
@@ -1757,7 +1764,7 @@ class App {
             }
         });
         App.newFileWindow.setMenu(null);
-        App.newFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'newFile.html'));
+        App.newFileWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'newFile.html'));
         App.newFileWindow.once('ready-to-show', () => {
             App.newFileWindow.show();
         });
@@ -1893,7 +1900,7 @@ class App {
             }
         });
         App.convertCsvWindow.setMenu(null);
-        App.convertCsvWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertCSV.html'));
+        App.convertCsvWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'convertCSV.html'));
         App.convertCsvWindow.once('ready-to-show', () => {
             App.convertCsvWindow.show();
         });
@@ -1918,7 +1925,7 @@ class App {
             }
         });
         App.convertSDLTMWindow.setMenu(null);
-        App.convertSDLTMWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertSDLTM.html'));
+        App.convertSDLTMWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'convertSDLTM.html'));
         App.convertSDLTMWindow.once('ready-to-show', () => {
             App.convertSDLTMWindow.show();
         });
@@ -1943,7 +1950,7 @@ class App {
             }
         });
         App.convertExcelWindow.setMenu(null);
-        App.convertExcelWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'convertExcel.html'));
+        App.convertExcelWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'convertExcel.html'));
         App.convertExcelWindow.once('ready-to-show', () => {
             App.convertExcelWindow.show();
         });
@@ -2163,7 +2170,7 @@ class App {
             }
         });
         App.csvLanguagesWindow.setMenu(null);
-        App.csvLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'csvLanguages.html'));
+        App.csvLanguagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'csvLanguages.html'));
         App.csvLanguagesWindow.once('ready-to-show', () => {
             App.csvLanguagesWindow.show();
         });
@@ -2196,7 +2203,7 @@ class App {
             }
         });
         App.excelLanguagesWindow.setMenu(null);
-        App.excelLanguagesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'excelLanguages.html'));
+        App.excelLanguagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'excelLanguages.html'));
         App.excelLanguagesWindow.once('ready-to-show', () => {
             App.excelLanguagesWindow.show();
         });
@@ -2354,7 +2361,7 @@ class App {
             }
         });
         App.fileInfoWindow.setMenu(null);
-        App.fileInfoWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'fileInfo.html'));
+        App.fileInfoWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'fileInfo.html'));
         App.fileInfoWindow.once('ready-to-show', () => {
             App.fileInfoWindow.show();
         });
@@ -2516,7 +2523,7 @@ class App {
             }
         });
         App.splitFileWindow.setMenu(null);
-        App.splitFileWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'splitFile.html'));
+        App.splitFileWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'splitFile.html'));
         App.splitFileWindow.once('ready-to-show', () => {
             App.splitFileWindow.show();
         });
@@ -2609,7 +2616,7 @@ class App {
             }
         });
         App.mergeFilesWindow.setMenu(null);
-        App.mergeFilesWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
+        App.mergeFilesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'mergeFiles.html'));
         App.mergeFilesWindow.once('ready-to-show', () => {
             App.mergeFilesWindow.show();
         });
@@ -2757,7 +2764,7 @@ class App {
             }
         });
         App.replaceTextWindow.setMenu(null);
-        App.replaceTextWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'searchReplace.html'));
+        App.replaceTextWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'searchReplace.html'));
         App.replaceTextWindow.once('ready-to-show', () => {
             App.replaceTextWindow.show();
         });
@@ -2842,7 +2849,7 @@ class App {
             }
         });
         App.sortUnitsWindow.setMenu(null);
-        App.sortUnitsWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'sortUnits.html'));
+        App.sortUnitsWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'sortUnits.html'));
         App.sortUnitsWindow.once('ready-to-show', () => {
             App.sortUnitsWindow.show();
         });
@@ -2885,7 +2892,7 @@ class App {
             }
         });
         App.filtersWindow.setMenu(null);
-        App.filtersWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'filters.html'));
+        App.filtersWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'filters.html'));
         App.filtersWindow.once('ready-to-show', () => {
             App.filtersWindow.show();
         });
@@ -3004,7 +3011,7 @@ class App {
             }
         });
         App.changeLanguageWindow.setMenu(null);
-        App.changeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'changeLanguage.html'));
+        App.changeLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'changeLanguage.html'));
         App.changeLanguageWindow.once('ready-to-show', () => {
             App.changeLanguageWindow.show();
         });
@@ -3091,7 +3098,7 @@ class App {
             }
         });
         App.removeLanguageWindow.setMenu(null);
-        App.removeLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeLanguage.html'));
+        App.removeLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'removeLanguage.html'));
         App.removeLanguageWindow.once('ready-to-show', () => {
             App.removeLanguageWindow.show();
         });
@@ -3139,7 +3146,7 @@ class App {
             }
         });
         App.addLanguageWindow.setMenu(null);
-        App.addLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'addLanguage.html'));
+        App.addLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'addLanguage.html'));
         App.addLanguageWindow.once('ready-to-show', () => {
             App.addLanguageWindow.show();
         });
@@ -3187,7 +3194,7 @@ class App {
             }
         });
         App.srcLanguageWindow.setMenu(null);
-        App.srcLanguageWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
+        App.srcLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'srcLanguage.html'));
         App.srcLanguageWindow.once('ready-to-show', () => {
             App.srcLanguageWindow.show();
         });
@@ -3351,7 +3358,7 @@ class App {
             }
         });
         App.removeUntranslatedWindow.setMenu(null);
-        App.removeUntranslatedWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeUntranslated.html'));
+        App.removeUntranslatedWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'removeUntranslated.html'));
         App.removeUntranslatedWindow.once('ready-to-show', () => {
             App.removeUntranslatedWindow.show();
         });
@@ -3380,7 +3387,7 @@ class App {
             }
         });
         App.removeSameAsSourceWindow.setMenu(null);
-        App.removeSameAsSourceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'removeSameAsSource.html'));
+        App.removeSameAsSourceWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'removeSameAsSource.html'));
         App.removeSameAsSourceWindow.once('ready-to-show', () => {
             App.removeSameAsSourceWindow.show();
         });
@@ -3549,7 +3556,7 @@ class App {
             }
         });
         App.consolidateWindow.setMenu(null);
-        App.consolidateWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'consolidate.html'));
+        App.consolidateWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'consolidate.html'));
         App.consolidateWindow.once('ready-to-show', () => {
             App.consolidateWindow.show();
         });
@@ -3623,7 +3630,7 @@ class App {
             }
         });
         App.maintenanceWindow.setMenu(null);
-        App.maintenanceWindow.loadURL('file://' + App.path.join(app.getAppPath(), 'html', 'maintenance.html'));
+        App.maintenanceWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'maintenance.html'));
         App.maintenanceWindow.once('ready-to-show', () => {
             App.maintenanceWindow.show();
         });
@@ -3793,7 +3800,7 @@ class App {
                                 }
                             });
                             App.updatesWindow.setMenu(null);
-                            App.updatesWindow.loadURL('file://' + this.path.join(app.getAppPath(), 'html', 'updates.html'));
+                            App.updatesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', 'updates.html'));
                             App.updatesWindow.once('ready-to-show', () => {
                                 App.updatesWindow.show();
                             });
