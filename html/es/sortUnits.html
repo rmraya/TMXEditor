@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ordenar Unidades de Traducci&oacute;n</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new SortUnits();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="sortLanguage">Idioma de Ordenamiento</label></td>
+            <td class="middle fill_width">
+                <select id="sortLanguage" class="table_select">
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="middle"><input type="checkbox" id="descending"></td>
+            <td class="middle noWrap fill_width"><label for="descending" checked style="margin-top: 2px;">Orden Descendente</label></td>
+        </tr>
+    </table>
+
+    <div class="buttonArea">
+        <button id="sort">Ordenar Unidades de Traducci&oacute;n</button> <button id="clearSort">Cancelar Ordenamiento</button>
+    </div>
+    <script src="../../js/sortUnits.js"></script>
+</body>
+
+</html>

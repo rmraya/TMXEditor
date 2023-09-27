@@ -29,15 +29,15 @@ import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.SAXBuilder;
 
-import org.xml.sax.SAXException;
-
 public class ExcelReader {
 
-    private static String SEP = System.getProperty("file.separator");
+    private static final String SEP = System.getProperty("file.separator");
     private SAXBuilder builder;
     private List<String> strings;
     private List<Sheet> sheets;

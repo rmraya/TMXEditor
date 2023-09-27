@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Split TMX File</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new SplitFile();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="file">TMX File</label></td>
+            <td class="middle fill_width"><input type="text" id="file" class="fill_width"></td>
+            <td class="middle"><Button id="browseFiles">Browse...</Button></td>
+        </tr>
+    </table>
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="parts">Number of parts</label></td>
+            <td class="middle fill_width"><input type="number" min="2" id="parts" value="2"></td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="splitFile">Split TMX File</button>
+    </div>
+    <script src="../../js/splitFile.js"></script>
+</body>
+
+</html>

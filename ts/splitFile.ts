@@ -41,12 +41,12 @@ class SplitFile {
     }
 
     splitFile(): void {
-        var file: string = (document.getElementById('file') as HTMLInputElement).value;
+        let file: string = (document.getElementById('file') as HTMLInputElement).value;
         if (file === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'splitFile' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'splitFile', key: 'selectTmx', parent: 'splitFile' });
             return;
         }
-        var parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
+        let parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
         this.electron.ipcRenderer.send('split-tmx', { file: file, parts: parts });
     }
 

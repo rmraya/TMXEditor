@@ -14,7 +14,7 @@ class ExcelLanguages {
 
     electron = require('electron');
 
-    options: string = '<option value="none">Select Language</option>';
+    options: string = '';
     columns: string[];
 
     constructor() {
@@ -23,10 +23,9 @@ class ExcelLanguages {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('all-languages');
-        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.languagesList(arg);
         });
-
         this.electron.ipcRenderer.on('set-excel-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setExcelLangArgs(arg);
         });
@@ -44,9 +43,8 @@ class ExcelLanguages {
         this.electron.ipcRenderer.send('excelLanguages-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    languagesList(arg: any): void {
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    languagesList(langs: Language[]): void {
+        for (let lang of langs) {
             this.options = this.options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         this.electron.ipcRenderer.send('get-excel-lang-args');
@@ -54,25 +52,25 @@ class ExcelLanguages {
 
     setExcelLangArgs(arg: any): void {
         this.columns = arg.columns;
-        var rows: string = '';
+        let rows: string = '';
         for (let i = 0; i < this.columns.length; i++) {
-            rows = rows + '<tr><td class="noWrap middle">Column ' + this.columns[i] + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
+            rows = rows + '<tr><td class="noWrap middle">' + arg.labels[i] + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
         }
         document.getElementById('langsTable').innerHTML = rows;
-        var langs: string[] = arg.languages;
+        let langs: string[] = arg.languages;
         for (let i = 0; i < langs.length; i++) {
             (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
         }
     }
 
     setExcelLanguages(): void {
-        var langs: string[] = [];
+        let langs: string[] = [];
         for (let i = 0; i < this.columns.length; i++) {
-            var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
+            let lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
             if (lang !== 'none') {
                 langs.push(lang);
             } else {
-                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages', parent: 'excelLanguages' });
+                this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'excelLanguages', key: 'selectAllLanguages', parent: 'excelLanguages' });
                 return;
             }
         }

@@ -15,14 +15,14 @@ package com.maxprograms.tmxserver.tmx;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
 import com.maxprograms.xml.Catalog;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.IContentHandler;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
 
 class TMXContentHandler implements IContentHandler {
 
@@ -111,7 +111,7 @@ class TMXContentHandler implements IContentHandler {
 			stack.push(current);
 		} else {
 			Element child = new Element(qName);
-			if (!qName.equals("ut")) { 
+			if (!qName.equals("ut")) {
 				current.addContent(child);
 			}
 			stack.push(current);
@@ -169,7 +169,7 @@ class TMXContentHandler implements IContentHandler {
 
 	@Override
 	public void setCatalog(Catalog arg0) {
-		// do nothing		
+		// do nothing
 	}
 
 }

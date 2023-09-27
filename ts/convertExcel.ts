@@ -132,7 +132,7 @@ class ConvertExcel {
             thead.appendChild(headRow);
             previewTable.appendChild(thead);
             for (let h = 0; h < sheet.columns; h++) {
-                let th: HTMLTableHeaderCellElement = document.createElement('th');
+                let th: HTMLTableCellElement = document.createElement('th');
                 th.id = sheetData[0][h];
                 th.innerText = sheetData[0][h];
                 headRow.appendChild(th);
@@ -164,9 +164,9 @@ class ConvertExcel {
         let preview: HTMLDivElement = document.getElementById('preview') as HTMLDivElement;
         preview.innerHTML = '';
         preview.appendChild(this.previewTables[selected]);
-        for (let i = 0; i < this.columns[selected].length; i++) {
-            let th: HTMLTableHeaderCellElement = document.getElementById(this.columns[selected][i]) as HTMLTableHeaderCellElement;
-            th.innerText = this.columns[selected][i];
+        for (let column of this.columns[selected]) {
+            let th: HTMLTableCellElement = document.getElementById(column) as HTMLTableCellElement;
+            th.innerText = column;
         }
         this.langs = [];
     }
@@ -174,7 +174,7 @@ class ConvertExcel {
     getLanguages(): void {
         let excelFile: HTMLInputElement = document.getElementById('excelFile') as HTMLInputElement;
         if (excelFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select Excel file', parent: 'convertExcel' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertExcel', key: 'selectExcel', parent: 'convertExcel' });
             return;
         }
         let sheetSelect: HTMLSelectElement = document.getElementById('sheetSelect') as HTMLSelectElement;
@@ -187,7 +187,7 @@ class ConvertExcel {
         let sheetSelect: HTMLSelectElement = document.getElementById('sheetSelect') as HTMLSelectElement;
         let selected: number = sheetSelect.selectedIndex;
         for (let i = 0; i < this.columns[selected].length; i++) {
-            let th: HTMLTableHeaderCellElement = document.getElementById(this.columns[selected][i]) as HTMLTableHeaderCellElement;
+            let th: HTMLTableCellElement = document.getElementById(this.columns[selected][i]) as HTMLTableCellElement;
             th.innerText = this.columns[selected][i] + ' (' + this.langs[i] + ')';
         }
         (document.getElementById('convert') as HTMLButtonElement).focus();
@@ -196,16 +196,16 @@ class ConvertExcel {
     convertExcel(): void {
         let excelFile: HTMLInputElement = document.getElementById('excelFile') as HTMLInputElement;
         if (excelFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select Excel file', parent: 'convertExcel' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertExcel', key: 'selectExcel', parent: 'convertExcel' });
             return;
         }
         let tmxFile: HTMLInputElement = document.getElementById('tmxFile') as HTMLInputElement;
         if (tmxFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'convertExcel' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertExcel', key: 'selectTmx', parent: 'convertExcel' });
             return;
         }
         if (this.langs.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages', parent: 'convertExcel' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertExcel', key: 'setLanguages', parent: 'convertExcel' });
             return;
         }
         let sheetSelect: HTMLSelectElement = document.getElementById('sheetSelect') as HTMLSelectElement;

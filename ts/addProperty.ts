@@ -37,27 +37,27 @@ class AddProperty {
     }
 
     saveProperty(): void {
-        var type: string = (document.getElementById('type') as HTMLInputElement).value;
+        let type: string = (document.getElementById('type') as HTMLInputElement).value;
         if (type === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter type', parent: 'addProperty' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'addProperty', key: 'enterType', parent: 'addProperty' });
             return;
         }
-        var value: string = (document.getElementById('value') as HTMLInputElement).value;
+        let value: string = (document.getElementById('value') as HTMLInputElement).value;
         if (value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter value', parent: 'addProperty' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'addProperty', key: 'enterValue', parent: 'addProperty' });
             return;
         }
         if (!this.validateType(type)) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Invalid type', parent: 'addProperty' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'addProperty', key: 'invalidType', parent: 'addProperty' });
             return;
         }
         this.electron.ipcRenderer.send('add-new-property', { type: type, value: value });
     }
 
     validateType(type: string): boolean {
-        var length: number = type.length;
+        let length: number = type.length;
         for (let i = 0; i < length; i++) {
-            var c: string = type.charAt(i);
+            let c: string = type.charAt(i);
             if (c === ' ' || c === '<' || c === '&') {
                 return false;
             }

@@ -133,7 +133,7 @@ public class TMXCopyHandler implements ContentHandler, LexicalHandler {
 		String result = string.replace("&", "&amp;");
 		result = result.replace("<", "&lt;");
 		result = result.replace(">", "&gt;");
-		return result.replaceAll("\"", "&quot;");
+		return result.replace("\"", "&quot;");
 	}
 
 	@Override

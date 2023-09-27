@@ -56,8 +56,8 @@ class Properties {
     }
 
     saveProperties(): void {
-        var lang = this.currentType === 'TU' ? '' : this.currentType;
-        var arg = {
+        let lang = this.currentType === 'TU' ? '' : this.currentType;
+        let arg = {
             id: this.currentId,
             lang: lang,
             properties: this.props
@@ -70,17 +70,16 @@ class Properties {
     }
 
     setNewProperty(arg: any): void {
-        var prop: string[] = [arg.type, arg.value];
+        let prop: string[] = [arg.type, arg.value];
         this.props.push(prop);
         this.drawProperties();
         (document.getElementById('save') as HTMLButtonElement).focus();
     }
 
     deleteProperties(): void {
-        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
-        for (let i = 0; i < collection.length; i++) {
-            var check = collection[i] as HTMLInputElement;
-            if (check.checked) {
+        let collection: HTMLCollectionOf<Element> = document.getElementsByClassName('rowCheck');
+        for (let check of collection) {
+            if ((check as HTMLInputElement).checked) {
                 this.removeProperty(check.parentElement.parentElement.id);
             }
         }
@@ -89,18 +88,17 @@ class Properties {
     }
 
     drawProperties(): void {
-        var rows: string = '';
-        for (let i = 0; i < this.props.length; i++) {
-            var pair: string[] = this.props[i];
+        let rows: string = '';
+        for (let pair of this.props) {
             rows = rows + '<tr id="' + pair[0] + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + pair[0] + '</td><td class="noWrap">' + pair[1] + '</td></tr>';
         }
         document.getElementById('propsTable').innerHTML = rows;
     }
 
     removeProperty(type: string): void {
-        var copy: Array<string[]> = [];
+        let copy: Array<string[]> = [];
         for (let i = 0; i < this.props.length; i++) {
-            var pair: string[] = this.props[i];
+            let pair: string[] = this.props[i];
             if (pair[0] !== type) {
                 copy.push(pair);
             }

@@ -85,7 +85,7 @@ public class TMXConverter {
 
 					String[] parts = getParts(line, columnsSeparator, textDelimiter, optionalDelims);
 					if (parts.length != languages.size()) {
-						throw new IOException("Wrong number of columns. Review optional delimiters.");
+						throw new IOException(Messages.getString("TMXConverter.0"));
 					}
 					for (int i = 0; i < parts.length; i++) {
 						String cell = parts[i];

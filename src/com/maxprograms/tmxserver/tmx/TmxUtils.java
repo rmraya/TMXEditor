@@ -256,7 +256,7 @@ public class TmxUtils {
 	}
 
 	private static String unquote(String string) {
-		return string.replaceAll("\"", "\u200B\u2033");
+		return string.replace("\"", "\u200B\u2033");
 	}
 
 	private static String cleanAngles(String string) {

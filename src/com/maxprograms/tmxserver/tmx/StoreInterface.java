@@ -21,7 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import com.maxprograms.tmxserver.models.Language;
+import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.xml.Element;
 

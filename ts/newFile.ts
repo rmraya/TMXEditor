@@ -20,7 +20,7 @@ class NewFile {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('all-languages');
-        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.languagesList(arg);
         });
         document.getElementById('createFile').addEventListener('click', () => {
@@ -37,12 +37,11 @@ class NewFile {
         this.electron.ipcRenderer.send('newFile-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    languagesList(arg: any): void {
-        var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
-        var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    languagesList(langs: Language[]): void {
+        let srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
+        let tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         srcLanguage.innerHTML = options;
@@ -50,10 +49,18 @@ class NewFile {
     }
 
     createFile(): void {
-        var srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
-        var tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
+        let srcLanguage: HTMLSelectElement = document.getElementById('srcLanguage') as HTMLSelectElement;
+        let tgtLanguage: HTMLSelectElement = document.getElementById('tgtLanguage') as HTMLSelectElement;
+        if (srcLanguage.value === 'none') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'newFile', key: 'selectSrcLanguageWarning', parent: 'newFile' });
+            return;
+        }
+        if (tgtLanguage.value === 'none') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'newFile', key: 'selectTgtLanguageWarning', parent: 'newFile' });
+            return;
+        }
         if (srcLanguage.value === tgtLanguage.value) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select different languages', parent: 'newFile' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'newFile', key: 'selectDifferentLanguages', parent: 'newFile' });
             return;
         }
         this.electron.ipcRenderer.send('create-file', { srcLang: srcLanguage.value, tgtLang: tgtLanguage.value });

@@ -23,7 +23,7 @@ class ConvertCSV {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('get-charsets');
-        this.electron.ipcRenderer.on('set-charsets', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('set-charsets', (event: Electron.IpcRendererEvent, arg: string[]) => {
             this.setCharsets(arg);
         });
         this.electron.ipcRenderer.on('set-csvfile', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -77,10 +77,10 @@ class ConvertCSV {
         this.electron.ipcRenderer.send('convertCsv-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });
     }
 
-    setCharsets(arg: string[]): void {
+    setCharsets(charsets: string[]): void {
         let options: string = '';
-        for (let i = 0; i < arg.length; i++) {
-            options = options + '<option value="' + arg[i] + '">' + arg[i] + '</option>';
+        for (let charset of charsets) {
+            options = options + '<option value="' + charset + '">' + charset + '</option>';
         }
         let charSets = (document.getElementById('charSets') as HTMLSelectElement);
         charSets.innerHTML = options;
@@ -160,6 +160,9 @@ class ConvertCSV {
 
     setPreview(arg: any): void {
         this.columns = arg.cols;
+        if (arg.langCodes.length > 0) {
+            this.langs = arg.langCodes.splice(0);
+        }
         document.getElementById('preview').innerHTML = arg.preview;
         document.getElementById('columns').innerHTML = '' + this.columns;
     }
@@ -167,11 +170,11 @@ class ConvertCSV {
     setLanguages(): void {
         let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'selectCsv', parent: 'convertCSV' });
             return;
         }
         if (this.columns === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Columns not detected', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'columnsNotDetected', parent: 'convertCSV' });
             return;
         }
         this.electron.ipcRenderer.send('get-csv-languages', { columns: this.columns, languages: this.langs });
@@ -186,20 +189,20 @@ class ConvertCSV {
     convertFile(): void {
         let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select CSV/Text file', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'selectCsv', parent: 'convertCSV' });
             return;
         }
         let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'selectTmx', parent: 'convertCSV' });
             return;
         }
         if (this.langs.length < 2) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'setLanguages', parent: 'convertCSV' });
             return;
         }
         if (this.langs.length != this.columns) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Set languages for all columns', parent: 'convertCSV' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'convertCSV', key:'setAllLanguages', parent: 'convertCSV' });
             return;
         }
 

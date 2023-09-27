@@ -19,11 +19,11 @@ class ChangeLanguages {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
-        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.languageList(arg)
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -46,21 +46,19 @@ class ChangeLanguages {
         this.electron.ipcRenderer.send('changeLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    languageList(arg: any): void {
-        var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    languageList(langs: Language[]): void {
+        let newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         newLanguage.innerHTML = options;
     }
 
-    filterLanguages(arg: any): void {
-        var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    filterLanguages(langs: Language[]): void {
+        let currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         currentLanguage.innerHTML = options;
@@ -68,8 +66,12 @@ class ChangeLanguages {
     }
 
     changeLanguage(): void {
-        var currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
-        var newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
+        let currentLanguage: HTMLSelectElement = document.getElementById('currentLanguage') as HTMLSelectElement;
+        let newLanguage: HTMLSelectElement = document.getElementById('newLanguage') as HTMLSelectElement;
+        if (newLanguage.value === 'none') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'changeLanguage', key: 'selectLanguageWarning', parent: 'changeLanguage' });
+            return;
+        }
         this.electron.ipcRenderer.send('change-language', { oldLanguage: currentLanguage.value, newLanguage: newLanguage.value });
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reemplazar Texto</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new SearchReplace();">
+
+    <table class="table_width">
+        <tr>
+            <td class="middle noWrap"><label for="searchText">Texto a Buscar</label></td>
+            <td class="middle fill_width"><input type="text" id="searchText" class="table_input"></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="replaceText">Reemplazar con</label></td>
+            <td class="middle fill_width"><input type="text" id="replaceText" class="table_input"></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="language">Idioma</label></td>
+            <td class="middle fill_width">
+                <select id="language" class="table_input">
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <input type="checkbox" id="regularExpression" style="margin-left: 10px;">
+        <label for="regularExpression" style="margin-top: 2px;">Expresi&oacute;n Regular</label>
+    </div>
+
+    <div class="buttonArea">
+        <button id="replace">Reemplazar Texto</button>
+    </div>
+    <script src="../../js/keyboardHandler.js"></script>
+    <script src="../../js/searchReplace.js"></script>
+</body>
+
+</html>

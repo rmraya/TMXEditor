@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Preferences</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new Preferences();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="sourceSelect">Application Language</label></td>
+            <td class="middle fill_width">
+                <select id="appLangSelect"  class="table_select">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="themeColor">Theme</label></td>
+            <td class="middle fill_width">
+                <select id="themeColor" class="table_select">
+                    <option value="system">System Default</option>
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="threshold">Max File size for<br>&nbsp;Memory Storage</label></td>
+            <td class="middle fill_width noWrap">
+                <select id="threshold">
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="500">500</option>
+                    <option value="1000">1000</option>
+                </select>
+                (MB)
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="indentation">Indentation</label></td>
+            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"> spaces</td>
+        </tr>
+    </table>
+
+    <div class="buttonArea">
+        <button id="savePreferences">Save Preferences</button>
+    </div>
+    <script src="../../js/preferences.js"></script>
+</body>
+
+</html>

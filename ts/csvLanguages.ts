@@ -15,7 +15,7 @@ class CsvLanguages {
     electron = require('electron');
 
     columns: number;
-    options: string = '<option value="none">Select Language</option>';
+    options: string = '';
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -23,7 +23,7 @@ class CsvLanguages {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('all-languages');
-        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.languagesList(arg);
         });
         this.electron.ipcRenderer.on('set-csv-lang-args', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -44,22 +44,21 @@ class CsvLanguages {
     }
 
     setCsvLanguages(): void {
-        var langs: string[] = [];
+        let langs: string[] = [];
         for (let i = 0; i < this.columns; i++) {
-            var lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
+            let lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
             if (lang !== 'none') {
                 langs.push(lang);
             } else {
-                this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select all languages', parent: 'csvLanguages' });
+                this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'csvLanguages', key: 'selectAllLanguages', parent: 'csvLanguages' });
                 return;
             }
         }
         this.electron.ipcRenderer.send('set-csv-languages', langs);
     }
 
-    languagesList(arg: any): void {
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    languagesList(langs: Language[]): void {
+        for (let lang of langs) {
             this.options = this.options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         this.electron.ipcRenderer.send('get-csv-lang-args');
@@ -67,12 +66,12 @@ class CsvLanguages {
 
     setCsvLangArgs(arg: any): void {
         this.columns = arg.columns;
-        var rows: string = '';
+        let rows: string = '';
         for (let i = 0; i < this.columns; i++) {
-            rows = rows + '<tr><td class="noWrap middle">Column ' + i + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
+            rows = rows + '<tr><td class="noWrap middle">' + arg.labels[i] + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
         }
         document.getElementById('langsTable').innerHTML = rows;
-        var langs: string[] = arg.languages;
+        let langs: string[] = arg.languages;
         for (let i = 0; i < langs.length; i++) {
             (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
         }

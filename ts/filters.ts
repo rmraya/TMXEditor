@@ -19,8 +19,8 @@ class Filters {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
         this.electron.ipcRenderer.on('set-filter-options', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -60,16 +60,15 @@ class Filters {
     }
 
     togleSourceLanguage(): void {
-        var checked: boolean = (document.getElementById('filterUntranslated') as HTMLInputElement).checked;
+        let checked: boolean = (document.getElementById('filterUntranslated') as HTMLInputElement).checked;
         (document.getElementById('sourceLanguage') as HTMLSelectElement).disabled = !checked;
     }
 
-    filterLanguages(arg: any): void {
-        var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
-        var filterLanguage: HTMLSelectElement = document.getElementById('filterLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    filterLanguages(langs: Language[]): void {
+        let sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
+        let filterLanguage: HTMLSelectElement = document.getElementById('filterLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         sourceLanguage.innerHTML = options;
@@ -100,17 +99,17 @@ class Filters {
     }
 
     applyFilters(): void {
-        var filterText: string = (document.getElementById('filterText') as HTMLInputElement).value;
-        var filterLanguage: string = (document.getElementById('filterLanguage') as HTMLSelectElement).value;
-        var caseSensitiveFilter: boolean = (document.getElementById('caseSensitiveFilter') as HTMLInputElement).checked;
-        var regExp: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
-        var filterUntranslated: boolean = (document.getElementById('filterUntranslated') as HTMLInputElement).checked;
-        var filterSrcLanguage: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
+        let filterText: string = (document.getElementById('filterText') as HTMLInputElement).value;
+        let filterLanguage: string = (document.getElementById('filterLanguage') as HTMLSelectElement).value;
+        let caseSensitiveFilter: boolean = (document.getElementById('caseSensitiveFilter') as HTMLInputElement).checked;
+        let regExp: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
+        let filterUntranslated: boolean = (document.getElementById('filterUntranslated') as HTMLInputElement).checked;
+        let filterSrcLanguage: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
         if (!filterUntranslated && filterText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search', parent: 'filters' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'filters', key: 'enterText', parent: 'filters' });
             return;
         }
-        var filterOptions: any = {
+        let filterOptions: any = {
             filterText: filterText,
             filterLanguage: filterLanguage,
             caseSensitiveFilter: caseSensitiveFilter,

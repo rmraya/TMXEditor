@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Preferencias</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new Preferences();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="sourceSelect">Idioma de la Aplicaci&oacute;n</label></td>
+            <td class="middle fill_width">
+                <select id="appLangSelect"  class="table_select">
+                    <option value="en">Ingl&eacute;s</option> <option value="es">Espa&ntilde;ol</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="themeColor">Tema</label></td>
+            <td class="middle fill_width">
+                <select id="themeColor" class="table_select">
+                    <option value="system">Predeterminado del sistema</option> <option value="dark">Oscuro</option> <option value="light">Claro</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="threshold">Tama&ntilde;o M&aacute;ximo para<br>&nbsp;Almacenar en Memoria</label></td>
+            <td class="middle fill_width noWrap">
+                <select id="threshold">
+                    <option value="100">100</option> <option value="200">200</option> <option value="500">500</option> <option value="1000">1000</option> </select> (MB) </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="indentation">Sangr&iacute;a</label></td>
+            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"> espacios</td>
+        </tr>
+    </table>
+
+    <div class="buttonArea">
+        <button id="savePreferences">Guardar Preferencias</button>
+    </div>
+    <script src="../../js/preferences.js"></script>
+</body>
+
+</html>

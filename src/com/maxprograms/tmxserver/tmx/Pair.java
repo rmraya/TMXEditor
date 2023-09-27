@@ -37,11 +37,8 @@ public class Pair implements Comparable<Pair> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Pair) {
-			Pair p = (Pair) obj;
-			if (id != null && text != null) {
-				return id.equals(p.getId()) && text.equals(p.getText());
-			}
+		if (obj instanceof Pair p && id != null && text != null) {
+			return id.equals(p.getId()) && text.equals(p.getText());
 		}
 		return false;
 	}

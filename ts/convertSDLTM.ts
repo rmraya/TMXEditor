@@ -81,12 +81,12 @@ class ConvertSDLTM {
     convertFile(): void {
         let sdltmFile = (document.getElementById('sdltmFile') as HTMLInputElement);
         if (sdltmFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select SDLTM file', parent: 'convertSDLTM' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertSDLTM', key: 'selectSDLTM', parent: 'convertSDLTM' });
             return;
         }
         let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select TMX file', parent: 'convertSDLTM' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'convertSDLTM', key: 'selectTmx', parent: 'convertSDLTM' });
             return;
         }
 

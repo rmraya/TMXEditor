@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,10 +23,10 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.xml.sax.SAXException;
 
+import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.Constants;
 import com.maxprograms.tmxserver.excel.ExcelWriter;
 import com.maxprograms.tmxserver.excel.Sheet;
-import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Document;
@@ -61,7 +60,8 @@ public class MapDBStore implements StoreInterface {
             TmxUtils.deleteFiles(database);
         }
         Files.createDirectories(database.toPath());
-        mapdb = DBMaker.newFileDB(new File(database, "tudata")).closeOnJvmShutdown().asyncWriteEnable().deleteFilesAfterClose().make();
+        mapdb = DBMaker.newFileDB(new File(database, "tudata")).closeOnJvmShutdown().asyncWriteEnable()
+                .deleteFilesAfterClose().make();
         tus = mapdb.getTreeMap("tuMap");
         tuvDatabases = new HashMap<>();
         maps = new HashMap<>();
@@ -92,7 +92,8 @@ public class MapDBStore implements StoreInterface {
             }
             if (!languages.contains(lang)) {
                 File database = new File(workFolder, "mapdb");
-                DB langdb = DBMaker.newFileDB(new File(database, lang)).closeOnJvmShutdown().asyncWriteEnable().deleteFilesAfterClose().make();
+                DB langdb = DBMaker.newFileDB(new File(database, lang)).closeOnJvmShutdown().asyncWriteEnable()
+                        .deleteFilesAfterClose().make();
                 tuvDatabases.put(lang, langdb);
                 maps.put(lang, langdb.getTreeMap("tuvMap"));
                 languages.add(lang);
@@ -182,21 +183,17 @@ public class MapDBStore implements StoreInterface {
                 processed++;
             }
         } else {
-            throw new IOException("Wrong filtering option");
+            throw new IOException(Messages.getString("MapDBStore.0"));
         }
 
         if (sortLanguage != null) {
-            Collections.sort(result, new Comparator<TUnit>() {
-
-                @Override
-                public int compare(TUnit o1, TUnit o2) {
-                    String s1 = o1.getString(sortLanguage.getCode());
-                    String s2 = o2.getString(sortLanguage.getCode());
-                    if (ascending) {
-                        return s1.compareTo(s2);
-                    }
-                    return s2.compareTo(s1);
+            Collections.sort(result, (TUnit o1, TUnit o2) -> {
+                String s1 = o1.getString(sortLanguage.getCode());
+                String s2 = o2.getString(sortLanguage.getCode());
+                if (ascending) {
+                    return s1.compareTo(s2);
                 }
+                return s2.compareTo(s1);
             });
         }
         if (result.size() < count) {
@@ -247,7 +244,7 @@ public class MapDBStore implements StoreInterface {
 
     @Override
     public long getCount() {
-        return (long) tus.size();
+        return tus.size();
     }
 
     @Override
@@ -476,7 +473,8 @@ public class MapDBStore implements StoreInterface {
         if (!languages.contains(lang)) {
             languages.add(lang);
             File database = new File(workFolder, "mapdb");
-            DB langdb = DBMaker.newFileDB(new File(database, lang)).closeOnJvmShutdown().asyncWriteEnable().deleteFilesAfterClose().make();
+            DB langdb = DBMaker.newFileDB(new File(database, lang)).closeOnJvmShutdown().asyncWriteEnable()
+                    .deleteFilesAfterClose().make();
             tuvDatabases.put(lang, langdb);
             maps.put(lang, langdb.getTreeMap("tuvMap"));
             languages.add(lang);
@@ -521,21 +519,21 @@ public class MapDBStore implements StoreInterface {
     public void changeLanguage(Language oldLanguage, Language newLanguage)
             throws IOException, SAXException, ParserConfigurationException {
         Map<String, Element> oldMap = maps.get(oldLanguage.getCode());
-		String newCode = newLanguage.getCode();
-		if (!languages.contains(newCode)) {
-			addLanguage(newLanguage);
-		}
-		Map<String, Element> newMap = maps.get(newCode);
-		Set<String> keySet = oldMap.keySet();
-		Iterator<String> it = keySet.iterator();
-		while (it.hasNext()) {
-			String id = it.next();
-			Element tuv = oldMap.get(id);
-			tuv.setAttribute("xml:lang", newCode);
-			newMap.put(id, tuv);
-			processed++;
-		}
-		removeLanguage(oldLanguage);
+        String newCode = newLanguage.getCode();
+        if (!languages.contains(newCode)) {
+            addLanguage(newLanguage);
+        }
+        Map<String, Element> newMap = maps.get(newCode);
+        Set<String> keySet = oldMap.keySet();
+        Iterator<String> it = keySet.iterator();
+        while (it.hasNext()) {
+            String id = it.next();
+            Element tuv = oldMap.get(id);
+            tuv.setAttribute("xml:lang", newCode);
+            newMap.put(id, tuv);
+            processed++;
+        }
+        removeLanguage(oldLanguage);
     }
 
     @Override
@@ -869,8 +867,7 @@ public class MapDBStore implements StoreInterface {
     @Override
     public Element getTuv(String id, String lang) throws IOException {
         Map<String, Element> map = maps.get(lang);
-        Element tuv = map.get(id);
-        return tuv;
+        return map.get(id);
     }
 
     @Override

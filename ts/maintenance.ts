@@ -19,8 +19,8 @@ class Maintenance {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
         this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -55,15 +55,14 @@ class Maintenance {
         sourceLanguage.disabled = !(untranslated.checked || consolidate.checked);
     }
 
-    filterLanguages(arg: any[]): void {
+    filterLanguages(langs: Language[]): void {
         let sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
         let options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         sourceLanguage.innerHTML = options;
-        if (arg.length < 3) {
+        if (langs.length < 3) {
             let consolidate: HTMLInputElement = document.getElementById('consolidate') as HTMLInputElement;
             consolidate.checked = false;
             consolidate.disabled = true;

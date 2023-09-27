@@ -23,7 +23,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.maxprograms.tmxserver.models.Language;
+import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Element;
@@ -238,7 +238,7 @@ public class SplitStore implements StoreInterface {
 	public void exportDelimited(String delimited) {
 		// do nothing
 	}
-	
+
 	@Override
 	public void exportExcel(String file) {
 		// do nothing

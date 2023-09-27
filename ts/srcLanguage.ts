@@ -19,9 +19,9 @@ class SourceLanguage {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
-            this.filterLanguages(arg);
+        this.electron.ipcRenderer.send('get-admin-languages');
+        this.electron.ipcRenderer.on('admin-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
+            this.adminLanguages(arg);
         });
         this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
@@ -41,11 +41,10 @@ class SourceLanguage {
         this.electron.ipcRenderer.send('srcLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    filterLanguages(arg: any): void {
-        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-        var options: string = '<option value="*all*">Any Language</option>';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    adminLanguages(langs: Language[]): void {
+        let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         language.innerHTML = options;
@@ -53,7 +52,7 @@ class SourceLanguage {
     }
 
     changeSrcLanguage(): void {
-        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
         this.electron.ipcRenderer.send('change-source-language', language.value);
     }
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Combinar Archivos TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new MergeFiles();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="file">Archivo TMX Combinado</label></td>
+            <td class="middle fill_width"><input type="text" id="file" class="fill_width"></td>
+            <td><Button id="browseMergedFile">Examinar...</Button></td>
+        </tr>
+    </table>
+
+    <div style="height: 300px; overflow-y: auto; margin-right: 8px; margin-left:8px;" class="bordered">
+        <table id="table" class="stripes">
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="buttonArea">
+        <button id="addFiles">A&ntilde;adir Archivos</button> <button id="deleteFiles">Eliminar Archivos Seleccionados</button> <button id="mergeFiles">Combinar Archivos TMX</button>
+    </div>
+    <script src="../../js/mergeFiles.js"></script>
+</body>
+
+</html>

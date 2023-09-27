@@ -24,7 +24,7 @@ class MergeFiles {
         this.electron.ipcRenderer.on('merged-tmx-file', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('file') as HTMLInputElement).value = arg;
         });
-        this.electron.ipcRenderer.on('tmx-files', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('tmx-files', (event: Electron.IpcRendererEvent, arg: any[]) => {
             this.tmxFiles(arg);
         });
         document.getElementById('browseMergedFile').addEventListener('click', () => {
@@ -52,9 +52,9 @@ class MergeFiles {
     }
 
     mergeFiles(): void {
-        var file: string = (document.getElementById('file') as HTMLInputElement).value;
+        let file: string = (document.getElementById('file') as HTMLInputElement).value;
         if (file === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select merged TMX file', parent: 'mergeFiles' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'selectMerged', parent: 'mergeFiles' });
             return;
         }
         if (this.files.length === 0) {
@@ -62,7 +62,7 @@ class MergeFiles {
             return;
         }
         if (this.files.length < 2) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add more TMX files', parent: 'mergeFiles' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'addMoreTmx', parent: 'mergeFiles' });
             return;
         }
         this.electron.ipcRenderer.send('merge-tmx-files', { merged: file, files: this.files });
@@ -76,23 +76,23 @@ class MergeFiles {
         this.electron.ipcRenderer.send('add-tmx-files');
     }
 
-    tmxFiles(arg: any): void {
-        for (let i = 0; i < arg.length; i++) {
-            if (!this.contains(this.files, arg[i])) {
-                this.files.push(arg[i]);
+    tmxFiles(args: any[]): void {
+        for (let arg of args) {
+            if (!this.contains(this.files, arg)) {
+                this.files.push(arg);
             }
         }
         this.files.sort();
-        var rows: string = '';
-        for (let i = 0; i < this.files.length; i++) {
-            rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + this.files[i] + '</td></tr>';
+        let rows: string = '';
+        for (let file of this.files) {
+            rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + file + '</td></tr>';
         }
         document.getElementById('table').innerHTML = rows;
     }
 
     contains(array: string[], value: string): boolean {
-        for (let i = 0; i < array.length; i++) {
-            if (array[i] === value) {
+        for (let s of array) {
+            if (s === value) {
                 return true;
             }
         }
@@ -100,30 +100,29 @@ class MergeFiles {
     }
 
     deleteFiles(): void {
-        var collection = document.getElementsByClassName('rowCheck');
-        var selected: string[] = [];
-        for (let i = 0; i < collection.length; i++) {
-            var checkbox = (collection[i] as HTMLInputElement);
-            if (checkbox.checked) {
-                var file: string = checkbox.parentElement.nextElementSibling.innerHTML;
+        let collection: HTMLCollectionOf<Element> = document.getElementsByClassName('rowCheck');
+        let selected: string[] = [];
+        for (let checkbox of collection) {
+            if ((checkbox as HTMLInputElement).checked) {
+                let file: string = checkbox.parentElement.nextElementSibling.innerHTML;
                 selected.push(file);
             }
         }
         if (selected.length == 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Select files', parent: 'mergeFiles' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'selectFiles', parent: 'mergeFiles' });
             return;
         }
-        var array: string[] = [];
-        for (let i = 0; i < this.files.length; i++) {
-            if (!this.contains(selected, this.files[i])) {
-                array.push(this.files[i]);
+        let array: string[] = [];
+        for (let file of this.files) {
+            if (!this.contains(selected, file)) {
+                array.push(file);
             }
         }
         array.sort();
         this.files = array;
-        var rows: string = '';
-        for (let i = 0; i < this.files.length; i++) {
-            rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + this.files[i] + '</td></tr>';
+        let rows: string = '';
+        for (let file of this.files) {
+            rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + file + '</td></tr>';
         }
         document.getElementById('table').innerHTML = rows;
     }

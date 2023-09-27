@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.maxprograms.tmxserver.models.Language;
+import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Element;

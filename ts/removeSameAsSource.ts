@@ -10,7 +10,7 @@
  *     Maxprograms - initial API and implementation
  *******************************************************************************/
 
-class removeSameAsSource {
+class RemoveSameAsSource {
 
     electron = require("electron");
 
@@ -19,8 +19,8 @@ class removeSameAsSource {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
         this.electron.ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -43,11 +43,10 @@ class removeSameAsSource {
         this.electron.ipcRenderer.send('removeSameAsSource-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    filterLanguages(arg: any): void {
-        var sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    filterLanguages(langs: Language[]): void {
+        let sourceLanguage: HTMLSelectElement = document.getElementById('sourceLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         sourceLanguage.innerHTML = options;
@@ -55,7 +54,7 @@ class removeSameAsSource {
     }
 
     removeSameAsSource(): void {
-        var srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
+        let srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
         this.electron.ipcRenderer.send('remove-sameAsSource', { srcLang: srcLang });
     }
 }

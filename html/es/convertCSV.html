@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Convertir Archivo CSV a TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new ConvertCSV();">
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="csvFile">Archivo CSV/Texto</label></td>
+            <td class="middle fill_width"><input type="text" id="csvFile" class="fill_width"></td>
+            <td><button id="browseCsvFiles">Examinar...</button></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="tmxFile">Archivo TMX</label></td>
+            <td class="middle fill_width"> <input type="text" id="tmxFile" class="fill_width"></td>
+            <td class="middle"><button id="browseTmxFiles">Examinar...</button></td>
+        </tr>
+    </table>
+    <table class="fill_width">
+        <tr>
+            <td><label>Juego de Caracteres</label></td>
+            <td><label>Separador de Columnas</label></td>
+            <td><label>Delimitador de Texto</label></td>
+        </tr>
+        <tr>
+            <td>
+                <select id="charSets" class="table_select">
+                </select>
+            </td>
+            <td>
+                <select id="colSeps" class="table_select">
+                    <option value=",">,</option>
+                    <option value=";">;</option>
+                    <option value=":">:</option>
+                    <option value="|">|</option>
+                    <option value="TAB">TAB</option>
+                </select>
+            </td>
+            <td>
+                <select id="textDelim" class="table_select">
+                    <option value=""></option>
+                    <option value="'">'</option>
+                    <option value='"'>"</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td class="middle">Separador Personalizado: <input id="customSep" type='text' style="width: 30px;"></td>
+            <td class="middle">Delimitador Personalizado: <input id="customDel" type='text' style="width: 30px;"></td>
+        </tr>
+    </table>
+
+    <div style="margin:4px 8px;" class="bordered">
+        <div id="preview" style="width: 100%; height:200px; overflow-x: auto; overflow-y: auto; ">
+            <pre id="preview" style="width: 100%;"> Vista previa no disponible </pre>
+        </div>
+    </div>
+    <div class="right" style="padding: 4px; margin:4px 8px;">Columnas Detectadas: <span id="columns">0</span></div>
+    <div style="padding: 4px; margin:4px 8px;">
+        <input type="checkbox" style="padding-top:4px;" id="fixQuotes"> <label for="fixQuotes" class="noWrap">Corregir Comillas Dobles de Excel</label><br>
+        <input type="checkbox" style="padding-top:4px;" id="optionalDelims"> <label for="optionalDelims"
+            class="noWrap">Delimitadores de Texto Opcionales</label><br>
+        <input type="checkbox" style="padding-top:4px;" id="openTMX" checked> <label for="openTMX">Abrir Archivo TMX Generado</label>
+    </div>
+    <div class="buttonArea">
+        <button id="refreshPreview">Actualizar Vista Previa</button> <button id="setLanguages">Seleccionar Idiomas</button> <button id="convert">Convertir Archivo CSV a TMX</button>
+    </div>
+
+    <script src="../../js/keyboardHandler.js"></script>
+    <script src="../../js/convertCSV.js"></script>
+</body>
+
+</html>

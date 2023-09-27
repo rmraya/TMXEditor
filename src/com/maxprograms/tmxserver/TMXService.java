@@ -23,9 +23,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +41,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import com.maxprograms.languages.Language;
 import com.maxprograms.languages.LanguageUtils;
-import com.maxprograms.languages.RegistryParser;
 import com.maxprograms.tmxserver.excel.ExcelReader;
 import com.maxprograms.tmxserver.excel.Sheet;
-import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.tmx.CountStore;
 import com.maxprograms.tmxserver.tmx.MapDBStore;
@@ -57,7 +56,6 @@ import com.maxprograms.tmxserver.tmx.TMXCleaner;
 import com.maxprograms.tmxserver.tmx.TMXConverter;
 import com.maxprograms.tmxserver.tmx.TMXReader;
 import com.maxprograms.tmxserver.tmx.TmxUtils;
-import com.maxprograms.tmxserver.utils.LangUtils;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.tmxvalidation.TMXValidator;
 import com.maxprograms.xml.Attribute;
@@ -74,7 +72,6 @@ public class TMXService {
 
 	protected StoreInterface store;
 	protected File currentFile;
-	private RegistryParser registry;
 	protected int indentation;
 
 	protected boolean parsing;
@@ -242,11 +239,11 @@ public class TMXService {
 		return result;
 	}
 
-	public JSONObject getLanguages() {
+	public JSONObject getLanguages() throws JSONException, IOException, SAXException, ParserConfigurationException {
 		JSONObject result = new JSONObject();
 		if (parsing) {
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "Requested languages while parsing");
+			result.put(Constants.REASON, Messages.getString("TMXService.0"));
 			return result;
 		}
 		if (store == null) {
@@ -254,20 +251,10 @@ public class TMXService {
 			result.put(Constants.REASON, Constants.NULLSTORE);
 			return result;
 		}
-		if (registry == null) {
-			try {
-				registry = new RegistryParser();
-			} catch (IOException e) {
-				logger.log(Level.SEVERE, e.getMessage(), e);
-				result.put(Constants.STATUS, Constants.ERROR);
-				result.put(Constants.REASON, e.getMessage());
-				return result;
-			}
-		}
 		Set<String> codes = store.getLanguages();
 		if (codes == null || codes.isEmpty()) {
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "Error getting languages from store");
+			result.put(Constants.REASON, Messages.getString("TMXService.11"));
 			return result;
 		}
 		Iterator<String> it = codes.iterator();
@@ -275,7 +262,10 @@ public class TMXService {
 
 		while (it.hasNext()) {
 			String code = it.next();
-			data.put(new Language(code, registry.getTagDescription(code)).toJSON());
+			JSONObject json = new JSONObject();
+			json.put("code", code);
+			json.put("name", LanguageUtils.getLanguage(code).getDescription());
+			data.put(json);
 		}
 		result.put("languages", data);
 		result.put(Constants.STATUS, Constants.SUCCESS);
@@ -341,7 +331,7 @@ public class TMXService {
 		}
 		JSONObject result = new JSONObject();
 		result.put(Constants.STATUS, Constants.ERROR);
-		result.put(Constants.REASON, "Null Store");
+		result.put(Constants.REASON, Messages.getString("TMXService.2"));
 		return result;
 	}
 
@@ -447,13 +437,6 @@ public class TMXService {
 			result.put(Constants.REASON, "null id");
 			return result;
 		}
-		Comparator<String[]> comparator = new Comparator<>() {
-
-			public int compare(String[] o1, String[] o2) {
-				return o1[0].compareTo(o2[0]);
-			}
-
-		};
 		try {
 			Element tu = store.getTu(id);
 			if (tu != null) {
@@ -464,7 +447,7 @@ public class TMXService {
 					Attribute a = at.next();
 					atts.add(new String[] { a.getName(), a.getValue() });
 				}
-				Collections.sort(atts, comparator);
+				Collections.sort(atts, (o1, o2) -> o1[0].compareTo(o2[0]));
 
 				List<String[]> props = new ArrayList<>();
 				List<Element> pList = tu.getChildren("prop");
@@ -473,7 +456,7 @@ public class TMXService {
 					Element prop = pt.next();
 					props.add(new String[] { prop.getAttributeValue("type"), prop.getText() });
 				}
-				Collections.sort(props, comparator);
+				Collections.sort(props, (o1, o2) -> o1[0].compareTo(o2[0]));
 
 				List<String> notes = new ArrayList<>();
 				List<Element> nList = tu.getChildren("note");
@@ -570,10 +553,14 @@ public class TMXService {
 		JSONObject result = new JSONObject();
 		try {
 			JSONArray array = new JSONArray();
-			List<Language> langs = LangUtils.getAllLanguages();
+			List<Language> langs = LanguageUtils.getAllLanguages();
 			Iterator<Language> it = langs.iterator();
 			while (it.hasNext()) {
-				array.put(it.next().toJSON());
+				Language lang = it.next();
+				JSONObject json = new JSONObject();
+				json.put("code", lang.getCode());
+				json.put("name", lang.getDescription());
+				array.put(json);
 			}
 			result.put("languages", array);
 			result.put(Constants.STATUS, Constants.SUCCESS);
@@ -922,7 +909,7 @@ public class TMXService {
 		File f = new File(file);
 		if (!f.exists()) {
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "File does not exist");
+			result.put(Constants.REASON, Messages.getString("TMXService.3"));
 			return result;
 		}
 		splitting = true;
@@ -952,7 +939,7 @@ public class TMXService {
 					if (ex.getMessage() != null) {
 						splitError = ex.getMessage();
 					} else {
-						splitError = "Error splitting files";
+						splitError = Messages.getString("TMXService.4");
 					}
 				}
 				splitting = false;
@@ -967,11 +954,11 @@ public class TMXService {
 		if (splitting) {
 			if (countStore != null) {
 				result.put(Constants.STATUS, Constants.SUCCESS);
-				result.put("count", countStore.getCount() + " units counted");
+				result.put("count", countStore.getCount() + Messages.getString("TMXService.5"));
 			}
 			if (splitStore != null) {
 				result.put(Constants.STATUS, Constants.SUCCESS);
-				result.put("count", splitStore.getCount() + " units written");
+				result.put("count", splitStore.getCount() + Messages.getString("TMXService.6"));
 			}
 		} else {
 			if (splitError.isEmpty()) {
@@ -1026,7 +1013,7 @@ public class TMXService {
 					if (e.getMessage() != null) {
 						mergeError = e.getMessage();
 					} else {
-						mergeError = "Error merging files";
+						mergeError = Messages.getString("TMXService.7");
 					}
 				}
 				merging = false;
@@ -1146,15 +1133,16 @@ public class TMXService {
 				result.put(Constants.STATUS, Constants.SUCCESS);
 			} else {
 				try {
-					Language l = LangUtils.getLanguage(code);
+					Language l = LanguageUtils.getLanguage(code);
 					if (l != null) {
 						result.put("srcLang", l.getCode());
 						result.put(Constants.STATUS, Constants.SUCCESS);
 					} else {
 						result.put(Constants.STATUS, Constants.ERROR);
-						result.put(Constants.REASON, "File has invalid source language: " + code);
+						MessageFormat mf = new MessageFormat(Messages.getString("TMXService.8"));
+						result.put(Constants.REASON, mf.format(new String[] { code }));
 					}
-				} catch (IOException e) {
+				} catch (IOException | SAXException | ParserConfigurationException e) {
 					result.put(Constants.STATUS, Constants.ERROR);
 					result.put(Constants.REASON, e.getMessage());
 				}
@@ -1391,7 +1379,7 @@ public class TMXService {
 					while (it.hasNext()) {
 						String cell = firstRow.get(it.next());
 						if (cell != null) {
-							Language lang = LangUtils.getLanguage(cell);
+							Language lang = LanguageUtils.getLanguage(cell);
 							if (lang != null) {
 								langs.add(lang.getCode());
 							}
@@ -1412,7 +1400,7 @@ public class TMXService {
 		} catch (IOException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.SEVERE, "Error reading Excel", e);
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "Error reading Excel file");
+			result.put(Constants.REASON, Messages.getString("TMXService.9"));
 			return result;
 		}
 		return result;
@@ -1445,7 +1433,7 @@ public class TMXService {
 		} catch (IOException ioe) {
 			logger.log(Level.SEVERE, "Error reading CSV", ioe);
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "Error reading CSV file");
+			result.put(Constants.REASON, Messages.getString("TMXService.10"));
 			return result;
 		}
 
@@ -1470,7 +1458,7 @@ public class TMXService {
 		} catch (UnsupportedEncodingException uee) {
 			logger.log(Level.SEVERE, "Error reading CSV", uee);
 			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, "Error reading CSV file");
+			result.put(Constants.REASON, Messages.getString("TMXService.10"));
 			return result;
 		}
 		int cols = 0;
@@ -1489,7 +1477,7 @@ public class TMXService {
 							code = code.substring(1);
 							code = code.substring(0, code.length() - 1);
 						}
-						if (LangUtils.getLanguage(code) == null) {
+						if (LanguageUtils.getLanguage(code) == null) {
 							hasLanguages = false;
 							break;
 						}
@@ -1504,9 +1492,9 @@ public class TMXService {
 							languages.add(code);
 						}
 					}
-				} catch (IOException ex) {
+				} catch (IOException | SAXException | ParserConfigurationException ex) {
 					logger.log(Level.SEVERE, "Error checking CSV languages", ex);
-					result.put(Constants.REASON, "Error checking CSV languages");
+					result.put(Constants.REASON, Messages.getString("TMXService.12"));
 					return result;
 				}
 			}
@@ -1545,7 +1533,7 @@ public class TMXService {
 						}
 					}
 					if (fixQuotes) {
-						cell = cell.replaceAll("\\\"\\\"", "\"");
+						cell = cell.replace("\"\"", "\"");
 					}
 					if (cell.length() > 25) {
 						cell = cell.substring(0, 25) + "...";
@@ -1556,7 +1544,6 @@ public class TMXService {
 				builder.append("</tr>");
 			}
 			builder.append("</tbody></table>");
-
 		} else {
 			builder.append("<pre>");
 			for (int i = 0; i < lines.size(); i++) {
@@ -1568,6 +1555,11 @@ public class TMXService {
 		result.put(Constants.STATUS, Constants.SUCCESS);
 		result.put("cols", cols);
 		result.put("langs", languages.size());
+		JSONArray langArray = new JSONArray();
+		for (int i = 0; i < languages.size(); i++) {
+			langArray.put(languages.get(i));
+		}
+		result.put("langCodes", langArray);
 		result.put("preview", builder.toString());
 		return result;
 	}
@@ -1750,13 +1742,6 @@ public class TMXService {
 		return !(textDelimiter.isEmpty() && sameDelimiter);
 	}
 
-	public Language getLanguage(String code) throws IOException {
-		if (registry == null) {
-			registry = new RegistryParser();
-		}
-		return new Language(code, registry.getTagDescription(code));
-	}
-
 	public JSONObject processTasks(JSONObject json) {
 		JSONObject result = new JSONObject();
 		processing = true;
@@ -1823,6 +1808,40 @@ public class TMXService {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
+		}
+		return result;
+	}
+
+	public JSONObject getFileInfo() {
+		JSONObject result = new JSONObject();
+		if (store != null) {
+			try {
+				result.put("count", store.getCount());
+				result.put(Constants.STATUS, Constants.SUCCESS);
+				Set<String> codes = store.getLanguages();
+				if (codes == null || codes.isEmpty()) {
+					result.put(Constants.STATUS, Constants.ERROR);
+					result.put(Constants.REASON, Messages.getString("TMXService.11"));
+					return result;
+				}
+				Iterator<String> it = codes.iterator();
+				JSONArray data = new JSONArray();
+				while (it.hasNext()) {
+					String code = it.next();
+					JSONObject json = new JSONObject();
+					json.put("code", code);
+					json.put("name", LanguageUtils.getLanguage(code).getDescription());
+					data.put(json);
+				}
+				result.put("languages", data);
+			} catch (IOException | SAXException | ParserConfigurationException e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				result.put(Constants.STATUS, Constants.ERROR);
+				result.put(Constants.REASON, e.getMessage());
+			}
+		} else {
+			result.put(Constants.STATUS, Constants.ERROR);
+			result.put(Constants.REASON, Constants.NULLSTORE);
 		}
 		return result;
 	}

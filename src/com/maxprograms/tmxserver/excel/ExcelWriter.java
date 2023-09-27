@@ -42,7 +42,7 @@ import com.maxprograms.xml.XMLOutputter;
 
 public class ExcelWriter {
 
-    private static String SEP = System.getProperty("file.separator");
+    private static final String SEP = System.getProperty("file.separator");
     private Map<Integer, String> columnIndex;
     private SAXBuilder builder;
 

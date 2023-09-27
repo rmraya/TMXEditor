@@ -58,6 +58,10 @@ class Main {
         this.electron.ipcRenderer.on('request-theme', () => {
             this.electron.ipcRenderer.send('get-theme');
         });
+        this.electron.ipcRenderer.send('get-tooltips');
+        this.electron.ipcRenderer.on('set-tooltips', (event, arg) => {
+            this.setTooltips(arg);
+        });
         this.electron.ipcRenderer.on('set-theme', (event, arg) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
@@ -146,7 +150,7 @@ class Main {
         let openFile: HTMLAnchorElement = document.createElement('a');
         openFile.classList.add('tooltip');
         openFile.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  id="path299" d="m 20.0575,11.2 -1.154167,7.2 H 5.0966667 L 3.9425,11.2 Z M 8.6433333,4 h -5.81 l 0.595,4 H 5.1125 L 4.755,5.6 H 7.8333333 C 8.76,6.7104 9.46,7.2 11.3975,7.2 h 7.735833 L 18.966667,8 h 1.7 l 0.5,-2.4 H 11.3975 C 9.7491667,5.6 9.6966667,5.2664 8.6433333,4 Z M 22,9.6 H 2 L 3.6666667,20 H 20.333333 Z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Open File</span>';
+            '<span class="tooltiptext bottomTooltip" id="open"></span>';
         openFile.addEventListener('click', () => {
             this.openFile();
         });
@@ -155,7 +159,7 @@ class Main {
         let newFile: HTMLAnchorElement = document.createElement('a');
         newFile.classList.add('tooltip');
         newFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  d="m 21,16.166667 h -2.454545 v -2.5 h -1.636364 v 2.5 h -2.454546 v 1.666666 h 2.454546 v 2.5 h 1.636364 v -2.5 H 21 Z m -5.727273,4.166666 V 22 H 3 V 2 h 8.336455 c 2.587909,0 8.027181,6.0191667 8.027181,8.011667 V 12 h -1.636363 v -1.285833 c 0,-3.4225003 -4.909091,-2.0475003 -4.909091,-2.0475003 0,0 1.242,-5 -2.158364,-5 H 4.6363636 V 20.333333 Z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">New File</span>';
+            '<span class="tooltiptext bottomTooltip" id="new"></span>';
         newFile.addEventListener('click', () => {
             this.newFile();
         });
@@ -164,7 +168,7 @@ class Main {
         let saveFile: HTMLAnchorElement = document.createElement('a');
         saveFile.classList.add('tooltip');
         saveFile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path  d="m 13.555556,3.6666667 v 9.1666663 h 1.952222 L 12,17.008333 8.4922222,12.833333 H 10.444444 V 3.6666667 Z M 15.111111,2 H 8.8888889 v 9.166667 H 5 L 12,19.5 19,11.166667 h -3.888889 z m 2.333333,15.833333 v 2.5 H 6.5555556 v -2.5 H 5 V 22 h 14 v -4.166667 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Save File</span>';
+            '<span class="tooltiptext bottomTooltip" id="save"></span>';
         saveFile.addEventListener('click', () => {
             this.saveFile();
         });
@@ -173,7 +177,7 @@ class Main {
         let showFileInfo: HTMLAnchorElement = document.createElement('a');
         showFileInfo.classList.add('tooltip');
         showFileInfo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 0.833333,15 h -1.666666 v -6.666667 h 1.666666 z M 12,6.7916667 c 0.575,0 1.041667,0.4666666 1.041667,1.0416666 C 13.041667,8.4083333 12.575,8.875 12,8.875 c -0.575,0 -1.041667,-0.4666667 -1.041667,-1.0416667 0,-0.575 0.466667,-1.0416666 1.041667,-1.0416666 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">File Properties</span>';
+            '<span class="tooltiptext bottomTooltip" id="fileProperties"></span>';
         showFileInfo.addEventListener('click', () => {
             this.showFileInfo();
         });
@@ -187,7 +191,7 @@ class Main {
         let saveEdit: HTMLAnchorElement = document.createElement('a');
         saveEdit.classList.add('tooltip');
         saveEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 3.660833,6.25 -4.7025,4.82 L 8.755,10.981667 7.2083333,12.53 l 3.7499997,3.636667 6.25,-6.369167 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Confirm Edit</span>';
+            '<span class="tooltiptext bottomTooltip" id="confirmEdit"></span>';
         saveEdit.addEventListener('click', () => {
             this.saveEdit();
         });
@@ -196,7 +200,7 @@ class Main {
         let cancelEdit: HTMLAnchorElement = document.createElement('a');
         cancelEdit.classList.add('tooltip');
         cancelEdit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,13.781667 -3.826667,-3.79 L 16.961667,8.1691667 15.781667,7 11.994167,10.824167 8.1708333,7.0383333 7,8.2091667 10.8275,12.0025 7.0383333,15.829167 8.2091667,17 12.005,13.17 l 3.825833,3.791667 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Cancel Edit</span>';
+            '<span class="tooltiptext bottomTooltip" id="cancelEdit"></span>';
         cancelEdit.addEventListener('click', () => {
             this.cancelEdit();
         });
@@ -210,7 +214,7 @@ class Main {
         let replaceText: HTMLAnchorElement = document.createElement('a');
         replaceText.classList.add('tooltip');
         replaceText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 13.515011,15.871667 C 12.454179,16.535833 11.243347,16.918333 10.013349,17 L 9.5658494,15.3475 c 1.7358316,-0.01583 3.4433286,-0.7925 4.5749936,-2.27 1.779165,-2.325 1.519998,-5.575 -0.479166,-7.615 L 12.185013,7.3908333 10.710015,2 h 5.537492 l -1.564164,2.1275 c 2.562496,2.4508333 3.067496,6.3825 1.185831,9.385 L 22,19.643333 19.643336,22 Z M 4.3283562,14.935 C 2.8025249,13.480833 2.0050259,11.496667 2.000026,9.5 1.9958593,7.91 2.4933586,6.315 3.5333573,4.9566667 4.8975221,3.175 6.9091862,2.1516667 8.9908502,2.0158333 l 0.4533327,1.6508334 c -1.7391644,0.0125 -3.4516622,0.8241666 -4.584994,2.305 C 3.0766912,8.3008333 3.3408575,11.559167 5.3500216,13.6 L 6.828353,11.669167 8.3100177,17 H 2.7775249 Z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Replace Text</span>';
+            '<span class="tooltiptext bottomTooltip" id="replaceText"></span>';
         replaceText.addEventListener('click', () => {
             this.replaceText();
         });
@@ -224,7 +228,7 @@ class Main {
         let insertUnit: HTMLAnchorElement = document.createElement('a');
         insertUnit.classList.add('tooltip');
         insertUnit.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 12.833333 V 17 H 11.166667 V 12.833333 H 7 v -1.666666 h 4.166667 V 7 h 1.666666 v 4.166667 H 17 Z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Insert Unit</span>';
+            '<span class="tooltiptext bottomTooltip" id="insertUnit"></span>';
         insertUnit.addEventListener('click', () => {
             this.insertUnit();
         });
@@ -233,7 +237,7 @@ class Main {
         let deleteUnits: HTMLAnchorElement = document.createElement('a');
         deleteUnits.classList.add('tooltip');
         deleteUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 5,10.833333 H 7 v -1.666666 h 10 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Delete Selected Units</span>';
+            '<span class="tooltiptext bottomTooltip" id="deleteSelected"></span>';
         deleteUnits.addEventListener('click', () => {
             this.deleteUnits();
         });
@@ -248,7 +252,7 @@ class Main {
         sortUnits.id = 'sortUnits';
         sortUnits.classList.add('tooltip');
         sortUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="m 8.666667,10.444444 v 3.111112 H 12 L 7,19 2,13.555556 H 5.333333 V 10.444444 H 2 L 7,5 12,10.444444 Z M 22,14.333333 h -8.333333 v 1.555556 H 22 Z M 22,19 H 13.666667 V 17.444444 H 22 Z m 0,-6.222222 H 13.666667 V 11.222222 H 22 Z M 22,9.6666667 H 13.666667 V 8.1111111 H 22 Z M 22,6.5555556 H 13.666667 V 5 H 22 Z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Sort Units</span>';
+            '<span class="tooltiptext bottomTooltip" id="sortUnitsTip"></span>';
         sortUnits.addEventListener('click', () => {
             this.sortUnits();
         });
@@ -258,7 +262,7 @@ class Main {
         filterUnits.id = 'filterUnits';
         filterUnits.classList.add('tooltip');
         filterUnits.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 18.091348,3.6666667 11.913044,14.119167 v 4.936666 l -0.826087,-0.5 V 14.119167 L 4.9086522,3.6666667 Z M 21,2 H 2 L 9.4347826,14.578333 V 19.5 L 13.565217,22 v -7.421667 z" /></svg>' +
-            '<span class="tooltiptext bottomTooltip">Filter Units</span>';
+            '<span class="tooltiptext bottomTooltip" id="filterUnitsTip"></span>';
         filterUnits.addEventListener('click', () => {
             this.filterUnits();
         });
@@ -272,7 +276,7 @@ class Main {
         let maintenance: HTMLAnchorElement = document.createElement('a');
         maintenance.classList.add('tooltip');
         maintenance.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M11 7h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6zM7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7zM20.1 3H3.9c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9V3.9c0-.5-.5-.9-.9-.9zM19 19H5V5h14v14z"/></svg>' +
-            '<span class="tooltiptext bottomTooltip">Maintenance Dashboard</span>';
+            '<span class="tooltiptext bottomTooltip" id="maintenance"></span>';
         maintenance.addEventListener('click', () => {
             this.maintenanceDashboard();
         });
@@ -286,7 +290,7 @@ class Main {
         let convertCSV: HTMLAnchorElement = document.createElement('a');
         convertCSV.classList.add('tooltip');
         convertCSV.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><path d="M19,3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V5C21,3.9,20.1,3,19,3z M19,5v3H5V5H19z M19,10v4H5v-4H19z M5,19v-3h14v3H5z"/></svg>' +
-            '<span class="tooltiptext bottomTooltip">Convert CSV File to TMX</span>';
+            '<span class="tooltiptext bottomTooltip" id="convertCSV"></span>';
         convertCSV.addEventListener('click', () => {
             this.convertCSV();
         });
@@ -300,7 +304,7 @@ class Main {
             '<path d="M4.5 16.5C4.41075 16.5 4.32312 16.4761 4.24622 16.4308C4.16932 16.3855 4.10595 16.3204 4.06268 16.2424C4.01941 16.1643 3.99783 16.0761 4.00017 15.9869C4.00251 15.8977 4.0287 15.8107 4.076 15.735L9.076 7.735C9.14628 7.62255 9.25836 7.54262 9.38757 7.5128C9.51678 7.48299 9.65255 7.50572 9.765 7.576C9.87745 7.64628 9.95738 7.75836 9.9872 7.88757C10.017 8.01678 9.99428 8.15255 9.924 8.265L4.924 16.265C4.87906 16.3369 4.81656 16.3962 4.74239 16.4373C4.66821 16.4784 4.5848 16.5 4.5 16.5V16.5ZM17.5 21.5C17.3674 21.5 17.2402 21.4473 17.1464 21.3536C17.0527 21.2598 17 21.1326 17 21V3C17 2.86739 17.0527 2.74021 17.1464 2.64645C17.2402 2.55268 17.3674 2.5 17.5 2.5C17.6326 2.5 17.7598 2.55268 17.8536 2.64645C17.9473 2.74021 18 2.86739 18 3V21C18 21.1326 17.9473 21.2598 17.8536 21.3536C17.7598 21.4473 17.6326 21.5 17.5 21.5Z" />' +
             '<path d="M23.5 18.5H13.5C13.3674 18.5 13.2402 18.4473 13.1464 18.3536C13.0527 18.2598 13 18.1326 13 18C13 17.8674 13.0527 17.7402 13.1464 17.6464C13.2402 17.5527 13.3674 17.5 13.5 17.5H23.5C23.6326 17.5 23.7598 17.5527 23.8536 17.6464C23.9473 17.7402 24 17.8674 24 18C24 18.1326 23.9473 18.2598 23.8536 18.3536C23.7598 18.4473 23.6326 18.5 23.5 18.5ZM23.5 15.5H13.5C13.3674 15.5 13.2402 15.4473 13.1464 15.3536C13.0527 15.2598 13 15.1326 13 15C13 14.8674 13.0527 14.7402 13.1464 14.6464C13.2402 14.5527 13.3674 14.5 13.5 14.5H23.5C23.6326 14.5 23.7598 14.5527 23.8536 14.6464C23.9473 14.7402 24 14.8674 24 15C24 15.1326 23.9473 15.2598 23.8536 15.3536C23.7598 15.4473 23.6326 15.5 23.5 15.5ZM23.5 12.5H13.5C13.3674 12.5 13.2402 12.4473 13.1464 12.3536C13.0527 12.2598 13 12.1326 13 12C13 11.8674 13.0527 11.7402 13.1464 11.6464C13.2402 11.5527 13.3674 11.5 13.5 11.5H23.5C23.6326 11.5 23.7598 11.5527 23.8536 11.6464C23.9473 11.7402 24 11.8674 24 12C24 12.1326 23.9473 12.2598 23.8536 12.3536C23.7598 12.4473 23.6326 12.5 23.5 12.5ZM23.5 9.5H13.5C13.3674 9.5 13.2402 9.44732 13.1464 9.35355C13.0527 9.25979 13 9.13261 13 9C13 8.86739 13.0527 8.74021 13.1464 8.64645C13.2402 8.55268 13.3674 8.5 13.5 8.5H23.5C23.6326 8.5 23.7598 8.55268 23.8536 8.64645C23.9473 8.74021 24 8.86739 24 9C24 9.13261 23.9473 9.25979 23.8536 9.35355C23.7598 9.44732 23.6326 9.5 23.5 9.5ZM23.5 6.5H13.5C13.3674 6.5 13.2402 6.44732 13.1464 6.35355C13.0527 6.25979 13 6.13261 13 6C13 5.86739 13.0527 5.74021 13.1464 5.64645C13.2402 5.55268 13.3674 5.5 13.5 5.5H23.5C23.6326 5.5 23.7598 5.55268 23.8536 5.64645C23.9473 5.74021 24 5.86739 24 6C24 6.13261 23.9473 6.25979 23.8536 6.35355C23.7598 6.44732 23.6326 6.5 23.5 6.5Z"/>' +
             '</g></svg>' +
-            '<span class="tooltiptext bottomTooltip">Convert Excel File to TMX</span>';
+            '<span class="tooltiptext bottomTooltip" id="convertExcel"></span>';
         convertExcel.addEventListener('click', () => {
             this.convertExcel();
         });
@@ -309,7 +313,7 @@ class Main {
         let convertSDLTM: HTMLAnchorElement = document.createElement('a');
         convertSDLTM.classList.add('tooltip');
         convertSDLTM.innerHTML = '<svg version="1.1" width="24" height="24" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" 	 viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve"> <path d="M20.8,6.8V4.4c0-0.1,0.1-0.6-0.3-1c-0.3-0.4-0.7-0.5-0.8-0.5c-3.8,0-7.5,0-11.3,0C8.2,3,7.9,3.1,7.6,3.4 	C7.4,3.7,7.3,4,7.3,4.1c0,0.6,0,1.1-0.1,1.7h1.5V4.7c0,0,0-0.1,0.1-0.2C8.9,4.4,8.9,4.3,9,4.3c1.7,0,3.4,0,5,0c0,0.5,0,1,0,1.5 	c0.3,0,0.6,0,1,0.1c0.2,0,0.8,0.2,1.3,0.7c0.4,0.4,0.6,0.9,0.6,1.1c0,1.7,0,3,0,3.3c0,0.1,0,0.3-0.2,0.6c-0.1,0.1-0.2,0.3-0.2,0.3 	c0.1,0.1,0.2,0.2,0.3,0.4c0,0,0.1,0.1,0.1,0.3c0.1,0.3,0.1,1.6,0.1,3.4c0,0.1-0.1,0.4-0.2,0.6c-0.1,0.2-0.2,0.3-0.3,0.4 	c0.1,0.1,0.3,0.4,0.4,0.7c0.1,0.4,0.1,0.7,0.1,0.8h2.4c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4c0.8,0,1.4-0.6,1.4-1.4V9.6 	c0-0.8-0.6-1.4-1.4-1.4C20.1,8.2,20.8,7.6,20.8,6.8z"/> <path d="M16.2,10.6V8.2c0-0.8-0.6-1.4-1.4-1.4H4c-0.8,0-1.4,0.6-1.4,1.4v2.4C2.7,11.3,3.3,12,4,12c-0.8,0-1.4,0.6-1.4,1.4v2.4 	c0,0.8,0.6,1.4,1.4,1.4c-0.8,0-1.4,0.6-1.4,1.4V21c0,0.8,0.6,1.4,1.4,1.4h10.8c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4 	c0.8,0,1.4-0.6,1.4-1.4v-2.4c0-0.8-0.6-1.4-1.4-1.4C15.6,12,16.2,11.3,16.2,10.6z M9.4,20.9h-5c0,0-0.1,0-0.2-0.1 	c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V20.9z M9.4,15.7h-5 	c0,0-0.1,0-0.2-0.1c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V15.7z M9.4,10.5 	h-5c0,0-0.1,0-0.2-0.1c0-0.1-0.1-0.1-0.1-0.2c0-0.6,0-1.1,0-1.7c0,0,0-0.1,0-0.2c0,0,0.1-0.1,0.2-0.1c0.3,0,4.7,0,5,0V10.5z"/> </svg> ' +
-            '<span class="tooltiptext bottomTooltip">Convert SDLTM File to TMX</span>';
+            '<span class="tooltiptext bottomTooltip" id="convertSDLTM"></span>';
         convertSDLTM.addEventListener('click', () => {
             this.convertSDLTM();
         });
@@ -323,7 +327,7 @@ class Main {
         let openHelp: HTMLAnchorElement = document.createElement('a');
         openHelp.classList.add('tooltip');
         openHelp.innerHTML = '<svg version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 1.041667,14.166667 c 0,0.575 -0.465834,1.041666 -1.041667,1.041666 -0.574167,0 -1.041667,-0.466666 -1.041667,-1.041666 0,-0.575 0.4675,-1.041667 1.041667,-1.041667 0.575833,0 1.041667,0.466667 1.041667,1.041667 z M 14.2025,7.835 C 13.695833,7.3216667 12.94,7.0391667 12.076667,7.0391667 10.26,7.0391667 9.085,8.3308333 9.085,10.330833 h 1.675833 c 0,-1.238333 0.690834,-1.6774997 1.281667,-1.6774997 0.528333,0 1.089167,0.3508334 1.136667,1.0216667 0.05167,0.705833 -0.325,1.064167 -0.801667,1.5175 -1.176667,1.119167 -1.198333,1.660833 -1.193333,2.89 H 12.855 c -0.01083,-0.553333 0.025,-1.0025 0.779167,-1.815 0.564166,-0.608333 1.265833,-1.365 1.28,-2.5183333 0.0092,-0.77 -0.236667,-1.4325 -0.711667,-1.9141667 z" /></svg>' +
-            '<span class="tooltiptext bottomRightTooltip">User Guide</span>';
+            '<span class="tooltiptext bottomRightTooltip" id="userGuide"></span>';
         openHelp.addEventListener('click', () => {
             this.openHelp();
         });
@@ -343,28 +347,23 @@ class Main {
         this.mainPanel.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'PageUp' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                event.cancelBubble = true;
                 this.firstPage();
             }
             if (event.key === 'PageUp' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                event.cancelBubble = true;
                 this.previousPage();
             }
             if (event.key === 'PageDown' && (event.ctrlKey || event.metaKey) && !event.shiftKey) {
                 event.preventDefault();
-                event.cancelBubble = true;
                 this.nextPage();
             }
             if (event.key === 'PageDown' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                event.cancelBubble = true;
                 this.lastPage();
             }
             if (this.currentCell && (event.key === 'PageDown' || event.key === 'PageUp') && !(event.ctrlKey || event.metaKey)) {
                 // prevent scrolling while editing
                 event.preventDefault();
-                event.cancelBubble = true;
             }
         });
     }
@@ -408,6 +407,32 @@ class Main {
         let tableBody: HTMLTableSectionElement = document.createElement('tbody');
         tableBody.id = 'tableBody';
         mainTable.appendChild(tableBody);
+    }
+
+    setTooltips(tooltips:any): void {
+        document.getElementById('open').innerText = tooltips.open;
+        document.getElementById('new').innerText = tooltips.new;
+        document.getElementById('save').innerText = tooltips.save;
+        document.getElementById('fileProperties').innerText = tooltips.fileProperties;
+        document.getElementById('confirmEdit').innerText = tooltips.confirmEdit;
+        document.getElementById('cancelEdit').innerText = tooltips.cancelEdit;
+        document.getElementById('replaceText').innerText = tooltips.replaceText;
+        document.getElementById('insertUnit').innerText = tooltips.insertUnit;
+        document.getElementById('deleteSelected').innerText = tooltips.deleteSelected;
+        document.getElementById('sortUnitsTip').innerText = tooltips.sortUnits;
+        document.getElementById('filterUnitsTip').innerText = tooltips.filterUnits;
+        document.getElementById('maintenance').innerText = tooltips.maintenance;
+        document.getElementById('convertCSV').innerText = tooltips.convertCSV;
+        document.getElementById('convertExcel').innerText = tooltips.convertExcel;
+        document.getElementById('convertSDLTM').innerText = tooltips.convertSDLTM;
+        document.getElementById('userGuide').innerText = tooltips.userGuide;
+        document.getElementById('firstPage').innerText = tooltips.firstPage;
+        document.getElementById('previousPage').innerText = tooltips.previousPage;
+        document.getElementById('pageTooltip').innerText = tooltips.pageTooltip;
+        document.getElementById('nextPage').innerText = tooltips.nextPage;
+        document.getElementById('lastPage').innerText = tooltips.lastPage;
+        document.getElementById('unitsPage').innerText = tooltips.unitsPage;
+        document.getElementById('unitsTooltip').innerText = tooltips.unitsTooltip;
     }
 
     buildRightPanels(rightPanel: HTMLDivElement): void {
@@ -624,7 +649,7 @@ class Main {
         first.id = 'first';
         first.classList.add('tooltip');
         first.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" /></svg>' +
-            '<span class="tooltiptext topTooltip">First Page</span>';
+            '<span class="tooltiptext topTooltip" id="firstPage"></span>';
         first.addEventListener('click', () => {
             this.firstPage();
         });
@@ -634,7 +659,7 @@ class Main {
         previous.id = 'previous';
         previous.classList.add('tooltip');
         previous.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>' +
-            '<span class="tooltiptext topTooltip">Previous Page</span>';
+            '<span class="tooltiptext topTooltip" id="previousPage"></span>';
         previous.addEventListener('click', () => {
             this.previousPage();
         });
@@ -665,7 +690,7 @@ class Main {
         let pageTooltip: HTMLSpanElement = document.createElement('span');
         pageTooltip.classList.add('tooltiptext');
         pageTooltip.classList.add('topTooltip');
-        pageTooltip.innerText = 'Enter page number and press ENTER';
+        pageTooltip.id = 'pageTooltip';
         pageDiv.appendChild(pageTooltip);
 
         let ofSpan: HTMLSpanElement = document.createElement('span');
@@ -686,7 +711,7 @@ class Main {
         next.id = 'next';
         next.classList.add('tooltip');
         next.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>' +
-            '<span class="tooltiptext topTooltip">Next Page</span>';
+            '<span class="tooltiptext topTooltip" id="nextPage"></span>';
         next.addEventListener('click', () => {
             this.nextPage();
         });
@@ -696,14 +721,14 @@ class Main {
         last.id = 'last';
         last.classList.add('tooltip');
         last.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" /></svg>' +
-            '<span class="tooltiptext topTooltip">Last Page</span>';
+            '<span class="tooltiptext topTooltip" id="lastPage"></span>';
         last.addEventListener('click', () => {
             this.lastPage();
         });
         this.bottomBar.appendChild(last);
 
         let unitsPage: HTMLSpanElement = document.createElement('span');
-        unitsPage.innerText = 'Units Page';
+        unitsPage.id = 'unitsPage';
         unitsPage.style.marginLeft = '10px';
         unitsPage.style.marginTop = '4px';
         this.bottomBar.appendChild(unitsPage);
@@ -725,7 +750,7 @@ class Main {
         unitsDiv.appendChild(units);
 
         let unitsTooltip: HTMLSpanElement = document.createElement('span');
-        unitsTooltip.innerText = 'Enter number of units/page and press ENTER';
+        unitsTooltip.id = 'unitsTooltip';
         unitsTooltip.classList.add('tooltiptext');
         unitsTooltip.classList.add('topTooltip');
         unitsDiv.appendChild(unitsTooltip);
@@ -779,11 +804,11 @@ class Main {
     }
 
     dataSaved(arg: any): void {
-        var tr: HTMLElement = document.getElementById(arg.id);
-        var children: HTMLCollection = tr.children;
+        let tr: HTMLElement = document.getElementById(arg.id);
+        let children: HTMLCollection = tr.children;
         let length: number = children.length;
         for (let i = 0; i < length; i++) {
-            var td: HTMLElement = children.item(i) as HTMLElement;
+            let td: HTMLElement = children.item(i) as HTMLElement;
             if (td.lang === arg.lang) {
                 td.innerHTML = arg.data;
                 break;
@@ -817,10 +842,10 @@ class Main {
 
     getSelected(): void {
         this.selectedUnits = [];
-        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+        let collection: HTMLCollection = document.getElementsByClassName('rowCheck');
         let length: number = collection.length
         for (let i = 0; i < length; i++) {
-            var check = collection[i] as HTMLInputElement;
+            let check = collection[i] as HTMLInputElement;
             if (check.checked) {
                 this.selectedUnits.push(check.parentElement.parentElement.id);
             }
@@ -886,7 +911,7 @@ class Main {
     }
 
     setStatus(arg: any): void {
-        var status: HTMLDivElement = document.getElementById('status') as HTMLDivElement;
+        let status: HTMLDivElement = document.getElementById('status') as HTMLDivElement;
         status.innerHTML = arg;
         if (arg.length > 0) {
             status.style.display = 'block';
@@ -907,7 +932,7 @@ class Main {
 
     updateLanguages(arg: any): void {
         this.languages = arg;
-        var row = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
+        let row = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
         let length: number = this.languages.length;
         for (let index = 0; index < length; ++index) {
             row = row + '<th>' + this.languages[index].code + ' - ' + arg[index].name + '</th>';
@@ -961,18 +986,18 @@ class Main {
 
     updateSegments(arg: any): void {
         this.setStatus('Preparing...');
-        var rows: string = '';
+        let rows: string = '';
         let length: number = arg.units.length;
         for (let i = 0; i < length; i++) {
             rows = rows + arg.units[i];
         }
         document.getElementById("tableBody").innerHTML = rows;
-        var cells = document.getElementsByClassName('lang');
+        let cells = document.getElementsByClassName('lang');
         length = cells.length;
         for (let i = 0; i < length; i++) {
             cells[i].addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
         }
-        var fixed = document.getElementsByClassName('fixed');
+        let fixed = document.getElementsByClassName('fixed');
         length = fixed.length;
         for (let i = 0; i < length; i++) {
             fixed[i].addEventListener('click', (ev: MouseEvent) => this.fixedListener(ev));
@@ -994,15 +1019,15 @@ class Main {
         if (this.currentCell != null && this.currentCell.isContentEditable) {
             this.saveEdit();
         }
-        var element: Element = (event.target as Element);
+        let element: Element = (event.target as Element);
         if (element.parentElement.tagName === 'TH') {
             // clicked header
             return;
         }
-        var x: string = element.tagName;
-        var id: string;
+        let x: string = element.tagName;
+        let id: string;
         if ('TD' === x || 'INPUT' === x) {
-            var composed = event.composedPath();
+            let composed = event.composedPath();
             if ('TR' === (composed[0] as Element).tagName) {
                 id = (composed[0] as Element).id;
             } else if ('TR' === (composed[1] as Element).tagName) {
@@ -1021,16 +1046,16 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        var element: Element = (event.target as Element);
+        let element: Element = (event.target as Element);
         if (element.parentElement.tagName === 'TH') {
             // clicked header
             return;
         }
-        var x: string = element.tagName;
-        var id: string;
-        var lang: string;
+        let x: string = element.tagName;
+        let id: string;
+        let lang: string;
         if ('TD' === x || 'INPUT' === x) {
-            var composed = event.composedPath();
+            let composed = event.composedPath();
             if ('TR' === (composed[0] as Element).tagName) {
                 id = (composed[0] as Element).id;
             } else if ('TR' === (composed[1] as Element).tagName) {
@@ -1065,7 +1090,7 @@ class Main {
     updateProperties(arg: any): void {
         this.attributesType = arg.type;
         document.getElementById('attributesSpan').innerHTML = this.attributesType;
-        var table = document.getElementById('attributesTable');
+        let table = document.getElementById('attributesTable');
         table.innerHTML = '';
         this.attributes = arg.attributes;
         let length: number = this.attributes.length;
@@ -1215,11 +1240,11 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        var selectAll = (document.getElementById('selectAll') as HTMLInputElement);
-        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
+        let selectAll = (document.getElementById('selectAll') as HTMLInputElement);
+        let collection: HTMLCollection = document.getElementsByClassName('rowCheck');
         let length: number = collection.length;
         for (let i = 0; i < length; i++) {
-            var check = collection[i] as HTMLInputElement;
+            let check = collection[i] as HTMLInputElement;
             check.checked = selectAll.checked;
         }
     }

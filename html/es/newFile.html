@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Nuevo Archivo TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new NewFile();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap">
+                <label for="srcLanguage">Idioma Origen</label>
+            </td>
+            <td class="middle">
+                <select id="srcLanguage" class="table_select">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap">
+                <label for="tgtLanguage">Idioma Destino</label>
+            </td>
+            <td class="middle">
+                <select id="tgtLanguage" class="table_select">
+                </select>
+            </td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="createFile">Crear Archivo TMX</button>
+    </div>
+    <script src="../../js/newFile.js"></script>
+</body>
+
+</html>

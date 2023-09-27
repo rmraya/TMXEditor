@@ -49,17 +49,16 @@ class FileInfo {
         document.getElementById('srclang').innerHTML = arg.attributes.srclang;
         document.getElementById('datatype').innerHTML = arg.attributes.datatype;
 
-        var propsContent: string = '';
-        for (let i = 0; i < arg.properties.length; i++) {
-            var pair: string[] = arg.properties[i];
+        let propsContent: string = '';
+        for (let pair of arg.properties) {
             propsContent = propsContent + '<tr><td class="noWrap">' + pair[0] + '</td><td>' + pair[1] + '</td></tr>'
         }
         document.getElementById('propertiesTable').innerHTML = propsContent;
 
-        var notes: string[] = arg.notes;
-        var notesContent: string = '';
-        for (let i = 0; i < notes.length; i++) {
-            notesContent = notesContent + '<tr><td>' + notes[i] + '</td></tr>'
+        let notes: string[] = arg.notes;
+        let notesContent: string = '';
+        for (let note of notes) {
+            notesContent = notesContent + '<tr><td>' + note + '</td></tr>'
         }
         document.getElementById('notesTable').innerHTML = notesContent;
         this.electron.ipcRenderer.send('fileInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });

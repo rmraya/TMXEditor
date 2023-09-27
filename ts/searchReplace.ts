@@ -19,8 +19,8 @@ class SearchReplace {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
@@ -40,29 +40,28 @@ class SearchReplace {
         this.electron.ipcRenderer.send('replaceText-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    filterLanguages(arg: any): void {
-        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    filterLanguages(langs: Language[]): void {
+        let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         language.innerHTML = options;
     }
 
     replace(): void {
-        var searchText: string = (document.getElementById('searchText') as HTMLInputElement).value;
-        var replaceText: string = (document.getElementById('replaceText') as HTMLInputElement).value;
-        var language: string = (document.getElementById('language') as HTMLSelectElement).value;
+        let searchText: string = (document.getElementById('searchText') as HTMLInputElement).value;
+        let replaceText: string = (document.getElementById('replaceText') as HTMLInputElement).value;
+        let language: string = (document.getElementById('language') as HTMLSelectElement).value;
         if (searchText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter text to search', parent: 'searchReplace' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'searchReplace', key: 'enterSearchText', parent: 'searchReplace' });
             return;
         }
         if (replaceText.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Enter replacement text', parent: 'searchReplace' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'searchReplace', key: 'enterReplaceText', parent: 'searchReplace' });
             return;
         }
-        var regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
+        let regularExpression: boolean = (document.getElementById('regularExpression') as HTMLInputElement).checked;
         this.electron.ipcRenderer.send('replace-request', { search: searchText, replace: replaceText, lang: language, regExp: regularExpression });
     }
 }

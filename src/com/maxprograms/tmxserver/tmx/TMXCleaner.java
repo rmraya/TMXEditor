@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,13 +62,13 @@ public class TMXCleaner {
 		}
 		File original = new File(name);
 		if (!original.renameTo(f)) {
-			throw new IOException("Error creating backup");
+			throw new IOException(Messages.getString("TMXCleaner.0"));
 		}
 		File ok = new File(name + ".tmp");
 		original = null;
 		original = new File(name);
 		if (!ok.renameTo(original)) {
-			throw new IOException("Error renaming cleaned file");
+			throw new IOException(Messages.getString("TMXCleaner.1"));
 		}
 	}
 
@@ -109,7 +110,8 @@ public class TMXCleaner {
 			try (FileInputStream inputStream = new FileInputStream(fileName)) {
 				int bytes = inputStream.read(array);
 				if (bytes == -1) {
-					throw new IOException("Error reading BOM from " + fileName);
+					MessageFormat mf = new MessageFormat(Messages.getString("TMXCleaner.2"));
+					throw new IOException(mf.format(new String[] { fileName }));
 				}
 			}
 			byte[] lt = "<".getBytes();

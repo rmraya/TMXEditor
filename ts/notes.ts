@@ -53,18 +53,18 @@ class Notes {
     }
 
     drawNotes(): void {
-        var rows: string = '';
+        let rows: string = '';
         let length = this.notes.length
         for (let i = 0; i < length; i++) {
-            var note = this.notes[i];
+            let note = this.notes[i];
             rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="middle"></td><td class="middle noWrap fill_width">' + note + '</td></tr>';
         }
         document.getElementById('notesTable').innerHTML = rows;
     }
 
     saveNotes(): void {
-        var lang = this.currentType === 'TU' ? '' : this.currentType;
-        var arg = {
+        let lang = this.currentType === 'TU' ? '' : this.currentType;
+        let arg = {
             id: this.currentId,
             lang: lang,
             notes: this.notes
@@ -77,10 +77,9 @@ class Notes {
     }
 
     deleteNotes(): void {
-        var collection: HTMLCollection = document.getElementsByClassName('rowCheck');
-        for (let i = 0; i < collection.length; i++) {
-            var check = collection[i] as HTMLInputElement;
-            if (check.checked) {
+        let collection: HTMLCollectionOf<Element> = document.getElementsByClassName('rowCheck');
+        for (let check of collection) {
+            if ((check as HTMLInputElement).checked) {
                 this.removeNote(check.parentElement.parentElement.id);
             }
         }
@@ -89,7 +88,7 @@ class Notes {
     }
 
     removeNote(id: string): void {
-        var copy: string[] = [];
+        let copy: string[] = [];
         let length = this.notes.length
         for (let i = 0; i < length; i++) {
             if (id !== 'note_' + i) {

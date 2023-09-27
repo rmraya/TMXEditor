@@ -19,8 +19,8 @@ class SortUnits {
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
-        this.electron.ipcRenderer.send('get-filter-languages');
-        this.electron.ipcRenderer.on('filter-languages', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.send('get-file-languages');
+        this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
         this.electron.ipcRenderer.on('sort-options', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -44,11 +44,10 @@ class SortUnits {
         this.electron.ipcRenderer.send('sortUnits-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    filterLanguages(arg: any): void {
-        var sortLanguage: HTMLSelectElement = document.getElementById('sortLanguage') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    filterLanguages(langs: Language[]): void {
+        let sortLanguage: HTMLSelectElement = document.getElementById('sortLanguage') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         sortLanguage.innerHTML = options;
@@ -65,8 +64,8 @@ class SortUnits {
     }
 
     sort(): void {
-        var language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
-        var desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;
+        let language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
+        let desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;
         this.electron.ipcRenderer.send('set-sort', { sortLanguage: language, ascending: !desc });
     }
 

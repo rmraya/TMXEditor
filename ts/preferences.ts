@@ -18,6 +18,10 @@ class Preferences {
         this.electron.ipcRenderer.send('get-theme');
         this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
+            this.electron.ipcRenderer.send('get-appLanguage');
+        });
+        this.electron.ipcRenderer.on('set-appLanguage', (event: Electron.IpcRendererEvent, arg: any) => {
+            (document.getElementById('appLangSelect') as HTMLSelectElement).value = arg;
         });
         this.electron.ipcRenderer.on('set-preferences', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setPreferences(arg);
@@ -45,10 +49,11 @@ class Preferences {
     }
 
     savePreferences(): void {
-        var theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
-        var indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
-        var threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
-        var prefs: any = { theme: theme, threshold: threshold, indentation: indent }
+        let theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
+        let indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
+        let threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
+        let appLang: string = (document.getElementById('appLangSelect') as HTMLSelectElement).value;
+        let prefs: any = { theme: theme, threshold: threshold, indentation: indent, appLang: appLang }
         this.electron.ipcRenderer.send('save-preferences', prefs);
     }
 }

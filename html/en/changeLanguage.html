@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Change Language</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body onload="new ChangeLanguages();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="currentLanguage">Current Language</label></td>
+            <td class="middle">
+                <select id="currentLanguage" class="table_input">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="newLanguage">New Language</label></td>
+            <td class="middle">
+                <select id="newLanguage" class="table_input">
+                </select>
+            </td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="changeLanguage">Change Language</button>
+    </div>
+    <script src="../../js/changeLanguage.js"></script>
+</body>
+
+</html>

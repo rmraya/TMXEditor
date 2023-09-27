@@ -20,7 +20,7 @@ class AddLanguage {
             (document.getElementById('theme') as HTMLLinkElement).href = arg;
         });
         this.electron.ipcRenderer.send('all-languages');
-        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: any) => {
+        this.electron.ipcRenderer.on('languages-list', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.languageList(arg);
         });
         document.getElementById('addLanguage').addEventListener('click', () => {
@@ -38,18 +38,21 @@ class AddLanguage {
         this.electron.ipcRenderer.send('addLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
-    languageList(arg: any): void {
-        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
-        var options: string = '';
-        for (let i: number = 0; i < arg.length; i++) {
-            let lang: any = arg[i];
+    languageList(langs: Language[]): void {
+        let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        let options: string = '';
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
         }
         language.innerHTML = options;
     }
 
     addLanguage(): void {
-        var language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
+        if (language.value === 'none') {
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'addLanguage', key: 'selectLanguageWarning', parent: 'addLanguage' });
+            return;
+        }
         this.electron.ipcRenderer.send('add-language', language.value);
     }
 }

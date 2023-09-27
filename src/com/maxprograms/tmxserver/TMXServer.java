@@ -22,16 +22,23 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import javax.xml.parsers.ParserConfigurationException;
 
-import com.maxprograms.tmxserver.models.Language;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xml.sax.SAXException;
+
+import com.maxprograms.languages.Language;
+import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -54,12 +61,12 @@ public class TMXServer implements HttpHandler {
 		String port = "8050";
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
-			if (arg.equals("-version")) {
-				logger.log(Level.INFO, () -> "Version: " + Constants.VERSION + " Build: " + Constants.BUILD);
-				return;
-			}
 			if (arg.equals("-port") && (i + 1) < args.length) {
 				port = args[i + 1];
+			}
+			if (arg.equals("-lang") && (i + 1) < args.length) {
+				String lang = args[i + 1];
+				Locale.setDefault(new Locale(lang));
 			}
 		}
 		try {
@@ -83,183 +90,194 @@ public class TMXServer implements HttpHandler {
 				request = readRequestBody(is);
 			}
 			if (request.isBlank()) {
-				throw new IOException("Empty request");
+				throw new IOException(Messages.getString("TMXServer.0"));
 			}
 			String response = "";
 			JSONObject json = new JSONObject(request);
 			String command = json.getString("command");
-			switch (command) {
-				case "version":
-					JSONObject obj = new JSONObject();
-					obj.put("tool", "TMXServer");
-					obj.put("version", Constants.VERSION);
-					obj.put("build", Constants.BUILD);
-					response = obj.toString();
-					break;
-				case "stop":
-					if (service.isOpen()) {
-						service.closeFile();
-					}
-					JSONObject stop = new JSONObject();
-					stop.put(Constants.STATUS, Constants.SUCCESS);
-					response = stop.toString();
-					break;
-				case "closeFile":
-					response = closeFile();
-					break;
-				case "saveFile":
-					response = saveFile(json.getString("file"));
-					break;
-				case "savingProgress":
-					response = getSavingProgress();
-					break;
-				case "openFile":
-					response = openFile(json.getString("file"));
-					break;
-				case "loadingProgress":
-					response = getLoadingProgress();
-					break;
-				case "getLanguages":
-					response = getLanguages();
-					break;
-				case "getSegments":
-					response = getSegments(json);
-					break;
-				case "getTuData":
-					response = getTuData(json.getString("id"));
-					break;
-				case "getTuvData":
-					response = getTuvData(json.getString("id"), json.getString("lang"));
-					break;
-				case "saveTuvData":
-					response = saveTuvData(json);
-					break;
-				case "consolidateUnits":
-					response = consolidateUnits(json.getString("srcLang"));
-					break;
-				case "processingProgress":
-					response = getProcessingProgress();
-					break;
-				case "getCount":
-					response = getCount();
-					break;
-				case "validateFile":
-					response = validateFile(json.getString("file"));
-					break;
-				case "validatingProgress":
-					response = getValidatingProgress();
-					break;
-				case "cleanCharacters":
-					response = cleanCharacters(json.getString("file"));
-					break;
-				case "cleaningProgress":
-					response = getCleaningProgress();
-					break;
-				case "removeUntranslated":
-					response = removeUntranslated(json.getString("srcLang"));
-					break;
-				case "removeSameAsSource":
-					response = removeSameAsSource(json.getString("srcLang"));
-					break;
-				case "replaceText":
-					response = replaceText(json);
-					break;
-				case "removeSpaces":
-					response = removeSpaces();
-					break;
-				case "removeDuplicates":
-					response = removeDuplicates();
-					break;
-				case "getAllLanguages":
-					response = getAllLanguages();
-					break;
-				case "changeLanguage":
-					response = changeLanguage(json);
-					break;
-				case "insertUnit":
-					response = insertUnit();
-					break;
-				case "deleteUnits":
-					response = deleteUnits(json);
-					break;
-				case "createFile":
-					response = createFile(json);
-					break;
-				case "getFileProperties":
-					response = getFileProperties();
-					break;
-				case "removeTags":
-					response = removeTags();
-					break;
-				case "removeLanguage":
-					response = removeLanguage(json);
-					break;
-				case "addLanguage":
-					response = addLanguage(json);
-					break;
-				case "getSrcLanguage":
-					response = getSrcLanguage();
-					break;
-				case "setSrcLanguage":
-					response = setSrcLanguage(json);
-					break;
-				case "exportProgress":
-					response = exportProgress();
-					break;
-				case "exportDelimited":
-					response = exportDelimited(json);
-					break;
-				case "exportExcel":
-					response = exportExcel(json);
-					break;
-				case "splitFile":
-					response = splitFile(json);
-					break;
-				case "getSplitProgress":
-					response = getSplitProgress();
-					break;
-				case "mergeFiles":
-					response = mergeFiles(json);
-					break;
-				case "getMergeProgress":
-					response = getMergeProgress();
-					break;
-				case "getCharsets":
-					response = getCharsets();
-					break;
-				case "previewCsv":
-					response = previewCsv(json);
-					break;
-				case "previewExcel":
-					response = previewExcel(json);
-					break;
-				case "convertCsv":
-					response = convertCsv(json);
-					break;
-				case "convertExcel":
-					response = convertExcel(json);
-					break;
-				case "setAttributes":
-					response = setAttributes(json);
-					break;
-				case "setProperties":
-					response = setProperties(json);
-					break;
-				case "setNotes":
-					response = setNotes(json);
-					break;
-				case "processTasks":
-					response = processTasks(json);
-					break;
-				case "systemInfo":
-					response = getSystemInformation();
-					break;
-				default:
-					JSONObject unknown = new JSONObject();
-					unknown.put(Constants.STATUS, Constants.ERROR);
-					unknown.put(Constants.REASON, "Unknown command");
-					unknown.put("received", json.toString());
-					response = unknown.toString();
+			try {
+				switch (command) {
+					case "version":
+						JSONObject obj = new JSONObject();
+						obj.put("tool", "TMXServer");
+						obj.put("version", Constants.VERSION);
+						obj.put("build", Constants.BUILD);
+						response = obj.toString();
+						break;
+					case "stop":
+						if (service.isOpen()) {
+							service.closeFile();
+						}
+						JSONObject stop = new JSONObject();
+						stop.put(Constants.STATUS, Constants.SUCCESS);
+						response = stop.toString();
+						break;
+					case "closeFile":
+						response = closeFile();
+						break;
+					case "saveFile":
+						response = saveFile(json.getString("file"));
+						break;
+					case "savingProgress":
+						response = getSavingProgress();
+						break;
+					case "openFile":
+						response = openFile(json.getString("file"));
+						break;
+					case "fileInfo":
+						response = service.getFileInfo().toString();
+						break;
+					case "loadingProgress":
+						response = getLoadingProgress();
+						break;
+					case "getLanguages":
+						response = getLanguages();
+						break;
+					case "getSegments":
+						response = getSegments(json);
+						break;
+					case "getTuData":
+						response = getTuData(json.getString("id"));
+						break;
+					case "getTuvData":
+						response = getTuvData(json.getString("id"), json.getString("lang"));
+						break;
+					case "saveTuvData":
+						response = saveTuvData(json);
+						break;
+					case "consolidateUnits":
+						response = consolidateUnits(json.getString("srcLang"));
+						break;
+					case "processingProgress":
+						response = getProcessingProgress();
+						break;
+					case "getCount":
+						response = getCount();
+						break;
+					case "validateFile":
+						response = validateFile(json.getString("file"));
+						break;
+					case "validatingProgress":
+						response = getValidatingProgress();
+						break;
+					case "cleanCharacters":
+						response = cleanCharacters(json.getString("file"));
+						break;
+					case "cleaningProgress":
+						response = getCleaningProgress();
+						break;
+					case "removeUntranslated":
+						response = removeUntranslated(json.getString("srcLang"));
+						break;
+					case "removeSameAsSource":
+						response = removeSameAsSource(json.getString("srcLang"));
+						break;
+					case "replaceText":
+						response = replaceText(json);
+						break;
+					case "removeSpaces":
+						response = removeSpaces();
+						break;
+					case "removeDuplicates":
+						response = removeDuplicates();
+						break;
+					case "getAllLanguages":
+						response = getAllLanguages();
+						break;
+					case "changeLanguage":
+						response = changeLanguage(json);
+						break;
+					case "insertUnit":
+						response = insertUnit();
+						break;
+					case "deleteUnits":
+						response = deleteUnits(json);
+						break;
+					case "createFile":
+						response = createFile(json);
+						break;
+					case "getFileProperties":
+						response = getFileProperties();
+						break;
+					case "removeTags":
+						response = removeTags();
+						break;
+					case "removeLanguage":
+						response = removeLanguage(json);
+						break;
+					case "addLanguage":
+						response = addLanguage(json);
+						break;
+					case "getSrcLanguage":
+						response = getSrcLanguage();
+						break;
+					case "setSrcLanguage":
+						response = setSrcLanguage(json);
+						break;
+					case "exportProgress":
+						response = exportProgress();
+						break;
+					case "exportDelimited":
+						response = exportDelimited(json);
+						break;
+					case "exportExcel":
+						response = exportExcel(json);
+						break;
+					case "splitFile":
+						response = splitFile(json);
+						break;
+					case "getSplitProgress":
+						response = getSplitProgress();
+						break;
+					case "mergeFiles":
+						response = mergeFiles(json);
+						break;
+					case "getMergeProgress":
+						response = getMergeProgress();
+						break;
+					case "getCharsets":
+						response = getCharsets();
+						break;
+					case "previewCsv":
+						response = previewCsv(json);
+						break;
+					case "previewExcel":
+						response = previewExcel(json);
+						break;
+					case "convertCsv":
+						response = convertCsv(json);
+						break;
+					case "convertExcel":
+						response = convertExcel(json);
+						break;
+					case "setAttributes":
+						response = setAttributes(json);
+						break;
+					case "setProperties":
+						response = setProperties(json);
+						break;
+					case "setNotes":
+						response = setNotes(json);
+						break;
+					case "processTasks":
+						response = processTasks(json);
+						break;
+					case "systemInfo":
+						response = getSystemInformation();
+						break;
+					default:
+						JSONObject unknown = new JSONObject();
+						unknown.put(Constants.STATUS, Constants.ERROR);
+						unknown.put(Constants.REASON, Messages.getString("TMXServer.1"));
+						unknown.put("received", json.toString());
+						response = unknown.toString();
+				}
+			} catch (IOException | SAXException | ParserConfigurationException e) {
+				logger.log(Level.ERROR, e);
+				JSONObject error = new JSONObject();
+				error.put(Constants.STATUS, Constants.ERROR);
+				error.put(Constants.REASON, e.getMessage());
+				response = error.toString();
 			}
 			t.getResponseHeaders().add("content-type", "application/json; charset=utf-8");
 			byte[] bytes = response.getBytes(StandardCharsets.UTF_8);
@@ -394,9 +412,9 @@ public class TMXServer implements HttpHandler {
 
 	private String setSrcLanguage(JSONObject json) {
 		try {
-			Language lang = service.getLanguage(json.getString("lang"));
+			Language lang = LanguageUtils.getLanguage(json.getString("lang"));
 			return service.setSrcLanguage(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -411,9 +429,9 @@ public class TMXServer implements HttpHandler {
 
 	private String removeLanguage(JSONObject json) {
 		try {
-			Language lang = service.getLanguage(json.getString("lang"));
+			Language lang = LanguageUtils.getLanguage(json.getString("lang"));
 			return service.removeLanguage(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -424,9 +442,9 @@ public class TMXServer implements HttpHandler {
 
 	private String addLanguage(JSONObject json) {
 		try {
-			Language lang = service.getLanguage(json.getString("lang"));
+			Language lang = LanguageUtils.getLanguage(json.getString("lang"));
 			return service.addLanguage(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -445,10 +463,10 @@ public class TMXServer implements HttpHandler {
 
 	private String createFile(JSONObject json) {
 		try {
-			Language srcLang = service.getLanguage(json.getString("srcLang"));
-			Language tgtLang = service.getLanguage(json.getString("tgtLang"));
+			Language srcLang = LanguageUtils.getLanguage(json.getString("srcLang"));
+			Language tgtLang = LanguageUtils.getLanguage(json.getString("tgtLang"));
 			return service.createFile(srcLang, tgtLang).toString();
-		} catch (IOException e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -476,10 +494,10 @@ public class TMXServer implements HttpHandler {
 
 	private String changeLanguage(JSONObject json) {
 		try {
-			Language oldLang = service.getLanguage(json.getString("oldLanguage"));
-			Language newLang = service.getLanguage(json.getString("newLanguage"));
+			Language oldLang = LanguageUtils.getLanguage(json.getString("oldLanguage"));
+			Language newLang = LanguageUtils.getLanguage(json.getString("newLanguage"));
 			return service.changeLanguage(oldLang, newLang).toString();
-		} catch (IOException e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -522,13 +540,13 @@ public class TMXServer implements HttpHandler {
 			if (json.has("lang")) {
 				lang = json.getString("lang");
 			}
-			Language language = service.getLanguage(lang);
+			Language language = LanguageUtils.getLanguage(lang);
 			boolean regExp = false;
 			if (json.has("regExp")) {
 				regExp = json.getBoolean("regExp");
 			}
 			return service.replaceText(search, replace, language, regExp).toString();
-		} catch (IOException e) {
+		} catch (IOException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -539,9 +557,9 @@ public class TMXServer implements HttpHandler {
 
 	private String removeUntranslated(String srcLang) {
 		try {
-			Language lang = service.getLanguage(srcLang);
+			Language lang = LanguageUtils.getLanguage(srcLang);
 			return service.removeUntranslated(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -552,9 +570,9 @@ public class TMXServer implements HttpHandler {
 
 	private String removeSameAsSource(String srcLang) {
 		try {
-			Language lang = service.getLanguage(srcLang);
+			Language lang = LanguageUtils.getLanguage(srcLang);
 			return service.removeSameAsSource(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -585,9 +603,9 @@ public class TMXServer implements HttpHandler {
 
 	private String consolidateUnits(String srcLang) {
 		try {
-			Language lang = service.getLanguage(srcLang);
+			Language lang = LanguageUtils.getLanguage(srcLang);
 			return service.consolidateUnits(lang).toString();
-		} catch (IOException e) {
+		} catch (IOException | SAXException | ParserConfigurationException e) {
 			logger.log(Level.ERROR, e);
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.ERROR);
@@ -614,7 +632,7 @@ public class TMXServer implements HttpHandler {
 			}
 			Language filterLanguage = null;
 			if (json.has("filterLanguage")) {
-				filterLanguage = service.getLanguage(json.getString("filterLanguage"));
+				filterLanguage = LanguageUtils.getLanguage(json.getString("filterLanguage"));
 			}
 			boolean filterUntranslated = false;
 			if (json.has("filterUntranslated")) {
@@ -626,11 +644,11 @@ public class TMXServer implements HttpHandler {
 			}
 			Language filterSrcLanguage = null;
 			if (json.has("filterSrcLanguage")) {
-				filterSrcLanguage = service.getLanguage(json.getString("filterSrcLanguage"));
+				filterSrcLanguage = LanguageUtils.getLanguage(json.getString("filterSrcLanguage"));
 			}
 			Language sortLanguage = null;
 			if (json.has("sortLanguage")) {
-				sortLanguage = service.getLanguage(json.getString("sortLanguage"));
+				sortLanguage = LanguageUtils.getLanguage(json.getString("sortLanguage"));
 			}
 			boolean ascending = true;
 			if (json.has("ascending")) {
@@ -651,7 +669,8 @@ public class TMXServer implements HttpHandler {
 				List<Language> fileLanguages = new ArrayList<>();
 				JSONArray langs = service.getLanguages().getJSONArray("languages");
 				for (int i = 0; i < langs.length(); i++) {
-					fileLanguages.add(new Language(langs.getJSONObject(i)));
+					Language lang = LanguageUtils.getLanguage(langs.getJSONObject(i).getString("code"));
+					fileLanguages.add(lang);
 				}
 
 				JSONArray array = new JSONArray();
@@ -663,14 +682,14 @@ public class TMXServer implements HttpHandler {
 			} else {
 				result.put(Constants.REASON, segments.getString(Constants.REASON));
 			}
-		} catch (Exception e) {
+		} catch (IOException | JSONException | SAXException | ParserConfigurationException e) {
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
 		}
 		return result.toString(2);
 	}
 
-	private String getLanguages() {
+	private String getLanguages() throws JSONException, IOException, SAXException, ParserConfigurationException {
 		return service.getLanguages().toString();
 	}
 
@@ -707,12 +726,15 @@ public class TMXServer implements HttpHandler {
 
 	private static String getSystemInformation() {
 		JSONObject result = new JSONObject();
-		result.put("tmxeditor", Constants.VERSION + " Build: " + Constants.BUILD);
-		result.put("openxliff",
-				com.maxprograms.converters.Constants.VERSION + " Build: " + com.maxprograms.converters.Constants.BUILD);
-		result.put("xmljava",
-				com.maxprograms.xml.Constants.VERSION + " Build: " + com.maxprograms.xml.Constants.BUILD);
-		result.put("java", System.getProperty("java.version") + " Vendor: " + System.getProperty("java.vendor"));
+		MessageFormat mf1 = new MessageFormat(Messages.getString("TMXServer.2"));
+		result.put("tmxeditor", mf1.format(new String[] { Constants.VERSION, Constants.BUILD }));
+		result.put("openxliff", mf1.format(new String[] { com.maxprograms.converters.Constants.VERSION,
+				com.maxprograms.converters.Constants.BUILD }));
+		result.put("xmljava", mf1
+				.format(new String[] { com.maxprograms.xml.Constants.VERSION, com.maxprograms.xml.Constants.BUILD }));
+		MessageFormat mf2 = new MessageFormat(Messages.getString("TMXServer.3"));
+		result.put("java",
+				mf2.format(new String[] { System.getProperty("java.version"), System.getProperty("java.vendor") }));
 		return result.toString();
 	}
 }

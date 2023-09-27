@@ -20,7 +20,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,18 +29,18 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.xml.sax.SAXException;
+
+import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.Constants;
 import com.maxprograms.tmxserver.excel.ExcelWriter;
 import com.maxprograms.tmxserver.excel.Sheet;
-import com.maxprograms.tmxserver.models.Language;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
-
-import org.xml.sax.SAXException;
 
 public class SimpleStore implements StoreInterface {
 
@@ -182,21 +181,17 @@ public class SimpleStore implements StoreInterface {
 				processed++;
 			}
 		} else {
-			throw new IOException("Wrong filtering option");
+			throw new IOException(Messages.getString("SimpleStore.0"));
 		}
 
 		if (sortLanguage != null) {
-			Collections.sort(result, new Comparator<TUnit>() {
-
-				@Override
-				public int compare(TUnit o1, TUnit o2) {
-					String s1 = o1.getString(sortLanguage.getCode());
-					String s2 = o2.getString(sortLanguage.getCode());
-					if (ascending) {
-						return s1.compareTo(s2);
-					}
-					return s2.compareTo(s1);
+			Collections.sort(result, (TUnit o1, TUnit o2) -> {
+				String s1 = o1.getString(sortLanguage.getCode());
+				String s2 = o2.getString(sortLanguage.getCode());
+				if (ascending) {
+					return s1.compareTo(s2);
 				}
+				return s2.compareTo(s1);
 			});
 		}
 		if (result.size() < count) {

@@ -25,6 +25,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import com.maxprograms.languages.Language;
+import com.maxprograms.languages.LanguageUtils;
+
 public class TUnit implements Serializable, Comparable<TUnit> {
 
 	private static final long serialVersionUID = -9009997310750239732L;
@@ -121,7 +124,7 @@ public class TUnit implements Serializable, Comparable<TUnit> {
 			html.append("<td class=\"lang\" lang=\"");
 			html.append(lang.getCode());
 			html.append("\"");
-			if (lang.isBidi()) {
+			if (LanguageUtils.isBiDi(lang.getCode())) {
 				html.append(" dir='rtl'");
 			}
 			html.append('>');
