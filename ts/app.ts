@@ -217,10 +217,7 @@ class App {
             });
             App.checkUpdates(true);
             if (process.platform === 'darwin' && app.runningUnderARM64Translation) {
-                App.showMessage({
-                    type: 'warning',
-                    message: 'You are running a version for Macs with Intel processors on a Mac with Apple M1 chipset.'
-                });
+                App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'm1Mac') });
             }
         });
 
