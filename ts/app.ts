@@ -2532,7 +2532,7 @@ class App {
                                 clearInterval(intervalObject);
                                 App.showMessage({
                                     type: 'info',
-                                    message: App.i18n.getString('App', 'fileIsVaild')
+                                    message: App.i18n.getString('App', 'fileIsValid')
                                 });
                                 return;
                             } else if (App.currentStatus.status === ERROR) {
