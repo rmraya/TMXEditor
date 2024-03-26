@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -18,7 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +124,7 @@ public class TMXConverter {
 			boolean optionalDelims) {
 
 		if (optionalDelims) {
-			List<String> list = new ArrayList<>();
+			List<String> list = new Vector<>();
 			StringBuilder string = new StringBuilder();
 			boolean inDelimited = false;
 			for (int i = 0; i < line.length(); i++) {
@@ -150,7 +150,7 @@ public class TMXConverter {
 		} else {
 			String[] parts = TextUtils.split(line, columnsSeparator);
 			if (parts.length > 1) {
-				List<String> merged = new ArrayList<>();
+				List<String> merged = new Vector<>();
 				for (int i = 0; i < parts.length; i++) {
 					String a = parts[i];
 					if (!a.endsWith(textDelimiter)) {
@@ -187,7 +187,7 @@ public class TMXConverter {
 
 		long id = System.currentTimeMillis();
 		String today = TmxUtils.tmxDate();
-		List<String> columns = new ArrayList<>();
+		List<String> columns = new Vector<>();
 		columns.addAll(sheet.getColumns());
 
 		for (int i = 0; i < sheet.rowsCount(); i++) {

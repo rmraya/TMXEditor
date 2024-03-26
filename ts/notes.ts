@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -57,7 +57,7 @@ class Notes {
         let length = this.notes.length
         for (let i = 0; i < length; i++) {
             let note = this.notes[i];
-            rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="middle"></td><td class="middle noWrap fill_width">' + note + '</td></tr>';
+            rows = rows + '<tr id="note_' + i + '"><td><input type="checkbox" class="middle"></td><td class="middle fill_width">' + note + '</td></tr>';
         }
         document.getElementById('notesTable').innerHTML = rows;
     }

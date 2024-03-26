@@ -41,10 +41,12 @@
         "AnyFile": "Any File",
         "CSVFile": "CSV/Text File",
         "TextFile": "Text File",
+        "TBXFile": "TBX File",
         "SDLTMFile": "SDLTM File",
         "ExcelFile": "Excel File",
         "SaveTMX": "Save TMX File",
         "OpenCSV": "Open CSV/Text File",
+        "OpenTBX": "Open TBX File",
         "OpenSDLTM": "Open SDLTM File",
         "OpenExcel": "Open Excel File",
         "ExportExcel": "Export Excel File",
@@ -104,6 +106,7 @@
         "ConvertCSV": "Convert CSV/TAB Delimited File to TMX",
         "ExportCSV": "Export as TAB Delimited File...",
         "ConvertSDLTM": "Convert SDLTM File to TMX",
+        "ConvertTBX": "Convert TBX File to TMX",
         "FileProperties": "File Properties",
         "ValidateTMX": "Validate TMX File...",
         "CleanInvalidChars": "Clean Invalid Characters...",
@@ -178,8 +181,8 @@
         "selectTmx": "Select TMX file",
         "setLanguages": "Set languages"
     },
-    "convertSDLTM": {
-        "selectSdlTm": "Select SDLTM file",
+    "convertTBX": {
+        "selectTbx": "Select TBX file",
         "selectTmx": "Select TMX file"
     },
     "csvLanguages": {

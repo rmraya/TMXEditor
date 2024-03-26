@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -22,35 +22,35 @@ class Licenses {
         document.getElementById('TMXEditor').addEventListener('click', () => {
             this.openLicense('TMXEditor');
         });
+        document.getElementById('bcp47j').addEventListener('click', () => {
+            this.openLicense('BCP47J');
+        });
         document.getElementById('electron').addEventListener('click', () => {
             this.openLicense('electron');
         });
         document.getElementById('Java').addEventListener('click', () => {
             this.openLicense('Java');
         });
-        document.getElementById('OpenXLIFF').addEventListener('click', () => {
-            this.openLicense('OpenXLIFF');
-        });
-        document.getElementById('XMLJava').addEventListener('click', () => {
-            this.openLicense('XMLJava');
+        document.getElementById('JSON').addEventListener('click', () => {
+            this.openLicense('JSON');
         });
         document.getElementById('sdltm').addEventListener('click', () => {
             this.openLicense('sdltm');
         });
+        document.getElementById('SLF4J').addEventListener('click', () => {
+            this.openLicense('SLF4J');
+        });
+        document.getElementById('SQLite').addEventListener('click', () => {
+            this.openLicense('SQLite');
+        });
         document.getElementById('TMXValidator').addEventListener('click', () => {
             this.openLicense('TMXValidator');
         });
-        document.getElementById('JSON').addEventListener('click', () => {
-            this.openLicense('JSON');
+        document.getElementById('typesxml').addEventListener('click', () => {
+            this.openLicense('typesxml');
         });
-        document.getElementById('MapDB').addEventListener('click', () => {
-            this.openLicense('MapDB');
-        });
-        document.getElementById('jsoup').addEventListener('click', () => {
-            this.openLicense('jsoup');
-        });
-        document.getElementById('DTDParser').addEventListener('click', () => {
-            this.openLicense('DTDParser');
+        document.getElementById('XMLJava').addEventListener('click', () => {
+            this.openLicense('XMLJava');
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {

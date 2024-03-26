@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -43,6 +43,7 @@ import com.maxprograms.xml.XMLNode;
 public class TmxUtils {
 
 	public static final String STYLE = "class='highlighted'";
+	public static final String SPACE = "class='spaces'";
 
 	private static int maxTag;
 	private static int tag;
@@ -53,6 +54,7 @@ public class TmxUtils {
 	private static String lastFilterText;
 
 	private static File workDir;
+	private static Map<String, Locale> localesCache = new HashMap<>();
 
 	private TmxUtils() {
 		// empty for security
@@ -83,7 +85,7 @@ public class TmxUtils {
 	}
 
 	public static String pureText(Element seg, boolean clearTags, String filterText, boolean caseSensitive,
-			boolean regExp) throws IOException {
+			boolean regExp, String filterLanguage) throws IOException {
 		if (seg == null) {
 			return "";
 		}
@@ -94,6 +96,14 @@ public class TmxUtils {
 			}
 			tags = new HashMap<>();
 			tag = 1;
+		}
+		Locale locale = null;
+		if (filterLanguage != null) {
+			if (!localesCache.containsKey(filterLanguage)) {
+				locale = Locale.forLanguageTag(filterLanguage);
+				localesCache.put(filterLanguage, locale);
+			}
+			locale = localesCache.get(filterLanguage);
 		}
 		List<XMLNode> list = seg.getContent();
 		Iterator<XMLNode> it = list.iterator();
@@ -133,13 +143,13 @@ public class TmxUtils {
 						String t = TextUtils.cleanString(filterText);
 						if (caseSensitive) {
 							if (s.indexOf(t) != -1) {
-								text.append(highlight(s, t, caseSensitive));
+								text.append(highlight(s, t, caseSensitive, filterLanguage));
 							} else {
 								text.append(s);
 							}
 						} else {
-							if (s.toLowerCase().indexOf(t.toLowerCase()) != -1) {
-								text.append(highlight(s, t, caseSensitive));
+							if (s.toLowerCase(locale).indexOf(t.toLowerCase(locale)) != -1) {
+								text.append(highlight(s, t, caseSensitive, filterLanguage));
 							} else {
 								text.append(s);
 							}
@@ -160,7 +170,7 @@ public class TmxUtils {
 					text.append(".svg' align='bottom' alt='' title=\"");
 					text.append(unquote(cleanAngles(header)));
 					text.append("\"/>");
-					text.append(pureText(e, false, filterText, caseSensitive, regExp));
+					text.append(pureText(e, false, filterText, caseSensitive, regExp, filterLanguage));
 					checkSVG();
 					String tail = getTail(e);
 					tags.put("[[" + tag + "]]", tail);
@@ -185,17 +195,57 @@ public class TmxUtils {
 				}
 			}
 		}
-		return text.toString();
+		return highlightSpaces(text.toString());
 	}
 
-	protected static String highlight(String string, String target, boolean caseSensitive) {
+	private static String highlightSpaces(String string) {
+		if (string.strip().equals(string)) {
+			return string;
+		}
+		String result = string;
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < result.length(); i++) {
+			char c = result.charAt(i);
+			if (c == ' ' || c == '\u00A0' || c == '\t' || c == '\n' || c == '\r') {
+				sb.append(c);
+			} else {
+				break;
+			}
+		}
+		if (!sb.isEmpty()) {
+			result = "<span " + SPACE + ">" + sb.toString() + "</span>" + result.substring(sb.length());
+		}
+		sb = new StringBuilder();
+		for (int i = result.length() - 1; i >= 0; i--) {
+			char c = result.charAt(i);
+			if (c == ' ' || c == '\u00A0' || c == '\t' || c == '\n' || c == '\r') {
+				sb.append(c);
+			} else {
+				break;
+			}
+		}	
+		if (!sb.isEmpty()) {
+			result = result.substring(0, result.length() - sb.length()) + "<span " + SPACE + ">" + sb.toString() + "</span>";
+		}
+		return result;
+	}
+
+	protected static String highlight(String string, String target, boolean caseSensitive, String filterLanguage) {
 		String result = string;
 		int start = -1;
+		Locale locale = null;
+		if (filterLanguage != null) {
+			if (!localesCache.containsKey(filterLanguage)) {
+				locale = Locale.forLanguageTag(filterLanguage);
+				localesCache.put(filterLanguage, locale);
+			}
+			locale = localesCache.get(filterLanguage);
+		}
 		String replacement = "<span " + STYLE + ">" + target + "</span>";
 		if (caseSensitive) {
 			start = result.indexOf(target);
 		} else {
-			start = result.toLowerCase().indexOf(target.toLowerCase());
+			start = result.toLowerCase(locale).indexOf(target.toLowerCase(locale));
 			replacement = "<span " + STYLE + ">" + result.substring(start, start + target.length()) + "</span>";
 		}
 		while (start != -1) {
@@ -204,7 +254,7 @@ public class TmxUtils {
 			if (caseSensitive) {
 				start = result.indexOf(target, start);
 			} else {
-				start = result.toLowerCase().indexOf(target.toLowerCase(), start);
+				start = result.toLowerCase(locale).indexOf(target.toLowerCase(locale), start);
 				if (start != -1) {
 					replacement = "<span " + STYLE + ">" + result.substring(start, start + target.length()) + "</span>";
 				}
@@ -347,7 +397,7 @@ public class TmxUtils {
 				deleteFiles(list[i]);
 			}
 		}
-		Files.delete(Paths.get(file.toURI()));
+		Files.delete(file.toPath());
 	}
 
 	public static void replaceText(Element element, String search, String replace, boolean regExp) {

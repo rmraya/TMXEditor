@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -22,6 +22,7 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class TMXServer implements HttpHandler {
 			}
 			if (arg.equals("-lang") && (i + 1) < args.length) {
 				String lang = args[i + 1];
-				Locale.setDefault(new Locale(lang));
+				Locale.setDefault(Locale.forLanguageTag(lang));
 			}
 		}
 		try {
@@ -272,7 +273,7 @@ public class TMXServer implements HttpHandler {
 						unknown.put("received", json.toString());
 						response = unknown.toString();
 				}
-			} catch (IOException | SAXException | ParserConfigurationException e) {
+			} catch (IOException | SAXException | ParserConfigurationException | SQLException e) {
 				logger.log(Level.ERROR, e);
 				JSONObject error = new JSONObject();
 				error.put(Constants.STATUS, Constants.ERROR);
@@ -589,7 +590,7 @@ public class TMXServer implements HttpHandler {
 		return service.validatingProgress().toString();
 	}
 
-	private String getCount() {
+	private String getCount() throws JSONException, SQLException {
 		return service.getCount().toString();
 	}
 
@@ -708,7 +709,7 @@ public class TMXServer implements HttpHandler {
 		return service.openFile(file).toString();
 	}
 
-	private String getLoadingProgress() {
+	private String getLoadingProgress() throws JSONException, SQLException {
 		return service.getLoadingProgress().toString();
 	}
 
@@ -728,10 +729,10 @@ public class TMXServer implements HttpHandler {
 		JSONObject result = new JSONObject();
 		MessageFormat mf1 = new MessageFormat(Messages.getString("TMXServer.2"));
 		result.put("tmxeditor", mf1.format(new String[] { Constants.VERSION, Constants.BUILD }));
-		result.put("openxliff", mf1.format(new String[] { com.maxprograms.converters.Constants.VERSION,
-				com.maxprograms.converters.Constants.BUILD }));
 		result.put("xmljava", mf1
 				.format(new String[] { com.maxprograms.xml.Constants.VERSION, com.maxprograms.xml.Constants.BUILD }));
+		result.put("bcp47j", mf1
+				.format(new String[] { com.maxprograms.languages.Constants.VERSION, com.maxprograms.languages.Constants.BUILD }));
 		MessageFormat mf2 = new MessageFormat(Messages.getString("TMXServer.3"));
 		result.put("java",
 				mf2.format(new String[] { System.getProperty("java.version"), System.getProperty("java.vendor") }));

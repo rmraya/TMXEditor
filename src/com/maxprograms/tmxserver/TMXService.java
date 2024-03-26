@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,28 +48,29 @@ import com.maxprograms.tmxserver.excel.ExcelReader;
 import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.TUnit;
 import com.maxprograms.tmxserver.tmx.CountStore;
-import com.maxprograms.tmxserver.tmx.MapDBStore;
+import com.maxprograms.tmxserver.tmx.LanguageHandler;
 import com.maxprograms.tmxserver.tmx.MergeStore;
-import com.maxprograms.tmxserver.tmx.SimpleStore;
 import com.maxprograms.tmxserver.tmx.SplitStore;
+import com.maxprograms.tmxserver.tmx.SqlStore;
 import com.maxprograms.tmxserver.tmx.StoreInterface;
 import com.maxprograms.tmxserver.tmx.TMXCleaner;
 import com.maxprograms.tmxserver.tmx.TMXConverter;
 import com.maxprograms.tmxserver.tmx.TMXReader;
+import com.maxprograms.tmxserver.tmx.TMXResolver;
 import com.maxprograms.tmxserver.tmx.TmxUtils;
 import com.maxprograms.tmxserver.utils.TextUtils;
 import com.maxprograms.tmxvalidation.TMXValidator;
 import com.maxprograms.xml.Attribute;
+import com.maxprograms.xml.CustomErrorHandler;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
 import com.maxprograms.xml.Indenter;
+import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
 
 public class TMXService {
 
 	private Logger logger = Logger.getLogger(TMXService.class.getName());
-
-	private long threshold = 100l;
 
 	protected StoreInterface store;
 	protected File currentFile;
@@ -127,33 +129,6 @@ public class TMXService {
 		Files.delete(f.toPath());
 	}
 
-	private void loadPreferences(File folder) throws IOException {
-		File prefs = new File(folder, "preferences.json");
-		if (!prefs.exists()) {
-			return;
-		}
-		try (FileReader reader = new FileReader(prefs)) {
-			try (BufferedReader buffer = new BufferedReader(reader)) {
-				StringBuilder builder = new StringBuilder();
-				String line = "";
-				while ((line = buffer.readLine()) != null) {
-					if (!builder.isEmpty()) {
-						builder.append('\n');
-					}
-					builder.append(line);
-				}
-				JSONObject json = new JSONObject(builder.toString());
-				if (json.has("threshold")) {
-					try {
-						threshold = json.getLong("threshold");
-					} catch (JSONException e) {
-						threshold = 100l;
-					}
-				}
-			}
-		}
-	}
-
 	public JSONObject openFile(String fileName) {
 		JSONObject result = new JSONObject();
 		try {
@@ -162,7 +137,6 @@ public class TMXService {
 			if (!home.exists()) {
 				Files.createDirectory(home.toPath());
 			}
-			loadPreferences(home);
 			File tmp = new File(home, "tmp");
 			if (tmp.exists()) {
 				removeFile(tmp);
@@ -173,35 +147,26 @@ public class TMXService {
 				store = null;
 			}
 			currentFile = new File(fileName);
-			store = new SimpleStore();
-			long size = currentFile.length();
-			if (size > threshold * 1024 * 1024) {
-				logger.log(Level.INFO, "Using MapDB store");
-				store = new MapDBStore();
-			}
+			Set<String> languages = getLanguages(fileName);
+			store = new SqlStore(languages);
 			parsingError = "";
-			Thread thread = new Thread() {
-
-				@Override
-				public void run() {
+			Thread.ofVirtual().start(() -> {
+				try {
+					TMXReader reader = new TMXReader(store);
+					reader.parse(currentFile);
+					store.commit();
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					parsingError = e.getMessage();
 					try {
-						TMXReader reader = new TMXReader(store);
-						reader.parse(currentFile);
-						store.commit();
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						parsingError = e.getMessage();
-						try {
-							store.close();
-						} catch (Exception e1) {
-							// do nothing
-						}
-						store = null;
+						store.close();
+					} catch (Exception e1) {
+						// do nothing
 					}
-					parsing = false;
+					store = null;
 				}
-			};
-			thread.start();
+				parsing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception ex) {
 			logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -211,6 +176,16 @@ public class TMXService {
 			result.put(Constants.REASON, ex.getMessage());
 		}
 		return result;
+	}
+
+	private Set<String> getLanguages(String fileName) throws SAXException, IOException, ParserConfigurationException {
+		SAXBuilder builder = new SAXBuilder();
+		builder.setEntityResolver(new TMXResolver());
+		LanguageHandler handler = new LanguageHandler();
+		builder.setContentHandler(handler);
+		builder.setErrorHandler(new CustomErrorHandler());
+		builder.build(fileName);
+		return handler.getLanguages();
 	}
 
 	public JSONObject getData(int start, int count, String filterText, Language filterLanguage,
@@ -293,7 +268,7 @@ public class TMXService {
 		return result;
 	}
 
-	public JSONObject getCount() {
+	public JSONObject getCount() throws JSONException, SQLException {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			result.put("count", store.getCount());
@@ -357,21 +332,17 @@ public class TMXService {
 		currentFile = new File(file);
 		getIndentation();
 		store.setIndentation(indentation);
-
 		savingError = "";
 		try {
-			new Thread() {
-				@Override
-				public void run() {
-					try {
-						store.writeFile(currentFile);
-					} catch (Exception ex) {
-						logger.log(Level.SEVERE, ex.getMessage(), ex);
-						savingError = ex.getMessage();
-					}
-					saving = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.writeFile(currentFile);
+				} catch (Exception ex) {
+					logger.log(Level.SEVERE, ex.getMessage(), ex);
+					savingError = ex.getMessage();
 				}
-			}.start();
+				saving = false;
+			});
 			JSONObject result = new JSONObject();
 			result.put(Constants.STATUS, Constants.SUCCESS);
 			return result;
@@ -511,19 +482,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.replaceText(search, replace, language, regExp);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.replaceText(search, replace, language, regExp);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception ex) {
 			processing = false;
@@ -577,19 +544,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.removeUntranslated(lang);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.removeUntranslated(lang);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -605,19 +568,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.removeSameAsSource(lang);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.removeSameAsSource(lang);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -659,19 +618,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.removeTags();
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.removeTags();
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -687,19 +642,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.changeLanguage(oldLanguage, newLanguage);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.changeLanguage(oldLanguage, newLanguage);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -768,19 +719,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.removeDuplicates();
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.removeDuplicates();
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -795,19 +742,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.removeSpaces();
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.removeSpaces();
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -822,19 +765,15 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.consolidateUnits(lang);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
-					}
-					processing = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.consolidateUnits(lang);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -862,7 +801,7 @@ public class TMXService {
 		return result;
 	}
 
-	public JSONObject getLoadingProgress() {
+	public JSONObject getLoadingProgress() throws JSONException, SQLException {
 		JSONObject result = new JSONObject();
 		if (parsing) {
 			result.put(Constants.STATUS, Constants.LOADING);
@@ -914,37 +853,33 @@ public class TMXService {
 		}
 		splitting = true;
 		splitError = "";
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					countStore = new CountStore();
-					TMXReader reader = new TMXReader(countStore);
-					reader.parse(f);
-					long total = countStore.getCount();
-					long l = total / parts;
-					if (total % parts != 0) {
-						l++;
-					}
-					splitStore = new SplitStore(f, l);
-					getIndentation();
-					splitStore.setIndentation(indentation);
-					countStore = null;
-					reader = new TMXReader(splitStore);
-					reader.parse(f);
-					splitStore.close();
-					splitStore = null;
-				} catch (Exception ex) {
-					if (ex.getMessage() != null) {
-						splitError = ex.getMessage();
-					} else {
-						splitError = Messages.getString("TMXService.4");
-					}
+		Thread.ofVirtual().start(() -> {
+			try {
+				countStore = new CountStore();
+				TMXReader reader = new TMXReader(countStore);
+				reader.parse(f);
+				long total = countStore.getCount();
+				long l = total / parts;
+				if (total % parts != 0) {
+					l++;
 				}
-				splitting = false;
+				splitStore = new SplitStore(f, l);
+				getIndentation();
+				splitStore.setIndentation(indentation);
+				countStore = null;
+				reader = new TMXReader(splitStore);
+				reader.parse(f);
+				splitStore.close();
+				splitStore = null;
+			} catch (Exception ex) {
+				if (ex.getMessage() != null) {
+					splitError = ex.getMessage();
+				} else {
+					splitError = Messages.getString("TMXService.4");
+				}
 			}
-		}.start();
+			splitting = false;
+		});
 		result.put(Constants.STATUS, Constants.SUCCESS);
 		return result;
 	}
@@ -975,50 +910,50 @@ public class TMXService {
 		JSONObject result = new JSONObject();
 		merging = true;
 		mergeError = "";
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					getIndentation();
-					try (FileOutputStream out = new FileOutputStream(new File(merged))) {
-						Element header = new Element("header");
-						header.setAttribute("creationdate", TmxUtils.tmxDate());
-						header.setAttribute("creationtool", Constants.APPNAME);
-						header.setAttribute("creationtoolversion", Constants.VERSION);
-						header.setAttribute("datatype", "xml");
-						header.setAttribute("segtype", "block");
-						header.setAttribute("adminlang", "en");
-						header.setAttribute("o-tmf", "unknown");
-						header.setAttribute("srclang", "*all*");
-						out.write(("<?xml version=\"1.0\" ?>\r\n"
-								+ "<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">\r\n"
-								+ "<tmx version=\"1.4\">\n").getBytes(StandardCharsets.UTF_8));
-						out.write((TextUtils.padding(1, indentation) + header.toString() + "\n")
-								.getBytes(StandardCharsets.UTF_8));
-						out.write((TextUtils.padding(1, indentation) + "<body>\n").getBytes(StandardCharsets.UTF_8));
-						mergeStore = new MergeStore(out);
-						mergeStore.setIndentation(indentation);
-						TMXReader reader = new TMXReader(mergeStore);
-						Iterator<String> it = files.iterator();
-						while (it.hasNext()) {
-							File f = new File(it.next());
-							reader.parse(f);
-						}
-						out.write((TextUtils.padding(1, indentation) + "</body>\n").getBytes(StandardCharsets.UTF_8));
-						out.write("</tmx>".getBytes(StandardCharsets.UTF_8));
+		Thread.ofVirtual().start(() -> {
+			try {
+				getIndentation();
+				try (FileOutputStream out = new FileOutputStream(new File(merged))) {
+					Element header = new Element("header");
+					header.setAttribute("creationdate", TmxUtils.tmxDate());
+					header.setAttribute("creationtool", Constants.APPNAME);
+					header.setAttribute("creationtoolversion", Constants.VERSION);
+					header.setAttribute("datatype", "xml");
+					header.setAttribute("segtype", "block");
+					header.setAttribute("adminlang", "en");
+					header.setAttribute("o-tmf", "unknown");
+					header.setAttribute("srclang", "*all*");
+					out.write(
+							("""
+									<?xml version=\"1.0\" ?>
+									<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">
+									<tmx version=\"1.4\">
+									""")
+									.getBytes(StandardCharsets.UTF_8));
+					out.write((TextUtils.padding(1, indentation) + header.toString() + "\n")
+							.getBytes(StandardCharsets.UTF_8));
+					out.write((TextUtils.padding(1, indentation) + "<body>\n").getBytes(StandardCharsets.UTF_8));
+					mergeStore = new MergeStore(out);
+					mergeStore.setIndentation(indentation);
+					TMXReader reader = new TMXReader(mergeStore);
+					Iterator<String> it = files.iterator();
+					while (it.hasNext()) {
+						File f = new File(it.next());
+						reader.parse(f);
 					}
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-					if (e.getMessage() != null) {
-						mergeError = e.getMessage();
-					} else {
-						mergeError = Messages.getString("TMXService.7");
-					}
+					out.write((TextUtils.padding(1, indentation) + "</body>\n").getBytes(StandardCharsets.UTF_8));
+					out.write("</tmx>".getBytes(StandardCharsets.UTF_8));
 				}
-				merging = false;
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				if (e.getMessage() != null) {
+					mergeError = e.getMessage();
+				} else {
+					mergeError = Messages.getString("TMXService.7");
+				}
 			}
-		}.start();
+			merging = false;
+		});
 		result.put(Constants.STATUS, Constants.SUCCESS);
 		return result;
 	}
@@ -1076,19 +1011,15 @@ public class TMXService {
 		JSONObject result = new JSONObject();
 		cleaning = true;
 		cleaningError = "";
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					TMXCleaner.clean(file);
-				} catch (IOException e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-					cleaningError = e.getMessage();
-				}
-				cleaning = false;
+		Thread.ofVirtual().start(() -> {
+			try {
+				TMXCleaner.clean(file);
+			} catch (IOException e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				cleaningError = e.getMessage();
 			}
-		}.start();
+			cleaning = false;
+		});
 		result.put(Constants.STATUS, Constants.SUCCESS);
 		return result;
 	}
@@ -1159,20 +1090,15 @@ public class TMXService {
 		exporting = true;
 		exportingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.exportDelimited(file);
-					} catch (Exception ex) {
-						logger.log(Level.SEVERE, ex.getMessage(), ex);
-						exportingError = ex.getMessage();
-					}
-					exporting = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.exportDelimited(file);
+				} catch (Exception ex) {
+					logger.log(Level.SEVERE, ex.getMessage(), ex);
+					exportingError = ex.getMessage();
 				}
-
-			}.start();
+				exporting = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -1187,20 +1113,15 @@ public class TMXService {
 		exporting = true;
 		exportingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						store.exportExcel(file);
-					} catch (Exception ex) {
-						logger.log(Level.SEVERE, ex.getMessage(), ex);
-						exportingError = ex.getMessage();
-					}
-					exporting = false;
+			Thread.ofVirtual().start(() -> {
+				try {
+					store.exportExcel(file);
+				} catch (Exception ex) {
+					logger.log(Level.SEVERE, ex.getMessage(), ex);
+					exportingError = ex.getMessage();
 				}
-
-			}.start();
+				exporting = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -1293,20 +1214,16 @@ public class TMXService {
 		JSONObject result = new JSONObject();
 		validating = true;
 		validatingError = "";
-		new Thread() {
-
-			@Override
-			public void run() {
-				try {
-					TMXValidator validator = new TMXValidator();
-					validator.validate(new File(file));
-				} catch (IOException | SAXException | ParserConfigurationException e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-					validatingError = e.getMessage();
-				}
-				validating = false;
+		Thread.ofVirtual().start(() -> {
+			try {
+				TMXValidator validator = new TMXValidator();
+				validator.validate(new File(file));
+			} catch (IOException | SAXException | ParserConfigurationException e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				validatingError = e.getMessage();
 			}
-		}.start();
+			validating = false;
+		});
 		result.put(Constants.STATUS, Constants.SUCCESS);
 		return result;
 	}
@@ -1747,35 +1664,31 @@ public class TMXService {
 		processing = true;
 		processingError = "";
 		try {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						if (json.getBoolean("tags")) {
-							store.removeTags();
-						}
-						if (json.getBoolean("spaces")) {
-							store.removeSpaces();
-						}
-						if (json.getBoolean("untranslated")) {
-							store.removeUntranslated(new Language(json.getString("sourceLanguage"),
-									LanguageUtils.getLanguage(json.getString("sourceLanguage")).getDescription()));
-						}
-						if (json.getBoolean("duplicates")) {
-							store.removeDuplicates();
-						}
-						if (json.getBoolean("consolidate")) {
-							store.consolidateUnits(new Language(json.getString("sourceLanguage"),
-									LanguageUtils.getLanguage(json.getString("sourceLanguage")).getDescription()));
-						}
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-						processingError = e.getMessage();
+			Thread.ofVirtual().start(() -> {
+				try {
+					if (json.getBoolean("tags")) {
+						store.removeTags();
 					}
-					processing = false;
+					if (json.getBoolean("spaces")) {
+						store.removeSpaces();
+					}
+					if (json.getBoolean("untranslated")) {
+						store.removeUntranslated(new Language(json.getString("sourceLanguage"),
+								LanguageUtils.getLanguage(json.getString("sourceLanguage")).getDescription()));
+					}
+					if (json.getBoolean("duplicates")) {
+						store.removeDuplicates();
+					}
+					if (json.getBoolean("consolidate")) {
+						store.consolidateUnits(new Language(json.getString("sourceLanguage"),
+								LanguageUtils.getLanguage(json.getString("sourceLanguage")).getDescription()));
+					}
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					processingError = e.getMessage();
 				}
-			}.start();
+				processing = false;
+			});
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -1812,7 +1725,7 @@ public class TMXService {
 		return result;
 	}
 
-	public JSONObject getFileInfo() {
+	public JSONObject getFileInfo() throws JSONException, SQLException {
 		JSONObject result = new JSONObject();
 		if (store != null) {
 			try {

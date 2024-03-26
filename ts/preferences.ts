@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -38,22 +38,20 @@ class Preferences {
                 this.electron.ipcRenderer.send('close-preferences');
             }
         });
-        document.getElementById('themeColor').focus();
+        document.getElementById('appLangSelect').focus();
         this.electron.ipcRenderer.send('preferences-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     setPreferences(arg: any): void {
         (document.getElementById('themeColor') as HTMLSelectElement).value = arg.theme;
         (document.getElementById('indentation') as HTMLInputElement).value = '' + arg.indentation;
-        (document.getElementById('threshold') as HTMLSelectElement).value = '' + arg.threshold;
     }
 
     savePreferences(): void {
         let theme: string = (document.getElementById('themeColor') as HTMLSelectElement).value;
         let indent: number = Number.parseInt((document.getElementById('indentation') as HTMLInputElement).value);
-        let threshold: number = Number.parseInt((document.getElementById('threshold') as HTMLSelectElement).value);
         let appLang: string = (document.getElementById('appLangSelect') as HTMLSelectElement).value;
-        let prefs: any = { theme: theme, threshold: threshold, indentation: indent, appLang: appLang }
+        let prefs: any = { theme: theme, indentation: indent, appLang: appLang }
         this.electron.ipcRenderer.send('save-preferences', prefs);
     }
 }

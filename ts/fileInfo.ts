@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -61,7 +61,9 @@ class FileInfo {
             notesContent = notesContent + '<tr><td>' + note + '</td></tr>'
         }
         document.getElementById('notesTable').innerHTML = notesContent;
-        this.electron.ipcRenderer.send('fileInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });
+        setTimeout(() => {
+            this.electron.ipcRenderer.send('fileInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight});
+        }, 150);
     }
 
     showAttributes(): void {

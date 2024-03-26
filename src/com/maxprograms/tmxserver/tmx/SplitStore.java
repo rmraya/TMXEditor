@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -61,9 +61,11 @@ public class SplitStore implements StoreInterface {
 		}
 		String newFile = name.substring(0, name.length() - 4) + "_" + fileCount + ".tmx";
 		out = new FileOutputStream(new File(newFile));
-		writeString("<?xml version=\"1.0\" ?>\r\n"
-				+ "<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">\r\n"
-				+ "<tmx version=\"1.4\">\n");
+		writeString("""
+<?xml version=\"1.0\" ?>
+<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">
+<tmx version=\"1.4\">
+""");
 		writeString(TextUtils.padding(1, indentation) + header.toString() + "\n");
 		writeString(TextUtils.padding(1, indentation) + "<body>\n");
 		fileCount++;
@@ -140,8 +142,8 @@ public class SplitStore implements StoreInterface {
 	}
 
 	@Override
-	public int getSaved() {
-		return 0;
+	public long getSaved() {
+		return 0l;
 	}
 
 	@Override

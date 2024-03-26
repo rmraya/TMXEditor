@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -16,15 +16,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.maxprograms.xml.XMLUtils;
@@ -38,7 +32,7 @@ public class TMXCleaner {
 	}
 
 	public static void clean(String name) throws IOException {
-		String encoding = getXMLEncoding(name);
+		String encoding = XMLUtils.getXMLEncoding(name);
 		try (InputStreamReader input = new InputStreamReader(new FileInputStream(name), encoding)) {
 			try (BufferedReader buffer = new BufferedReader(input)) {
 				try (FileOutputStream output = new FileOutputStream(name + ".tmp")) {
@@ -57,9 +51,7 @@ public class TMXCleaner {
 			backup = name.substring(0, name.lastIndexOf('.')) + ".~" + name.substring(name.lastIndexOf('.') + 1);
 		}
 		File f = new File(backup);
-		if (f.exists()) {
-			Files.delete(Paths.get(f.toURI()));
-		}
+		Files.deleteIfExists(f.toPath());
 		File original = new File(name);
 		if (!original.renameTo(f)) {
 			throw new IOException(Messages.getString("TMXCleaner.0"));
@@ -98,57 +90,6 @@ public class TMXCleaner {
 			return "";
 		}
 		return ((char) c) + "";
-	}
-
-	private static String getXMLEncoding(String fileName) {
-		// return UTF-8 as default
-		String result = StandardCharsets.UTF_8.name();
-		try {
-			// check if there is a BOM (byte order mark)
-			// at the start of the document
-			byte[] array = new byte[2];
-			try (FileInputStream inputStream = new FileInputStream(fileName)) {
-				int bytes = inputStream.read(array);
-				if (bytes == -1) {
-					MessageFormat mf = new MessageFormat(Messages.getString("TMXCleaner.2"));
-					throw new IOException(mf.format(new String[] { fileName }));
-				}
-			}
-			byte[] lt = "<".getBytes();
-			byte[] feff = { -1, -2 };
-			byte[] fffe = { -2, -1 };
-			if (array[0] != lt[0]) {
-				// there is a BOM, now check the order
-				if (array[0] == fffe[0] && array[1] == fffe[1]) {
-					return StandardCharsets.UTF_16BE.name();
-				}
-				if (array[0] == feff[0] && array[1] == feff[1]) {
-					return StandardCharsets.UTF_16LE.name();
-				}
-			}
-			// check declared encoding
-			String line = "";
-			try (FileReader input = new FileReader(fileName); BufferedReader buffer = new BufferedReader(input)) {
-				line = buffer.readLine();
-			}
-			if (line.startsWith("<?")) {
-				line = line.substring(2, line.indexOf("?>"));
-				line = line.replaceAll("\'", "\"");
-				StringTokenizer tokenizer = new StringTokenizer(line);
-				while (tokenizer.hasMoreTokens()) {
-					String token = tokenizer.nextToken();
-					if (token.startsWith("encoding")) {
-						result = token.substring(token.indexOf('\"') + 1, token.lastIndexOf('\"'));
-					}
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-		if (result.equalsIgnoreCase("utf-8")) {
-			result = StandardCharsets.UTF_8.name();
-		}
-		return result;
 	}
 
 }

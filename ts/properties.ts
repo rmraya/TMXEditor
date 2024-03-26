@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -97,8 +97,7 @@ class Properties {
 
     removeProperty(type: string): void {
         let copy: Array<string[]> = [];
-        for (let i = 0; i < this.props.length; i++) {
-            let pair: string[] = this.props[i];
+        for (let pair of this.props) {
             if (pair[0] !== type) {
                 copy.push(pair);
             }

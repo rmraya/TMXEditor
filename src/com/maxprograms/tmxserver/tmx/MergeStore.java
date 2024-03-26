@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -96,8 +96,8 @@ public class MergeStore implements StoreInterface {
 	}
 
 	@Override
-	public int getSaved() {
-		return 0;
+	public long getSaved() {
+		return 0l;
 	}
 
 	@Override

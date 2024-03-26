@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -11,13 +11,14 @@
  *******************************************************************************/
 
 import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_process";
-import { app, BrowserWindow, ClientRequest, dialog, ipcMain, IpcMainEvent, Menu, MenuItem, MessageBoxReturnValue, nativeTheme, net, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, session, shell } from "electron";
+import { BrowserWindow, ClientRequest, IpcMainEvent, Menu, MenuItem, MessageBoxReturnValue, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, app, dialog, ipcMain, nativeTheme, net, session, shell } from "electron";
 import { IncomingMessage } from "electron/main";
-import { existsSync, mkdirSync, readFile, readFileSync, writeFile, writeFileSync, appendFileSync, unlinkSync } from "fs";
-import { Locations, Point } from "./locations";
+import { appendFileSync, existsSync, mkdirSync, readFile, readFileSync, unlinkSync, writeFile, writeFileSync } from "fs";
+import path from "path";
 import { TMReader } from "sdltm";
 import { I18n } from "./i18n";
-import path from "path";
+import { Locations, Point } from "./locations";
+import { Tbx2Tmx } from "./tbx2tmx";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -43,6 +44,7 @@ class App {
     static addNotesWindow: BrowserWindow;
     static convertCsvWindow: BrowserWindow;
     static convertSDLTMWindow: BrowserWindow;
+    static convertTBXWindow: BrowserWindow;
     static csvLanguagesWindow: BrowserWindow;
     static splitFileWindow: BrowserWindow;
     static mergeFilesWindow: BrowserWindow;
@@ -84,6 +86,7 @@ class App {
     static fileLanguages: Language[];
     static argFile: string = '';
     static isReady: boolean = false;
+    static editingCell: any = {};
 
     static csvEvent: IpcMainEvent;
     static excelEvent: IpcMainEvent;
@@ -135,14 +138,12 @@ class App {
 
         if (!app.requestSingleInstanceLock()) {
             app.quit();
-        } else {
-            if (App.mainWindow) {
-                // Someone tried to run a second instance, we should focus our window.
-                if (App.mainWindow.isMinimized()) {
-                    App.mainWindow.restore();
-                }
-                App.mainWindow.focus();
+        } else if (App.mainWindow) {
+            // Someone tried to run a second instance, we should focus our window.
+            if (App.mainWindow.isMinimized()) {
+                App.mainWindow.restore();
             }
+            App.mainWindow.focus();
         }
 
         if (process.platform == 'win32') {
@@ -211,7 +212,6 @@ class App {
             });
             App.mainWindow.show();
             App.mainWindow.on('close', (ev: Event) => {
-                ev.cancelBubble = true;
                 ev.preventDefault();
                 App.close();
             });
@@ -253,6 +253,17 @@ class App {
         });
         ipcMain.on('get-cell-properties', (event: IpcMainEvent, arg: any) => {
             App.getCellProperties(arg.id, arg.lang);
+        });
+        ipcMain.on('editing-started', (event: IpcMainEvent, arg: any) => {
+            App.editingCell = arg;
+        });
+        ipcMain.on('cancel-editing', () => {
+            App.editingCell = {};
+        });
+        ipcMain.on('saved-edit', (event: IpcMainEvent, arg: any) => {
+            if (arg.id === App.editingCell.id && arg.lang === App.editingCell.lang) {
+                App.editingCell = {};
+            }
         });
         ipcMain.on('get-row-properties', (event: IpcMainEvent, arg: any) => {
             App.getRowProperties(arg.id);
@@ -326,8 +337,14 @@ class App {
         ipcMain.on('convert-sdltm-tmx', (event: IpcMainEvent, arg: any) => {
             this.convertSdltmTmx(arg);
         });
+        ipcMain.on('convert-tbx-tmx', (event: IpcMainEvent, arg: any) => {
+            this.convertTbxTmx(arg);
+        });
         ipcMain.on('convert-csv', () => {
             App.convertCSV();
+        });
+        ipcMain.on('convert-tbx', () => {
+            App.convertTBX();
         });
         ipcMain.on('convert-sdltm', () => {
             App.convertSDLTM();
@@ -343,6 +360,9 @@ class App {
         });
         ipcMain.on('get-csvfile', (event: IpcMainEvent) => {
             this.getCsvFile(event);
+        });
+        ipcMain.on('get-tbxfile', (event: IpcMainEvent) => {
+            this.getTbxFile(event);
         });
         ipcMain.on('get-sdltmfile', (event: IpcMainEvent) => {
             this.getSdltmFile(event);
@@ -557,6 +577,12 @@ class App {
         ipcMain.on('close-addNote', () => {
             App.destroyWindow(App.addNotesWindow);
         });
+        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.convertTBXWindow, arg);
+        });
+        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: any) => {
+            App.setHeight(App.convertTBXWindow, arg);
+        });
         ipcMain.on('convertSdltm-height', (event: IpcMainEvent, arg: any) => {
             App.setHeight(App.convertSDLTMWindow, arg);
         });
@@ -568,6 +594,9 @@ class App {
         });
         ipcMain.on('close-convertSdltm', () => {
             App.destroyWindow(App.convertSDLTMWindow);
+        });
+        ipcMain.on('close-convertTbx', () => {
+            App.destroyWindow(App.convertTBXWindow);
         });
         ipcMain.on('close-convertCsv', () => {
             App.destroyWindow(App.convertCsvWindow);
@@ -767,6 +796,7 @@ class App {
             'convertCSV': App.i18n.getString('menu', 'ConvertCSV'),
             'convertExcel': App.i18n.getString('menu', 'ConvertExcel'),
             'convertSDLTM': App.i18n.getString('menu', 'ConvertSDLTM'),
+            'convertTBX': App.i18n.getString('menu', 'ConvertTBX'),
             'userGuide': App.i18n.getString('menu', 'UserGuide'),
             'firstPage': App.i18n.getString('menu', 'FirstPage'),
             'previousPage': App.i18n.getString('menu', 'PreviousPage'),
@@ -800,6 +830,8 @@ class App {
                 case 'addProperty': parent = App.addPropertyWindow;
                     break;
                 case 'convertSDLTM': parent = App.convertSDLTMWindow;
+                    break;
+                case 'convertTBX': parent = App.convertTBXWindow;
                     break;
                 case 'convertCSV': parent = App.convertCsvWindow;
                     break;
@@ -887,6 +919,7 @@ class App {
             { label: App.i18n.getString('menu', 'ExportCSV'), click: () => { App.exportDelimited(); } },
             new MenuItem({ type: 'separator' }),
             { label: App.i18n.getString('menu', 'ConvertSDLTM'), click: () => { App.convertSDLTM(); } },
+            { label: App.i18n.getString('menu', 'ConvertTBX'), click: () => { App.convertTBX(); } },
             new MenuItem({ type: 'separator' }),
             { label: App.i18n.getString('menu', 'FileProperties'), click: () => { App.showFileInfo(); } },
             new MenuItem({ type: 'separator' }),
@@ -990,7 +1023,6 @@ class App {
             writeFile(path.join(app.getPath('appData'), app.name, 'recent.json'), '{"files" : []}', (err) => {
                 if (err instanceof Error) {
                     App.showMessage({ type: 'error', message: err.message });
-                    return;
                 }
             });
         }
@@ -1019,10 +1051,8 @@ class App {
                             if (template[1].submenu) {
                                 template[1].submenu.append(new MenuItem({ label: file, click: () => { App.openFile(file); } }));
                             }
-                        } else {
-                            if (template[0].submenu) {
-                                template[0].submenu.append(new MenuItem({ label: file, click: () => { App.openFile(file); } }));
-                            }
+                        } else if (template[0].submenu) {
+                            template[0].submenu.append(new MenuItem({ label: file, click: () => { App.openFile(file); } }));
                         }
                     }
                 }
@@ -1187,7 +1217,7 @@ class App {
         }
         App.licensesWindow = new BrowserWindow({
             parent: parent,
-            width: 450,
+            width: 460,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1221,7 +1251,11 @@ class App {
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
                 title = 'MIT License';
                 break;
-            case "MapDB":
+            case "SLF4J":
+                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'slf4j.txt');
+                title = 'Apache 2.0';
+                break;
+            case "SQLite":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
                 title = 'Apache 2.0';
                 break;
@@ -1229,10 +1263,11 @@ class App {
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
                 title = 'GPL2 with Classpath Exception';
                 break;
-            case "OpenXLIFF":
+            case "BCP47J":
             case "XMLJava":
             case "sdltm":
             case "TMXValidator":
+            case "typesxml":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
@@ -1240,22 +1275,14 @@ class App {
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
                 title = 'JSON.org License';
                 break;
-            case "jsoup":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'jsoup.txt');
-                title = 'MIT License';
-                break;
-            case "DTDParser":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'LGPL2.1.txt');
-                title = 'LGPL 2.1';
-                break;
             default:
                 App.showMessage({ type: 'error', message: App.i18n.getString('app', 'unknownLicense') });
                 return;
         }
         let licenseWindow = new BrowserWindow({
             parent: App.licensesWindow,
-            width: 680,
-            height: 400,
+            width: 780,
+            height: 480,
             show: false,
             title: title,
             icon: App.iconPath,
@@ -1518,7 +1545,7 @@ class App {
                     appLang = 'es';
                 }
             }
-            this.savePreferences({ theme: 'system', indentation: 2, threshold: 500, appLang: appLang });
+            this.savePreferences({ theme: 'system', indentation: 2, appLang: appLang });
         }
         try {
             let data: Buffer = readFileSync(preferencesFile);
@@ -1588,8 +1615,13 @@ class App {
         App.sendRequest({ command: 'getTuData', id: id },
             (data: any) => {
                 App.mainWindow.webContents.send('end-waiting');
-                data.type = 'TU';
-                App.mainWindow.webContents.send('update-properties', data);
+                if (data.status === SUCCESS) {
+                    data.type = 'TU';
+                    App.mainWindow.webContents.send('update-properties', data);
+                } else {
+                    console.log(id, JSON.stringify(data));
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
             },
             (reason: string) => {
                 App.mainWindow.webContents.send('end-waiting');
@@ -1910,6 +1942,14 @@ class App {
         if (App.needsName) {
             App.saveAs();
             return;
+        }        
+        if (App.editingCell.id) {
+            App.mainWindow.webContents.send('force-save');
+            let intervalObject = setInterval(() => {
+                if (App.editingCell.id === undefined) {
+                    clearInterval(intervalObject);
+                }
+            }, 300);
         }
         App.sendRequest({ command: 'saveFile', file: App.currentFile },
             (data: any) => {
@@ -2016,6 +2056,31 @@ class App {
         App.setLocation(App.convertCsvWindow, 'convertCSV.html');
     }
 
+    static convertTBX(): void {
+        App.convertTBXWindow = new BrowserWindow({
+            parent: App.mainWindow,
+            width: 700,
+            minimizable: false,
+            maximizable: false,
+            resizable: false,
+            show: false,
+            icon: App.iconPath,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
+        });
+        App.convertTBXWindow.setMenu(null);
+        App.convertTBXWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'convertTBX.html'));
+        App.convertTBXWindow.once('ready-to-show', () => {
+            App.convertTBXWindow.show();
+        });
+        App.convertTBXWindow.on('close', () => {
+            App.mainWindow.focus();
+        });
+        App.setLocation(App.convertTBXWindow, 'convert.html');
+    }
+
     static convertSDLTM(): void {
         App.convertSDLTMWindow = new BrowserWindow({
             parent: App.mainWindow,
@@ -2088,6 +2153,26 @@ class App {
                 App.showMessage({ type: 'error', message: reason });
             }
         );
+    }
+
+    convertTbxTmx(arg: any): void {
+        App.destroyWindow(App.convertTBXWindow);
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Converting'));
+        try {
+            let converter: Tbx2Tmx = new Tbx2Tmx(app.getName(), app.getVersion());
+            converter.convert(arg.tbxFile, arg.tmxFile);
+            if (arg.openTMX) {
+                if (App.currentFile !== '') {
+                    App.closeFile();
+                }
+                App.openFile(arg.tmxFile);
+            }
+        } catch (err) {
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
+            }
+        }
     }
 
     convertSdltmTmx(arg: any): void {
@@ -2212,6 +2297,23 @@ class App {
         });
     }
 
+    getTbxFile(event: IpcMainEvent): void {
+        dialog.showOpenDialog({
+            title: App.i18n.getString('App', 'OpenTBX'),
+            properties: ['openFile'],
+            filters: [
+                { name: App.i18n.getString('App', 'TBXFile'), extensions: ['tbx'] },
+                { name: App.i18n.getString('App', 'AnyFile'), extensions: ['*'] }
+            ]
+        }).then((value: OpenDialogReturnValue) => {
+            if (!value.canceled) {
+                event.sender.send('set-tbxfile', value.filePaths[0]);
+            }
+        }).catch((error: Error) => {
+            App.showMessage({ type: 'error', message: error.message });
+        });
+    }
+
     getSdltmFile(event: IpcMainEvent): void {
         dialog.showOpenDialog({
             title: App.i18n.getString('App', 'OpenSDLTM'),
@@ -2306,8 +2408,8 @@ class App {
     getExcelLanguages(event: IpcMainEvent, arg: any): void {
         App.excelEvent = event;
         let labels: string[] = [];
-        for (let i = 0; i < arg.columns.length; i++) {
-            labels.push(App.i18n.format(App.i18n.getString('App', 'columnLabel'), arg.columns[i]));
+        for (let col of arg.columns) {
+            labels.push(App.i18n.format(App.i18n.getString('App', 'columnLabel'), col));
         }
         App.excelLangArgs = arg;
         App.excelLangArgs.labels = labels;
@@ -3872,7 +3974,7 @@ class App {
                     App.mainWindow.setProgressBar(received / fileSize);
                 }
                 App.mainWindow.webContents.send('set-status',
-                    App.i18n.format(App.i18n.getString('App', 'Downoaded'), ['' + Math.trunc(received * 100 / fileSize)]));
+                    App.i18n.format(App.i18n.getString('App', 'Downloaded'), ['' + Math.trunc(received * 100 / fileSize)]));
                 appendFileSync(file, chunk);
             });
             response.on('end', () => {
@@ -3963,13 +4065,11 @@ class App {
                             App.updatesWindow.on('close', () => {
                                 App.mainWindow.focus();
                             });
-                        } else {
-                            if (!silent) {
-                                App.showMessage({
-                                    type: 'info',
-                                    message: App.i18n.getString('App', 'noUpdates')
-                                });
-                            }
+                        } else if (!silent) {
+                            App.showMessage({
+                                type: 'info',
+                                message: App.i18n.getString('App', 'noUpdates')
+                            });
                         }
                     } catch (reason: any) {
                         if (!silent) {

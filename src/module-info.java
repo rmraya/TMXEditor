@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -18,10 +18,10 @@ module tmxserver {
 	requires java.base;
 	requires java.xml;
 	requires java.sql;
-	requires transitive openxliff;
+	requires transitive javabcp47;
 	requires tmxvalidator;
 	requires transitive jdk.httpserver;
 	requires transitive json;
 	requires transitive xmljava;
-	requires mapdb;
+	requires org.xerial.sqlitejdbc;
 }

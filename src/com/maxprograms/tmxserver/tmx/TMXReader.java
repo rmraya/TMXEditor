@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Maxprograms.
+ * Copyright (c) 2018-2024 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -14,6 +14,7 @@ package com.maxprograms.tmxserver.tmx;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -38,7 +39,7 @@ public class TMXReader {
 		builder.setErrorHandler(new CustomErrorHandler());
 	}
 
-	public void parse(File file) throws SAXException, IOException, ParserConfigurationException {
+	public void parse(File file) throws SAXException, IOException, ParserConfigurationException, SQLException {
 		TmxUtils.resetTags();
 		builder.build(file);
 		store.commit();
