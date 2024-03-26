@@ -44,20 +44,21 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 
 ## Related Projects
 
-- [OpenXLIFF Filters](https://github.com/rmraya/OpenXLIFF)
+- [XMLJava](https://github.com/rmraya/XMLJava)
+- [BCP47J](https://github.com/rmraya/BCP47J)
 - [TMXValidator](https://github.com/rmraya/TMXValidator)
 
 ## Requirements
 
-- JDK 17 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
-- Apache Ant 1.10.10 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
-- Node.js 16.13.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 4.8.4. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
+- Apache Ant 1.10.14 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
+- Node.js 20.11.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- TypeScript 5.4.3. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 
 - Checkout this repository.
-- Point your `JAVA_HOME` environment variable to JDK 17
+- Point your `JAVA_HOME` environment variable to JDK 21
 - Run `ant` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
