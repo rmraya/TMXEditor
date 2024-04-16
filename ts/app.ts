@@ -1244,7 +1244,11 @@ class App {
         let title = '';
         switch (arg.type) {
             case 'TMXEditor':
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
+            case "BCP47J":
+            case "XMLJava":
+            case "sdltm":
+            case "TMXValidator":
+            case "typesxml": licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
                 title = 'Eclipse Public License 1.0';
                 break;
             case "electron":
@@ -1253,7 +1257,7 @@ class App {
                 break;
             case "SLF4J":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'slf4j.txt');
-                title = 'Apache 2.0';
+                title = 'MIT License';
                 break;
             case "SQLite":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
@@ -1262,14 +1266,6 @@ class App {
             case "Java":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
                 title = 'GPL2 with Classpath Exception';
-                break;
-            case "BCP47J":
-            case "XMLJava":
-            case "sdltm":
-            case "TMXValidator":
-            case "typesxml":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
-                title = 'Eclipse Public License 1.0';
                 break;
             case "JSON":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
@@ -1588,7 +1584,6 @@ class App {
             writeFile(path.join(app.getPath('appData'), app.name, 'recent.json'), JSON.stringify(jsonData, undefined, 4), (error) => {
                 if (error instanceof Error) {
                     App.showMessage({ type: 'error', message: error.message });
-                    return;
                 }
             });
         });
@@ -1942,7 +1937,7 @@ class App {
         if (App.needsName) {
             App.saveAs();
             return;
-        }        
+        }
         if (App.editingCell.id) {
             App.mainWindow.webContents.send('force-save');
             let intervalObject = setInterval(() => {

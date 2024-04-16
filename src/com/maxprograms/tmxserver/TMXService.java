@@ -239,7 +239,24 @@ public class TMXService {
 			String code = it.next();
 			JSONObject json = new JSONObject();
 			json.put("code", code);
-			json.put("name", LanguageUtils.getLanguage(code).getDescription());
+			String description = LanguageUtils.getLanguage(code).getDescription();
+			if (description.isEmpty()) {
+				// try guessing the language
+				code = code.replace("_", "-");
+				if (code.indexOf("-") != -1) {
+					String[] parts = code.split("-");
+					Language language = LanguageUtils.getLanguage(parts[0]);
+					if (!language.getDescription().isEmpty()) {
+						MessageFormat mf = new MessageFormat(Messages.getString("TMXService.13"));
+						description = mf.format(new String[] { language.getDescription() });
+					} else {
+						description = Messages.getString("TMXService.14");
+					}
+				} else {
+					description = Messages.getString("TMXService.14");
+				}
+			}
+			json.put("name", description);
 			data.put(json);
 		}
 		result.put("languages", data);
@@ -925,9 +942,9 @@ public class TMXService {
 					header.setAttribute("srclang", "*all*");
 					out.write(
 							("""
-									<?xml version=\"1.0\" ?>
-									<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">
-									<tmx version=\"1.4\">
+									<?xml version="1.0" encoding="UTF-8"?>
+									<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
+									<tmx version="1.4">
 									""")
 									.getBytes(StandardCharsets.UTF_8));
 					out.write((TextUtils.padding(1, indentation) + header.toString() + "\n")

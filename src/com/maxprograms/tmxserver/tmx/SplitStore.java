@@ -62,10 +62,10 @@ public class SplitStore implements StoreInterface {
 		String newFile = name.substring(0, name.length() - 4) + "_" + fileCount + ".tmx";
 		out = new FileOutputStream(new File(newFile));
 		writeString("""
-<?xml version=\"1.0\" ?>
-<!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">
-<tmx version=\"1.4\">
-""");
+				<?xml version="1.0" encoding="UTF-8"?>
+				<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
+				<tmx version="1.4">
+				""");
 		writeString(TextUtils.padding(1, indentation) + header.toString() + "\n");
 		writeString(TextUtils.padding(1, indentation) + "<body>\n");
 		fileCount++;

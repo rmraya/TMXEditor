@@ -36,7 +36,6 @@ import org.xml.sax.SAXException;
 
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.Element;
-import com.maxprograms.xml.Indenter;
 import com.maxprograms.xml.SAXBuilder;
 import com.maxprograms.xml.XMLOutputter;
 
@@ -88,7 +87,6 @@ public class ExcelWriter {
         try (FileOutputStream out = new FileOutputStream(workbook)) {
             XMLOutputter outputter = new XMLOutputter();
             outputter.preserveSpace(true);
-            Indenter.indent(root, 2);
             outputter.output(doc, out);
         }
     }
@@ -101,6 +99,16 @@ public class ExcelWriter {
 
         File sheetXml = new File(folder, "xl" + SEP + "worksheets" + SEP + "sheet1.xml");
         Document sheetDoc = builder.build(sheetXml);
+        Element columns = sheetDoc.getRootElement().getChild("cols");
+        columns.setContent(new ArrayList<>());
+        for (int i = 0; i < sheet.getColumns().size(); i++) {
+            Element col = new Element("col");
+            col.setAttribute("min", "" + (i + 1));
+            col.setAttribute("max", "" + (i + 1));
+            col.setAttribute("width", "80");
+            col.setAttribute("customWidth", "1");
+            columns.addContent(col);
+        }
         Element sheetData = sheetDoc.getRootElement().getChild("sheetData");
         sheetData.setContent(new ArrayList<>());
 
@@ -136,6 +144,7 @@ public class ExcelWriter {
                     Element c = new Element("c");
                     c.setAttribute("r", columnIndex.get(colCount) + (i + 1));
                     c.setAttribute("t", "s");
+                    c.setAttribute("s", "1");
                     Element v = new Element("v");
                     v.addContent("" + unique.get(cell));
                     c.addContent(v);
@@ -153,13 +162,11 @@ public class ExcelWriter {
         try (FileOutputStream out = new FileOutputStream(sharedStrings)) {
             XMLOutputter outputter = new XMLOutputter();
             outputter.preserveSpace(true);
-            Indenter.indent(sst, 2);
             outputter.output(stringsDoc, out);
         }
         try (FileOutputStream out = new FileOutputStream(sheetXml)) {
             XMLOutputter outputter = new XMLOutputter();
             outputter.preserveSpace(true);
-            Indenter.indent(sheetDoc.getRootElement(), 2);
             outputter.output(sheetDoc, out);
         }
     }

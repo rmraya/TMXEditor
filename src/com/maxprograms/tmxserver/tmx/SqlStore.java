@@ -25,13 +25,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,7 +40,6 @@ import org.sqlite.Function;
 import org.xml.sax.SAXException;
 
 import com.maxprograms.languages.Language;
-import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.tmxserver.Constants;
 import com.maxprograms.tmxserver.excel.ExcelWriter;
 import com.maxprograms.tmxserver.excel.Sheet;
@@ -153,10 +152,6 @@ public class SqlStore implements StoreInterface {
             if (lang.isEmpty()) {
                 // ignore this one
                 continue;
-            }
-            lang = LanguageUtils.normalizeCode(lang);
-            if (!languages.contains(lang)) {
-                languages.add(lang);
             }
             if (tuvCount == 0) {
                 storeTUV(id, lang, tuv);
@@ -410,9 +405,9 @@ public class SqlStore implements StoreInterface {
         saved = 0l;
         try (FileOutputStream out = new FileOutputStream(file)) {
             writeString(out, """
-                    <?xml version=\"1.0\" ?>
-                    <!DOCTYPE tmx PUBLIC \"-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN\" \"tmx14.dtd\">
-                    <tmx version=\"1.4\">
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
+                    <tmx version="1.4">
                     """);
 
             writeString(out, TextUtils.padding(1, indentation) + header.toString() + "\n");
@@ -1014,7 +1009,6 @@ public class SqlStore implements StoreInterface {
                         while (langIt.hasNext()) {
                             String lang = langIt.next();
                             String pure = getPure(tuid, lang);
-                            // Element tuv = getTuv(tuid, lang);
                             String text = " ";
                             if (!pure.isEmpty()) {
                                 text = TmxUtils.cleanLines(pure);

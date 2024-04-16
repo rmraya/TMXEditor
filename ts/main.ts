@@ -37,7 +37,7 @@ class Main {
     currentContent: string;
     selectedUnits: string[] = [];
 
-    static EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    static readonly EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
         '<path d="M2.25 15.75H5.0625L13.3575 7.45502L10.545 4.64252L2.25 12.9375V15.75ZM3.75 13.56L10.545 6.76502L11.235 7.45502L4.44 14.25H3.75V13.56Z" />' +
         '<path d="M13.7775 2.46751C13.485 2.17501 13.0125 2.17501 12.72 2.46751L11.3475 3.84001L14.16 6.65251L15.5325 5.28001C15.825 4.98751 15.825 4.51501 15.5325 4.22251L13.7775 2.46751Z" />' +
         '</svg>';
@@ -820,7 +820,7 @@ class Main {
             this.currentContent = this.currentCell.innerHTML;
             this.currentCell.contentEditable = 'false';
             this.currentCell.classList.remove('editing');
-            this.electron.ipcRenderer.send('saved-edit',{ id: this.currentId, lang: this.currentLang });
+            this.electron.ipcRenderer.send('saved-edit', { id: this.currentId, lang: this.currentLang });
             this.currentCell = null;
         }
     }

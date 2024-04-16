@@ -56,6 +56,13 @@ public class TMXServer implements HttpHandler {
 		server.createContext("/TMXServer", this);
 		server.setExecutor(new ThreadPoolExecutor(3, 10, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100)));
 		service = new TMXService();
+
+		Thread closeHook = new Thread(() -> {
+			if (service.isOpen()) {
+				service.closeFile();
+			}
+		});
+		Runtime.getRuntime().addShutdownHook(closeHook);
 	}
 
 	public static void main(String[] args) {
@@ -732,7 +739,8 @@ public class TMXServer implements HttpHandler {
 		result.put("xmljava", mf1
 				.format(new String[] { com.maxprograms.xml.Constants.VERSION, com.maxprograms.xml.Constants.BUILD }));
 		result.put("bcp47j", mf1
-				.format(new String[] { com.maxprograms.languages.Constants.VERSION, com.maxprograms.languages.Constants.BUILD }));
+				.format(new String[] { com.maxprograms.languages.Constants.VERSION,
+						com.maxprograms.languages.Constants.BUILD }));
 		MessageFormat mf2 = new MessageFormat(Messages.getString("TMXServer.3"));
 		result.put("java",
 				mf2.format(new String[] { System.getProperty("java.version"), System.getProperty("java.vendor") }));
