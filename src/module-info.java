@@ -24,4 +24,5 @@ module tmxserver {
 	requires transitive json;
 	requires transitive xmljava;
 	requires org.xerial.sqlitejdbc;
+    requires org.slf4j.nop;
 }

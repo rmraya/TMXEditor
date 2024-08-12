@@ -40,6 +40,7 @@ class Attributes {
                 this.electron.ipcRenderer.send('close-attributes');
             }
         });
+        this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     setUnitAttributes(arg: any): void {

@@ -9,7 +9,7 @@
 
 <body onload="new FileInfo();">
 
-    <div class="tabHolder">
+    <div id="tabHolder" class="tabHolder">
         <div class="tab selectedTab" id="atributesTab">
             <a id="showAttributes" class="button">TMX Attributes</a>
         </div>
@@ -22,61 +22,119 @@
     </div>
 
     <div>
-        <div id="attributes" class="tabContent">
-            <div class="paddedPanel" style="height: 300px;">
-                <table class="stripes">
-                    <tr>
-                        <td>Creation Tool</td>
-                        <td id="creationtool"></td>
-                    </tr>
-                    <tr>
-                        <td>Creation Tool Version</td>
-                        <td id="creationtoolversion"></td>
-                    </tr>
-                    <tr>
-                        <td>Segmentation Type</td>
-                        <td id="segtype"></td>
-                    </tr>
-                    <tr>
-                        <td>Original Translation Memory Format</td>
-                        <td id="o-tmf"></td>
-                    </tr>
-                    <tr>
-                        <td>Administrative Language</td>
-                        <td id="adminlang"></td>
-                    </tr>
-                    <tr>
-                        <td>Source Language</td>
-                        <td id="srclang"></td>
-                    </tr>
-                    <tr>
-                        <td>Data Type</td>
-                        <td id="datatype"></td>
-                    </tr>
-                </table>
-            </div>
+        <div id="attributes" class="tabContent ">
+            <table style="margin-left: 8px; width: calc(100% - 12px);">
+                <tr>
+                    <td class="middle" width="50%">
+                        <label for="creationid" class="noWrap">Creation Identifier</label>
+                        <input id="creationid" class="table_input">
+                    </td>
+                    <td class="middle" width="50%">
+                        <label for="creationdate" class="noWrap">Creation Date</label>
+                        <input id="creationdate" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="creationtool" class="noWrap">Creation Tool</label>
+                        <input id="creationtool" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="creationtoolversion">Creation Tool Version</label>
+                        <input id="creationtoolversion" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="changeid" class="noWrap">Change Identifier</label>
+                        <input id="changeid" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="changedate" class="noWrap">Change Date</label>
+                        <input id="changedate" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="segtype">Segment Type </label>
+                        <select id="segtype" class="table_select">
+                            <option value=""></option>
+                            <option value="block">block</option>
+                            <option value="paragraph">paragraph</option>
+                            <option value="sentence">sentence</option>
+                        </select>
+                    </td>
+                    <td class="middle">
+                        <label for="o-tmf" class="noWrap">Translation Memory Format</label>
+                        <input id="o-tmf" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="srclang" class="noWrap">Source Language</label>
+                        <select id="srclang" class="table_select"></select>
+                    </td>
+                    <td class="middle">
+                        <label for="adminlang" class="noWrap">Administrative Language</label>
+                        <select id="adminlang" class="table_select"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="datatype" class="noWrap">Data Type</label>
+                        <input id="datatype" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="o-encoding" class="noWrap">Original Encoding</label>
+                        <input id="o-encoding" class="table_input">
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <div id="properties" class="hidden">
-            <div class="paddedPanel" style="height: 300px; ">
-                <table id="propertiesTable" class="stripes">
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                </table>
+            <div id="propertiesPanel" class="divContainer" style="height: 396px;">
+                <table class="stripes">
+                    <tbody id="propertiesBody">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                    </table>
             </div>
         </div>
 
         <div id="notes" class="hidden">
-            <div class="paddedPanel" style="height: 300px; ">
-                <table id="notesTable" class="stripes">
-                    <tr>
-                        <td>&nbsp;</td>
-                    </tr>
+            <div id="notesPanel" class="divContainer" style="height: 396px;">
+                <table class="stripes">
+                    <tbody id="notesTable">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
+
         </div>
+    </div>
+
+    <div id="attributesButtons" class="buttonArea">
+        <button id="saveAttributes">Save Attributes</button>
+    </div>
+
+    <div id="propButtons" class="hidden">
+        <button id="addProperty">Add Property</button>
+        <button id="deleteProperties">Delete Selected Properties</button>
+        <button id="saveProperties">Save Properties</button>
+    </div>
+
+    <div id="notesButtons" class="hidden">
+        <button id="addNote">Add Note</button>
+        <button id="deleteNotes">Delete Selected Notes</button>
+        <button id="saveNotes">Save Notes</button>
     </div>
 
     <script src="../../js/fileInfo.js"></script>

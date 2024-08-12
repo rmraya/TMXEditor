@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>Preferences</title>
@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
 </head>
 
-<body onload="new Preferences();">
+<body class="dialog_body" onload="new PreferencesDialog();">
     <table class="fill_width">
         <tr>
             <td class="middle noWrap"><label for="sourceSelect">Application Language</label></td>
@@ -33,11 +33,14 @@
             <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"> spaces</td>
         </tr>
     </table>
-
+    <div class="row middle">
+        <input id="changeId" type="checkbox">
+        <label for="changeId" class="middleLabel">Set 'changeid' / 'changedate' Attributes</label>
+    </div>
     <div class="buttonArea">
         <button id="savePreferences">Save Preferences</button>
     </div>
-    <script src="../../js/preferences.js"></script>
+    <script src="../../js/preferencesDialog.js"></script>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 {
     "App": {
-        "m1Mac": "You are running a version for Macs with Intel processors on a Mac with Apple M1 chipset.",
+        "m1Mac": "You are running a version for Macs with Intel processors on a Mac with Apple chipset.",
         "languageChanged": "Application language settings will be applied on next start",
         "restart": "Restart Now",
         "dismiss": "Dismiss",
@@ -87,12 +87,24 @@
         "UpdateDownloaded": "Update downloaded",
         "RegistrationRequired": "Registration Required",
         "RegistrationMessage": "You must register a subscription key to continue using this application",
+        "pageSpan": "Page",
+        "ofSpan": "of ",
         "pageTooltip": "Enter page number and press ENTER",
         "UnitsPage": "Units Page",
+        "UnitsLabel":"Units: ",
         "UnitsTooltip": "Enter number of units/page and press ENTER",
         "anyLanguage": "Any Language",
         "selectLanguage": "Select Language",
-        "columnLabel": "Column {0}"
+        "columnLabel": "Column {0}",
+        "fileAttributesSaved": "File attributes saved",
+        "filePropertiesSaved": "File properties saved",
+        "fileNotesSaved": "File notes saved",
+        "langAttributes": "'{0}' Attributes",
+        "langProperties": "'{0}' Properties",
+        "langNotes": "'{0}' Notes",
+        "tuAttributes": "TU Attributes",
+        "tuProperties": "TU Properties",
+        "tuNotes": "TU Notes"
     },
     "menu": {
         "FileMenu": "&File",
@@ -233,5 +245,14 @@
     },
     "splitFile": {
         "selectTmx": "Select TMX file"
+    },
+    "fileInfo": {
+        "creationtool": "Creation Tool is required",
+        "creationtoolversion": "Creation Tool Version is required",
+        "segtype": "Segment Type is required",
+        "o-tmf" : "Translation Memory Format is required",
+        "adminlang": "Administrative Language is required",
+        "srclang": "Source Language is required",
+        "datatype": "Data Type is required"
     }
 }

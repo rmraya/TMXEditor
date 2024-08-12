@@ -37,13 +37,12 @@ class ConvertSDLTM {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-convertSdltm');
             }
         });
-        this.electron.ipcRenderer.send('convertSdltm-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });
+        this.electron.ipcRenderer.send('convertSdltm-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     browseSdltmFiles(): void {

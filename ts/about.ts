@@ -36,8 +36,6 @@ class About {
                 this.electron.ipcRenderer.send('close-about');
             }
         });
-        setTimeout(() => {
-            this.electron.ipcRenderer.send('about-height', { width: document.body.clientWidth, height: document.body.clientHeight });
-        }, 200);
+        this.electron.ipcRenderer.send('about-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 }

@@ -68,13 +68,12 @@ class ConvertCSV {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-convertCsv');
             }
         });
-        this.electron.ipcRenderer.send('convertCsv-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });
+        this.electron.ipcRenderer.send('convertCsv-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     setCharsets(charsets: string[]): void {

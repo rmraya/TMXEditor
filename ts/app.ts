@@ -19,6 +19,7 @@ import { TMReader } from "sdltm";
 import { I18n } from "./i18n";
 import { Locations, Point } from "./locations";
 import { Tbx2Tmx } from "./tbx2tmx";
+import { LanguageUtils } from "typesbcp47";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -80,7 +81,7 @@ class App {
     static shouldClose: boolean = false;
     static currentFile: string = '';
     static currentDefaults: any;
-    static currentPreferences: any;
+    static currentPreferences: Preferences;
     static currentCss: string;
     static currentStatus: any = {};
     static fileLanguages: Language[];
@@ -91,7 +92,6 @@ class App {
     static csvEvent: IpcMainEvent;
     static excelEvent: IpcMainEvent;
     static propertyEvent: IpcMainEvent;
-    static notesEvent: IpcMainEvent;
 
     static filterOptions: any = {};
     static loadOptions: any = {
@@ -107,8 +107,6 @@ class App {
     static messageParam: any;
 
     static needsName: boolean = false;
-
-    static verticalPadding: number = 46;
 
     static latestVersion: string;
     static downloadLink: string;
@@ -228,7 +226,10 @@ class App {
                 } else {
                     App.currentCss = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
                 }
-                App.mainWindow.webContents.send('set-theme', App.currentCss);
+            }
+            let windows: BrowserWindow[] = BrowserWindow.getAllWindows();
+            for (let window of windows) {
+                window.webContents.send('set-theme', App.currentCss);
             }
         });
 
@@ -283,8 +284,8 @@ class App {
         ipcMain.on('get-unit-properties', (event: IpcMainEvent) => {
             event.sender.send('set-unit-properties', App.propertiesArg);
         });
-        ipcMain.on('show-add-property', (event: IpcMainEvent) => {
-            App.showAddProperty(event);
+        ipcMain.on('show-add-property', (event: IpcMainEvent, parent: string) => {
+            App.showAddProperty(event, parent);
         });
         ipcMain.on('add-new-property', (event: IpcMainEvent, arg: any) => {
             this.addNewProperty(arg);
@@ -293,25 +294,22 @@ class App {
             this.saveProperties(arg);
         });
         ipcMain.on('edit-notes', (event: IpcMainEvent, arg: any) => {
-            App.editNotes(arg);
+            App.showNotesPanel(arg);
         });
-        ipcMain.on('get-unit-notes', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-unit-notes', (event: IpcMainEvent) => {
             event.sender.send('set-unit-notes', App.notesArg);
         });
-        ipcMain.on('show-add-note', (event: IpcMainEvent, arg: any) => {
-            this.showAddNote(event);
+        ipcMain.on('show-add-note', (event: IpcMainEvent, parent: string) => {
+            this.showAddNote(parent);
         });
-        ipcMain.on('add-new-note', (event: IpcMainEvent, arg: any) => {
-            this.addNewNote(arg);
+        ipcMain.on('add-new-note', (event: IpcMainEvent, note: string) => {
+            this.addNewNote(note);
         });
         ipcMain.on('save-notes', (event: IpcMainEvent, arg: any) => {
             this.saveNotes(arg);
         });
         ipcMain.on('get-preferences', (event: IpcMainEvent) => {
             event.sender.send('set-preferences', App.currentPreferences);
-        });
-        ipcMain.on('get-appLanguage', (event: IpcMainEvent) => {
-            event.sender.send('set-appLanguage', App.lang);
         });
         ipcMain.on('save-preferences', (event: IpcMainEvent, arg: any) => {
             App.savePreferences(arg);
@@ -330,7 +328,16 @@ class App {
         });
         ipcMain.on('save-file', () => {
             App.saveFile();
-        })
+        });
+        ipcMain.on('save-file-attributes', (event: IpcMainEvent, arg: any) => {
+            App.saveFileAttributes(arg);
+        });
+        ipcMain.on('save-file-properties', (event: IpcMainEvent, properties: Array<string[]>) => {
+            App.saveFileProperties(properties);
+        });
+        ipcMain.on('save-file-notes', (event: IpcMainEvent, notes: string[]) => {
+            App.saveFileNotes(notes);
+        });
         ipcMain.on('convert-excel', () => {
             App.convertExcel();
         });
@@ -755,10 +762,8 @@ class App {
         }
     }
 
-    static setHeight(window: BrowserWindow, arg: any) {
-        let rect: Rectangle = window.getBounds();
-        rect.height = arg.height + App.verticalPadding;
-        window.setBounds(rect);
+    static setHeight(window: BrowserWindow, arg: { width: number, height: number }) {
+        window.setContentSize(arg.width, arg.height, true);
     }
 
     static destroyWindow(window: BrowserWindow): void {
@@ -804,7 +809,13 @@ class App {
             'nextPage': App.i18n.getString('menu', 'NextPage'),
             'lastPage': App.i18n.getString('menu', 'LastPage'),
             'unitsPage': App.i18n.getString('App', 'UnitsPage'),
+            'pageSpan': App.i18n.getString('App', 'pageSpan'),
+            'ofSpan': App.i18n.getString('App', 'ofSpan'),
+            'unitsLabel': App.i18n.getString('App', 'UnitsLabel'),
             'unitsTooltip': App.i18n.getString('App', 'UnitsTooltip'),
+            'tuAttributes': App.i18n.getString('App', 'tuAttributes'),
+            'tuProperties': App.i18n.getString('App', 'tuProperties'),
+            'tuNotes': App.i18n.getString('App', 'tuNotes'),
         };
         event.sender.send('set-tooltips', tooltips);
     }
@@ -854,6 +865,8 @@ class App {
                 case 'changeLanguage': parent = App.changeLanguageWindow;
                     break;
                 case 'addLanguage': parent = App.addLanguageWindow;
+                    break;
+                case 'fileInfo': parent = App.fileInfoWindow;
                     break;
                 default: parent = App.mainWindow;
             }
@@ -930,12 +943,12 @@ class App {
             { label: App.i18n.getString('menu', 'MergeTMX'), click: () => { App.mergeFiles(); } }
         ]);
         let editMenu: Menu = Menu.buildFromTemplate([
-            { label: App.i18n.getString('menu', 'Undo'), accelerator: 'CmdOrCtrl+Z', click: () => { App.mainWindow.webContents.undo(); } },
+            { label: App.i18n.getString('menu', 'Undo'), accelerator: 'CmdOrCtrl+Z', click: () => { BrowserWindow.getFocusedWindow().webContents.undo(); } },
             new MenuItem({ type: 'separator' }),
-            { label: App.i18n.getString('menu', 'Cut'), accelerator: 'CmdOrCtrl+X', click: () => { App.mainWindow.webContents.cut(); } },
-            { label: App.i18n.getString('menu', 'Copy'), accelerator: 'CmdOrCtrl+C', click: () => { App.mainWindow.webContents.copy(); } },
-            { label: App.i18n.getString('menu', 'Paste'), accelerator: 'CmdOrCtrl+V', click: () => { App.mainWindow.webContents.paste(); } },
-            { label: App.i18n.getString('menu', 'SelectAll'), accelerator: 'CmdOrCtrl+A', click: () => { App.mainWindow.webContents.selectAll(); } },
+            { label: App.i18n.getString('menu', 'Cut'), accelerator: 'CmdOrCtrl+X', click: () => { BrowserWindow.getFocusedWindow().webContents.cut(); } },
+            { label: App.i18n.getString('menu', 'Copy'), accelerator: 'CmdOrCtrl+C', click: () => { BrowserWindow.getFocusedWindow().webContents.copy(); } },
+            { label: App.i18n.getString('menu', 'Paste'), accelerator: 'CmdOrCtrl+V', click: () => { BrowserWindow.getFocusedWindow().webContents.paste(); } },
+            { label: App.i18n.getString('menu', 'SelectAll'), accelerator: 'CmdOrCtrl+A', click: () => { BrowserWindow.getFocusedWindow().webContents.selectAll(); } },
             new MenuItem({ type: 'separator' }),
             { label: App.i18n.getString('menu', 'ConfirmEdit'), accelerator: 'Alt+Enter', click: () => { App.saveEdits(); } },
             { label: App.i18n.getString('menu', 'CancelEdit'), accelerator: 'Esc', click: () => { App.cancelEdit(); } },
@@ -1120,6 +1133,7 @@ class App {
         App.aboutWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 620,
+            height: 370,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1177,6 +1191,7 @@ class App {
         this.systemInfoWindow = new BrowserWindow({
             parent: App.aboutWindow,
             width: 430,
+            height: 300,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1218,6 +1233,7 @@ class App {
         App.licensesWindow = new BrowserWindow({
             parent: parent,
             width: 460,
+            height: 460,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1511,7 +1527,7 @@ class App {
         }
     }
 
-    static savePreferences(preferences: any): void {
+    static savePreferences(preferences: Preferences): void {
         writeFileSync(path.join(app.getPath('appData'), app.name, 'preferences.json'), JSON.stringify(preferences, undefined, 4));
         if (app.isReady() && preferences.appLang !== App.lang) {
             dialog.showMessageBox({
@@ -1541,14 +1557,18 @@ class App {
                     appLang = 'es';
                 }
             }
-            this.savePreferences({ theme: 'system', indentation: 2, appLang: appLang });
+            this.savePreferences({ theme: 'system', indentation: 2, appLang: appLang, changeId: false });
         }
         try {
             let data: Buffer = readFileSync(preferencesFile);
-            App.currentPreferences = JSON.parse(data.toString());
-            if (!App.currentPreferences.appLang) {
-                App.currentPreferences.appLang = 'en';
+            let json: any = JSON.parse(data.toString());
+            if (!json.appLang) {
+                json.appLang = 'en';
             }
+            if (!json.changeId) {
+                json.changeId = false;
+            }
+            App.currentPreferences = json;
             App.lang = App.currentPreferences.appLang;
         } catch (err) {
             console.error(err);
@@ -1596,6 +1616,12 @@ class App {
             (data: any) => {
                 App.mainWindow.webContents.send('end-waiting');
                 data.type = lang;
+                let attributesLabel: string = App.i18n.getString('App', 'langAttributes');
+                let propertiesLabel: string = App.i18n.getString('App', 'langProperties');
+                let notesLabel: string = App.i18n.getString('App', 'langNotes');
+                data.attributesType = App.i18n.format(attributesLabel, [lang]);
+                data.propertiesType = App.i18n.format(propertiesLabel, [lang]);
+                data.notesType = App.i18n.format(notesLabel, [lang]);
                 App.mainWindow.webContents.send('update-properties', data);
             },
             (reason: string) => {
@@ -1612,6 +1638,9 @@ class App {
                 App.mainWindow.webContents.send('end-waiting');
                 if (data.status === SUCCESS) {
                     data.type = 'TU';
+                    data.attributesType = App.i18n.getString('App', 'tuAttributes');
+                    data.propertiesType = App.i18n.getString('App', 'tuProperties');
+                    data.notesType = App.i18n.getString('App', 'tuNotes');
                     App.mainWindow.webContents.send('update-properties', data);
                 } else {
                     console.log(id, JSON.stringify(data));
@@ -1629,6 +1658,7 @@ class App {
         App.attributesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 670,
+            height: 450,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1682,6 +1712,7 @@ class App {
         App.propertiesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 500,
+            height: 280,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1704,11 +1735,12 @@ class App {
         App.setLocation(App.propertiesWindow, 'properties.html');
     }
 
-    static showAddProperty(event: IpcMainEvent): void {
+    static showAddProperty(event: IpcMainEvent, parent: string): void {
         App.propertyEvent = event;
         App.addPropertyWindow = new BrowserWindow({
-            parent: App.propertiesWindow,
+            parent: (parent === 'fileInfo' ? App.fileInfoWindow : App.propertiesWindow),
             width: 350,
+            height: 140,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1726,7 +1758,7 @@ class App {
             App.addPropertyWindow.show();
         });
         App.addPropertyWindow.on('close', () => {
-            App.propertiesWindow.focus();
+            App.addPropertyWindow.getParentWindow().focus();
         });
         App.setLocation(App.addPropertyWindow, 'addProperty.html');
     }
@@ -1763,10 +1795,11 @@ class App {
         );
     }
 
-    static editNotes(arg: any): void {
+    static showNotesPanel(arg: any): void {
         App.notesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 500,
+            height: 280,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1789,11 +1822,11 @@ class App {
         App.setLocation(App.notesWindow, 'notes.html');
     }
 
-    showAddNote(event: IpcMainEvent): void {
-        App.notesEvent = event;
+    showAddNote(parent: string): void {
         App.addNotesWindow = new BrowserWindow({
-            parent: App.notesWindow,
+            parent: parent === 'fileInfo' ? App.fileInfoWindow : App.notesWindow,
             width: 350,
+            height: 140,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1811,14 +1844,14 @@ class App {
             App.addNotesWindow.show();
         });
         App.addNotesWindow.on('close', () => {
-            App.notesWindow.focus();
+            App.addNotesWindow.getParentWindow().focus();
         });
         App.setLocation(App.addNotesWindow, 'addNote.html');
     }
 
-    addNewNote(arg: any): void {
+    addNewNote(note: string): void {
+        App.addNotesWindow.getParentWindow().webContents.send('set-new-note', note);
         App.destroyWindow(App.addNotesWindow);
-        App.notesEvent.sender.send('set-new-note', arg);
     }
 
     saveNotes(arg: any): void {
@@ -1852,6 +1885,7 @@ class App {
         App.settingsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 500,
+            height: 250,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1866,6 +1900,7 @@ class App {
         App.settingsWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'preferences.html'));
         App.settingsWindow.once('ready-to-show', () => {
             App.settingsWindow.show();
+            // App.settingsWindow.webContents.openDevTools();
         });
         App.settingsWindow.on('close', () => {
             App.mainWindow.focus();
@@ -1881,6 +1916,7 @@ class App {
         App.newFileWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 480,
+            height: 160,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2030,6 +2066,7 @@ class App {
         App.convertCsvWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
+            height: 600,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2055,6 +2092,7 @@ class App {
         App.convertTBXWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
+            height: 210,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2080,6 +2118,7 @@ class App {
         App.convertSDLTMWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
+            height: 210,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2105,6 +2144,7 @@ class App {
         App.convertExcelWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
+            height: 460,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2370,10 +2410,12 @@ class App {
             labels.push(App.i18n.format(label, ['' + (i + 1)]));
         }
         App.csvLangArgs.labels = labels;
+        console.log(App.csvLangArgs);
         App.csvLanguagesWindow = new BrowserWindow({
             parent: App.convertCsvWindow,
             modal: false,
             width: 520,
+            height: 300,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2412,6 +2454,7 @@ class App {
             parent: App.convertExcelWindow,
             modal: false,
             width: 520,
+            height: 300,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2571,10 +2614,11 @@ class App {
         }
         App.fileInfoWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 550,
+            width: 760,
+            height: 520,
             minimizable: false,
             maximizable: false,
-            resizable: true,
+            resizable: false,
             show: false,
             icon: App.iconPath,
             webPreferences: {
@@ -2586,6 +2630,7 @@ class App {
         App.fileInfoWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'fileInfo.html'));
         App.fileInfoWindow.once('ready-to-show', () => {
             App.fileInfoWindow.show();
+            // App.fileInfoWindow.webContents.openDevTools();
         });
         App.fileInfoWindow.on('close', () => {
             App.mainWindow.focus();
@@ -2593,10 +2638,69 @@ class App {
         App.setLocation(App.fileInfoWindow, 'fileInfo.html');
     }
 
+    static saveFileAttributes(arg: any) {
+        App.sendRequest({ command: 'saveFileAttributes', attributes: arg },
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileAttributesSaved') });
+                    App.saved = false;
+                    App.mainWindow.setDocumentEdited(true);
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
+    static saveFileProperties(properties: Array<string[]>) {
+        App.sendRequest({ command: 'saveFileProperties', properties: properties },
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'filePropertiesSaved') });
+                    App.saved = false;
+                    App.mainWindow.setDocumentEdited(true);
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
+    static saveFileNotes(notes: string[]) {
+        App.sendRequest({ command: 'saveFileNotes', notes: notes },
+            (data: any) => {
+                if (data.status === SUCCESS) {
+                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileNotesSaved') });
+                    App.saved = false;
+                    App.mainWindow.setDocumentEdited(true);
+                } else {
+                    App.showMessage({ type: 'error', message: data.reason });
+                }
+            },
+            (reason: string) => {
+                App.showMessage({ type: 'error', message: reason });
+            }
+        );
+    }
+
     fileProperties(event: IpcMainEvent): void {
         App.sendRequest({ command: 'getFileProperties' },
             (data: any) => {
                 if (data.status === SUCCESS) {
+                    if (data.attributes.srclang && data.attributes.srclang !== '*all*') {
+                        data.attributes.srclang = LanguageUtils.normalizeCode(data.attributes.srclang);
+                    }
+                    if (data.attributes.adminlang) {
+                        data.attributes.adminlang = LanguageUtils.normalizeCode(data.attributes.adminlang);
+                    }
+                    data.fileLanguages = App.fileLanguages;
+                    data.fileLanguages.unshift({ code: '*all*', name: App.i18n.getString('App', 'anyLanguage') });
                     event.sender.send('set-file-properties', data);
                 } else {
                     App.showMessage({ type: 'error', message: data.reason });
@@ -2742,6 +2846,7 @@ class App {
         App.splitFileWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 504,
+            height: 160,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2836,6 +2941,7 @@ class App {
         App.mergeFilesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 600,
+            height: 430,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2990,6 +3096,7 @@ class App {
         App.replaceTextWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 450,
+            height: 230,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3078,6 +3185,7 @@ class App {
         App.sortUnitsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 520,
+            height: 160,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3121,6 +3229,7 @@ class App {
         App.filtersWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 520,
+            height: 340,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3240,6 +3349,7 @@ class App {
         App.changeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 490,
+            height: 160,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3332,6 +3442,7 @@ class App {
         App.removeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3380,6 +3491,7 @@ class App {
         App.addLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3428,6 +3540,7 @@ class App {
         App.srcLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3594,6 +3707,7 @@ class App {
         App.removeUntranslatedWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3623,6 +3737,7 @@ class App {
         App.removeSameAsSourceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3795,6 +3910,7 @@ class App {
         App.consolidateWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
+            height: 120,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3870,6 +3986,7 @@ class App {
         App.maintenanceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
+            height: 350,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -4042,6 +4159,7 @@ class App {
                             App.updatesWindow = new BrowserWindow({
                                 parent: App.mainWindow,
                                 width: 600,
+                                height: 220,
                                 minimizable: false,
                                 maximizable: false,
                                 resizable: false,
@@ -4056,6 +4174,7 @@ class App {
                             App.updatesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'updates.html'));
                             App.updatesWindow.once('ready-to-show', () => {
                                 App.updatesWindow.show();
+                                App.updatesWindow.center();
                             });
                             App.updatesWindow.on('close', () => {
                                 App.mainWindow.focus();

@@ -29,7 +29,7 @@ class SystemInformation {
                 this.electron.ipcRenderer.send('close-systemInfo');
             }
         });
-        this.electron.ipcRenderer.send('systemInfo-height', { width: document.body.clientWidth, height: (document.body.clientHeight) });
+
     }
 
     setInfo(info: any) {
@@ -38,5 +38,6 @@ class SystemInformation {
         document.getElementById('xmljava').innerText = info.xmljava;
         document.getElementById('java').innerText = info.java;
         document.getElementById('electron').innerText = info.electron;
+        this.electron.ipcRenderer.send('systemInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 }

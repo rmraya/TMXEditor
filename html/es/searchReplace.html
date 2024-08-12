@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>Reemplazar Texto</title>
@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
 </head>
 
-<body onload="new SearchReplace();">
+<body class="dialog_body" onload="new SearchReplace();">
 
     <table class="table_width">
         <tr>
@@ -29,13 +29,12 @@
 
     <div class="row">
         <input type="checkbox" id="regularExpression" style="margin-left: 10px;">
-        <label for="regularExpression" style="margin-top: 2px;">Expresi&oacute;n Regular</label>
+        <label for="regularExpression" class="middleLabel">Expresi&oacute;n Regular</label>
     </div>
 
     <div class="buttonArea">
         <button id="replace">Reemplazar Texto</button>
     </div>
-    <script src="../../js/keyboardHandler.js"></script>
     <script src="../../js/searchReplace.js"></script>
 </body>
 

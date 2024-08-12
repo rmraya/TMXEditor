@@ -23,8 +23,7 @@ class SearchReplace {
         this.electron.ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
-
+        
         document.getElementById('replace').addEventListener('click', () => {
             this.replace();
         });

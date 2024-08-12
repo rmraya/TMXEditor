@@ -74,7 +74,6 @@ public class TMXService {
 
 	protected StoreInterface store;
 	protected File currentFile;
-	protected int indentation;
 
 	protected boolean parsing;
 	protected String parsingError;
@@ -148,6 +147,11 @@ public class TMXService {
 			}
 			currentFile = new File(fileName);
 			Set<String> languages = getLanguages(fileName);
+			if (languages.isEmpty()) {
+				result.put(Constants.STATUS, Constants.ERROR);
+				result.put(Constants.REASON, Messages.getString("TMXService.15"));
+				return result;
+			}
 			store = new SqlStore(languages);
 			parsingError = "";
 			Thread.ofVirtual().start(() -> {
@@ -347,12 +351,12 @@ public class TMXService {
 	public JSONObject saveFile(String file) {
 		saving = true;
 		currentFile = new File(file);
-		getIndentation();
-		store.setIndentation(indentation);
 		savingError = "";
 		try {
 			Thread.ofVirtual().start(() -> {
 				try {
+					JSONObject json = getPreferences();
+					store.setIndentation(json.getInt("indentation"));
 					store.writeFile(currentFile);
 				} catch (Exception ex) {
 					logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -402,6 +406,8 @@ public class TMXService {
 
 			JSONObject attributes = new JSONObject();
 			result.put("attributes", attributes);
+			attributes.put("creationid", header.getAttributeValue("creationid"));
+			attributes.put("creationdate", header.getAttributeValue("creationdate"));
 			attributes.put("creationtool", header.getAttributeValue("creationtool"));
 			attributes.put("creationtoolversion", header.getAttributeValue("creationtoolversion"));
 			attributes.put("segtype", header.getAttributeValue("segtype"));
@@ -409,6 +415,9 @@ public class TMXService {
 			attributes.put("adminlang", header.getAttributeValue("adminlang"));
 			attributes.put("srclang", header.getAttributeValue("srclang"));
 			attributes.put("datatype", header.getAttributeValue("datatype"));
+			attributes.put("changedate", header.getAttributeValue("changedate"));
+			attributes.put("changeid", header.getAttributeValue("changeid"));
+			attributes.put("o_encoding", header.getAttributeValue("o-encoding"));
 
 			result.put(Constants.STATUS, Constants.SUCCESS);
 		} else {
@@ -684,6 +693,7 @@ public class TMXService {
 			Element tmx = doc.getRootElement();
 			tmx.setAttribute("version", "1.4");
 			Element header = new Element("header");
+			header.setAttribute("creationid", System.getProperty("user.name"));
 			header.setAttribute("creationdate", TmxUtils.tmxDate());
 			header.setAttribute("creationtool", Constants.APPNAME);
 			header.setAttribute("creationtoolversion", Constants.VERSION);
@@ -696,18 +706,23 @@ public class TMXService {
 			Element body = new Element("body");
 			tmx.addContent(body);
 			Element tu = new Element("tu");
+			tu.setAttribute("creationid", System.getProperty("user.name"));
 			tu.setAttribute("creationdate", TmxUtils.tmxDate());
 			tu.setAttribute("creationtool", Constants.APPNAME);
 			tu.setAttribute("creationtoolversion", Constants.VERSION);
 			body.addContent(tu);
 			Element tuv1 = new Element("tuv");
 			tuv1.setAttribute("xml:lang", srcLang.getCode());
+			tuv1.setAttribute("creationid", System.getProperty("user.name"));
+			tuv1.setAttribute("creationdate", TmxUtils.tmxDate());
 			Element seg1 = new Element("seg");
 			seg1.setText(srcLang.getCode());
 			tuv1.addContent(seg1);
 			tu.addContent(tuv1);
 			Element tuv2 = new Element("tuv");
 			tuv2.setAttribute("xml:lang", tgtLang.getCode());
+			tuv2.setAttribute("creationid", System.getProperty("user.name"));
+			tuv2.setAttribute("creationdate", TmxUtils.tmxDate());
 			Element seg2 = new Element("seg");
 			seg2.setText(tgtLang.getCode());
 			tuv2.addContent(seg2);
@@ -715,7 +730,7 @@ public class TMXService {
 
 			File tempFile = File.createTempFile("temp", ".tmx");
 			tempFile.deleteOnExit();
-			Indenter.indent(tmx, 2);
+			Indenter.indent(tmx, getPreferences().getInt("indentation"));
 			XMLOutputter outputter = new XMLOutputter();
 			outputter.preserveSpace(true);
 			try (FileOutputStream out = new FileOutputStream(tempFile)) {
@@ -881,8 +896,8 @@ public class TMXService {
 					l++;
 				}
 				splitStore = new SplitStore(f, l);
-				getIndentation();
-				splitStore.setIndentation(indentation);
+				JSONObject json = getPreferences();
+				splitStore.setIndentation(json.getInt("indentation"));
 				countStore = null;
 				reader = new TMXReader(splitStore);
 				reader.parse(f);
@@ -929,7 +944,8 @@ public class TMXService {
 		mergeError = "";
 		Thread.ofVirtual().start(() -> {
 			try {
-				getIndentation();
+				JSONObject json = getPreferences();
+				int indentation = json.getInt("indentation");
 				try (FileOutputStream out = new FileOutputStream(new File(merged))) {
 					Element header = new Element("header");
 					header.setAttribute("creationdate", TmxUtils.tmxDate());
@@ -1518,81 +1534,14 @@ public class TMXService {
 		return result;
 	}
 
-	public JSONObject getIndentation() {
-		JSONObject result = new JSONObject();
-		File home = getPreferencesFolder();
-		if (!home.exists()) {
-			home.mkdirs();
-		}
-		File preferences = new File(home, "preferences.json");
-		try {
-			if (!preferences.exists()) {
-				JSONObject prefs = new JSONObject();
-				prefs.put("theme", "system");
-				prefs.put("indentation", 2);
-				try (FileOutputStream output = new FileOutputStream(preferences)) {
-					output.write(prefs.toString().getBytes(StandardCharsets.UTF_8));
-				}
-			}
-			try (FileReader input = new FileReader(preferences)) {
-				try (BufferedReader reader = new BufferedReader(input)) {
-					StringBuilder builder = new StringBuilder();
-					String line = "";
-					while ((line = reader.readLine()) != null) {
-						builder.append(line);
-					}
-					JSONObject json = new JSONObject(builder.toString());
-					indentation = json.getInt("indentation");
-					result.put("indentation", indentation);
-				}
-			}
-			result.put(Constants.STATUS, Constants.SUCCESS);
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-			result.put(Constants.STATUS, Constants.ERROR);
-			result.put(Constants.REASON, e.getMessage());
-		}
-		return result;
-	}
-
 	public JSONObject saveIndentation(int value) {
 		JSONObject result = new JSONObject();
-		File home = getPreferencesFolder();
-		if (!home.exists()) {
-			home.mkdirs();
-		}
-		File preferences = new File(home, "preferences.json");
 		try {
-			if (!preferences.exists()) {
-				JSONObject prefs = new JSONObject();
-				prefs.put("theme", "system");
-				prefs.put("indentation", 2);
-				try (FileOutputStream output = new FileOutputStream(preferences)) {
-					output.write(prefs.toString().getBytes(StandardCharsets.UTF_8));
-				}
-			}
-			JSONObject json = null;
-			try (FileReader input = new FileReader(preferences)) {
-				try (BufferedReader reader = new BufferedReader(input)) {
-					StringBuilder builder = new StringBuilder();
-					String line = "";
-					while ((line = reader.readLine()) != null) {
-						builder.append(line);
-					}
-					json = new JSONObject(builder.toString());
-					json.put("indentation", value);
-
-				}
-			}
-			try (FileOutputStream output = new FileOutputStream(preferences)) {
-				output.write(json.toString().getBytes(StandardCharsets.UTF_8));
-			}
-			indentation = value;
-			if (store != null) {
-				store.setIndentation(indentation);
-			}
+			JSONObject json = getPreferences();
+			json.put("indentation", value);
+			savePreferences(json);
 			result.put(Constants.STATUS, Constants.SUCCESS);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			result.put(Constants.STATUS, Constants.ERROR);
 			result.put(Constants.REASON, e.getMessage());
@@ -1776,4 +1725,73 @@ public class TMXService {
 		return result;
 	}
 
+	public static JSONObject getPreferences() throws JSONException, IOException {
+		JSONObject result = new JSONObject();
+		File home = getPreferencesFolder();
+		if (!home.exists()) {
+			home.mkdirs();
+		}
+		File preferences = new File(home, "preferences.json");
+		if (!preferences.exists()) {
+			JSONObject prefs = new JSONObject();
+			prefs.put("theme", "system");
+			prefs.put("appLang", "en");
+			prefs.put("indentation", 2);
+			prefs.put("changeId", false);
+			try (FileOutputStream output = new FileOutputStream(preferences)) {
+				output.write(prefs.toString().getBytes(StandardCharsets.UTF_8));
+			}
+		}
+		try (FileReader input = new FileReader(preferences)) {
+			try (BufferedReader reader = new BufferedReader(input)) {
+				StringBuilder builder = new StringBuilder();
+				String line = "";
+				while ((line = reader.readLine()) != null) {
+					if (!builder.isEmpty()) {
+						builder.append('\n');
+					}
+					builder.append(line);
+				}
+				result = new JSONObject(builder.toString());
+			}
+		}
+		if (!result.has("changeId")) {
+			result.put("changeId", false);
+		}
+		return result;
+	}
+
+	private JSONObject savePreferences(JSONObject json) throws JSONException, IOException {
+		JSONObject result = new JSONObject();
+		File home = getPreferencesFolder();
+		if (!home.exists()) {
+			home.mkdirs();
+		}
+		File preferences = new File(home, "preferences.json");
+		try (FileOutputStream output = new FileOutputStream(preferences)) {
+			output.write(json.toString(2).getBytes(StandardCharsets.UTF_8));
+		}
+		return result;
+	}
+
+    public JSONObject saveFileAttributes(JSONObject attributes) {
+        ((SqlStore)store).setFileAttributes(attributes);
+		JSONObject result = new JSONObject();
+		result.put(Constants.STATUS, Constants.SUCCESS);
+		return result;
+    }
+
+	public JSONObject saveFileProperties(JSONArray properties) {
+		((SqlStore)store).setFileProperties(properties);
+		JSONObject result = new JSONObject();
+		result.put(Constants.STATUS, Constants.SUCCESS);
+		return result;
+	}
+
+	public Object saveFileNotes(JSONArray notes) {
+		((SqlStore)store).setFileNotes(notes);
+		JSONObject result = new JSONObject();
+		result.put(Constants.STATUS, Constants.SUCCESS);
+		return result;
+	}
 }

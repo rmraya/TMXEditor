@@ -34,7 +34,6 @@ class ConvertTBX {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertFile();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-convertTbx');

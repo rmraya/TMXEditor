@@ -48,7 +48,7 @@ class MergeFiles {
             }
         });
         document.getElementById('file').focus();
-        this.electron.ipcRenderer.send('mergeFiles-height', { width: document.body.clientWidth, height: document.body.clientHeight + 10 });
+        this.electron.ipcRenderer.send('mergeFiles-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     mergeFiles(): void {
@@ -82,7 +82,9 @@ class MergeFiles {
                 this.files.push(arg);
             }
         }
-        this.files.sort();
+        this.files.sort((a: string, b: string) => {
+            return a.localeCompare(b, document.documentElement.lang, { sensitivity: 'base' });
+        });
         let rows: string = '';
         for (let file of this.files) {
             rows = rows + '<tr><td><input type="checkbox" class="rowCheck"></td><td>' + file + '</td></tr>';
@@ -118,7 +120,9 @@ class MergeFiles {
                 array.push(file);
             }
         }
-        array.sort();
+        array.sort((a: string, b: string) => {
+            return a.localeCompare(b, document.documentElement.lang, { sensitivity: 'base' });
+        });
         this.files = array;
         let rows: string = '';
         for (let file of this.files) {

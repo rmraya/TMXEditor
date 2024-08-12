@@ -46,7 +46,6 @@ class Filters {
         document.getElementById('clearFilters').addEventListener('click', () => {
             this.clearFilters();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'NumpadEnter') {
                 this.applyFilters();

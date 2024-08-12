@@ -30,8 +30,8 @@ class Notes {
             this.notes = arg.notes;
             this.drawNotes();
         });
-        this.electron.ipcRenderer.on('set-new-note', (event: Electron.IpcRendererEvent, arg: any) => {
-            this.notes.push(arg.note);
+        this.electron.ipcRenderer.on('set-new-note', (event: Electron.IpcRendererEvent, note: string) => {
+            this.notes.push(note);
             this.drawNotes();
             (document.getElementById('save') as HTMLButtonElement).focus();
         });

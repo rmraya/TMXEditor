@@ -135,6 +135,15 @@ public class TMXServer implements HttpHandler {
 					case "fileInfo":
 						response = service.getFileInfo().toString();
 						break;
+					case "saveFileAttributes":
+						response = service.saveFileAttributes(json.getJSONObject("attributes")).toString();
+						break;
+					case "saveFileProperties":
+						response = service.saveFileProperties(json.getJSONArray("properties")).toString();
+						break;
+					case "saveFileNotes":
+						response = service.saveFileNotes(json.getJSONArray("notes")).toString();
+						break;
 					case "loadingProgress":
 						response = getLoadingProgress();
 						break;

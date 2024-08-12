@@ -12,6 +12,7 @@
 
 package com.maxprograms.tmxserver.tmx;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
+import com.maxprograms.languages.LanguageUtils;
 import com.maxprograms.xml.Catalog;
 import com.maxprograms.xml.Document;
 import com.maxprograms.xml.IContentHandler;
@@ -139,8 +141,17 @@ public class LanguageHandler implements IContentHandler {
         // do nothing
     }
 
-    public Set<String> getLanguages() {
-        return languages;
+    public Set<String> getLanguages() throws IOException {
+        Set<String> result = new HashSet<>();
+        Set<String> normalized = new HashSet<>();
+        for (String lang : languages) {
+            String normal = LanguageUtils.normalizeCode(lang.replace('_', '-'));
+            if (!normalized.contains(normal)) {
+                normalized.add(normal);
+                result.add(lang);
+            }
+        }
+        return result;
     }
 
 }

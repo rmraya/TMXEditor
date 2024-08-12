@@ -40,9 +40,9 @@ class AddNote {
     saveNote(): void {
         let note: string = (document.getElementById('note') as HTMLInputElement).value;
         if (note === '') {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', group:'addNote', key: 'enterNote', parent: 'addNote' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'addNote', key: 'enterNote', parent: 'addNote' });
             return;
         }
-        this.electron.ipcRenderer.send('add-new-note', { note: note });
+        this.electron.ipcRenderer.send('add-new-note', note);
     }
 }

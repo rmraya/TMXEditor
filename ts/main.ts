@@ -177,6 +177,11 @@ class Main {
         });
         this.topBar.appendChild(saveFile);
 
+        let span1: HTMLSpanElement = document.createElement('span');
+        span1.style.width = '30px';
+        span1.innerHTML = '&nbsp;';
+        this.topBar.appendChild(span1);
+
         let showFileInfo: HTMLAnchorElement = document.createElement('a');
         showFileInfo.classList.add('tooltip');
         showFileInfo.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24" height="24" width="24"><path d="M 12,3.6666667 C 16.595,3.6666667 20.333333,7.405 20.333333,12 20.333333,16.595 16.595,20.333333 12,20.333333 7.405,20.333333 3.6666667,16.595 3.6666667,12 3.6666667,7.405 7.405,3.6666667 12,3.6666667 Z M 12,2 C 6.4775,2 2,6.4775 2,12 2,17.5225 6.4775,22 12,22 17.5225,22 22,17.5225 22,12 22,6.4775 17.5225,2 12,2 Z m 0.833333,15 h -1.666666 v -6.666667 h 1.666666 z M 12,6.7916667 c 0.575,0 1.041667,0.4666666 1.041667,1.0416666 C 13.041667,8.4083333 12.575,8.875 12,8.875 c -0.575,0 -1.041667,-0.4666667 -1.041667,-1.0416667 0,-0.575 0.466667,-1.0416666 1.041667,-1.0416666 z" /></svg>' +
@@ -186,7 +191,7 @@ class Main {
         });
         this.topBar.appendChild(showFileInfo);
 
-        let span1: HTMLSpanElement = document.createElement('span');
+        span1 = document.createElement('span');
         span1.style.width = '30px';
         span1.innerHTML = '&nbsp;';
         this.topBar.appendChild(span1);
@@ -453,7 +458,13 @@ class Main {
         document.getElementById('nextPage').innerText = tooltips.nextPage;
         document.getElementById('lastPage').innerText = tooltips.lastPage;
         document.getElementById('unitsPage').innerText = tooltips.unitsPage;
+        document.getElementById('pageSpan').innerText = tooltips.pageSpan;
+        document.getElementById('ofSpan').innerText = tooltips.ofSpan;
+        document.getElementById('unitsLabel').innerText = tooltips.unitsLabel;
         document.getElementById('unitsTooltip').innerText = tooltips.unitsTooltip;
+        document.getElementById('attributesSpan').innerHTML = tooltips.tuAttributes;
+        document.getElementById('propertiesSpan').innerHTML = tooltips.tuProperties;
+        document.getElementById('notesSpan').innerHTML = tooltips.tuNotes;
     }
 
     buildRightPanels(rightPanel: HTMLDivElement): void {
@@ -500,7 +511,7 @@ class Main {
         tableRow.appendChild(attributesCell);
 
         let cell: HTMLTableCellElement = document.createElement('td');
-        cell.innerText = 'Attributes';
+        cell.innerHTML = '&nbsp;';
         cell.classList.add('fill_width');
         cell.style.marginLeft = '4px';
         tableRow.appendChild(cell);
@@ -562,7 +573,7 @@ class Main {
         tableRow.appendChild(propertiesCell);
 
         let cell: HTMLTableCellElement = document.createElement('td');
-        cell.innerText = 'Properties';
+        cell.innerHTML = '&nbsp;';
         cell.classList.add('fill_width');
         cell.style.marginLeft = '4px';
         tableRow.appendChild(cell);
@@ -623,7 +634,7 @@ class Main {
         tableRow.appendChild(notesCell);
 
         let cell: HTMLTableCellElement = document.createElement('td');
-        cell.innerText = 'Notes';
+        cell.innerHTML = '&nbsp;';
         cell.classList.add('fill_width');
         cell.style.marginLeft = '4px';
         tableRow.appendChild(cell);
@@ -687,6 +698,7 @@ class Main {
         this.bottomBar.appendChild(previous);
 
         let span: HTMLSpanElement = document.createElement('span');
+        span.id = 'pageSpan';
         span.innerText = 'Page';
         span.style.marginLeft = '10px';
         span.style.marginTop = '4px';
@@ -715,6 +727,7 @@ class Main {
         pageDiv.appendChild(pageTooltip);
 
         let ofSpan: HTMLSpanElement = document.createElement('span');
+        ofSpan.id = 'ofSpan';
         ofSpan.innerText = 'of ';
         ofSpan.style.marginLeft = '10px';
         ofSpan.style.marginTop = '4px';
@@ -777,6 +790,7 @@ class Main {
         unitsDiv.appendChild(unitsTooltip);
 
         let unitsLabel: HTMLSpanElement = document.createElement('span');
+        unitsLabel.id = 'unitsLabel';
         unitsLabel.innerText = 'Units: ';
         unitsLabel.style.marginLeft = '10px';
         unitsLabel.style.marginTop = '4px';
@@ -811,7 +825,7 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentCell != null && this.currentCell.isContentEditable) {
+        if (this.currentCell?.isContentEditable) {
             if (this.currentContent === this.currentCell.innerHTML) {
                 this.cancelEdit();
                 return;
@@ -1011,11 +1025,8 @@ class Main {
         document.getElementById('pages').innerHTML = '0';
         document.getElementById('units').innerHTML = '';
         document.getElementById('attributesTable').innerHTML = '';
-        document.getElementById('attributesSpan').innerHTML = 'TU';
         document.getElementById('propertiesTable').innerHTML = '';
-        document.getElementById('propertiesSpan').innerHTML = 'TU';
         document.getElementById('notesTable').innerHTML = '';
-        document.getElementById('notesSpan').innerHTML = 'TU';
         document.getElementById('filterUnits').classList.remove('active');
         document.getElementById('sortUnits').classList.remove('active');
         document.getElementById('selectAll').addEventListener('click', () => {
@@ -1051,11 +1062,8 @@ class Main {
             fixed[i].addEventListener('click', (ev: MouseEvent) => this.fixedListener(ev));
         }
         document.getElementById('attributesTable').innerHTML = '';
-        document.getElementById('attributesSpan').innerHTML = 'TU';
         document.getElementById('propertiesTable').innerHTML = '';
-        document.getElementById('propertiesSpan').innerHTML = 'TU';
         document.getElementById('notesTable').innerHTML = '';
-        document.getElementById('notesSpan').innerHTML = 'TU';
         this.currentId = undefined;
         this.setStatus('');
     }
@@ -1064,7 +1072,7 @@ class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentCell != null && this.currentCell.isContentEditable) {
+        if (this.currentCell?.isContentEditable) {
             this.saveEdit();
         }
         let element: Element = (event.target as Element);
@@ -1157,7 +1165,7 @@ class Main {
 
     updateProperties(arg: any): void {
         this.attributesType = arg.type;
-        document.getElementById('attributesSpan').innerHTML = this.attributesType;
+        document.getElementById('attributesSpan').innerHTML = arg.attributesType;
         let table = document.getElementById('attributesTable');
         table.innerHTML = '';
         this.attributes = arg.attributes;
@@ -1173,10 +1181,12 @@ class Main {
             let right = document.createElement('td');
             right.textContent = pair[1];
             right.className = 'noWrap';
+            right.classList.add('leftBorder');
+            right.classList.add('fill_width');
             tr.appendChild(right);
         }
 
-        document.getElementById('propertiesSpan').innerHTML = arg.type;
+        document.getElementById('propertiesSpan').innerHTML = arg.propertiesType;
         table = document.getElementById('propertiesTable');
         table.innerHTML = '';
         this.properties = arg.properties;
@@ -1192,10 +1202,12 @@ class Main {
             let right = document.createElement('td');
             right.textContent = pair[1];
             right.className = 'noWrap';
+            right.classList.add('leftBorder');
+            right.classList.add('fill_width');
             tr.appendChild(right);
         }
 
-        document.getElementById('notesSpan').innerHTML = arg.type;
+        document.getElementById('notesSpan').innerHTML = arg.notesType;
         table = document.getElementById('notesTable');
         table.innerHTML = '';
         this.notes = arg.notes;
@@ -1223,7 +1235,7 @@ class Main {
     }
 
     firstPage(): void {
-        if (this.currentCell && this.currentCell.isContentEditable) {
+        if (this.currentCell?.isContentEditable) {
             this.saveEdit();
         }
         this.currentPage = 0;
@@ -1233,7 +1245,7 @@ class Main {
 
     previousPage(): void {
         if (this.currentPage > 0) {
-            if (this.currentCell && this.currentCell.isContentEditable) {
+            if (this.currentCell?.isContentEditable) {
                 this.saveEdit();
             }
             this.currentPage--;
@@ -1244,7 +1256,7 @@ class Main {
 
     nextPage(): void {
         if (this.currentPage < this.maxPage - 1) {
-            if (this.currentCell && this.currentCell.isContentEditable) {
+            if (this.currentCell?.isContentEditable) {
                 this.saveEdit();
             }
             this.currentPage++;
@@ -1254,7 +1266,7 @@ class Main {
     }
 
     lastPage(): void {
-        if (this.currentCell && this.currentCell.isContentEditable) {
+        if (this.currentCell?.isContentEditable) {
             this.saveEdit();
         }
         this.currentPage = this.maxPage - 1;
@@ -1277,7 +1289,7 @@ class Main {
             (document.getElementById('units_page') as HTMLInputElement).value = '' + this.unitsPage;
             this.maxPage = Math.ceil(this.unitsCount / this.unitsPage);
             document.getElementById('pages').innerText = '' + this.maxPage;
-            if (this.currentCell && this.currentCell.isContentEditable) {
+            if (this.currentCell?.isContentEditable) {
                 this.saveEdit();
             }
             this.firstPage();
@@ -1296,7 +1308,7 @@ class Main {
             if (this.currentPage > this.maxPage - 1) {
                 this.currentPage = this.maxPage - 1;
             }
-            if (this.currentCell && this.currentCell.isContentEditable) {
+            if (this.currentCell?.isContentEditable) {
                 this.saveEdit();
             }
             (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);

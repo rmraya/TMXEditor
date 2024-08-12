@@ -25,7 +25,6 @@ class Updates {
             document.getElementById('latest').innerText = arg.latest;
             this.electron.ipcRenderer.send('updates-height', { width: document.body.clientWidth, height: document.body.clientHeight });
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'NumpadEnter') {
                 this.electron.ipcRenderer.send('download-latest');

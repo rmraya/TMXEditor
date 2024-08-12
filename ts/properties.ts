@@ -66,7 +66,7 @@ class Properties {
     }
 
     addProperty(): void {
-        this.electron.ipcRenderer.send('show-add-property');
+        this.electron.ipcRenderer.send('show-add-property', 'properties');
     }
 
     setNewProperty(arg: any): void {
@@ -80,7 +80,7 @@ class Properties {
         let collection: HTMLCollectionOf<Element> = document.getElementsByClassName('rowCheck');
         for (let check of collection) {
             if ((check as HTMLInputElement).checked) {
-                this.removeProperty(check.parentElement.parentElement.id);
+                this.removeProperty(check.id);
             }
         }
         this.drawProperties();
@@ -88,11 +88,36 @@ class Properties {
     }
 
     drawProperties(): void {
-        let rows: string = '';
+        let propsTable: HTMLTableElement = document.getElementById('propsTable') as HTMLTableElement;
+        propsTable.innerHTML = '';
         for (let pair of this.props) {
-            rows = rows + '<tr id="' + pair[0] + '"><td><input type="checkbox" class="rowCheck"></td><td class="noWrap">' + pair[0] + '</td><td class="noWrap">' + pair[1] + '</td></tr>';
+            let tr: HTMLTableRowElement = document.createElement('tr');
+            propsTable.appendChild(tr);
+            let td: HTMLTableCellElement = document.createElement('td');
+            td.classList.add('middle');
+            tr.appendChild(td);
+            let checkbox: HTMLInputElement = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.classList.add('rowCheck');
+            checkbox.id = pair[0];
+            td.appendChild(checkbox);
+            td = document.createElement('td');
+            td.classList.add('middle');
+            td.classList.add('noWrap');
+            td.innerHTML = pair[0];
+            tr.appendChild(td);
+            td = document.createElement('td');
+            td.classList.add('middle');
+            td.classList.add('fill_width');
+            td.innerHTML = pair[1];
+            tr.appendChild(td);
+            tr.addEventListener('click', (event: MouseEvent) => {
+                if ((event.target as HTMLElement).tagName !== 'INPUT') {
+                    let checkbox: HTMLInputElement = document.getElementById(pair[0]) as HTMLInputElement;
+                    checkbox.checked = !checkbox.checked;
+                }
+            });
         }
-        document.getElementById('propsTable').innerHTML = rows;
     }
 
     removeProperty(type: string): void {

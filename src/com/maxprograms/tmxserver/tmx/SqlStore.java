@@ -36,11 +36,14 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.sqlite.Function;
 import org.xml.sax.SAXException;
 
 import com.maxprograms.languages.Language;
 import com.maxprograms.tmxserver.Constants;
+import com.maxprograms.tmxserver.TMXService;
 import com.maxprograms.tmxserver.excel.ExcelWriter;
 import com.maxprograms.tmxserver.excel.Sheet;
 import com.maxprograms.tmxserver.models.TUnit;
@@ -66,6 +69,7 @@ public class SqlStore implements StoreInterface {
     private PreparedStatement selectTU;
     private PreparedStatement selectTUS;
     private SAXBuilder builder;
+    private boolean setChangeId;
 
     public SqlStore(Set<String> langSet) throws IOException, SQLException {
         File workFolder = TmxUtils.getWorkFolder();
@@ -101,6 +105,7 @@ public class SqlStore implements StoreInterface {
             }
         });
         createTables();
+        setChangeId = TMXService.getPreferences().getBoolean("changeId");
     }
 
     private void createTables() throws SQLException {
@@ -135,7 +140,7 @@ public class SqlStore implements StoreInterface {
 
     @Override
     public void storeTU(Element tu) throws IOException, SQLException {
-        String id = tu.hasAttribute("tuid") ? tu.getAttributeValue("tuid") : "" + time++;
+        String id = "" + time++;
         List<Element> tuvs = tu.getChildren("tuv");
         Iterator<Element> it = tuvs.iterator();
         int tuvCount = 0;
@@ -325,6 +330,7 @@ public class SqlStore implements StoreInterface {
                     String tuv = rs.getString(1);
                     if (tuv != null && !tuv.isBlank()) {
                         result = parseElement(tuv);
+                        result.setAttribute("xml:lang", lang);
                     }
                 }
             }
@@ -385,11 +391,16 @@ public class SqlStore implements StoreInterface {
             } catch (Exception ex) {
                 seg.setText(text);
             }
+            if (setChangeId) {
+                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             updateTUV(id, lang, tuv);
             conn.commit();
         } else {
             tuv = new Element("tuv");
             tuv.setAttribute("xml:lang", lang);
+            tuv.setAttribute("creationid", System.getProperty("user.name"));
             tuv.setAttribute("creationdate", TmxUtils.tmxDate());
             Element seg = new Element("seg");
             seg.setText(text);
@@ -409,7 +420,10 @@ public class SqlStore implements StoreInterface {
                     <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
                     <tmx version="1.4">
                     """);
-
+            if (setChangeId) {
+                header.setAttribute("changeid", System.getProperty("user.name"));
+                header.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             writeString(out, TextUtils.padding(1, indentation) + header.toString() + "\n");
             writeString(out, TextUtils.padding(1, indentation) + "<body>\n");
             selectTUS.setLong(1, 0l);
@@ -502,11 +516,19 @@ public class SqlStore implements StoreInterface {
                     if (regExp) {
                         TmxUtils.replaceText(seg, search, replace, regExp);
                         if (!segText.equals(TmxUtils.textOnly(seg))) {
+                            if (setChangeId) {
+                                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+                            }
                             updateTUV(id, language.getCode(), tuv);
                         }
                     } else {
                         if (segText.indexOf(search) != -1) {
                             TmxUtils.replaceText(tuv.getChild("seg"), search, replace, regExp);
+                            if (setChangeId) {
+                                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+                            }
                             updateTUV(id, language.getCode(), tuv);
                         }
                     }
@@ -674,6 +696,10 @@ public class SqlStore implements StoreInterface {
                         Element seg = tuv.getChild("seg");
                         if (!seg.getChildren().isEmpty()) {
                             seg.setText(TmxUtils.textOnly(seg));
+                            if (setChangeId) {
+                                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+                            }
                             updateTUV(id, lang, tuv);
                         }
                     }
@@ -775,6 +801,10 @@ public class SqlStore implements StoreInterface {
                             Element tuv = parseElement(rs.getString(lower + "_tuv"));
                             Element seg = tuv.getChild("seg");
                             seg.setContent(TmxUtils.stripSegment(seg).getContent());
+                            if (setChangeId) {
+                                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+                            }
                             updateTUV(id, lang, tuv);
                         }
                     }
@@ -833,6 +863,10 @@ public class SqlStore implements StoreInterface {
                             Element b = segments.get(lang);
                             if (a == null && b != null) {
                                 lastSegments.put(lang, b);
+                                if (setChangeId) {
+                                    b.setAttribute("changeid", System.getProperty("user.name"));
+                                    b.setAttribute("changedate", TmxUtils.tmxDate());
+                                }
                                 updateTUV(lastId, lang, b);
                                 clearTuv(id, lang);
                             }
@@ -906,6 +940,10 @@ public class SqlStore implements StoreInterface {
             }
             content.addAll(tu.getChildren("note"));
             tu.setChildren(content);
+            if (setChangeId) {
+                tu.setAttribute("changeid", System.getProperty("user.name"));
+                tu.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             updateTU(id, tu);
             conn.commit();
         }
@@ -930,6 +968,10 @@ public class SqlStore implements StoreInterface {
                 content.add(0, prop);
             }
             tuv.setChildren(content);
+            if (setChangeId) {
+                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             updateTUV(id, lang, tuv);
             conn.commit();
         }
@@ -953,6 +995,10 @@ public class SqlStore implements StoreInterface {
                 content.add(not);
             }
             tu.setChildren(content);
+            if (setChangeId) {
+                tu.setAttribute("changeid", System.getProperty("user.name"));
+                tu.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             updateTU(id, tu);
             conn.commit();
         }
@@ -976,6 +1022,10 @@ public class SqlStore implements StoreInterface {
                 content.add(0, not);
             }
             tuv.setChildren(content);
+            if (setChangeId) {
+                tuv.setAttribute("changeid", System.getProperty("user.name"));
+                tuv.setAttribute("changedate", TmxUtils.tmxDate());
+            }
             updateTUV(id, lang, tuv);
             conn.commit();
         }
@@ -1004,11 +1054,11 @@ public class SqlStore implements StoreInterface {
                 try (ResultSet rs = selectTUS.executeQuery()) {
                     while (rs.next()) {
                         StringBuilder line = new StringBuilder();
-                        String tuid = rs.getString(1);
+                        String id = rs.getString(1);
                         Iterator<String> langIt = languages.iterator();
                         while (langIt.hasNext()) {
                             String lang = langIt.next();
-                            String pure = getPure(tuid, lang);
+                            String pure = getPure(id, lang);
                             String text = " ";
                             if (!pure.isEmpty()) {
                                 text = TmxUtils.cleanLines(pure);
@@ -1064,12 +1114,12 @@ public class SqlStore implements StoreInterface {
         try (Statement stmt = conn.createStatement()) {
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 while (rs.next()) {
-                    String tuid = rs.getString(1);
+                    String id = rs.getString(1);
                     Map<String, String> rowMap = new HashMap<>();
                     langIt = languages.iterator();
                     while (langIt.hasNext()) {
                         String lang = langIt.next();
-                        Element tuv = getTuv(tuid, lang);
+                        Element tuv = getTuv(id, lang);
                         String text = "";
                         if (tuv != null) {
                             text = TmxUtils.textOnly(tuv.getChild("seg"));
@@ -1086,4 +1136,46 @@ public class SqlStore implements StoreInterface {
         writer.writeFile(file, sheet);
     }
 
+    public void setFileAttributes(JSONObject attributes) {
+        attributes.keySet().forEach(key -> {
+            String value = attributes.getString(key);
+            if ("o_encoding".equals(key)) {
+                key = "o-encoding";
+            }
+            if ("o_tmf".equals(key)) {
+                key = "o-tmf";
+            }
+            if (value.isEmpty() && header.hasAttribute(key)) {
+                header.removeAttribute(key);
+            } else {
+                header.setAttribute(key, value);
+            }
+        });
+    }
+
+    public void setFileNotes(JSONArray notes) {
+        List<Element> oldNotes = header.getChildren("note");
+        for (Element note : oldNotes) {
+            header.removeChild(note);
+        }
+        for (int i = 0; i < notes.length(); i++) {
+            Element note = new Element("note");
+            note.setText(notes.getString(i));
+            header.addContent(note);
+        }
+    }
+
+    public void setFileProperties(JSONArray properties) {
+        List<Element> oldProps = header.getChildren("prop");
+        for (Element prop : oldProps) {
+            header.removeChild(prop);
+        }
+        for (int i = 0; i < properties.length(); i++) {
+            JSONArray prop = properties.getJSONArray(i);
+            Element property = new Element("prop");
+            property.setAttribute("type", prop.getString(0));
+            property.setText(prop.getString(1));
+            header.addContent(property);
+        }
+    }
 }

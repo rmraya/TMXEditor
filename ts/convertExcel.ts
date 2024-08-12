@@ -50,7 +50,6 @@ class ConvertExcel {
         document.getElementById('convert').addEventListener('click', () => {
             this.convertExcel();
         });
-        document.addEventListener('keydown', (event: KeyboardEvent) => { KeyboardHandler.keyListener(event); });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 this.electron.ipcRenderer.send('close-convertExcel');
