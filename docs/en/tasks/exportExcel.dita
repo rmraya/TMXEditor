@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="exportExcel">
+    <title>Export TMX as Excel File</title>
+    <shortdesc>Follow these steps to convert a TMX file to an Excel spreadsheet.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Microsoft Excel files provide a common way to exchange tabular data. TMXEditor is
+                able to export TMX text data, without inline tags, to <tt>.xlsx</tt> files.</p>
+            <note>An Excel worksheet on Office 365 and newer versions of Microsoft Office such as
+                Excel 2019, 2016, 2013, 2010 and 2007 can contain maximum 1,048,576 rows and 16,384
+                columns. Older versions contained a limit of maximum 65,536 rows and 256
+                columns.</note>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to export.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Export as Excel File...</uicontrol>
+                    </menucascade>.</cmd>
+            </step>
+            <step>
+                <cmd>Use the dialog that appears to locate and select the generated Excel
+                    file.</cmd>
+            </step>
+        </steps>
+    </taskbody>
+</task>

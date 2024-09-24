@@ -10,6 +10,8 @@
 /node_modules/
 /TMXEditor-darwin-x64/
 /TMXEditor-win32-x64/
+/docs/en/out/
+/docs/es/out/
 app.js
 release
 server.sh

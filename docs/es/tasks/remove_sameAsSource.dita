@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="sameAsSource">
+  <title>Eliminar Traducciones Iguales a Origen</title>
+  <shortdesc>Siga estos pasos para eliminar entrados cuyas traducciones son iguales al texto origen en un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Las unidades de traducción pueden contener una o varias entradas de idioma iguales a la entrada designada como origen. Si en una unidad dada todas las entradas tienen el mismo contenido, este procedimiento elimina toda la unidad. Si al menos una entrada de idioma es diferente de la de origen, se conserva la unidad que contiene sólo las traducciones que son diferentes de la de origen.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Eliminar Traducciones Iguales a Origen...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/sameAsSource.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Eliminar Traducciones Iguales a Origen</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Utilice la lista desplegable <uicontrol>Idioma Origen</uicontrol> para seleccionar el idioma que se considerará idioma origen para eliminar unidades (puede diferir del idioma de origen establecido a nivel de archivo).</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Eliminar Traducciones Iguales a Origen</uicontrol>.</cmd>
+        <stepresult>Se muestra un indicador de progreso mientras se eliminan las  traducciones que son iguales al origen.</stepresult>
+      </step>
+    </steps>
+    <result>La ventana de edición se actualiza para reflejar los cambios.</result>
+  </taskbody>
+</task>

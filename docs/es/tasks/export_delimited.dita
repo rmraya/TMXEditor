@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="export_delimited">
+  <title>Exportar Como Archivo Delimitado por TAB</title>
+  <shortdesc>Siga estos pasos para convertir un archivo TMX a formato delimitado por TAB que pueda ser revisado usando Microsoft Excel o aplicaciones similares.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Los archivos delimitados por tabuladores son archivos de texto sin formato que se utilizan para almacenar datos en una estructura tabular, por ejemplo, datos de tablas de bases de datos u hojas de cálculo, y una forma de intercambiar información entre bases de datos. Cada registro de la tabla es una línea del archivo de texto y las entradas están separadas por un carácter TAB.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea exportar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Exportar Como Archivo Delimitado por TAB...</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Utilice el cuadro de diálogo que aparece para localizar y seleccionar el archivo en el que desea guardar la versión delimitada por TAB.</cmd>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras el archivo se exporta como delimitado por TAB utilizando la configuración estándar de Microsoft Excel (<xref href="../glossaries/character_set.dita">juego de caracteres</xref> UTF-16LE, TAB como separador de columnas y sin delimitadores de texto).</result>
+  </taskbody>
+</task>

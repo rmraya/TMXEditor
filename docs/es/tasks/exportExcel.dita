@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="exportExcel">
+  <title>Exportar TMX como Archivo Excel</title>
+  <shortdesc>Siga estos pasos para convertir un archivo TMX a una planilla Excel.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Los archivos de Microsoft Excel proporcionan una forma común de intercambiar datos tabulares. TMXEditor es capaz de exportar datos en formato TMX a archivos <tt>.xlsx</tt> sin incluir etiquetas.</p>
+      <note>Una hoja de cálculo de Excel en Office 365 y versiones más recientes de Microsoft Office, como Excel 2019, 2016, 2013, 2010 y 2007, puede contener un máximo de 1.048.576 filas y 16.384 columnas. Las versiones anteriores contenían un límite máximo de 65.536 filas y 256 columnas.</note>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea exportar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Exportar Archivo Excel...</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Utilice el cuadro de diálogo que aparece para localizar y seleccionar el archivo Excel que desea generar.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

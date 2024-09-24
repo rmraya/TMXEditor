@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="converttbx">
+  <title>Convertir Archivo TBX a TMX</title>
+  <shortdesc/>
+  <taskbody>
+    <context>
+      <p/>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione la opción  <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Convertir Archivo TBX a TMX</uicontrol>
+          </menucascade> o haga clic en el botón  <image height="16" href="../images/importTBX.svg" placement="inline"/> <uicontrol>Convertir Archivo TBX a TMX</uicontrol> en la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertTBX.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Convertir Archivo TBX a TMX</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TBX que se va a convertir en el cuadro de texto <uicontrol>Archivo TBX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un archivo del sistema.</cmd>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TMX  a generar en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un nombre de archivo y una ubicación.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Convertir Archivo TBX a TMX</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>El archivo TBX seleccionado se convierte a TMX y se abre automáticamente en el editor si la casilla de verificación <uicontrol>Abrir Archivo TMX Generado</uicontrol> está activada.</result>
+  </taskbody>
+</task>

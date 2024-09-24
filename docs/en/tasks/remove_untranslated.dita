@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="remove_untranslated">
+    <title>Remove Untranslated Units</title>
+    <shortdesc>Follow these steps to remove untranslated units from a TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>A translation unit that has just one &lt;tuv> element that contains text is
+                considered "untranslated". Untranslated units are hardly useful for retrieving
+                matches from a <xref href="../glossaries/translation_memory.dita">Translation
+                    Memory</xref> system.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, seect <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Remove Untranslated Units...</uicontrol>
+                    </menucascade>.</cmd>
+                <stepresult>The following dialog appears:<image
+                        href="../images/remove_untranslated.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Remove Untranslated Units Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Source Language</uicontrol> drop-down to select the language
+                    to be considered language for removing units (it may differ from the source
+                    language set at file level).</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Remove Untranslated Units</uicontrol> button.</cmd>
+                <stepresult>A progress dialog is displayed while untranslated units are
+                    removed.</stepresult>
+            </step>
+        </steps>
+        <result>The editing window is refreshed to reflect the changes.</result>
+    </taskbody>
+</task>

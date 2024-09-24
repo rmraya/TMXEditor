@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept id="license_management">
+  <title>Subscriptions</title>
+  <shortdesc/>
+  <conbody>
+    <p>TMXEditor is available in two modes:</p>
+    <ul>
+      <li>Source Code</li>
+      <li>Yearly Subscriptions for installers and support</li>
+    </ul>
+    
+    
+    <section>
+      <title>Source Code</title>
+      <p>Source code of TMXEditor is free. Anyone can download the source code from <xref format="html"
+        href="https://github.com/rmraya/TMXEditor" scope="external"
+        >Github.com</xref>, compile, modify and use it at no cost in compliance with the accompanying license terms.</p>
+    </section>
+    <section>
+      <title>Subscriptions</title>
+      <p>Ready to use installers and technical support for TMXEditor are available as yearly
+        subscriptions at <xref href="https://www.maxprograms.com/store/buy.html" format="html"
+          scope="external">Maxprograms Online Store</xref>.</p>
+      <p>The version of TMXEditor included in the official installers can be used at no cost for 7
+        days requesting a free Evaluation Key. </p>
+      <p>Subscription Keys cannot be shared or transferred to different machines.</p>
+      
+    </section>
+    <section>
+      <title>Differences Summary</title>
+      <table frame="all" rowsep="1" colsep="1" id="table_vyn_pwz_vkb">
+        <tgroup cols="3">
+          <colspec colname="c1" colnum="1" colwidth="1*"/>
+          <colspec colname="c2" colnum="2" colwidth="1.51*"/>
+          <colspec colname="c3" colnum="3" colwidth="1.91*"/>
+          <thead>
+            <row>
+              <entry/>
+              <entry align="center">Source Code</entry>
+              <entry align="center">Subscription Based</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Ready To Use Installers</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Yes</entry>
+            </row>
+            <row>
+              <entry>Notarized macOS launcher</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Yes</entry>
+            </row>
+            <row>
+              <entry>Signed launcher and installer for Windows</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Yes</entry>
+            </row>
+            <row>
+              <entry>Associate app with <codeph>.tmx</codeph> extension on Windows and macOS</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Yes</entry>
+            </row>
+            <row>
+              <entry>Restricted Features</entry>
+              <entry align="center">None</entry>
+              <entry align="center">None</entry>
+            </row>
+            <row>
+              <entry>Technical Support</entry>
+              <entry>
+                <ul>
+                  <li>Peer support at <xref href="https://groups.io/g/maxprograms/" scope="external"
+                      format="html">Groups.io</xref></li>
+                </ul>
+              </entry>
+              <entry>
+                <ul>
+                  <li>Direct email at <xref href="mailto:tech@maxprograms.com" scope="external"
+                      format="html">tech@maxprograms.com</xref></li>
+                  <li>Peer support at <xref href="https://groups.io/g/maxprograms/" scope="external"
+                      format="html">Groups.io</xref></li>
+                </ul>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </conbody>
+</concept>

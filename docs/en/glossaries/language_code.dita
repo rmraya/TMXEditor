@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
+<glossentry id="untitled1">
+    <glossterm>Language Code</glossterm>
+    <glossdef>A language code is a code that assigns letters or numbers as identifiers or
+        classifiers for languages. Language codes used in TMX files must comply with the rules
+        defined by <xref href="https://tools.ietf.org/html/bcp47" scope="external" format="html">BCP
+            47 - Tags for Identifying Languages</xref></glossdef>
+</glossentry>

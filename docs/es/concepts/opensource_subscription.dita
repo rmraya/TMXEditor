@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept xml:lang="es" id="license_management">
+  <title>Suscripciones</title>
+  <shortdesc/>
+  <conbody>
+    <p>TMXEditor está disponible en dos modos:</p>
+    <ul>
+      <li>Código Fuente</li>
+      <li>Suscripciones Anuales para instaladores y soporte técnico</li>
+    </ul>
+    <section>
+      <title>Código Fuente</title>
+      <p>El código fuente de TMXeditor es libre. Cualquiera puede descargar el código fuente de <xref href="https://github.com/rmraya/TMXEditor" scope="external" format="html">Github.com</xref>, compilarlo, modificarlo y utilizarlo sin costo alguno respetando los términos de la licencia adjunta.</p>
+    </section>
+    <section>
+      <title>Suscripciones</title>
+      <p>Instaladores listos para usar y soporte técnico para TMXEditor están disponibles como suscripciones anuales en la <xref href="https://www.maxprograms.com/store/buy.html" scope="external" format="html">Tienda en Línea de Maxprograms</xref>.</p>
+      <p>La versión de TMXEditor incluida en los instaladores oficiales puede utilizarse sin costo durante 7 días solicitando un código de evaluación gratuito. </p>
+      <p>Las Claves de Suscripción no se pueden compartir ni transferir a diferentes máquinas.</p>
+    </section>
+    <section>
+      <title>Resumen de Diferencias</title>
+      <table rowsep="1" colsep="1" frame="all" id="table_vyn_pwz_vkb">
+        <tgroup cols="3">
+          <colspec colnum="1" colname="c1" colwidth="1*"/>
+          <colspec colnum="2" colname="c2" colwidth="1.51*"/>
+          <colspec colnum="3" colname="c3" colwidth="1.91*"/>
+          <thead>
+            <row>
+              <entry/>
+              <entry align="center">Código Fuente</entry>
+              <entry align="center">Por Suscripción</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Instaladores listos para usar</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Si</entry>
+            </row>
+            <row>
+              <entry>Ejecutable de macOS notariado</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Si</entry>
+            </row>
+            <row>
+              <entry>Ejecutable e instalador para Windows firmado digitalmente</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Si</entry>
+            </row>
+            <row>
+              <entry>Asociar la aplicación con la extensión <codeph>.tmx</codeph> en Windows y macOS</entry>
+              <entry align="center">No</entry>
+              <entry align="center">Si</entry>
+            </row>
+            <row>
+              <entry>Características Restringidas</entry>
+              <entry align="center">Ninguna</entry>
+              <entry align="center">Ninguna</entry>
+            </row>
+            <row>
+              <entry>Soporte Técnico</entry>
+              <entry>
+                <ul>
+                  <li>Apoyo de otros usuarios en <xref href="https://groups.io/g/maxprograms/" scope="external" format="html">Groups.io</xref></li>
+                </ul>
+              </entry>
+              <entry>
+                <ul>
+                  <li>Correo electrónico directo a <xref href="mailto:tech@maxprograms.com" scope="external" format="html">tech@maxprograms.com</xref></li>
+                  <li>Apoyo de otros usuarios en <xref href="https://groups.io/g/maxprograms/" scope="external" format="html">Groups.io</xref></li>
+                </ul>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </conbody>
+</concept>

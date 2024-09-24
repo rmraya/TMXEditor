@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="clean_characters">
+  <title>Limpiar Caracteres Inválidos</title>
+  <shortdesc>Siga estos pasos para eliminar caracteres inválidos de un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>TMX es un vocabulario basado en XML y, por esa razón, un archivo TMX no debe contener caracteres no permitidos por el estándar XML.</p>
+      <p>Un archivo TMX que contiene caracteres no válidos no se puede editar sin eliminar primero esos caracteres.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Limpiar Caracteres Inválidos...</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Utilice el cuadro de diálogo que aparece para localizar y seleccionar el archivo que desea reparar.</cmd>
+        <stepresult/>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras se limpia el archivo seleccionado y se guarda una copia de seguridad de los datos originales en la misma carpeta.</result>
+  </taskbody>
+</task>

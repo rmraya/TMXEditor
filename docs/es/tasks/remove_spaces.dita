@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="remove_spaces">
+  <title>Eliminar Espacios Iniciales y Finales</title>
+  <shortdesc>Siga estos pasos para quitar los espacios iniciales y finales de todos los segmentos de un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Los espacios iniciales o finales pueden afectar el valor de similitud en las coincidencias recuperadas de un sistema de memoria de traducción.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Eliminar Espacios Iniciales/Finales</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras se eliminan espacios. La ventana de edición se actualiza para reflejar los cambios.</result>
+  </taskbody>
+</task>

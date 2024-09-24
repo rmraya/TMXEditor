@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="remove_spaces">
+    <title>Remove Initial &amp; Trailing Spaces</title>
+    <shortdesc>Follow these steps to remove initial and trailing spaces from all segments of a TMX
+        file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Leading or trailing spaces may affect the match quality rating of matches retrieved
+                from a translation memory system.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Remove Initial/Trailing Spaces</uicontrol>
+                    </menucascade>.</cmd>
+            </step>
+        </steps>
+        <result>A progress dialog is displayed while spaces are removed. The editing window is
+            refreshed to reflect the changes.</result>
+    </taskbody>
+</task>

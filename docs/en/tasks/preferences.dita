@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="preferences">
+    <title>Program Settings</title>
+    <shortdesc/>
+    <taskbody>
+        <steps>
+            <step>
+                <cmd>Open the preferences dialog:</cmd>
+                <choices>
+                    <choice>On Windows or Linux menu, select <menucascade>
+                            <uicontrol>Settings</uicontrol>
+                            <uicontrol>Preferences</uicontrol>
+                        </menucascade>.</choice>
+                    <choice> On macOS main menu, select <menucascade>
+                            <uicontrol>TMXEditor</uicontrol>
+                            <uicontrol>Preferences...</uicontrol>
+                            <uicontrol>Settings</uicontrol>
+                        </menucascade>.</choice>
+                </choices>
+                <stepresult>The following dialog appears:<image href="../images/preferences.png"
+                        placement="break" scale="50" align="center"/>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Application Language</uicontrol> drop-down to select the
+                    language used in TMXEditor graphical user interface.</cmd>
+                <info>Changes to the application language will take effect after you restart the
+                    program.</info>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Theme</uicontrol> drop-down to select the colors used in the
+                    graphical user interface. Available options are: </cmd>
+                <choices>
+                    <choice><b>System Default</b>: automatically selects Dark or Light colors
+                        according to the preferences set in the operating system.</choice>
+                    <choice><b>Dark</b>: Uses dark background with white text.</choice>
+                    <choice><b>Light</b>: Uses light grey background with dark text.</choice>
+                </choices>
+            </step>
+            <step>
+                <cmd>Select the number of spaces used to indent XML elements in the TMX file using
+                    the <uicontrol>Indentation</uicontrol> selector.</cmd>
+                <info><i>Note</i>: Indentation helps in visually understanding the structure of an
+                    XML file when viewing it as plain text but is not required for processing TMX
+                    files with translation tools.</info>
+            </step>
+            <step>
+                <cmd>Select the <uicontrol>Set 'changeid' / 'changedate' Attributes</uicontrol>
+                    checkbox if you want to enable the registration of the user who last modified an
+                    item or file and the date the change was made.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Save Preferences</uicontrol> button to save and activate
+                    selected settings.</cmd>
+            </step>
+        </steps>
+        <result>Theme changes are applied immediately. Changing the application language requires a
+            restart. Memory usage settings are applied when a new TMX file is opened. Indentation is
+            applied the next time a file is saved.</result>
+    </taskbody>
+</task>

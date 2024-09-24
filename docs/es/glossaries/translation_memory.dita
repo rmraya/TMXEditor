@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/glossary.dtd">
+<glossentry xml:lang="es" id="translation_memory">
+  <glossterm>Memoria de Traducción</glossterm>
+  <glossdef>La Memoria de Traducción (MT) es una tecnología lingüística que permite traducir segmentos (párrafos, frases u oraciones) de documentos mediante la búsqueda de segmentos similares en una base de datos y la sugerencia de coincidencias encontradas en las bases de datos como posibles traducciones.</glossdef>
+</glossentry>

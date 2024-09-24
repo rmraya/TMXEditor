@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="filterUnits">
+    <title>Filter Translation Units</title>
+    <shortdesc>Follow these steps to filter units containing a given text or to display untranslated
+        units.</shortdesc>
+    <taskbody>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>View</uicontrol>
+                        <uicontrol>Filter Translation Units</uicontrol>
+                    </menucascade> option ( [<userinput>F3</userinput>]) or click the <image
+                        href="../images/filterUnits.svg" placement="inline" height="16"
+                        />&nbsp;<uicontrol>Filter Translation Units</uicontrol> on the top
+                    toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/filter_units.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Filter Translation Units Dialog</alt>
+                    </image></stepresult>
+            </step>
+            <step>
+                <cmd>Select what you want to filter:</cmd>
+                <choices>
+                    <choice>To locate and highlight a given text in the TMX file:<ol>
+                            <li>Type the text that you want to find in the <uicontrol>Text to
+                                    Search</uicontrol> text box.</li>
+                            <li>Use the <uicontrol>Filter Language</uicontrol> drop-down to select
+                                the language where the search will be performed.</li>
+                            <li>Select the <uicontrol>Regular Expression</uicontrol> checkbox if you
+                                want to use regular expressions for specifying the text to
+                                search.</li>
+                            <li>Check the <uicontrol>Case Sensitive Search</uicontrol> checkbox if
+                                you want to find only entries that match the case of the entered
+                                text.</li>
+                        </ol>
+                    </choice>
+                    <choice>To display untranslated units only:<ol>
+                            <li>Check the <uicontrol>Show Untranslated Units Only</uicontrol>
+                                checkbox.</li>
+                            <li>Use the <uicontrol>Source Language</uicontrol> drop-down to select
+                                the source language that will be used when filtering.</li>
+                        </ol>
+                    </choice>
+                </choices>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Apply Filters</uicontrol> button.</cmd>
+            </step>
+        </steps>
+        <result>Filtering options will remain active until you reopen the <uicontrol>Filter
+                Units</uicontrol> dialog and click the <uicontrol>Clear Filters</uicontrol>
+            button.</result>
+    </taskbody>
+</task>

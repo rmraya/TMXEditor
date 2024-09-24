@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="export_delimited">
+    <title>Export as TAB Delimited File</title>
+    <shortdesc>Follow these steps to convert a TMX file to TAB delimited format that can be reviewed
+        using Microsoft Excel or similar applications.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Tab-delimited files are plain text files used for storing data in a tabular
+                structure, e.g., database table or spreadsheet data, and a way of exchanging
+                information between databases. Each record in the table is one line of the text file
+                and entries are separateed by a TAB character.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to export.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Export as TAB Delimited File...</uicontrol>
+                    </menucascade>.</cmd>
+            </step>
+            <step>
+                <cmd>Use the dialog that appears to locate and select the file where to save the TAB
+                    delimited version.</cmd>
+            </step>
+        </steps>
+        <result>A progress indicator is displayed while the file is exported as TAB delimited using
+            Microsoft Excel standard settings (UTF-16LE <xref
+                href="../glossaries/character_set.dita">character set</xref>, TAB as column
+            separator and no text delimiters).</result>
+    </taskbody>
+</task>

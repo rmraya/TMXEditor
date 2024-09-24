@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="es" id="gettingStarted">
+  <title>Primeros Pasos</title>
+  <shortdesc>Puede utilizar TMXEditor para editar archivos TMX existentes y también para crear nuevos archivos TMX, vacíos o a partir de datos delimitados por CSV/TAB.</shortdesc>
+  <conbody>
+    <ul>
+      <li>
+        <image height="16" href="../images/openFile.svg" placement="inline"/>
+        <xref href="basic_editing.dita">Editar un Archivo Existente</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/newFile.svg" placement="inline"/>
+        <xref href="../tasks/create_file.dita">Crear Archivo TMX</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/convertCSV.svg" placement="inline"/>
+        <xref href="../tasks/import_delimited.dita">Convertir Archivo CSV/Texto Delimitado a TMX</xref>
+      </li>
+    </ul>
+  </conbody>
+</concept>

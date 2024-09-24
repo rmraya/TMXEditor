@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="remove_duplicates">
+  <title>Eliminar Unidades Duplicadas</title>
+  <shortdesc>Siga estos pasos para eliminar unidades duplicadas de un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Las <xref href="../glossaries/translation_unit.dita">unidades de traducción</xref> duplicadas aumentan el tamaño de un archivo TMX y ralentizan las búsquedas de TM.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Eliminar Unidades Duplicadas</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras se eliminan unidades duplicadas. La ventana de edición se actualiza para reflejar los cambios.</result>
+  </taskbody>
+</task>

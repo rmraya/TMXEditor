@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="es" id="maintenanceTasks">
+  <title>Tareas de Mantenimiento</title>
+  <conbody>
+    <p>Las opciones de mantenimiento de TMXEditor son </p>
+    <ul>
+      <li>
+        <image height="16" href="../images/fileInfo.svg" placement="inline"/>
+        <xref href="../tasks/fileMetadata.dita">Establecer Atributos, Propiedades y Notas a Nivel de Archivo</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/maintenance.svg" placement="inline"/>
+        <xref href="../tasks/maintenanceDashboard.dita">Panel de Mantenimiento</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/sortUnits.svg" placement="inline"/>
+        <xref href="../tasks/sortData.dita">Ordenar Unidades de Traducción</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/filterUnits.svg" placement="inline"/>
+        <xref href="../tasks/filterUnits.dita">Filtrar Unidades de Traducción</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/replaceTexts.svg" placement="inline"/>
+        <xref href="../tasks/search_replace.dita">Buscar yRemplazar Texto</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/change_language.dita">Cambiar Idioma</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/add_language.dita">Añadir Idioma</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/remove_language.dita">Eliminar Idioma</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/change_src_language.dita">Cambiar Idioma Origen</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/remove_tags.dita">Eliminar Etiquetas</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/remove_duplicates.dita">Eliminar Unidades Duplicadas</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/remove_sameAsSource.dita">Eliminar Traducciones Iguales a Origen</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/remove_spaces.dita">Eliminar Espacios Iniciales y Finales</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/consolidate_units.dita">Consolidar Unidades de Traducción</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/split_file.dita">Dividir Archivo TMX</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/merge_files.dita">Combinar Archivos TMX</xref>
+      </li>
+    </ul>
+  </conbody>
+</concept>

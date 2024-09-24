@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="maintenanceDashboard">
+    <title>Maintenance Dashboard</title>
+    <shortdesc>Follow these steps to optimize a TMX file using a simplified dialog.</shortdesc>
+    <taskbody>
+        <context>
+            <p><uicontrol>Maintenance Dashboard</uicontrol> allows you to perform maintenance tasks
+                in a simplified dialog that incorporates several actions available in
+                    <uicontrol>Tasks</uicontrol> menu.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Maintenance Dashboard</uicontrol>
+                    </menucascade> or click the <image href="../images/maintenance.svg"
+                        placement="inline" height="16"/>&nbsp;<uicontrol>Maintenance
+                        Dashboard</uicontrol> button on the top toolbar.</cmd>
+                <stepresult>The following dialog appears:<image
+                        href="../images/maintenance_dashboard.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Maintenance Dashboard Dialog</alt>
+                    </image></stepresult>
+            </step>
+            <step>
+                <cmd>Select the corresponding checkboxes for all tasks that you want to
+                    perform:</cmd>
+                <choices>
+                    <choice><uicontrol>Remove All Tags</uicontrol>: remove all inline tags from the
+                        TMX file.</choice>
+                    <choice><uicontrol>Remove Duplicated Unis</uicontrol>: remove duplicated translation
+                        units.</choice>
+                    <choice><uicontrol>Remove Untranslated Units</uicontrol>: remove all
+                        untranslated units.</choice>
+                    <choice><uicontrol>Remove Initial/Trailing Spaces</uicontrol>: remove spaces at
+                        the start and end of all language entries.</choice>
+                    <choice><uicontrol>Consolidate Units</uicontrol>: merge translation units that
+                        share a common source language entry.</choice>
+                </choices>
+            </step>
+            <step>
+                <cmd>If you selected <uicontrol>Remove Untranslated Units</uicontrol> or
+                        <uicontrol>Consolidate Units</uicontrol>, select the <xref
+                        href="../glossaries/source_language.dita">source language</xref> of the TMX
+                    file using the <uicontrol>Source Language</uicontrol> drop-down.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Perform Maintenance</uicontrol> button.</cmd>
+            </step>
+        </steps>
+        <result>A maintenance process is started and an indicator is displayed on screen while all
+            selected tasks are performed.</result>
+    </taskbody>
+</task>

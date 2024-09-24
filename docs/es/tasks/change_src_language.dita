@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="change_src_language">
+  <title>Cambiar Idioma Origen</title>
+  <shortdesc>Siga estos pasos para cambiar el idioma origen usado en un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Algunos sistemas de <xref href="../glossaries/translation_memory.dita">Memoria de Traducción</xref> utilizan archivos TMX bilingües y traducen en una sola dirección.</p>
+      <p>Utilice esta opción para seleccionar el <xref href="../glossaries/source_language.dita">idioma origen</xref> del archivo TMX para sistemas que no pueden traducir en cualquier dirección.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Cambiar Idioma Origen...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/change_source_language.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Cambiar Idioma Origen</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Use la lista desplegable <uicontrol>Idioma</uicontrol> para seleccionar el nuevo idioma origen.</cmd>
+        <info>La lista desplegable <uicontrol>Idioma</uicontrol> incluye <uicontrol>Cualquier Idioma</uicontrol> como primera entrada. Utilice esta opción para indicar que el archivo puede utilizarse en cualquier dirección.</info>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Cambiar Idioma Origen</uicontrol>.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

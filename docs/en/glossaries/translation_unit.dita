@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
+<glossentry id="translation_unit">
+    <glossterm>Translation Unit</glossterm>
+    <glossdef>A translation unit (represented by the &lt;tu> element in a TMX file) contains a piece of source text and optional translation 
+        and metadata related to that piece of text.</glossdef>
+</glossentry>

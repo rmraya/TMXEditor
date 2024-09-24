@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="basic_editing">
+    <title>Editing an Existing File</title>
+    <shortdesc/>
+    <conbody>
+        <ol>
+            <li>In main menu, select <menucascade>
+                    <uicontrol>File</uicontrol>
+                    <uicontrol>Open</uicontrol>
+                </menucascade> option ([<userinput>Ctrol+O</userinput>] on Windows/Linux,
+                    [<userinput>Cmd+O</userinput>] on macOS) or click the <image
+                    href="../images/openFile.svg" placement="inline" height="16"
+                    />&nbsp;<uicontrol>Open</uicontrol> button on the top toolbar.</li>
+            <li>Use the dialog that appears to select a TMX file from the file system.</li>
+        </ol>
+        <p id="editing">Once the selected TMX file is open, you can:</p>
+        <ul>
+            <li>Click on any text cell to begin editing. After making changes, you can either<ul>
+                    <li>Click outside the cell or press [<userinput>Alt+Enter</userinput>] to save
+                        your changes</li>
+                    <li>Press the [<userinput>ESC</userinput>] key to cancel your changes</li>
+                </ul>
+            </li>
+            <li>To add new units to the TMX file, select <menucascade>
+                    <uicontrol>Edit</uicontrol>
+                    <uicontrol>Insert Translation Unit</uicontrol>
+                </menucascade> in main menu or click the <image placement="inline"
+                    href="../images/insertUnit.svg" height="16"/>&nbsp;<uicontrol>Insert Translation
+                    Unit</uicontrol> button from the top toolbar.</li>
+            <li>To delete one or more units:<ol>
+                    <li>Select the checkbox in the leftmost column of the editing window to mark the
+                        units that you want to remove</li>
+                    <li>Select <menucascade>
+                            <uicontrol>Edit</uicontrol>
+                            <uicontrol>Delete Selected Units</uicontrol>
+                        </menucascade> in main menu or click the <image
+                            href="../images/deleteUnits.svg" placement="inline" height="16"
+                            />&nbsp;<uicontrol>Delete Selected Units</uicontrol> button on the top
+                        toolbar.</li>
+                </ol>
+                <note>You can use the top-left checkbox to select/deselect all units at
+                once.</note></li>
+            <li>Use the <xref href="../tasks/filterUnits.dita">Filter Translation Units</xref>
+                option to locate text in the file.</li>
+            <li>Use the <xref href="../tasks/sortData.dita">Sort Translation Units</xref> option to
+                display file entries sorted on a selected language.</li>
+        </ul>
+
+        <p>After making changes to the TMX file, select <menucascade>
+                <uicontrol>File</uicontrol>
+                <uicontrol>Save</uicontrol>
+            </menucascade> in main menu ([<userinput>Ctrl+S</userinput>] on Windows/Linux,
+                [<userinput>Cmd+S</userinput>] on macOS) or click the <image
+                href="../images/saveFile.svg" placement="inline" height="16"
+                />&nbsp;<uicontrol>Save</uicontrol> button on the top toolbar to save your
+            modifications.</p>
+
+    </conbody>
+</concept>

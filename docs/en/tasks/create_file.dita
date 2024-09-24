@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="create_file">
+    <title>Create TMX File</title>
+    <shortdesc>Follow these steps to create a new TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p/>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>New</uicontrol>
+                    </menucascade> option ([<userinput>Ctrl+N</userinput>] on Windows/Linux,
+                        [<userinput>Cmd+N</userinput>] on macOS) or click the <image
+                        href="../images/newFile.svg" placement="inline" height="16"
+                        > </image>&nbsp;<uicontrol>New</uicontrol> button from the top
+                    toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/new_file.png"
+                        placement="break" scale="50" align="center">
+                        <alt>New TMX File Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Source Language</uicontrol> drop-down to select the language
+                    of source text.</cmd>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Target Language</uicontrol> drop-down to select the target
+                    language.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Create TMX File</uicontrol> button.</cmd>
+                <stepresult>A new file is displayed in the editing window.</stepresult>
+            </step>
+            <step>
+                <cmd>To add new entries, click on the <image href="../images/insertUnit.svg"
+                        placement="inline" height="16"/>&nbsp;<uicontrol>Insert Translation
+                        Unit</uicontrol> button on the top toolbar, or select <menucascade>
+                        <uicontrol>Edit</uicontrol>
+                        <uicontrol>Insert Translation Unit</uicontrol>
+                    </menucascade> in main menu.</cmd>
+            </step>
+            <step>
+                <cmd>Edit cells as explained in <xref href="../concepts/basic_editing.dita">Editing
+                        an Existing File</xref> section.</cmd>
+            </step>
+            <step>
+                <cmd>To save the changes made to the file, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Save</uicontrol>
+                    </menucascade> option ([<userinput>Ctrl+S</userinput>] on Windows/Linux,
+                        [<userinput>Cmd+S</userinput>] on macOS) in main menu, or click the <image
+                        href="../images/saveFile.svg" placement="inline" height="16"/>&nbsp;<uicontrol>Save</uicontrol>
+                     button on the top toolbar.</cmd>
+            </step>
+            <step>
+                <cmd>Use the dialog that appears to indicate the name and location where the new TMX
+                    file will be saved.</cmd>
+            </step>
+        </steps>
+    </taskbody>
+</task>

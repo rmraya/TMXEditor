@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="merge_files">
+    <title>Merge TMX Files</title>
+    <shortdesc>Follow these steps to merge the content of two or more TMX files into a larger
+        one.</shortdesc>
+    <taskbody>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Merge TMX Files...</uicontrol>
+                    </menucascade>.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/merge_files.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Merge TMX Files Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Enter the name of the file that will contain all merged data in the
+                        <uicontrol>Merged TMX File</uicontrol> text box or click the
+                        <uicontrol>Browse...</uicontrol> button to select a file from the file
+                    system.</cmd>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Add Files</uicontrol> button to select the files to be
+                    merged from the file system.</cmd>
+            </step>
+            <step>
+                <cmd>If you need to remove files from the list, select them clicking the
+                    corresponding checkboxes in the leftmost column and then click the
+                        <uicontrol>Delete Selected Files</uicontrol> button.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Merge TMX Files</uicontrol> button.</cmd>
+
+            </step>
+        </steps>
+        <result>A progress dialog is displayed while a TMX file containing data from all selected
+            files is created in the indicated location.</result>
+    </taskbody>
+</task>

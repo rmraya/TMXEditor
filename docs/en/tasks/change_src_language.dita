@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="change_src_language">
+    <title>Change Source Language</title>
+    <shortdesc>Follow the steps to change the source language of a TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Some <xref href="../glossaries/translation_memory.dita">Translation Memory</xref>
+                systems use bilingual TMX files and translate in only one direction.</p>
+            <p>Use this option to select the <xref href="../glossaries/source_language.dita">source
+                    language</xref> of your TMX file for systems that cannot translate in any
+                direction.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Change Source Language...</uicontrol>
+                    </menucascade> option.</cmd>
+                <stepresult>The following dialog appears:<image
+                        href="../images/change_source_language.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Change Source Language Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Language</uicontrol> drop-down box to select the new source
+                    language.</cmd>
+                <info>The <uicontrol>Language</uicontrol> drop-down control includes <uicontrol>Any
+                        Language</uicontrol> as first entry. Use this option to indicate that the
+                    file can be used in any direction.</info>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Change Source Language</uicontrol> button.</cmd>
+            </step>
+        </steps>
+    </taskbody>
+</task>

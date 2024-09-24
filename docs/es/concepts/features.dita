@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="es" id="fetures">
+  <title>Funciones Disponibles</title>
+  <shortdesc/>
+  <conbody>
+    <p>Con TMXEditor puede:</p>
+    <ul>
+      <li>Establecer atributos, propiedades y notas a nivel de archivo</li>
+      <li>Editar segmentos de su archivo TMX para corregir errores.</li>
+      <li>Combinar y dividir archivos TMX.</li>
+      <li>Añadir y eliminar idiomas de un archivo TMX.</li>
+      <li>Cambiar idiomas en un archivo TMX.</li>
+      <li>Eliminar duplicados.</li>
+      <li>Eliminar unidades no traducidas.</li>
+      <li>Eliminar etiquetas.</li>
+      <li>Eliminar los espacios iniciales y finales.</li>
+      <li>Consolidar unidades de traducción cuando el archivo TMX tiene tres o más idiomas.</li>
+      <li>Validar archivos TMX.</li>
+      <li>Limpiar los caracteres XML no válidos de un archivo TMX.</li>
+      <li>Convertir a formato TMX<ul>
+          <li>Archivos Excel</li>
+          <li>Archivos CSV o delimitados por TAB</li>
+          <li>Archivos SDLTM</li>
+        </ul> </li>
+      <li>Exportar archivos TMX como<ul>
+          <li>Archivos Excel</li>
+          <li>Archivos delimitados por TAB</li>
+        </ul> </li>
+    </ul>
+  </conbody>
+</concept>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="introduction">
+    <title>Introduction</title>
+    <shortdesc>TMXEditor is a cross-platform desktop application designed for editing <xref
+            href="../glossaries/TMX.dita#TMX">TMX</xref> (Translation Memory eXchange) files on
+        macOS, Linux and Microsoft Windows.</shortdesc>
+    <conbody>
+        <p>TMXEditor allows editing the content of multilingual TMX files. </p>
+        <image href="../images/tmxeditor.png" placement="break" scalefit="yes">
+            <alt>TMXEditor on Windows</alt>
+        </image>
+    </conbody>
+</concept>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="import_delimited">
+    <title>Convert CSV/TAB Delimited File to TMX</title>
+    <shortdesc>Follow these steps to convert a CSV or TAB delimited file to TMX.</shortdesc>
+    <taskbody>
+        <context>
+            <p>CSV (Comma Separated Values) are plain text files that contain text organized in
+                tabular format, using commas to separate columns and quotes to delimit column
+                content.</p>
+            <p>TAB delimited files are similar to CSV, but using TAB characters to separate columns
+                and usually without column delimiters.</p>
+            <p>TMXEditor allows conversion to TMX of text files with different combinations of
+                column separators and text delimiters.</p>
+            <note>Text files exported from Microsoft Excel use these default settings: <ul>
+                    <li>Character Set: UTF-16LE</li>
+                    <li>Column Separator: TAB</li>
+                    <li>Text Delimiter: none</li>
+                </ul>
+            </note>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Convert CSV/TAB Delimited File to TMX</uicontrol>
+                    </menucascade> option or click the <image href="../images/importDelimited.svg"
+                        placement="inline" height="16"/>&nbsp;<uicontrol>Convert CSV to
+                        TMX</uicontrol> button on the top toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/convertCSV.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Convert CSV File to TMX Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Type the name of the file to be converted in the <uicontrol>CSV
+                        File</uicontrol> text box or use the associated
+                        <uicontrol>Browse...</uicontrol> button to select a file from the
+                    system.</cmd>
+            </step>
+            <step>
+                <cmd>Type the name of the TMX file to generate in the <uicontrol>TMX
+                        File</uicontrol> text box or use the associated
+                        <uicontrol>Browse...</uicontrol> button to select a file name and
+                    location.</cmd>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Character Set</uicontrol>, <uicontrol>Column
+                        Separator</uicontrol> and <uicontrol>Text Delimiter</uicontrol> drop-down
+                    boxes to define the format of the file to be converted. Use the preview panel to
+                    check the correctness of the selected settings. Use <uicontrol>Custom
+                        Separator</uicontrol> and <uicontrol>Custom Delimiter</uicontrol> text boxes
+                    to enter values not included in the drop-down selectors.</cmd>
+                <stepresult>On success, the preview panel displays the data in a tabular format. If
+                    language codes are included in the first row of the CSV file, they will be
+                    automatically detected and will also be displayed highlighted in the panel, as
+                    shown in this picture: <image href="../images/correctSettings.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Correct Settings Example</alt>
+                    </image>
+                </stepresult>
+                <steptroubleshooting>
+                    <p>Unexpected characters, like the ones shown in the picture below, indicate
+                        wrong <xref href="../glossaries/character_set.dita">character set</xref>
+                        selection.</p>
+                    <image href="../images/wrongCharacterSet.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Wrong Character Set Example</alt>
+                    </image>
+                    <p>Readable text that is not displayed as a table, is a sign of incorrect
+                        selection of column separator or text delimiter. Use the preview panel to
+                        check the correct values.</p>
+                    <image href="../images/wrongDelimiters.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Wrong Delimiters Example</alt>
+                    </image>
+                </steptroubleshooting>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Set Languages</uicontrol> button if language codes are not
+                    included in the file or you wish to change the automatically detected
+                    ones.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/csvLanguages.png"
+                        placement="break" scale="50" align="center">
+                        <alt>CSV/Text Languages Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the drop-down controls in the <uicontrol>CSV/Text Languages</uicontrol>
+                    dialog to select the languages in the CSV file. Click the <uicontrol>Set
+                        Languages</uicontrol> button to confirm your selection.</cmd>
+            </step>
+            <step>
+                <cmd>Check the <uicontrol>Fix Excel Double Quotes</uicontrol> box if the file was
+                    exported by Excel using double quote characters as text delimiter. This option
+                    ensures that quotes are not duplicated during conversion.</cmd>
+            </step>
+            <step>
+                <cmd>Check the <uicontrol>Optional Text Delimiters</uicontrol> box if the file does
+                    not use the selected text delimiter in all cases (some tools only surround text
+                    in delimiters when the de column separator is part of the exported text).</cmd>
+            </step>
+            <step>
+                <cmd>Finally, click the <uicontrol>Convert CSV to TMX</uicontrol> button to generate
+                    the TMX file.</cmd>
+
+            </step>
+        </steps>
+        <result>The CSV file is converted to TMX and automatically opened in the editor if the
+                <uicontrol>Open Generated TMX File</uicontrol> checkbox is selected.</result>
+    </taskbody>
+</task>

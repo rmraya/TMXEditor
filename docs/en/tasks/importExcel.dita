@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="importExcel">
+    <title>Convert Excel File to TMX</title>
+    <taskbody>
+        <context>
+            <p/>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Convert Excel File to TMX</uicontrol>
+                    </menucascade> option or click the <image href="../images/importExcel.svg"
+                        placement="inline" height="16"/>&nbsp;<uicontrol>Convert Excel File to
+                        TMX</uicontrol> button on the top toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/convertExcel.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Convert Excel File to TMX Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Type the name of the Excel file to be converted in the <uicontrol>Excel
+                        File</uicontrol> text box or use the associated
+                        <uicontrol>Browse...</uicontrol> button to select a file from the
+                    system.</cmd>
+                <stepresult>A preview of the the initial ten rows of the first worksheet is
+                    automatically loaded when you use the <uicontrol>Browse...</uicontrol> button:
+                        <image href="../images/excelPreviewLoaded.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Excel Preview Panel</alt>
+                    </image></stepresult>
+            </step>
+            <step>
+                <cmd>If you typed an Excel file name on the <uicontrol>Excel File</uicontrol> text
+                    box, click the <uicontrol>Refresh Preview</uicontrol> button to generate a
+                    preview.</cmd>
+            </step>
+            <step>
+                <cmd>Type the name of the TMX file to generate in the <uicontrol>TMX
+                        File</uicontrol> text box or use the associated
+                        <uicontrol>Browse...</uicontrol> button to select a file name and
+                    location.</cmd>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Sheet</uicontrol> drop-down control to select the worksheet
+                    that you want to convert.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Set Languages</uicontrol> button if language codes are not
+                    included in the file or you wish to change the automatically detected
+                    ones.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/excelLanguages.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Excel File Languages Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the drop-down selectors to associate a language to each column. Click on
+                    the <uicontrol>Set Languages</uicontrol> button when finished.</cmd>
+                <stepresult>The preview panel is updated to display selected languages for each
+                    column: <image href="../images/languagesSelected.png" placement="break"
+                        scale="50" align="center">
+                        <alt>Excel Preview Panel with Languages Selected</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Convert Excel File to TMX</uicontrol> button.</cmd>
+            </step>
+        </steps>
+        <result>A TMX file containing all text from the Excel document is generated in the selected
+            location.</result>
+    </taskbody>
+</task>

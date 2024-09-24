@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="merge_files">
+  <title>Combinar Archivos TMX</title>
+  <shortdesc>Siga estos pasos para combinar el contenido de dos o más archivos TMX en uno más grande.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Combinar Archivos TMX...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/merge_files.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Combinar Archivos TMX</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TMX que contendrá todos los datos combinados en el cuadro de texto <uicontrol>Archivo TMX Combinado</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> para seleccionar un archivo del sistema de archivos.</cmd>
+      </step>
+      <step>
+        <cmd>Utilice el botón <uicontrol>Añadir Archivos</uicontrol> para seleccionar los archivos que se van a combinar desde el sistema de archivos.</cmd>
+      </step>
+      <step>
+        <cmd>Si necesita eliminar archivos de la lista, selecciónelos haciendo clic en las casillas de verificación correspondientes en la columna situada más a la izquierda y, a continuación, haga clic en el botón <uicontrol>Eliminar Archivos Seleccionados</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Combinar Archivos TMX</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras se crea un archivo TMX que contiene datos de todos los archivos seleccionados en la ubicación indicada.</result>
+  </taskbody>
+</task>

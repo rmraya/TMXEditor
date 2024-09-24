@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="untitled1">
+    <title>First Registration - Evaluation Request</title>
+    <shortdesc/>
+    <taskbody>
+        <steps>
+            <step>
+                <cmd>When you open TMXEditor from the official installers for the first time, or
+                    when the <xref href="../glossaries/subscription_key.dita">Subscription
+                        Key</xref> is not registered, the following dialog is displayed:<image
+                        href="../images/license_registration.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Register Subscription Dialog</alt>
+                    </image>
+                </cmd>
+            </step>
+            <step>
+                <cmd>If you have a Subscription Key, type it in the <uicontrol>Subscription
+                        Key</uicontrol> text box and click the <uicontrol>Register
+                        Subscription</uicontrol> button.</cmd>
+                <stepresult>On registration success, the main editing screen will be
+                    presented.</stepresult>
+            </step>
+            <step>
+                <cmd>If you don't have a Subscription Key and wish to test the program during 7
+                    days, click the <uicontrol>Request Evaluation Key</uicontrol> button.</cmd>
+                <stepresult> The following dialog appears:<image href="../images/trial_request.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Request Evaluation Key Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Enter the requested data and click the <uicontrol>Request Evaluation
+                        Key</uicontrol> button.</cmd>
+                <stepresult>On success, an email with the requested Evaluation Key will be sent to
+                    the indicated address and the following dialog will be displayed: <image
+                        href="../images/request_received.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Request Received Dialog</alt>
+                    </image> Check your email and register the Evaluation Key using the instructions
+                    shown above. </stepresult>
+            </step>
+        </steps>
+    </taskbody>
+</task>

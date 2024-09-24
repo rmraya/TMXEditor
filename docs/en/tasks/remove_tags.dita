@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="remove_tags">
+    <title>Remove Inline Tags</title>
+    <shortdesc>Follow these steps to remove inline tags from a TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>The presence of inline tags may have an adverse effect when retrieving TM matches if
+                a penalty is applied for missing or differences in inline tags.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to clean.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Remove All Tags</uicontrol>
+                    </menucascade>.</cmd>
+            </step>
+        </steps>
+        <result>A progress dialog is displayed while inline tags are removed. The editing window is
+            refreshed to reflect the changes.</result>
+    </taskbody>
+</task>

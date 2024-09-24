@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="es" id="conversionTasks">
+  <title>Tareas de Conversión</title>
+  <conbody>
+    <p>TMXEditor puede realizar las siguientes conversiones:</p>
+    <ul>
+      <li>
+        <image height="16" href="../images/importExcel.svg" placement="inline"/>
+        <xref href="../tasks/importExcel.dita">Convertir Archivo Excel a TMX</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/exportExcel.dita">Exportar TMX como Archivo Excel</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importDelimited.svg" placement="inline"/>
+        <xref href="../tasks/import_delimited.dita">Convertir Archivo CSV/Texto Delimitado a TMX</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/export_delimited.dita">Exportar TMX Como Archivo Delimitado por TAB</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importSDLTM.svg" placement="inline"/>
+        <xref href="../tasks/importSDLTM.dita">Convertir Archivo SDLTM a TMX</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importTBX.svg" placement="inline"/>
+        <xref href="../tasks/importTBX.dita">Convertir Archivo TBX a TMX</xref>
+      </li>
+    </ul>
+    <note>Prefiera los archivos Excel a los delimitados por CSV/TAB cuando sus datos contengan varias líneas de texto en una sola celda o unidad de traducción.</note>
+  </conbody>
+</concept>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="split_file">
+  <title>Dividir Archivo TMX</title>
+  <shortdesc>Siga estos pasos para dividir un archivo TMX en dos o más partes.</shortdesc>
+  <taskbody>
+    <context>
+      <p>A veces, un archivo TMX puede ser demasiado grande para ser procesado y dividirlo en partes más pequeñas puede ayudar.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Dividir Archivo TMX...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/split_file.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Dividir Archivo TMX</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TMX en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> para seleccionar un archivo del sistema de archivos.</cmd>
+      </step>
+      <step>
+        <cmd>Seleccione el número de partes en las que desea dividir el archivo.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Dividir Archivo TMX</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Aparece un indicador de progreso mientras el archivo TMX seleccionado se divide en el número indicado de archivos TMX más pequeños que se crean en la misma carpeta. El documento original no se modifica.</result>
+  </taskbody>
+</task>

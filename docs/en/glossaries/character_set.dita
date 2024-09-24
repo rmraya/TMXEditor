@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
+<glossentry id="character_set">
+    <glossterm>Character Set</glossterm>
+    <glossdef>A character set (sometimes referred to as code page) is a collection of characters that
+        are associated with a sequence of natural numbers in order to facilitate the storage of
+        text in computers and the transmission of text through telecommunication networks.</glossdef>
+</glossentry>

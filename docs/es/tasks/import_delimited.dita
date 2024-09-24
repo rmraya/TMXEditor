@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="import_delimited">
+  <title>Convertir Archivo CSV/Texto Delimitado a TMX</title>
+  <shortdesc>Siga estos pasos para convertir un archivo TMX a un archivo delimitad por TAB.</shortdesc>
+  <taskbody>
+    <context>
+      <p>CSV (Comma Separated Values) son archivos de texto sin formato que contienen texto organizado en formato tabular, utilizando comas para separar las columnas y comillas para delimitar el contenido de las columnas.</p>
+      <p>Los archivos delimitados por TAB son similares a los CSV, pero utilizando caracteres TAB para separar las columnas y normalmente sin delimitadores de columna.</p>
+      <p>TMXEditor permite convertir a TMX archivos de texto con distintas combinaciones de separadores de columnas y delimitadores de texto.</p>
+      <note>Los archivos de texto exportados desde Microsoft Excel utilizan esta configuración por predeterminada: <ul>
+          <li>Juego de Caracteres: UTF-16LE</li>
+          <li>Separador de Columnas: TAB</li>
+          <li>Delimitador de Texto: ninguno</li>
+        </ul> </note>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione la opción <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Convertir Archivo CSV/Texto Delimitado a TMX</uicontrol>
+          </menucascade> o haga clic en el botón <image height="16" href="../images/importDelimited.svg" placement="inline"/> <uicontrol>Convertir Archivo CSV/Texto Delimitado a TMX</uicontrol> en la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertCSV.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Convertir Archivo CSV a TMX</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo CSV que se va a convertir en el cuadro de texto <uicontrol>Archivo CSV/Texto</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un archivo del sistema.</cmd>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TMX  a generar en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un nombre de archivo y una ubicación.</cmd>
+      </step>
+      <step>
+        <cmd>Use the <uicontrol>Character Set</uicontrol>, <uicontrol>Column Separator</uicontrol> and <uicontrol>Text Delimiter</uicontrol> drop-down boxes to define the format of the file to be converted. Utilice el panel de vista previa para comprobar la corrección de la configuración seleccionada. Use <uicontrol>Custom Separator</uicontrol> and <uicontrol>Custom Delimiter</uicontrol> text boxes to enter values not included in the drop-down selectors.</cmd>
+        <stepresult>Si se realiza correctamente, el panel de vista previa muestra los datos en formato tabular. Si se incluyen códigos de idioma en la primera fila del archivo CSV, se detectarán automáticamente y también se mostrarán resaltados en el panel, como se muestra en esta imagen: <image href="../images/correctSettings.png" placement="break" scale="50" align="center">
+            <alt>Ejemplo de Configuración Correcta</alt>
+          </image> </stepresult>
+        <steptroubleshooting>
+          <p>Los caracteres inesperados, como los que se muestran en la imagen siguiente, indican una selección incorrecta del <xref href="../glossaries/character_set.dita">juego de caracteres</xref>.</p>
+          <image href="../images/wrongCharacterSet.png" placement="break" scale="50" align="center">
+            <alt>Ejemplo de Juego de Caracteres Equivocado</alt>
+          </image>
+          <p>El texto legible que no se muestra como una tabla es un signo de selección incorrecta del separador de columnas o del delimitador de texto. Utilice el panel de vista previa para comprobar los valores correctos.</p>
+          <image href="../images/wrongDelimiters.png" placement="break" scale="50" align="center">
+            <alt>Ejemplo de Delimitadores Equivocados</alt>
+          </image>
+        </steptroubleshooting>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> si los códigos de idioma no están incluidos en el archivo o si desea cambiar los detectados automáticamente.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/csvLanguages.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Idiomas del Archivo CSV/Texto</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Utilice las listas desplegables del cuadro de diálogo <uicontrol>Idiomas del Archivo CSV/Texto</uicontrol> para seleccionar los idiomas del archivo CSV. Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> para confirmar su selección.</cmd>
+      </step>
+      <step>
+        <cmd>Active la casilla <uicontrol>Corregir Comillas Dobles de Excel</uicontrol> si Excel exportó el archivo con comillas dobles como delimitador de texto. Esta opción garantiza que las comillas no se dupliquen durante la conversión.</cmd>
+      </step>
+      <step>
+        <cmd>Marque la casilla <uicontrol>Delimitadores de Texto Opcionales</uicontrol> si el archivo no utiliza el delimitador de texto seleccionado en todos los casos (algunas herramientas solo rodean el texto en los delimitadores cuando el separador de columna forma parte del texto exportado).</cmd>
+      </step>
+      <step>
+        <cmd>Finalmente, haga clic en el botón <uicontrol>Convertir Archivo CSV a TMX</uicontrol> para generar el archivo TMX.</cmd>
+      </step>
+    </steps>
+    <result>El archivo CSV se convierte a TMX y se abre automáticamente en el editor si la casilla de verificación <uicontrol>Abrir Archivo TMX Generado</uicontrol> está activada.</result>
+  </taskbody>
+</task>

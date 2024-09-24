@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="sortData">
+    <title>Sort Translation Units</title>
+    <shortdesc>Follow these steps to display the entries of your TMX file sorted on a selected
+        language.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Data in a TMX file is stored without a particular order. Sometimes it may be useful
+                to sort data according to a given language to facilitate editing.</p>
+            <p>Follow these steps to sort the content of a TMX file for review.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>View</uicontrol>
+                        <uicontrol>Sort Translation Units</uicontrol>
+                    </menucascade> option ([<userinput>F5</userinput>]) or click on the <image
+                        href="../images/sortUnits.svg" placement="inline" height="16"
+                        />&nbsp;<uicontrol>Sort Translation Units</uicontrol> button on the top
+                    toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/sort_units.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Sort Translation Units Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Sort Language</uicontrol> drop-down to select the language
+                    used for sorting the file.</cmd>
+            </step>
+            <step>
+                <cmd>Select the <uicontrol>Sort Descending</uicontrol> checkbox if you want the
+                    units sorted in descending order. Clear the checkbox otherwise.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Sort Translation Units</uicontrol> button.</cmd>
+            </step>
+        </steps>
+        <result>All units will be sorted according to the selected language. To display all units in
+            the original order, reopen the dialog and click the <uicontrol>Clear Sorting</uicontrol>
+            button.</result>
+    </taskbody>
+</task>

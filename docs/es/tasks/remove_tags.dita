@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="remove_tags">
+  <title>Eliminar Etiquetas</title>
+  <shortdesc>Siga estos pasos para eliminar etiquetas de un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>La presencia de etiquetas puede tener un efecto adverso a la hora de recuperar coincidencias de TM si se aplica una penalización por falta o diferencias en las etiquetas.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea limpiar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Eliminar Todas las Etiquetas</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+    </steps>
+    <result>Se muestra un indicador de progreso mientras se eliminan etiquetas. La ventana de edición se actualiza para reflejar los cambios.</result>
+  </taskbody>
+</task>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="change_language">
+    <title>Change Language</title>
+    <shortdesc>Follows these steps to change a language code used in a TMX file</shortdesc>
+    <taskbody>
+        <context>
+            <p>Most <xref href="../glossaries/translation_memory.dita">Translation Memory</xref>
+                (TM) systems are sensitive to <xref href="../glossaries/language_code.dita">language
+                    codes</xref>. A TM system may normally consider that the code "en" (English) is
+                different from "en-US" (English for the United States) or "en-GB" (English for the
+                United Kingdom)</p>
+            <p>TMXEditor allows you to change the language codes used in a TMX file.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Change Language...</uicontrol>
+                    </menucascade>.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/change_language.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Change Language Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Current Language</uicontrol> drop-down box to select the
+                    language that you want to change.</cmd>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>New Language</uicontrol> drop-down box to select the new
+                    language.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Change Language</uicontrol> button.</cmd>
+                <stepresult>The dialog closes and the editing window is refreshed to reflect the
+                    changes.</stepresult>
+            </step>
+        </steps>
+    </taskbody>
+</task>

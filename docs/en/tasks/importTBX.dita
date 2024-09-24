@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="converttbx">
+    <title>Convert TBX File to TMX</title>
+    <shortdesc/>
+    <taskbody>
+        <context>
+            <p/>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Convert TBX File to TMX</uicontrol>
+                    </menucascade> option or click the <image href="../images/importTBX.svg"
+                        placement="inline" height="16"/>&nbsp;<uicontrol>Convert TBX File to
+                        TMX</uicontrol> button on the top toolbar.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/convertTBX.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Convert TBX File to TMX Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Type the name of the TBX file to be converted in the <uicontrol>TBX
+                    File</uicontrol> text box or use the associated
+                    <uicontrol>Browse...</uicontrol> button to select a file from the
+                    system.</cmd>
+            </step>
+            <step>
+                <cmd>Type the name of the TMX file to generate in the <uicontrol>TMX
+                    File</uicontrol> text box or use the associated
+                    <uicontrol>Browse...</uicontrol> button to select a file name and
+                    location.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Convert TBX File to TMX</uicontrol> button.</cmd>
+            </step>
+        </steps>
+        <result>Selected TBX file is converted to TMX and automatically opened in the editor if the
+            <uicontrol>Open Generated TMX File</uicontrol> checkbox is selected.</result>
+    </taskbody>
+</task>

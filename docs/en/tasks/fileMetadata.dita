@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="fileMetadata">
+    <title>Set File Level Metadata</title>
+    <body>
+        <p>The <codeph>&lt;header></codeph> element of a TMX document stores information about the
+            file in three containers:</p>
+        <ul>
+            <li>Attributes</li>
+            <li>Properties</li>
+            <li>Notes</li>
+        </ul>
+        <p>To edit the metadata of the currently open TMX file, select <menucascade>
+                <uicontrol>File</uicontrol>
+                <uicontrol>File Properties</uicontrol>
+            </menucascade> from the main menu or click on the <image href="../images/fileInfo.svg"
+                placement="inline" height="16"/>&nbsp;<uicontrol>File Properties</uicontrol> button
+            on the top toolbar.</p>
+        <p>The following dialog appears:<image href="../images/fileAttributes.png" placement="break"
+                scale="50" align="center">
+                <alt>File Properties Dialog</alt>
+            </image></p>
+        <section>
+            <title>File Level Attributes</title>
+            <p>To change the file-level attributes of the TMX file, adjust the text displayed in the
+                text boxes, select the appropriate values from the drop-down selectors, and then
+                click the <uicontrol>Save Attributes</uicontrol> button.</p>
+        </section>
+        <section>
+            <title>File Level Properties</title>
+            <p>To edit file-level properties, click on the <uicontrol>Properties</uicontrol> tab of
+                the <uicontrol>File Properties</uicontrol> dialog. The dialog displays this
+                    view:<image href="../images/fileProperties.png" placement="break" scale="50"
+                    align="center">
+                    <alt>File Properties Dialog</alt>
+                </image></p>
+            <ul>
+                <li>Click the <uicontrol>Add Property</uicontrol> button to open a dialog for
+                    entering the type and value of the new property to be added.</li>
+                <li>Select the checkboxes next to the properties you want to delete, and then click
+                    the <uicontrol>Delete Selected Properties</uicontrol> button to remove
+                    them.</li>
+                <li>Click the <uicontrol>Save Properties</uicontrol> button to save your
+                    changes.</li>
+            </ul>
+        </section>
+        <section>
+            <title>File Level Notes</title>
+            <p>To edit file-level notes, click on the <uicontrol>Notes</uicontrol> tab of the
+                    <uicontrol>File Properties</uicontrol> dialog. The dialog displays this
+                    view:<image href="../images/fileNotes.png" placement="break" scale="50"
+                    align="center">
+                    <alt>File Properties Dialog</alt>
+                </image></p>
+            <ul>
+                <li>Click the <uicontrol>Add Note</uicontrol> button to open a dialog for entering
+                    the text of the new note to be added.</li>
+                <li>Select the checkboxes next to the notes you want to delete, and then click the
+                        <uicontrol>Delete Selected Notes</uicontrol> button to remove them.</li>
+                <li>Click the <uicontrol>Save Notes</uicontrol> button to save your changes.</li>
+            </ul>
+        </section>
+    </body>
+</topic>

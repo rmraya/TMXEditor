@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="importExcel">
+  <title>Convertir Archivo Excel a TMX</title>
+  <taskbody>
+    <context>
+      <p/>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione la opción <menucascade>
+            <uicontrol>Archivo</uicontrol>
+            <uicontrol>Convertir Archivo Excel a TMX</uicontrol>
+          </menucascade> o haga clic en el botón <image height="16" href="../images/importExcel.svg" placement="inline"/> <uicontrol>Convertir Archivo  Excel a TMX</uicontrol> en la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertExcel.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Convertir Archivo Excel a TMX</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo de Excel que se va a convertir en el cuadro de texto <uicontrol>Archivo Excel</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un archivo del sistema.</cmd>
+        <stepresult>Una vista previa de las diez filas iniciales de la primera hoja de cálculo se carga automáticamente cuando se utiliza el botón <uicontrol>Examinar...</uicontrol>: <image href="../images/excelPreviewLoaded.png" placement="break" scale="50" align="center">
+            <alt>Vista Previa de Excel</alt>
+          </image></stepresult>
+      </step>
+      <step>
+        <cmd>Si escribió un nombre de archivo de Excel en el cuadro de texto <uicontrol>Archivo Excel</uicontrol>, haga clic en el botón <uicontrol>Actualizar Vista Previa</uicontrol> para generar una vista previa.</cmd>
+      </step>
+      <step>
+        <cmd>Escriba el nombre del archivo TMX  a generar en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un nombre de archivo y una ubicación.</cmd>
+      </step>
+      <step>
+        <cmd>Use el control desplegable <uicontrol>Hoja</uicontrol> para seleccionar la hoja de cálculo que desea convertir.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> si los códigos de idioma no están incluidos en el archivo o si desea cambiar los detectados automáticamente.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/excelLanguages.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Idiomas del Archivo Excel</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Utilice los selectores desplegables para asociar un idioma a cada columna. Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> cuando haya terminado.</cmd>
+        <stepresult>El panel de vista previa se actualiza para mostrar los idiomas seleccionados para cada columna: <image href="../images/languagesSelected.png" placement="break" scale="50" align="center">
+            <alt>Panel de Vista Previa de Excel con Idiomas Seleccionados</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Convertir Archivo Excel a TMX</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Se genera un archivo TMX que contiene todo el texto del documento de Excel en la ubicación seleccionada.</result>
+  </taskbody>
+</task>

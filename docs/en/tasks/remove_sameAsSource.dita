@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="sameAsSource">
+    <title>Remove Translation Same as Source</title>
+    <shortdesc>Follow these steps to remove translation entries that are the same as source entry
+        from a TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>Translation units may contain one or more language entries that are equal to the
+                entry designated as source. If in a given unit all entries have the same content,
+                this procedure removes the entire unit. If at least one language entry is different
+                from source, the unit is preserved containing only translations that are different
+                from source.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, seect <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Remove Translation Same as Source...</uicontrol>
+                    </menucascade> option.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/sameAsSource.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Remove Translation Same as Source Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Source Language</uicontrol> drop-down to select the language
+                    to be considered language for removing units (it may differ from the source
+                    language set at file level).</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Remove Translation Same as Source</uicontrol>
+                    button.</cmd>
+                <stepresult>A progress dialog is displayed while translation enties that are equal
+                    to source are removed.</stepresult>
+            </step>
+        </steps>
+        <result>The editing window is refreshed to reflect the changes.</result>
+    </taskbody>
+</task>

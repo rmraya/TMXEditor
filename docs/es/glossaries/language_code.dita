@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
+<glossentry xml:lang="es" id="untitled1">
+  <glossterm>Código de Idioma</glossterm>
+  <glossdef>Un código de idioma es un código que asigna letras o números como identificadores o clasificadores de idiomas. Los códigos de idioma utilizados en los archivos TMX deben cumplir las normas definidas en la <xref href="https://tools.ietf.org/html/bcp47" scope="external" format="html">BCP 47 - Etiquetas para la identificación de idiomas</xref>.</glossdef>
+</glossentry>

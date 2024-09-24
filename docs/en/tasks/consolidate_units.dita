@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="consolidate_units">
+    <title>Consolidate Translation Units</title>
+    <shortdesc>Follow these steps to consolidate units in a TMX file with three or more
+        languages.</shortdesc>
+    <taskbody>
+        <context>
+            <p>In files with three or more languages, it is possible that translations of a given
+                source text into different languages appear in different translation units, as
+                illustrated by the following image.</p>
+            <image href="../images/needs_consolidation.png" placement="break" scale="50"
+                align="center">
+                <alt>Needs Consolidation Example</alt>
+            </image>
+            <p>Consolidating units puts all related translations in the same unit. The following
+                image shows the consolidated version of the one above.</p>
+            <image href="../images/consolidated.png" placement="break" scale="50" align="center">
+                <alt>Consolidated Units Example</alt>
+            </image>
+        </context>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to consolidate.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Consolidate Units...</uicontrol>
+                    </menucascade>.</cmd>
+                <stepresult>The following dialog appears:<image
+                        href="../images/consolidate_units.png" placement="break" scale="50"
+                        align="center">
+                        <alt>Consolidate Units Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the <uicontrol>Source Language</uicontrol> drop-down to select the language
+                    to be considered source language for merging units (it may differ from the source
+                    language set at file level).</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Consolidate Units</uicontrol> button.</cmd>
+
+            </step>
+        </steps>
+        <result>A progress indicator is displayed while units are consolidated. The editing window
+            is refreshed to reflect the changes.</result>
+    </taskbody>
+</task>

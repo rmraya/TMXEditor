@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="sortData">
+  <title>Ordenar Unidades de Traducción</title>
+  <shortdesc>Siga estos pasos para mostrar las entradas del archivo TMX ordenadas en un idioma seleccionado.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Los datos en un archivo TMX se almacenan sin un orden particular. A veces puede ser útil ordenar los datos según un idioma determinado para facilitar la edición.</p>
+      <p>Siga estos pasos para ordenar el contenido de un archivo TMX para su revisión.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione la opción <menucascade>
+            <uicontrol>Ver</uicontrol>
+            <uicontrol>Ordenar Unidades de Traducción</uicontrol>
+          </menucascade> ([<userinput>F5</userinput>]) o haga clic en el botón <image height="16" href="../images/sortUnits.svg" placement="inline"/> <uicontrol>Ordenar Unidades de Traducción</uicontrol> en la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/sort_units.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Ordenar Unidades de Traducción</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Utilice la lista desplegable <uicontrol>Idioma de Ordenamiento</uicontrol> para seleccionar el idioma utilizado para ordenar el archivo.</cmd>
+      </step>
+      <step>
+        <cmd>Active la casilla <uicontrol>Orden Descendente</uicontrol> si desea que las unidades se ordenen en orden descendente. Desactive la casilla de verificación de lo contrario.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Ordenar Unidades de Traducción</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Todas las unidades se ordenarán según el idioma seleccionado. Para mostrar todas las unidades en el orden original, vuelva a abrir el cuadro de diálogo y haga clic en el botón <uicontrol>Cancelar Ordenamiento</uicontrol>.</result>
+  </taskbody>
+</task>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="validate_file">
+    <title>TMX Validation</title>
+    <shortdesc></shortdesc>
+    <taskbody>
+        <context>
+            <p>Most CAT (Computer Aided Translation) tools rely on TMX (Translation Memory eXchange) 
+                standard to exchange translation memory data. Unfortunately, some tools produce files 
+                that are not valid and others do not accept TMX documents that are correctly formatted.</p>
+            <p>TMXEditor checks the validity of TMX files against TMX DTD and also verifies if 
+                they follow the requirements described in TMX specifications.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                    <uicontrol>File</uicontrol>
+                    <uicontrol>Validate TMX File...</uicontrol>
+                </menucascade>.</cmd>
+            </step>
+            <step>
+                <cmd>Use the dialog that appears to locate and select the file that you want to validate.</cmd>
+                <stepresult>A progress dialog is displayed while the file is analyzed.</stepresult>
+            </step>
+        </steps>
+        <result>After checking the TMX file, a dialog with validation results appears.</result>
+    </taskbody>
+</task>

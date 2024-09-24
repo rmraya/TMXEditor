@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="fetures">
+    <title>Features</title>
+    <shortdesc/>
+    <conbody>
+        <p>With TMXEditor you can:</p>
+        <ul>
+            <li>Set attributes, properties and notes at file level</li>
+            <li>Edit segments of your TMX file to correct errors.</li>
+            <li>Merge &amp; split TMX files.</li>
+            <li>Add and remove languages from a TMX file.</li>
+            <li>Change languages in a TMX file.</li>
+            <li>Remove duplicates.</li>
+            <li>Remove untranslated units.</li>
+            <li>Remove inline tags.</li>
+            <li>Trim initial and trailing spaces.</li>
+            <li>Consolidate translation units when the TMX file has three or more languages.</li>
+            <li>Validate TMX files.</li>
+            <li>Clean invalid XML characters from a TMX file.</li>
+            <li>Convert to TMX format<ul>
+                    <li>Excel files</li>
+                    <li>CSV or TAB delimited files</li>
+                    <li>SDLTM files</li>
+                </ul>
+            </li>
+            <li>Export TMX files as<ul>
+                    <li>Excel files</li>
+                    <li>TAB Delimited files</li>
+                </ul>
+            </li>
+        </ul>
+    </conbody>
+</concept>

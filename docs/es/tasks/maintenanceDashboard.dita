@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="maintenanceDashboard">
+  <title>Panel de Mantenimiento</title>
+  <shortdesc>Siga estos pasos para optimizar un archivo TMX usando un cuadro de diálogo simplificado.</shortdesc>
+  <taskbody>
+    <context>
+      <p>El <uicontrol>Panel de Mantenimiento</uicontrol> le permite realizar tareas de mantenimiento en un cuadro de diálogo simplificado que incorpora varias acciones disponibles en el menú <uicontrol>Tareas</uicontrol>.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Panel de Mantenimiento</uicontrol>
+          </menucascade>  o haga clic en el botón <image height="16" href="../images/maintenance.svg" placement="inline"/> <uicontrol>Panel de Mantenimiento</uicontrol> en la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/maintenance_dashboard.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Panel de Mantenimiento</alt>
+          </image></stepresult>
+      </step>
+      <step>
+        <cmd>Seleccione las casillas de verificación correspondientes para todas las tareas que desee realizar:</cmd>
+        <choices>
+          <choice><uicontrol>Eliminar Todas las Etiquetas</uicontrol>: eliminar todas las etiquetas del archivo TMX.</choice>
+          <choice><uicontrol>Eliminar Unidades Duplicadas</uicontrol>: eliminar unidades de traducción duplicadas.</choice>
+          <choice><uicontrol>Eliminar Unidades No Traducidas</uicontrol>: eliminar todas las unidades no traducidas.</choice>
+          <choice><uicontrol>Eliminar Espacios Iniciales y Finales</uicontrol>: remove spaces at the start and end of all language entries.</choice>
+          <choice><uicontrol>Consolidar Unidades</uicontrol>: merge translation units that share a common source language entry.</choice>
+        </choices>
+      </step>
+      <step>
+        <cmd>Si seleccionó <uicontrol>Eliminar Unidades Duplicadas</uicontrol> o <uicontrol>Consolidar Unidades</uicontrol>, seleccione el <xref href="../glossaries/source_language.dita">idioma origen</xref> del archivo TMX mediante la lista desplegable <uicontrol>Idioma Origen</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Realizar Mantenimiento</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Se inicia un proceso de mantenimiento y se muestra un indicador en la pantalla mientras se realizan todas las tareas seleccionadas.</result>
+  </taskbody>
+</task>

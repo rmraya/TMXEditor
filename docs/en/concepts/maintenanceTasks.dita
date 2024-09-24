@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="maintenanceTasks">
+    <title>Maintenance Tasks</title>
+    <conbody>
+        <p>TMXEditor maintenance options are </p>
+        <ul>
+            <li><image href="../images/fileInfo.svg" placement="inline" height="16"/> 
+                <xref href="../tasks/fileMetadata.dita">Set Attributes, Properties and Notes at File Level</xref></li>
+            <li><image href="../images/maintenance.svg" placement="inline" height="16"/>
+                <xref href="../tasks/maintenanceDashboard.dita">Maintenance Dashboard</xref></li>
+            <li><image href="../images/sortUnits.svg" placement="inline" height="16"/>
+                <xref href="../tasks/sortData.dita">Sort Translation Units</xref></li>
+            <li><image href="../images/filterUnits.svg" placement="inline" height="16"/>
+                <xref href="../tasks/filterUnits.dita">Filter Translation Units</xref></li>
+            <li><image href="../images/replaceTexts.svg" placement="inline" height="16"/>
+                <xref href="../tasks/search_replace.dita">Search &amp; Replace Text</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/change_language.dita">Change Language</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/add_language.dita">Add Language</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/remove_language.dita">Remove Language</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/change_src_language.dita">Change Source Language</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/remove_tags.dita">Remove Inline Tags</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/remove_duplicates.dita">Remove Duplicated Units</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/remove_sameAsSource.dita">Remove Translation Same as
+                    Source</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/remove_spaces.dita">Remove Initial &amp; Trailing
+                Spaces</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/consolidate_units.dita">Consolidate Translation
+                Units</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/split_file.dita">Split TMX File</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/merge_files.dita">Merge TMX Files</xref></li>
+        </ul>
+    </conbody>
+</concept>

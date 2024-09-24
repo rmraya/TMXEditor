@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
+<bookmap>
+    <booktitle>
+        <mainbooktitle>
+            <image href="images/cover.png" placement="break" scalefit="yes"/>
+        </mainbooktitle>
+        <booktitlealt>Copyright © 2018-2024 Maxprograms</booktitlealt>
+    </booktitle>
+
+    <frontmatter>
+        <booklists>
+            <toc/>
+        </booklists>
+    </frontmatter>
+
+    <chapter href="concepts/introduction.dita">
+        <topicref href="concepts/features.dita"/>
+        <topicref href="concepts/supported_platforms.dita"/>
+    </chapter>
+
+    <chapter href="concepts/gettingStarted.dita">
+        <topicref href="concepts/basic_editing.dita"/>
+        <topicref href="tasks/create_file.dita"/>
+    </chapter>
+
+    <chapter href="concepts/maintenanceTasks.dita">
+        <topicref href="tasks/fileMetadata.dita"/>
+        <topicref href="tasks/maintenanceDashboard.dita"/>
+        <topicref href="tasks/sortData.dita"/>
+        <topicref href="tasks/filterUnits.dita"/>
+        <topicref href="tasks/search_replace.dita"/>
+        <topicref href="tasks/change_language.dita"/>
+        <topicref href="tasks/add_language.dita"/>
+        <topicref href="tasks/remove_language.dita"/>
+        <topicref href="tasks/change_src_language.dita"/>
+        <topicref href="tasks/remove_tags.dita"/>
+        <topicref href="tasks/remove_duplicates.dita"/>
+        <topicref href="tasks/remove_untranslated.dita"/>
+        <topicref href="tasks/remove_sameAsSource.dita"/>
+        <topicref href="tasks/remove_spaces.dita"/>
+        <topicref href="tasks/consolidate_units.dita"/>
+        <topicref href="tasks/split_file.dita"/>
+        <topicref href="tasks/merge_files.dita"/>
+    </chapter>
+    <chapter href="concepts/conversionTasks.dita">
+        <topicref href="tasks/importExcel.dita"/>
+        <topicref href="tasks/exportExcel.dita"/>
+        <topicref href="tasks/import_delimited.dita"/>
+        <topicref href="tasks/export_delimited.dita"/>
+        <topicref href="tasks/importSDLTM.dita"/>
+        <topicref href="tasks/importTBX.dita"/>
+    </chapter>
+
+    <chapter href="tasks/validate_file.dita">
+        <topicref href="tasks/clean_characters.dita"/>
+    </chapter>
+
+    <chapter href="tasks/preferences.dita"/>
+
+    <chapter href="concepts/opensource_subscription.dita">
+        <topicref href="tasks/subscription_registration.dita"/>
+        <topicref href="tasks/subscription_renewal.dita"/>
+    </chapter>
+
+    <chapter href="concepts/licenses.dita"/>
+
+    <backmatter>
+        <booklists>
+            <glossarylist chunk="to-content">
+                <topicref href="glossaries/character_set.dita"/>
+                <topicref href="glossaries/language_code.dita"/>
+                <topicref href="glossaries/subscription_key.dita"/>
+                <topicref keys="tmx" href="glossaries/TMX.dita" type="glossentry"/>
+                <topicref href="glossaries/source_language.dita"/>
+                <topicref keys="tm" href="glossaries/translation_memory.dita" type="glossentry"/>
+                <topicref keys="tu" href="glossaries/translation_unit.dita"/>
+            </glossarylist>
+        </booklists>
+    </backmatter>
+</bookmap>

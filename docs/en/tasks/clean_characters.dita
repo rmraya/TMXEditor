@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="clean_characters">
+    <title>Clean Invalid Characters</title>
+    <shortdesc>Follow these steps to remove invalid characters from a TMX file.</shortdesc>
+    <taskbody>
+        <context>
+            <p>TMX is an XML-based vocabulary and thereafter a TMX file must not contain characters
+                not allowed by the XML standard.</p>
+            <p>A TMX file that contains invalid characters cannot be edited without removing those
+                characters first.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>File</uicontrol>
+                        <uicontrol>Clean Invalid Characters...</uicontrol>
+                    </menucascade>.</cmd>
+            </step>
+            <step>
+                <cmd>Use the dialog that appears to locate and select the file that you want to
+                    repair.</cmd>
+                <stepresult/>
+            </step>
+        </steps>
+        <result>A progress indicator is displayed while the selected file is cleaned and a backup of
+            the original data is saved in the same folder.</result>
+    </taskbody>
+</task>

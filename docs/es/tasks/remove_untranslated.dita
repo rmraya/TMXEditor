@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="remove_untranslated">
+  <title>Eliminar Unidades No Traducidas</title>
+  <shortdesc>Siga estos pasos para eliminar unidades no traducidas de un archivo TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Una unidad de traducción que tiene un solo elemento &lt;tuv&gt; que contiene texto se considera "sin traducir". Las unidades no traducidas no son útiles para recuperar coincidencias de un sistema de <xref href="../glossaries/translation_memory.dita">Memoria de Traducción</xref>.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Abra el archivo TMX que desea modificar.</cmd>
+      </step>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Tareas</uicontrol>
+            <uicontrol>Eliminar Unidades No Traducidas...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/remove_untranslated.png" placement="break" scale="50" align="center">
+            <alt>Cuadro de diálogo Eliminar Unidades No Traducidas</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Utilice la lista desplegable <uicontrol>Idioma Origen</uicontrol> para seleccionar el idioma que se considerará idioma origen para eliminar unidades (puede diferir del idioma de origen establecido a nivel de archivo).</cmd>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Eliminar Unidades No Traducidas</uicontrol>.</cmd>
+        <stepresult>Se muestra un indicador de progreso mientras se eliminan las unidades no traducidas.</stepresult>
+      </step>
+    </steps>
+    <result>La ventana de edición se actualiza para reflejar los cambios.</result>
+  </taskbody>
+</task>

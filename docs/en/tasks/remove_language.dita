@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="remove_language">
+    <title>Remove Language</title>
+    <shortdesc>Follow these steps to remove a language from a TMX file.</shortdesc>
+    <taskbody>
+        <steps>
+            <step>
+                <cmd>Open the TMX file that you want to modify.</cmd>
+            </step>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Tasks</uicontrol>
+                        <uicontrol>Remove Language...</uicontrol>
+                    </menucascade> option.</cmd>
+                <stepresult>The following dialog appears:<image href="../images/remove_language.png"
+                        placement="break" scale="50" align="center">
+                        <alt>Remove Language Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Use the drop-down box to select the language to remove.</cmd>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>Remove Language</uicontrol> button.</cmd>
+                <stepresult>The dialog closes and the editing window is refreshed to reflect the
+                    changes.</stepresult>
+            </step>
+        </steps>
+    </taskbody>
+</task>
