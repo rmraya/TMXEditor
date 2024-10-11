@@ -4107,9 +4107,9 @@ class App {
                     shell.showItemInFolder(file);
                 }
             });
-            response.on('error', (reason: string) => {
+            response.on('error', (error: Error) => {
                 App.mainWindow.webContents.send('set-status', '');
-                dialog.showErrorBox(App.i18n.getString('App', 'Error'), reason);
+                dialog.showErrorBox(App.i18n.getString('App', 'Error'), error.message);
                 if (process.platform === 'win32' || process.platform === 'darwin') {
                     App.mainWindow.setProgressBar(0);
                 }
