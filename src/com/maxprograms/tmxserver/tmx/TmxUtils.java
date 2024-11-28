@@ -223,7 +223,7 @@ public class TmxUtils {
 			} else {
 				break;
 			}
-		}	
+		}
 		if (!sb.isEmpty()) {
 			result = result.substring(0, result.length() - sb.length()) + "<span " + SPACE + ">" + sb.toString() + "</span>";
 		}
@@ -235,10 +235,7 @@ public class TmxUtils {
 		int start = -1;
 		Locale locale = null;
 		if (filterLanguage != null) {
-			if (!localesCache.containsKey(filterLanguage)) {
-				locale = Locale.forLanguageTag(filterLanguage);
-				localesCache.put(filterLanguage, locale);
-			}
+			localesCache.computeIfAbsent(filterLanguage, l -> Locale.forLanguageTag(l));
 			locale = localesCache.get(filterLanguage);
 		}
 		String replacement = "<span " + STYLE + ">" + target + "</span>";

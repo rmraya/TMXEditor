@@ -31,9 +31,6 @@ class Licenses {
         document.getElementById('Java').addEventListener('click', () => {
             this.openLicense('Java');
         });
-        document.getElementById('JSON').addEventListener('click', () => {
-            this.openLicense('JSON');
-        });
         document.getElementById('sdltm').addEventListener('click', () => {
             this.openLicense('sdltm');
         });

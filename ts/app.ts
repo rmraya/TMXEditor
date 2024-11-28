@@ -871,36 +871,19 @@ class App {
                 default: parent = App.mainWindow;
             }
         }
-        App.messagesWindow = new BrowserWindow({
-            parent: parent,
-            width: 600,
-            minimizable: false,
-            maximizable: false,
-            resizable: false,
-            modal: true,
-            show: false,
-            icon: App.iconPath,
-            webPreferences: {
-                nodeIntegration: true,
-                contextIsolation: false
-            }
-        });
         if (arg.key) {
             arg.message = App.i18n.getString(arg.group, arg.key);
-            if (arg.titleKey) {
-                arg.title = App.i18n.getString(arg.group, arg.titleKey);
-            }
         }
-        App.messageParam = arg;
-        App.messagesWindow.setMenu(null);
-        App.messagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'messages.html'));
-        App.messagesWindow.once('ready-to-show', () => {
-            App.messagesWindow.show();
-        });
-        App.messagesWindow.on('close', () => {
-            parent.focus();
-        });
-        App.setLocation(App.messagesWindow, 'messages.html');
+        let params: any = {
+            icon: this.iconPath,
+            type: arg.type,
+            message: arg.message,
+            buttons: ['OK']
+        };
+        if (arg.titleKey) {
+            params.title = App.i18n.getString(arg.group, arg.titleKey);
+        }
+        dialog.showMessageBoxSync(parent, params);
     }
 
     static createWindow(): void {
@@ -1282,10 +1265,6 @@ class App {
             case "Java":
                 licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
                 title = 'GPL2 with Classpath Exception';
-                break;
-            case "JSON":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'json.txt');
-                title = 'JSON.org License';
                 break;
             default:
                 App.showMessage({ type: 'error', message: App.i18n.getString('app', 'unknownLicense') });
@@ -2320,7 +2299,7 @@ class App {
             title: App.i18n.getString('App', 'OpenCSV'),
             properties: ['openFile'],
             filters: [
-                { name: App.i18n.getString('App', 'CSVFile'), extensions: ['csv', 'txt'] },
+                { name: App.i18n.getString('App', 'CSVFile'), extensions: ['csv', 'txt', 'tsv'] },
                 { name: App.i18n.getString('App', 'AnyFile'), extensions: ['*'] }
             ]
         }).then((value: OpenDialogReturnValue) => {

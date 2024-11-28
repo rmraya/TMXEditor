@@ -5,7 +5,8 @@
     <conbody>
         <p>TMXEditor works on these Operating Systems: <ul>
                 <li>Microsoft Windows 10 and 11</li>
-                <li>macOS Big Sur (11.0), Monterey (12.0), Ventura (13.0) and Sonoma (14.0)</li>
+                <li>macOS Big Sur (11.0), Monterey (12.0), Ventura (13.0), Sonoma (14.0) and Sequoia
+                    (15.0)</li>
                 <li>Linux (with GNOME Desktop Manager)</li>
             </ul>
         </p>
