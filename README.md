@@ -1,6 +1,6 @@
 # TMXEditor
 
-![TMXEditor logo](https://www.maxprograms.com/images/tmxeditor_s.png)
+![TMXEditor logo](icons/tmxeditor.png)
 
 TMXEditor is an open source desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
 
