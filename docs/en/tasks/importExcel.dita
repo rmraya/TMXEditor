@@ -15,7 +15,7 @@
                         placement="inline" height="16"/>&nbsp;<uicontrol>Convert Excel File to
                         TMX</uicontrol> button on the top toolbar.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/convertExcel.png"
-                        placement="break" scale="80" align="center">
+                        placement="break" scale="60" align="center">
                         <alt>Convert Excel File to TMX Dialog</alt>
                     </image>
                 </stepresult>
@@ -27,7 +27,7 @@
                     system.</cmd>
                 <stepresult>A preview of the the initial ten rows of the first worksheet is
                     automatically loaded when you use the <uicontrol>Browse...</uicontrol> button:
-                        <image href="../images/excelPreviewLoaded.png" placement="break" scale="80"
+                        <image href="../images/excelPreviewLoaded.png" placement="break" scale="60"
                         align="center">
                         <alt>Excel Preview Panel</alt>
                     </image></stepresult>
@@ -62,7 +62,7 @@
                     the <uicontrol>Set Languages</uicontrol> button when finished.</cmd>
                 <stepresult>The preview panel is updated to display selected languages for each
                     column: <image href="../images/languagesSelected.png" placement="break"
-                        scale="80" align="center">
+                        scale="60" align="center">
                         <alt>Excel Preview Panel with Languages Selected</alt>
                     </image>
                 </stepresult>

@@ -20,7 +20,7 @@
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Convertir Archivo CSV/Texto Delimitado a TMX</uicontrol>
           </menucascade> o haga clic en el botón <image height="16" href="../images/importDelimited.svg" placement="inline"/> <uicontrol>Convertir Archivo CSV/Texto Delimitado a TMX</uicontrol> de la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertCSV.png" placement="break" scale="80" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Convertir Archivo CSV a TMX</alt>
           </image> </stepresult>
       </step>
@@ -32,16 +32,16 @@
       </step>
       <step>
         <cmd>Utilice las listas desplegables <uicontrol>Juego de Caracteres</uicontrol>, <uicontrol>Separador de columnas</uicontrol> y <uicontrol>Delimitador dee Texto</uicontrol> para definir el formato del archivo que se va a convertir. Utilice el panel de vista previa para comprobar que los ajustes seleccionados son correctos. Utilice los cuadros de texto <uicontrol>Separador Personalizado</uicontrol> y <uicontrol>Delimitador Personalizado</uicontrol> para introducir valores no incluidos en las listas desplegables.</cmd>
-        <stepresult>Si se realiza correctamente, el panel de vista previa muestra los datos en formato tabular. Si se incluyen códigos de idioma en la primera fila del archivo CSV, se detectarán automáticamente y también se mostrarán resaltados en el panel, como se muestra en esta imagen: <image href="../images/correctSettings.png" placement="break" scale="80" align="center">
+        <stepresult>Si se realiza correctamente, el panel de vista previa muestra los datos en formato tabular. Si se incluyen códigos de idioma en la primera fila del archivo CSV, se detectarán automáticamente y también se mostrarán resaltados en el panel, como se muestra en esta imagen: <image href="../images/correctSettings.png" placement="break" scale="60" align="center">
             <alt>Ejemplo de Configuración Correcta</alt>
           </image> </stepresult>
         <steptroubleshooting>
           <p>Los caracteres inesperados, como los que se muestran en la imagen siguiente, indican una selección incorrecta del <xref href="../glossaries/character_set.dita">Juego de Caracteres</xref>.</p>
-          <image href="../images/wrongCharacterSet.png" placement="break" scale="80" align="center">
+          <image href="../images/wrongCharacterSet.png" placement="break" scale="60" align="center">
             <alt>Ejemplo de Juego de Caracteres Equivocado</alt>
           </image>
           <p>El texto legible que no se muestra como una tabla es un signo de selección incorrecta del separador de columnas o del delimitador de texto. Utilice el panel de vista previa para comprobar los valores correctos.</p>
-          <image href="../images/wrongDelimiters.png" placement="break" scale="80" align="center">
+          <image href="../images/wrongDelimiters.png" placement="break" scale="60" align="center">
             <alt>Ejemplo de Delimitadores Equivocados</alt>
           </image>
         </steptroubleshooting>

@@ -9,13 +9,13 @@
             <p>In files with three or more languages, it is possible that translations of a given
                 source text into different languages appear in different translation units, as
                 illustrated by the following image.</p>
-            <image href="../images/needs_consolidation.png" placement="break" scale="80"
+            <image href="../images/needs_consolidation.png" placement="break" scale="60"
                 align="center">
                 <alt>Needs Consolidation Example</alt>
             </image>
             <p>Consolidating units puts all related translations in the same unit. The following
                 image shows the consolidated version of the one above.</p>
-            <image href="../images/consolidated.png" placement="break" scale="80" align="center">
+            <image href="../images/consolidated.png" placement="break" scale="60" align="center">
                 <alt>Consolidated Units Example</alt>
             </image>
         </context>

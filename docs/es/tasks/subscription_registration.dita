@@ -6,7 +6,7 @@
   <taskbody>
     <steps>
       <step>
-        <cmd>Cuando abre TMXEditor desde los instaladores oficiales por primera vez, o cuando la <xref href="../glossaries/subscription_key.dita">clave de suscripción</xref> no está registrada, se muestra el siguiente cuadro de diálogo:<image href="../images/license_registration.png" placement="break" scale="80" align="center">
+        <cmd>Cuando abre TMXEditor desde los instaladores oficiales por primera vez, o cuando la <xref href="../glossaries/subscription_key.dita">clave de suscripción</xref> no está registrada, se muestra el siguiente cuadro de diálogo:<image href="../images/license_registration.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Registrar Suscripción</alt>
           </image> </cmd>
       </step>
@@ -22,9 +22,9 @@
       </step>
       <step>
         <cmd>Escriba los datos solicitados y haga clic en el botón <uicontrol>Solicitar Clave de Evaluación</uicontrol>.</cmd>
-        <stepresult>Si tiene éxito, se enviará un correo electrónico con la Clave de Evaluación solicitada a la dirección indicada y se mostrará el siguiente cuadro de diálogo: <image href="../images/request_received.png" placement="break" scale="80" align="center">
+        <stepresult>Si tiene éxito, se enviará un correo electrónico con la clave de evaluación solicitada a la dirección indicada y se mostrará el siguiente cuadro de diálogo: <image href="../images/request_received.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Solicitud Recibida</alt>
-          </image> Compruebe su correo electrónico y registre la Clave de Evaluación siguiendo las instrucciones indicadas anteriormente. </stepresult>
+          </image> Compruebe su correo electrónico y registre la clave de evaluación siguiendo las instrucciones indicadas anteriormente. </stepresult>
       </step>
     </steps>
   </taskbody>

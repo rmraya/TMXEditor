@@ -31,7 +31,9 @@
                         Subscription</uicontrol> button.</cmd>
                 <stepresult>On registration success, The following dialog appears:<image
                         href="../images/subscription_registered.png" placement="break" scale="80"
-                        align="center"><alt>Subscription Registered Dialog</alt></image>
+                        align="center">
+                        <alt>Subscription Registered Dialog</alt>
+                    </image>
                 </stepresult>
             </step>
         </steps>

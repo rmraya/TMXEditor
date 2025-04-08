@@ -9,7 +9,7 @@
                 <cmd>When you open TMXEditor from the official installers for the first time, or
                     when the <xref href="../glossaries/subscription_key.dita">subscription
                         key</xref> is not registered, the following dialog is displayed:<image
-                        href="../images/license_registration.png" placement="break" scale="80"
+                        href="../images/license_registration.png" placement="break" scale="60"
                         align="center">
                         <alt>Register Subscription Dialog</alt>
                     </image>
@@ -36,7 +36,7 @@
                         Key</uicontrol> button.</cmd>
                 <stepresult>On success, an email with the requested evaluation key will be sent to
                     the indicated address and the following dialog will be displayed: <image
-                        href="../images/request_received.png" placement="break" scale="80"
+                        href="../images/request_received.png" placement="break" scale="60"
                         align="center">
                         <alt>Request Received Dialog</alt>
                     </image> Check your email and register the evaluation key using the instructions
