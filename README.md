@@ -53,7 +53,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 - JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
 - Apache Ant 1.10.14 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
 - Node.js 20.11.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 5.4.3. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- TypeScript 5.8.3. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 

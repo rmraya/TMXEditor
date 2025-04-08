@@ -20,7 +20,7 @@
         "fileNeeds3Languages": "File needs at least 3 languages",
         "noUpdates": "There are currently no updates available",
         "subscriptionRegistered": "Subscription registered",
-        "messageReceived": "We received your request. An Evaluation Key was sent to the indicated email address.<br><br>Check your spam filter if you don't receive the Evaluation Key in the next few minutes.",
+        "messageReceived": "We received your request. An Evaluation Key was sent to the indicated email address.\n\nCheck your spam filter if you don't receive the Evaluation Key in the next few minutes.",
         "SaveChanges": "Save changes?",
         "UnsavedWarning": "Your changes  will be lost if you don't save them",
         "DontSave": "Don't Save",
@@ -104,7 +104,10 @@
         "langNotes": "'{0}' Notes",
         "tuAttributes": "TU Attributes",
         "tuProperties": "TU Properties",
-        "tuNotes": "TU Notes"
+        "tuNotes": "TU Notes",
+        "RemoveProperties": "Remove Property",
+        "RemoveNotes": "Remove Note",
+        "tagColors": "Tag colors will be adjusted on application restart"
     },
     "menu": {
         "FileMenu": "&File",
@@ -209,7 +212,8 @@
     "mergeFiles": {
         "selectMerged": "Select merged TMX file",
         "addMoreTmx": "Add more TMX files",
-        "selectFiles": "Select files"
+        "selectFiles": "Select files",
+        "removeFileText": "Remove File"
     },
     "addLanguage": {
         "selectLanguageWarning": "Select language"

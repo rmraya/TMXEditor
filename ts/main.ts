@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -14,7 +14,7 @@ class Main {
 
     electron = require('electron');
 
-    languages: any;
+    languages: Language[];
     isLoaded: boolean = false;
 
     topBar: HTMLDivElement;
@@ -36,6 +36,7 @@ class Main {
     currentCell: HTMLTableCellElement;
     currentContent: string;
     selectedUnits: string[] = [];
+    lastClickedRow: HTMLTableRowElement
 
     static readonly EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
         '<path d="M2.25 15.75H5.0625L13.3575 7.45502L10.545 4.64252L2.25 12.9375V15.75ZM3.75 13.56L10.545 6.76502L11.235 7.45502L4.44 14.25H3.75V13.56Z" />' +
@@ -59,16 +60,16 @@ class Main {
             this.electron.ipcRenderer.send('get-theme');
         });
         this.electron.ipcRenderer.send('get-tooltips');
-        this.electron.ipcRenderer.on('set-tooltips', (event, arg) => {
+        this.electron.ipcRenderer.on('set-tooltips', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setTooltips(arg);
         });
-        this.electron.ipcRenderer.on('set-theme', (event, arg) => {
-            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = css;
         });
         this.electron.ipcRenderer.on('save-edit', () => {
             this.saveEdit();
         });
-        this.electron.ipcRenderer.on('data-saved', (event, arg) => {
+        this.electron.ipcRenderer.on('data-saved', (event: Electron.IpcRendererEvent, arg: any) => {
             this.dataSaved(arg);
         });
         this.electron.ipcRenderer.on('cancel-edit', () => {
@@ -95,25 +96,25 @@ class Main {
         this.electron.ipcRenderer.on('end-waiting', () => {
             document.body.classList.remove("wait");
         });
-        this.electron.ipcRenderer.on('set-status', (event, arg) => {
-            this.setStatus(arg);
+        this.electron.ipcRenderer.on('set-status', (event: Electron.IpcRendererEvent, value: string) => {
+            this.setStatus(value);
         });
-        this.electron.ipcRenderer.on('status-changed', (event, arg) => {
+        this.electron.ipcRenderer.on('status-changed', (event: Electron.IpcRendererEvent, arg: any) => {
             this.statusChanged(arg);
         });
-        this.electron.ipcRenderer.on('update-languages', (event, arg) => {
-            this.updateLanguages(arg);
+        this.electron.ipcRenderer.on('update-languages', (event: Electron.IpcRendererEvent, langs: Language[]) => {
+            this.updateLanguages(langs);
         });
-        this.electron.ipcRenderer.on('file-loaded', (event, arg) => {
-            this.fileLoaded(arg);
+        this.electron.ipcRenderer.on('file-loaded', (event: Electron.IpcRendererEvent, fileInfo: any) => {
+            this.fileLoaded(fileInfo);
         });
         this.electron.ipcRenderer.on('file-closed', () => {
             this.fileClosed();
         });
-        this.electron.ipcRenderer.on('update-segments', (event, arg) => {
+        this.electron.ipcRenderer.on('update-segments', (event: Electron.IpcRendererEvent, arg: any) => {
             this.updateSegments(arg);
         });
-        this.electron.ipcRenderer.on('update-properties', (event, arg) => {
+        this.electron.ipcRenderer.on('update-properties', (event: Electron.IpcRendererEvent, arg: any) => {
             this.updateProperties(arg);
         });
         this.electron.ipcRenderer.on('set-first-page', () => {
@@ -131,8 +132,8 @@ class Main {
         this.electron.ipcRenderer.on('last-page', () => {
             this.lastPage();
         });
-        this.electron.ipcRenderer.on('unit-inserted', (event, arg) => {
-            this.unitInserted(arg);
+        this.electron.ipcRenderer.on('unit-inserted', (event: Electron.IpcRendererEvent, id: string) => {
+            this.unitInserted(id);
         });
         this.electron.ipcRenderer.on('force-save', () => {
             this.saveEdit();
@@ -972,10 +973,10 @@ class Main {
         this.electron.ipcRenderer.send('edit-notes', { id: this.currentId, notes: this.notes, type: this.attributesType });
     }
 
-    setStatus(arg: any): void {
+    setStatus(value: string): void {
         let status: HTMLDivElement = document.getElementById('status') as HTMLDivElement;
-        status.innerHTML = arg;
-        if (arg.length > 0) {
+        status.innerHTML = value;
+        if (value.length > 0) {
             status.style.display = 'block';
         } else {
             status.style.display = 'none';
@@ -992,12 +993,12 @@ class Main {
         }
     }
 
-    updateLanguages(arg: any): void {
-        this.languages = arg;
+    updateLanguages(langs: Language[]): void {
+        this.languages = langs;
         let row = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
         let length: number = this.languages.length;
         for (let index = 0; index < length; ++index) {
-            row = row + '<th>' + this.languages[index].code + ' - ' + arg[index].name + '</th>';
+            row = row + '<th>' + this.languages[index].code + ' - ' + langs[index].name + '</th>';
         }
         document.getElementById('tableHeader').innerHTML = row + '</tr>';
         document.getElementById('selectAll').addEventListener('click', () => {
@@ -1050,7 +1051,20 @@ class Main {
         for (let i = 0; i < length; i++) {
             rows = rows + arg.units[i];
         }
-        document.getElementById("tableBody").innerHTML = rows;
+        let tableBody: HTMLTableSectionElement = document.getElementById('tableBody') as HTMLTableSectionElement;
+        tableBody.innerHTML = rows;
+        this.lastClickedRow = undefined;
+        let tableRows: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        for (let i = 0; i < tableRows.length; i++) {
+            let row: HTMLTableRowElement = tableRows[i];
+            row.addEventListener('click', () => {
+                if (this.lastClickedRow) {
+                    this.lastClickedRow.classList.remove('currentRow');
+                }
+                row.classList.add('currentRow');
+                this.lastClickedRow = row;
+            });
+        }
         let cells = document.getElementsByClassName('lang');
         length = cells.length;
         for (let i = 0; i < length; i++) {
@@ -1094,7 +1108,7 @@ class Main {
         }
         if (id) {
             this.currentId = id;
-            this.electron.ipcRenderer.send('get-row-properties', { id: this.currentId });
+            this.electron.ipcRenderer.send('get-row-properties', this.currentId);
         }
     }
 
@@ -1329,9 +1343,9 @@ class Main {
         }
     }
 
-    unitInserted(arg: any): void {
+    unitInserted(id: string): void {
         let tr: HTMLTableRowElement = document.createElement('tr');
-        tr.id = arg;
+        tr.id = id;
 
         let td1: HTMLTableCellElement = document.createElement('td');
         td1.classList.add('fixed');

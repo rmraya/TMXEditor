@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -20,8 +20,8 @@ class Messages {
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
-        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
-            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = css;
         });
         this.electron.ipcRenderer.send('get-message-param');
         this.electron.ipcRenderer.on('set-message', (event: Electron.IpcRendererEvent, arg: any) => {

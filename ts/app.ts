@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -13,13 +13,13 @@
 import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_process";
 import { BrowserWindow, ClientRequest, IpcMainEvent, Menu, MenuItem, MessageBoxReturnValue, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, app, dialog, ipcMain, nativeTheme, net, session, shell } from "electron";
 import { IncomingMessage } from "electron/main";
-import { appendFileSync, existsSync, mkdirSync, readFile, readFileSync, unlinkSync, writeFile, writeFileSync } from "fs";
+import { appendFileSync, existsSync, mkdirSync, readFile, readFileSync, rmSync, unlinkSync, writeFile, writeFileSync } from "fs";
 import path from "path";
 import { TMReader } from "sdltm";
+import { LanguageUtils } from "typesbcp47";
 import { I18n } from "./i18n";
 import { Locations, Point } from "./locations";
 import { Tbx2Tmx } from "./tbx2tmx";
-import { LanguageUtils } from "typesbcp47";
 
 const SUCCESS: string = 'Success';
 const LOADING: string = 'Loading';
@@ -177,6 +177,11 @@ class App {
         });
 
         app.on('before-quit', (event: Event) => {
+            if (!App.saved) {
+                event.preventDefault();
+                App.close();
+                return;
+            }
             if (!this.ls.killed) {
                 event.preventDefault();
                 this.stopServer();
@@ -201,7 +206,9 @@ class App {
 
         app.on('ready', () => {
             App.createWindow();
-            App.mainWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'index.html'));
+            let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'index.html');
+            let url: URL = new URL('file://' + filePath);
+            App.mainWindow.loadURL(url.href);
             App.mainWindow.on('resize', () => {
                 App.saveDefaults();
             });
@@ -220,11 +227,17 @@ class App {
         });
 
         nativeTheme.on('updated', () => {
+            let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
+            let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
+            let highContrast: string = 'file://' + path.join(app.getAppPath(), 'css', 'highcontrast.css');
             if (App.currentPreferences.theme === 'system') {
                 if (nativeTheme.shouldUseDarkColors) {
-                    App.currentCss = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
+                    App.currentCss = dark;
                 } else {
-                    App.currentCss = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
+                    App.currentCss = light;
+                }
+                if (nativeTheme.shouldUseHighContrastColors) {
+                    App.currentCss = highContrast;
                 }
             }
             let windows: BrowserWindow[] = BrowserWindow.getAllWindows();
@@ -239,8 +252,8 @@ class App {
         ipcMain.on('licenses-clicked', () => {
             App.showLicenses({ from: 'about' });
         });
-        ipcMain.on('open-license', (event: IpcMainEvent, arg: any) => {
-            App.openLicense(arg);
+        ipcMain.on('open-license', (event: IpcMainEvent, type: string) => {
+            App.openLicense(type);
         });
         ipcMain.on('show-help', () => {
             App.showHelp();
@@ -252,22 +265,22 @@ class App {
             App.loadOptions = arg;
             App.loadSegments();
         });
-        ipcMain.on('get-cell-properties', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-cell-properties', (event: IpcMainEvent, arg: { id: string, lang: string }) => {
             App.getCellProperties(arg.id, arg.lang);
         });
-        ipcMain.on('editing-started', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('editing-started', (event: IpcMainEvent, arg: { id: string, lang: string }) => {
             App.editingCell = arg;
         });
         ipcMain.on('cancel-editing', () => {
             App.editingCell = {};
         });
-        ipcMain.on('saved-edit', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('saved-edit', (event: IpcMainEvent, arg: { id: string, lang: string }) => {
             if (arg.id === App.editingCell.id && arg.lang === App.editingCell.lang) {
                 App.editingCell = {};
             }
         });
-        ipcMain.on('get-row-properties', (event: IpcMainEvent, arg: any) => {
-            App.getRowProperties(arg.id);
+        ipcMain.on('get-row-properties', (event: IpcMainEvent, id: string) => {
+            App.getRowProperties(id);
         });
         ipcMain.on('edit-attributes', (event: IpcMainEvent, arg: any) => {
             this.editAttributes(arg);
@@ -313,7 +326,7 @@ class App {
         });
         ipcMain.on('save-preferences', (event: IpcMainEvent, arg: any) => {
             App.savePreferences(arg);
-            App.destroyWindow(App.settingsWindow);
+            App.settingsWindow.close();
             App.loadPreferences();
             App.setTheme();
         });
@@ -422,6 +435,9 @@ class App {
         ipcMain.on('add-tmx-files', (event: IpcMainEvent) => {
             this.addTmxFiles(event);
         });
+        ipcMain.on('get-remove-file-text', (event: IpcMainEvent) => {
+            event.sender.send('set-remove-file-text', App.i18n.getString('mergeFiles', 'removeFileText'));
+        });
         ipcMain.on('merge-tmx-files', (event: IpcMainEvent, arg: any) => {
             this.mergeTmxFiles(arg);
         });
@@ -506,206 +522,206 @@ class App {
         ipcMain.on('get-message-param', (event: IpcMainEvent) => {
             event.sender.send('set-message', App.messageParam);
         });
-        ipcMain.on('newFile-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('newFile-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.newFileWindow, arg);
         });
         ipcMain.on('close-newFile', () => {
-            App.destroyWindow(App.newFileWindow);
+            App.newFileWindow.close();
         });
-        ipcMain.on('about-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('about-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.aboutWindow, arg);
         });
         ipcMain.on('close-about', () => {
-            App.destroyWindow(App.aboutWindow);
+            App.aboutWindow.close();
         });
         ipcMain.on('system-info-clicked', () => {
             App.showSystemInfo();
         });
         ipcMain.on('close-systemInfo', () => {
-            App.destroyWindow(App.systemInfoWindow);
+            App.systemInfoWindow.close();
         });
-        ipcMain.on('systemInfo-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('systemInfo-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.systemInfoWindow, arg);
         });
         ipcMain.on('get-system-info', (event: IpcMainEvent) => {
             App.getSystemInformation(event);
         });
-        ipcMain.on('messages-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('messages-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.messagesWindow, arg);
         });
         ipcMain.on('close-messages', () => {
-            App.destroyWindow(App.messagesWindow);
+            App.messagesWindow.close();
         });
-        ipcMain.on('fileInfo-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('fileInfo-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.fileInfoWindow, arg);
         });
         ipcMain.on('close-fileInfo', () => {
-            App.destroyWindow(App.fileInfoWindow);
+            App.fileInfoWindow.close();
         });
-        ipcMain.on('licenses-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('licenses-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.licensesWindow, arg);
         });
         ipcMain.on('close-licenses', () => {
-            App.destroyWindow(App.licensesWindow);
+            App.licensesWindow.close();
         });
-        ipcMain.on('preferences-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('preferences-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.settingsWindow, arg);
         });
         ipcMain.on('close-preferences', () => {
-            App.destroyWindow(App.settingsWindow);
+            App.settingsWindow.close();
         });
-        ipcMain.on('attributes-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('attributes-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.attributesWindow, arg);
         });
         ipcMain.on('close-attributes', () => {
-            App.destroyWindow(App.attributesWindow);
+            App.attributesWindow.close();
         });
-        ipcMain.on('properties-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('properties-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.propertiesWindow, arg);
         });
         ipcMain.on('close-properties', () => {
-            App.destroyWindow(App.propertiesWindow);
+            App.propertiesWindow.close();
         });
-        ipcMain.on('addProperty-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('addProperty-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.addPropertyWindow, arg);
         });
         ipcMain.on('close-addProperty', () => {
-            App.destroyWindow(App.addPropertyWindow);
+            App.addPropertyWindow.close();
         });
-        ipcMain.on('notes-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('notes-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.notesWindow, arg);
         });
         ipcMain.on('close-notes', () => {
-            App.destroyWindow(App.notesWindow);
+            App.notesWindow.close();
         });
-        ipcMain.on('addNote-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('addNote-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.addNotesWindow, arg);
         });
         ipcMain.on('close-addNote', () => {
-            App.destroyWindow(App.addNotesWindow);
+            App.addNotesWindow.close();
         });
-        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.convertTBXWindow, arg);
         });
-        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.convertTBXWindow, arg);
         });
-        ipcMain.on('convertSdltm-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('convertSdltm-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.convertSDLTMWindow, arg);
         });
-        ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.convertCsvWindow, arg);
         });
-        ipcMain.on('convertExcel-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('convertExcel-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.convertExcelWindow, arg);
         });
         ipcMain.on('close-convertSdltm', () => {
-            App.destroyWindow(App.convertSDLTMWindow);
+            App.convertSDLTMWindow.close();
         });
         ipcMain.on('close-convertTbx', () => {
-            App.destroyWindow(App.convertTBXWindow);
+            App.convertTBXWindow.close();
         });
         ipcMain.on('close-convertCsv', () => {
-            App.destroyWindow(App.convertCsvWindow);
+            App.convertCsvWindow.close();
         });
         ipcMain.on('close-convertExcel', () => {
-            App.destroyWindow(App.convertExcelWindow);
+            App.convertExcelWindow.close();
         });
-        ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.csvLanguagesWindow, arg);
         });
-        ipcMain.on('excelLanguages-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('excelLanguages-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.excelLanguagesWindow, arg);
         });
         ipcMain.on('close-csvLanguages', () => {
-            App.destroyWindow(App.csvLanguagesWindow);
+            App.csvLanguagesWindow.close();
         });
         ipcMain.on('close-excelLanguages', () => {
-            App.destroyWindow(App.excelLanguagesWindow);
+            App.excelLanguagesWindow.close();
         });
-        ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.splitFileWindow, arg);
         });
         ipcMain.on('close-splitFile', () => {
-            App.destroyWindow(App.splitFileWindow);
+            App.splitFileWindow.close();
         });
-        ipcMain.on('mergeFiles-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('mergeFiles-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.mergeFilesWindow, arg);
         });
         ipcMain.on('close-mergeFiles', () => {
-            App.destroyWindow(App.mergeFilesWindow);
+            App.mergeFilesWindow.close();
         });
-        ipcMain.on('replaceText-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('replaceText-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.replaceTextWindow, arg);
         });
         ipcMain.on('close-replaceText', () => {
-            App.destroyWindow(App.replaceTextWindow);
+            App.replaceTextWindow.close();
         });
-        ipcMain.on('sortUnits-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('sortUnits-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.sortUnitsWindow, arg);
         });
-        ipcMain.on('filters-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('filters-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.filtersWindow, arg);
         });
-        ipcMain.on('addLanguage-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('addLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.addLanguageWindow, arg);
         });
         ipcMain.on('close-addLanguage', () => {
-            App.destroyWindow(App.addLanguageWindow);
+            App.addLanguageWindow.close();
         });
-        ipcMain.on('changeLanguage-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('changeLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.changeLanguageWindow, arg);
         });
         ipcMain.on('close-changeLanguage', () => {
-            App.destroyWindow(App.changeLanguageWindow);
+            App.changeLanguageWindow.close();
         });
-        ipcMain.on('removeLanguage-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('removeLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.removeLanguageWindow, arg);
         });
         ipcMain.on('close-removeLanguage', () => {
-            App.destroyWindow(App.removeLanguageWindow);
+            App.removeLanguageWindow.close();
         });
-        ipcMain.on('srcLanguage-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('srcLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.srcLanguageWindow, arg);
         });
         ipcMain.on('close-srcLanguage', () => {
-            App.destroyWindow(App.srcLanguageWindow);
+            App.srcLanguageWindow.close();
         });
-        ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.removeUntranslatedWindow, arg);
         });
-        ipcMain.on('removeSameAsSource-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('removeSameAsSource-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.removeSameAsSourceWindow, arg);
         });
         ipcMain.on('close-removeSameAsSource', () => {
-            App.destroyWindow(App.removeSameAsSourceWindow);
+            App.removeSameAsSourceWindow.close();
         });
         ipcMain.on('close-removeUntranslated', () => {
-            App.destroyWindow(App.removeUntranslatedWindow);
+            App.removeUntranslatedWindow.close();
         });
-        ipcMain.on('consolidate-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('consolidate-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.consolidateWindow, arg);
         });
         ipcMain.on('close-consolidate', () => {
-            App.destroyWindow(App.consolidateWindow);
+            App.consolidateWindow.close();
         });
         ipcMain.on('maintenance-dashboard', () => {
             App.showMaintenanceDashboard();
         });
-        ipcMain.on('maintenance-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('maintenance-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.maintenanceWindow, arg);
         });
         ipcMain.on('close-maintenance', () => {
-            App.destroyWindow(App.maintenanceWindow);
+            App.maintenanceWindow.close();
         });
         ipcMain.on('maintanance-tasks', (event: IpcMainEvent, arg: any) => {
             App.maintenanceTasks(arg);
         });
-        ipcMain.on('updates-height', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('updates-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
             App.setHeight(App.updatesWindow, arg)
         });
         ipcMain.on('close-updates', () => {
-            App.destroyWindow(App.updatesWindow);
+            App.updatesWindow.close();
         });
         ipcMain.on('get-versions', (event: IpcMainEvent) => {
             event.sender.send('set-versions', { current: app.getVersion(), latest: App.latestVersion });
@@ -716,24 +732,6 @@ class App {
         ipcMain.on('release-history', () => {
             App.showReleaseHistory();
         });
-
-        // Licenses
-
-        ipcMain.on('registerSubscription-height', (event: IpcMainEvent, arg: any) => {
-            App.setHeight(App.registerSubscriptionWindow, arg);
-        });
-        ipcMain.on('registerExpired-height', (event: IpcMainEvent, arg: any) => {
-            App.setHeight(App.registerExpiredWindow, arg);
-        });
-        ipcMain.on('requestEvaluation-height', (event: IpcMainEvent, arg: any) => {
-            App.setHeight(App.requestEvaluationWindow, arg);
-        });
-        ipcMain.on('newSubscription-height', (event: IpcMainEvent, arg: any) => {
-            App.setHeight(App.newSubscriptionWindow, arg);
-        });
-        ipcMain.on('close-newSubscription', () => {
-            App.destroyWindow(App.newSubscriptionWindow);
-        })
     } // end constructor
 
     stopServer(): void {
@@ -764,24 +762,6 @@ class App {
 
     static setHeight(window: BrowserWindow, arg: { width: number, height: number }) {
         window.setContentSize(arg.width, arg.height, true);
-    }
-
-    static destroyWindow(window: BrowserWindow): void {
-        if (window) {
-            try {
-                let parent: BrowserWindow = window.getParentWindow();
-                window.hide();
-                window.destroy();
-                window = undefined;
-                if (parent) {
-                    parent.focus();
-                } else {
-                    App.mainWindow.focus();
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
     }
 
     static sendTooltips(event: IpcMainEvent): void {
@@ -953,7 +933,11 @@ class App {
             new MenuItem({ label: App.i18n.getString('menu', 'ToggleFullScreen'), role: 'togglefullscreen' })
         ]);
         if (!app.isPackaged) {
-            viewMenu.append(new MenuItem({ label: App.i18n.getString('menu', 'ToggleDeveloperTools'), accelerator: 'F12', role: 'toggleDevTools' }));
+            viewMenu.append(new MenuItem({
+                label: App.i18n.getString('menu', 'ToggleDeveloperTools'), accelerator: 'F12', role: 'toggleDevTools', click: () => {
+                    BrowserWindow.getFocusedWindow().webContents.toggleDevTools();
+                }
+            }));
         }
         let tasksMenu: Menu = Menu.buildFromTemplate([
             { label: App.i18n.getString('menu', 'ChangeLanguage'), click: () => { App.changeLanguageCode(); } },
@@ -1128,7 +1112,9 @@ class App {
             }
         });
         App.aboutWindow.setMenu(null);
-        App.aboutWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'about.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'about.html');
+        let url: URL = new URL('file://' + filePath);
+        App.aboutWindow.loadURL(url.href);
         App.aboutWindow.once('ready-to-show', () => {
             App.aboutWindow.show();
         });
@@ -1186,7 +1172,9 @@ class App {
             }
         });
         this.systemInfoWindow.setMenu(null);
-        this.systemInfoWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'systemInfo.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'systemInfo.html');
+        let url: URL = new URL('file://' + filePath);
+        App.systemInfoWindow.loadURL(url.href);
         this.systemInfoWindow.once('ready-to-show', () => {
             this.systemInfoWindow.show();
         });
@@ -1228,7 +1216,9 @@ class App {
             }
         });
         App.licensesWindow.setMenu(null);
-        App.licensesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'licenses.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'licenses.html');
+        let url: URL = new URL('file://' + filePath);
+        App.licensesWindow.loadURL(url.href);
         App.licensesWindow.once('ready-to-show', () => {
             App.licensesWindow.show();
         });
@@ -1238,32 +1228,33 @@ class App {
         App.setLocation(App.licensesWindow, 'licenses.html');
     }
 
-    static openLicense(arg: any): void {
+    static openLicense(type: string): void {
         let licenseFile = '';
         let title = '';
-        switch (arg.type) {
+        switch (type) {
             case 'TMXEditor':
             case "BCP47J":
             case "XMLJava":
             case "sdltm":
             case "TMXValidator":
-            case "typesxml": licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'EclipsePublicLicense1.0.html');
+            case "typesxml":
+                licenseFile = 'EclipsePublicLicense1.0.html';
                 title = 'Eclipse Public License 1.0';
                 break;
             case "electron":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'electron.txt');
+                licenseFile = 'electron.txt';
                 title = 'MIT License';
                 break;
             case "SLF4J":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'slf4j.txt');
+                licenseFile = 'slf4j.txt';
                 title = 'MIT License';
                 break;
             case "SQLite":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'Apache2.0.html');
+                licenseFile = 'Apache2.0.html';
                 title = 'Apache 2.0';
                 break;
             case "Java":
-                licenseFile = 'file://' + path.join(app.getAppPath(), 'html', 'licenses', 'java.html');
+                licenseFile = 'java.html';
                 title = 'GPL2 with Classpath Exception';
                 break;
             default:
@@ -1283,7 +1274,9 @@ class App {
             }
         });
         licenseWindow.setMenu(null);
-        licenseWindow.loadURL(licenseFile);
+        let filePath: string = path.join(app.getAppPath(), 'html', 'licenses', licenseFile);
+        let url: URL = new URL('file://' + filePath);
+        licenseWindow.loadURL(url.href);
         licenseWindow.once('ready-to-show', () => {
             licenseWindow.show();
         });
@@ -1522,12 +1515,17 @@ class App {
             });
         }
         App.currentPreferences = preferences;
+        BrowserWindow.getAllWindows().forEach((window: BrowserWindow) => {
+            window.webContents.send('set-themw', preferences.theme);
+        });
     }
 
     static loadPreferences() {
         let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
         let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
-        let preferencesFile = path.join(app.getPath('appData'), app.name, 'preferences.json');
+        let highContrast: string = 'file://' + path.join(app.getAppPath(), 'css', 'highcontrast.css');
+        let oldCss: string = App.currentCss;
+        let preferencesFile: string = path.join(app.getPath('appData'), app.name, 'preferences.json');
         if (!existsSync(preferencesFile)) {
             let locales: string[] = app.getPreferredSystemLanguages();
             let appLang: string = 'en';
@@ -1558,12 +1556,37 @@ class App {
             } else {
                 App.currentCss = light;
             }
+            if (nativeTheme.shouldUseHighContrastColors) {
+                App.currentCss = highContrast;
+            }
         }
         if (App.currentPreferences.theme === 'dark') {
             App.currentCss = dark;
         }
         if (App.currentPreferences.theme === 'light') {
             App.currentCss = light;
+        }
+        if (App.currentPreferences.theme === 'highcontrast') {
+            App.currentCss = highContrast;
+        }
+        if ((oldCss === dark || oldCss === light) && App.currentCss === highContrast) {
+            App.deleteAllTags('#003e66;', '#ffffff');
+        }
+        if (oldCss === highContrast && (App.currentCss === light || App.currentCss === dark)) {
+            App.deleteAllTags('#009688', '#ffffff');
+        }
+    }
+
+    static deleteAllTags(background: string, foreground: string): void {
+        let tagsFolder: string = path.join(app.getPath('userData'), 'images');
+        if (existsSync(tagsFolder)) {
+            rmSync(tagsFolder, { recursive: true, force: true });
+        }
+        mkdirSync(tagsFolder);
+        let colors: any = { background: background, foreground: foreground };
+        writeFileSync(path.join(app.getPath('userData'), 'images', 'tagColors.json'), JSON.stringify(colors, null, 2));
+        if (app.isReady()) {
+            App.showMessage({ type: 'info', message: App.i18n.getString('App', 'tagColors') });
         }
     }
 
@@ -1636,7 +1659,7 @@ class App {
     editAttributes(arg: any): void {
         App.attributesWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 670,
+            width: 700,
             height: 450,
             minimizable: false,
             maximizable: false,
@@ -1650,7 +1673,9 @@ class App {
         });
         App.attributesArg = arg;
         App.attributesWindow.setMenu(null);
-        App.attributesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'attributes.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'attributes.html');
+        let url: URL = new URL('file://' + filePath);
+        App.attributesWindow.loadURL(url.href);
         App.attributesWindow.once('ready-to-show', () => {
             App.attributesWindow.show();
         });
@@ -1662,7 +1687,7 @@ class App {
 
     saveAttributes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.destroyWindow(App.attributesWindow);
+        App.attributesWindow.close();
         arg.command = 'setAttributes';
         App.sendRequest(arg,
             (data: any) => {
@@ -1702,9 +1727,12 @@ class App {
                 contextIsolation: false
             }
         });
+        arg.removeText = App.i18n.getString('App', 'RemoveProperties');
         App.propertiesArg = arg;
         App.propertiesWindow.setMenu(null);
-        App.propertiesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'properties.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'properties.html');
+        let url: URL = new URL('file://' + filePath);
+        App.propertiesWindow.loadURL(url.href);
         App.propertiesWindow.once('ready-to-show', () => {
             App.propertiesWindow.show();
         });
@@ -1732,7 +1760,9 @@ class App {
             }
         });
         App.addPropertyWindow.setMenu(null);
-        App.addPropertyWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'addProperty.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'addProperty.html');
+        let url: URL = new URL('file://' + filePath);
+        App.addPropertyWindow.loadURL(url.href);
         App.addPropertyWindow.once('ready-to-show', () => {
             App.addPropertyWindow.show();
         });
@@ -1743,13 +1773,13 @@ class App {
     }
 
     addNewProperty(arg: any): void {
-        App.destroyWindow(App.addPropertyWindow);
+        App.addPropertyWindow.close();
         App.propertyEvent.sender.send('set-new-property', arg);
     }
 
     saveProperties(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.destroyWindow(App.propertiesWindow);
+        App.propertiesWindow.close();
         arg.command = 'setProperties';
         App.sendRequest(arg,
             (data: any) => {
@@ -1789,9 +1819,12 @@ class App {
                 contextIsolation: false
             }
         });
+        arg.removeText = App.i18n.getString('App', 'RemoveNotes');
         App.notesArg = arg;
         App.notesWindow.setMenu(null);
-        App.notesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'notes.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'notes.html');
+        let url: URL = new URL('file://' + filePath);
+        App.notesWindow.loadURL(url.href);
         App.notesWindow.once('ready-to-show', () => {
             App.notesWindow.show();
         });
@@ -1818,7 +1851,9 @@ class App {
             }
         });
         App.addNotesWindow.setMenu(null);
-        App.addNotesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'addNote.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'addNote.html');
+        let url: URL = new URL('file://' + filePath);
+        App.addNotesWindow.loadURL(url.href);
         App.addNotesWindow.once('ready-to-show', () => {
             App.addNotesWindow.show();
         });
@@ -1830,12 +1865,12 @@ class App {
 
     addNewNote(note: string): void {
         App.addNotesWindow.getParentWindow().webContents.send('set-new-note', note);
-        App.destroyWindow(App.addNotesWindow);
+        App.addNotesWindow.close();
     }
 
     saveNotes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
-        App.destroyWindow(App.notesWindow);
+        App.notesWindow.close();
         arg.command = 'setNotes';
         App.sendRequest(arg,
             (data: any) => {
@@ -1876,10 +1911,11 @@ class App {
             }
         });
         App.settingsWindow.setMenu(null);
-        App.settingsWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'preferences.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'preferences.html');
+        let url: URL = new URL('file://' + filePath);
+        App.settingsWindow.loadURL(url.href);
         App.settingsWindow.once('ready-to-show', () => {
             App.settingsWindow.show();
-            // App.settingsWindow.webContents.openDevTools();
         });
         App.settingsWindow.on('close', () => {
             App.mainWindow.focus();
@@ -1907,7 +1943,9 @@ class App {
             }
         });
         App.newFileWindow.setMenu(null);
-        App.newFileWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'newFile.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'newFile.html');
+        let url: URL = new URL('file://' + filePath);
+        App.newFileWindow.loadURL(url.href);
         App.newFileWindow.once('ready-to-show', () => {
             App.newFileWindow.show();
         });
@@ -1918,7 +1956,7 @@ class App {
     }
 
     createFile(arg: any): void {
-        App.destroyWindow(App.newFileWindow);
+        App.newFileWindow.close();
         if (App.currentFile !== '' && !App.saved) {
             let response = dialog.showMessageBoxSync(App.mainWindow, {
                 type: 'question',
@@ -1977,7 +2015,7 @@ class App {
                             App.closeFile();
                         }
                         if (App.shouldQuit) {
-                            App.close();
+                            app.quit();
                         }
                         return;
                     } else if (App.currentStatus.status === SAVING) {
@@ -2057,7 +2095,9 @@ class App {
             }
         });
         App.convertCsvWindow.setMenu(null);
-        App.convertCsvWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'convertCSV.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'convertCSV.html');
+        let url: URL = new URL('file://' + filePath);
+        App.convertCsvWindow.loadURL(url.href);
         App.convertCsvWindow.once('ready-to-show', () => {
             App.convertCsvWindow.show();
         });
@@ -2083,7 +2123,9 @@ class App {
             }
         });
         App.convertTBXWindow.setMenu(null);
-        App.convertTBXWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'convertTBX.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'convertTBX.html');
+        let url: URL = new URL('file://' + filePath);
+        App.convertTBXWindow.loadURL(url.href);
         App.convertTBXWindow.once('ready-to-show', () => {
             App.convertTBXWindow.show();
         });
@@ -2109,7 +2151,9 @@ class App {
             }
         });
         App.convertSDLTMWindow.setMenu(null);
-        App.convertSDLTMWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'convertSDLTM.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'convertSDLTM.html');
+        let url: URL = new URL('file://' + filePath);
+        App.convertSDLTMWindow.loadURL(url.href);
         App.convertSDLTMWindow.once('ready-to-show', () => {
             App.convertSDLTMWindow.show();
         });
@@ -2135,7 +2179,9 @@ class App {
             }
         });
         App.convertExcelWindow.setMenu(null);
-        App.convertExcelWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'convertExcel.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'convertExcel.html');
+        let url: URL = new URL('file://' + filePath);
+        App.convertExcelWindow.loadURL(url.href);
         App.convertExcelWindow.once('ready-to-show', () => {
             App.convertExcelWindow.show();
         });
@@ -2146,7 +2192,7 @@ class App {
     }
 
     convertCsvTmx(arg: any): void {
-        App.destroyWindow(App.convertCsvWindow);
+        App.convertCsvWindow.close();
         arg.command = 'convertCsv';
         App.sendRequest(arg,
             (data: any) => {
@@ -2170,7 +2216,7 @@ class App {
     }
 
     convertTbxTmx(arg: any): void {
-        App.destroyWindow(App.convertTBXWindow);
+        App.convertTBXWindow.close();
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Converting'));
         try {
             let converter: Tbx2Tmx = new Tbx2Tmx(app.getName(), app.getVersion());
@@ -2190,7 +2236,7 @@ class App {
     }
 
     convertSdltmTmx(arg: any): void {
-        App.destroyWindow(App.convertSDLTMWindow);
+        App.convertSDLTMWindow.close();
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Converting'));
         try {
             new TMReader(arg.sdltmFile, arg.tmxFile, { productName: app.name, version: app.getVersion() }, (data: any) => {
@@ -2221,7 +2267,7 @@ class App {
     }
 
     convertExcelTmx(arg: any): void {
-        App.destroyWindow(App.convertExcelWindow);
+        App.convertExcelWindow.close();
         arg.command = 'convertExcel';
         App.sendRequest(arg,
             (data: any) => {
@@ -2406,7 +2452,9 @@ class App {
             }
         });
         App.csvLanguagesWindow.setMenu(null);
-        App.csvLanguagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'csvLanguages.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'csvLanguages.html');
+        let url: URL = new URL('file://' + filePath);
+        App.csvLanguagesWindow.loadURL(url.href);
         App.csvLanguagesWindow.once('ready-to-show', () => {
             App.csvLanguagesWindow.show();
         });
@@ -2417,7 +2465,7 @@ class App {
     }
 
     setCsvLanguages(arg: any): void {
-        App.destroyWindow(App.csvLanguagesWindow);
+        App.csvLanguagesWindow.close();
         App.csvEvent.sender.send('csv-languages', arg);
     }
 
@@ -2445,7 +2493,9 @@ class App {
             }
         });
         App.excelLanguagesWindow.setMenu(null);
-        App.excelLanguagesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'excelLanguages.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'excelLanguages.html');
+        let url: URL = new URL('file://' + filePath);
+        App.excelLanguagesWindow.loadURL(url.href);
         App.excelLanguagesWindow.once('ready-to-show', () => {
             App.excelLanguagesWindow.show();
         });
@@ -2456,7 +2506,7 @@ class App {
     }
 
     setExcelLanguages(arg: any): void {
-        App.destroyWindow(App.excelLanguagesWindow);
+        App.excelLanguagesWindow.close();
         App.excelEvent.sender.send('excel-languages', arg);
     }
 
@@ -2606,10 +2656,11 @@ class App {
             }
         });
         App.fileInfoWindow.setMenu(null);
-        App.fileInfoWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'fileInfo.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'fileInfo.html');
+        let url: URL = new URL('file://' + filePath);
+        App.fileInfoWindow.loadURL(url.href);
         App.fileInfoWindow.once('ready-to-show', () => {
             App.fileInfoWindow.show();
-            // App.fileInfoWindow.webContents.openDevTools();
         });
         App.fileInfoWindow.on('close', () => {
             App.mainWindow.focus();
@@ -2680,6 +2731,8 @@ class App {
                     }
                     data.fileLanguages = App.fileLanguages;
                     data.fileLanguages.unshift({ code: '*all*', name: App.i18n.getString('App', 'anyLanguage') });
+                    data.removeProperties = App.i18n.getString('App', 'RemoveProperties');
+                    data.removeNotes = App.i18n.getString('App', 'RemoveNotes');
                     event.sender.send('set-file-properties', data);
                 } else {
                     App.showMessage({ type: 'error', message: data.reason });
@@ -2837,7 +2890,9 @@ class App {
             }
         });
         App.splitFileWindow.setMenu(null);
-        App.splitFileWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'splitFile.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'splitFile.html');
+        let url: URL = new URL('file://' + filePath);
+        App.splitFileWindow.loadURL(url.href);
         App.splitFileWindow.once('ready-to-show', () => {
             App.splitFileWindow.show();
         });
@@ -2848,7 +2903,7 @@ class App {
     }
 
     splitTmx(arg: any): void {
-        App.destroyWindow(App.splitFileWindow);
+        App.splitFileWindow.close();
         arg.command = 'splitFile';
         App.sendRequest(arg,
             (data: any) => {
@@ -2932,7 +2987,9 @@ class App {
             }
         });
         App.mergeFilesWindow.setMenu(null);
-        App.mergeFilesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'mergeFiles.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'mergeFiles.html');
+        let url: URL = new URL('file://' + filePath);
+        App.mergeFilesWindow.loadURL(url.href);
         App.mergeFilesWindow.once('ready-to-show', () => {
             App.mergeFilesWindow.show();
         });
@@ -2943,7 +3000,7 @@ class App {
     }
 
     mergeTmxFiles(arg: any): void {
-        App.destroyWindow(App.mergeFilesWindow);
+        App.mergeFilesWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'mergeFiles';
         App.sendRequest(arg,
@@ -3087,7 +3144,9 @@ class App {
             }
         });
         App.replaceTextWindow.setMenu(null);
-        App.replaceTextWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'searchReplace.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'searchReplace.html');
+        let url: URL = new URL('file://' + filePath);
+        App.replaceTextWindow.loadURL(url.href);
         App.replaceTextWindow.once('ready-to-show', () => {
             App.replaceTextWindow.show();
         });
@@ -3098,7 +3157,7 @@ class App {
     }
 
     replaceRequest(arg: any): void {
-        App.destroyWindow(App.replaceTextWindow);
+        App.replaceTextWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'replaceText';
         App.sendRequest(arg,
@@ -3176,7 +3235,9 @@ class App {
             }
         });
         App.sortUnitsWindow.setMenu(null);
-        App.sortUnitsWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'sortUnits.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'sortUnits.html');
+        let url: URL = new URL('file://' + filePath);
+        App.sortUnitsWindow.loadURL(url.href);
         App.sortUnitsWindow.once('ready-to-show', () => {
             App.sortUnitsWindow.show();
         });
@@ -3188,14 +3249,14 @@ class App {
 
     setSort(arg: any): void {
         App.sortOptions = arg;
-        App.destroyWindow(App.sortUnitsWindow);
+        App.sortUnitsWindow.close();
         App.loadSegments();
         App.mainWindow.webContents.send('sort-on');
     }
 
     clearSort(): void {
         App.sortOptions = {};
-        App.destroyWindow(App.sortUnitsWindow);
+        App.sortUnitsWindow.close();
         App.loadSegments();
         App.mainWindow.webContents.send('sort-off');
     }
@@ -3220,7 +3281,9 @@ class App {
             }
         });
         App.filtersWindow.setMenu(null);
-        App.filtersWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'filters.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'filters.html');
+        let url: URL = new URL('file://' + filePath);
+        App.filtersWindow.loadURL(url.href);
         App.filtersWindow.once('ready-to-show', () => {
             App.filtersWindow.show();
         });
@@ -3232,7 +3295,7 @@ class App {
 
     setFilterOptions(arg: any): void {
         App.filterOptions = arg;
-        App.destroyWindow(App.filtersWindow);
+        App.filtersWindow.close();
         this.setFirstPage();
         App.loadSegments();
         App.mainWindow.webContents.send('filters-on');
@@ -3245,7 +3308,7 @@ class App {
 
     clearFilterOptions(): void {
         App.filterOptions = {};
-        App.destroyWindow(App.filtersWindow);
+        App.filtersWindow.close();
         this.setFirstPage();
         App.loadSegments();
         App.mainWindow.webContents.send('filters-off');
@@ -3340,7 +3403,9 @@ class App {
             }
         });
         App.changeLanguageWindow.setMenu(null);
-        App.changeLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'changeLanguage.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'changeLanguage.html');
+        let url: URL = new URL('file://' + filePath);
+        App.changeLanguageWindow.loadURL(url.href);
         App.changeLanguageWindow.once('ready-to-show', () => {
             App.changeLanguageWindow.show();
         });
@@ -3351,7 +3416,7 @@ class App {
     }
 
     changeLanguage(arg: any): void {
-        App.destroyWindow(App.changeLanguageWindow);
+        App.changeLanguageWindow.close();
         arg.command = 'changeLanguage';
         App.sendRequest(arg,
             (data: any) => {
@@ -3433,7 +3498,9 @@ class App {
             }
         });
         App.removeLanguageWindow.setMenu(null);
-        App.removeLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'removeLanguage.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'removeLanguage.html');
+        let url: URL = new URL('file://' + filePath);
+        App.removeLanguageWindow.loadURL(url.href);
         App.removeLanguageWindow.once('ready-to-show', () => {
             App.removeLanguageWindow.show();
         });
@@ -3444,7 +3511,7 @@ class App {
     }
 
     removeLanguage(arg: any): void {
-        App.destroyWindow(App.removeLanguageWindow);
+        App.removeLanguageWindow.close();
         App.sendRequest({ command: 'removeLanguage', lang: arg },
             (data: any) => {
                 if (data.status === SUCCESS) {
@@ -3482,7 +3549,9 @@ class App {
             }
         });
         App.addLanguageWindow.setMenu(null);
-        App.addLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'addLanguage.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'addLanguage.html');
+        let url: URL = new URL('file://' + filePath);
+        App.addLanguageWindow.loadURL(url.href);
         App.addLanguageWindow.once('ready-to-show', () => {
             App.addLanguageWindow.show();
         });
@@ -3493,7 +3562,7 @@ class App {
     }
 
     addLanguage(arg: any): void {
-        App.destroyWindow(App.addLanguageWindow);
+        App.addLanguageWindow.close();
         App.sendRequest({ command: 'addLanguage', lang: arg },
             (data: any) => {
                 if (data.status === SUCCESS) {
@@ -3531,7 +3600,9 @@ class App {
             }
         });
         App.srcLanguageWindow.setMenu(null);
-        App.srcLanguageWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'srcLanguage.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'srcLanguage.html');
+        let url: URL = new URL('file://' + filePath);
+        App.srcLanguageWindow.loadURL(url.href);
         App.srcLanguageWindow.once('ready-to-show', () => {
             App.srcLanguageWindow.show();
         });
@@ -3604,7 +3675,7 @@ class App {
     }
 
     changeSourceLanguage(arg: any): void {
-        App.destroyWindow(App.srcLanguageWindow);
+        App.srcLanguageWindow.close();
         App.sendRequest({ command: 'setSrcLanguage', lang: arg },
             (data: any) => {
                 App.saved = false;
@@ -3698,7 +3769,9 @@ class App {
             }
         });
         App.removeUntranslatedWindow.setMenu(null);
-        App.removeUntranslatedWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'removeUntranslated.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'removeUntranslated.html');
+        let url: URL = new URL('file://' + filePath);
+        App.removeUntranslatedWindow.loadURL(url.href);
         App.removeUntranslatedWindow.once('ready-to-show', () => {
             App.removeUntranslatedWindow.show();
         });
@@ -3728,7 +3801,9 @@ class App {
             }
         });
         App.removeSameAsSourceWindow.setMenu(null);
-        App.removeSameAsSourceWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'removeSameAsSource.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'removeSameAsSource.html');
+        let url: URL = new URL('file://' + filePath);
+        App.removeSameAsSourceWindow.loadURL(url.href);
         App.removeSameAsSourceWindow.once('ready-to-show', () => {
             App.removeSameAsSourceWindow.show();
         });
@@ -3739,7 +3814,7 @@ class App {
     }
 
     removeUntranslated(arg: any): void {
-        App.destroyWindow(App.removeUntranslatedWindow);
+        App.removeUntranslatedWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'removeUntranslated';
         App.sendRequest(arg,
@@ -3785,7 +3860,7 @@ class App {
     }
 
     removeSameAsSource(arg: any): void {
-        App.destroyWindow(App.removeSameAsSourceWindow);
+        App.removeSameAsSourceWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'removeSameAsSource';
         App.sendRequest(arg,
@@ -3901,7 +3976,9 @@ class App {
             }
         });
         App.consolidateWindow.setMenu(null);
-        App.consolidateWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'consolidate.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'consolidate.html');
+        let url: URL = new URL('file://' + filePath);
+        App.consolidateWindow.loadURL(url.href);
         App.consolidateWindow.once('ready-to-show', () => {
             App.consolidateWindow.show();
         });
@@ -3912,7 +3989,7 @@ class App {
     }
 
     consolidateUnits(arg: any): void {
-        App.destroyWindow(App.consolidateWindow);
+        App.consolidateWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'consolidateUnits';
         App.sendRequest(arg,
@@ -3977,7 +4054,9 @@ class App {
             }
         });
         App.maintenanceWindow.setMenu(null);
-        App.maintenanceWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'maintenance.html'));
+        let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'maintenance.html');
+        let url: URL = new URL('file://' + filePath);
+        App.maintenanceWindow.loadURL(url.href);
         App.maintenanceWindow.once('ready-to-show', () => {
             App.maintenanceWindow.show();
         });
@@ -3988,7 +4067,7 @@ class App {
     }
 
     static maintenanceTasks(arg: any): void {
-        App.destroyWindow(App.maintenanceWindow);
+        App.maintenanceWindow.close();
         App.mainWindow.webContents.send('start-waiting');
         arg.command = 'processTasks';
         App.sendRequest(arg,
@@ -4055,7 +4134,7 @@ class App {
             session: session.defaultSession
         });
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Downloading'));
-        App.updatesWindow.destroy();
+        App.updatesWindow.close();
         request.on('response', (response: IncomingMessage) => {
             let fileSize = Number.parseInt(response.headers['content-length'] as string);
             let received: number = 0;
@@ -4150,7 +4229,9 @@ class App {
                                 }
                             });
                             App.updatesWindow.setMenu(null);
-                            App.updatesWindow.loadURL('file://' + path.join(app.getAppPath(), 'html', App.lang, 'updates.html'));
+                            let filePath: string = path.join(app.getAppPath(), 'html', App.lang, 'updates.html');
+                            let url: URL = new URL('file://' + filePath);
+                            App.updatesWindow.loadURL(url.href);
                             App.updatesWindow.once('ready-to-show', () => {
                                 App.updatesWindow.show();
                                 App.updatesWindow.center();

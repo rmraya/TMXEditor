@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -14,7 +14,7 @@ import { readFileSync } from "fs";
 
 export class I18n {
 
-    private resources: any;
+    private readonly resources: any;
 
     constructor(resourcesFile: string) {
         let data: Buffer = readFileSync(resourcesFile);

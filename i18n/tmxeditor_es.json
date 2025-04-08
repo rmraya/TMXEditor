@@ -54,7 +54,7 @@
     "Splitting": "Dividiendo...",
     "OpenSDLTM": "Abrir Archivo SDLTM",
     "MaintenanceError": "Error desconocido al realizar mantenimiento",
-    "messageReceived": "Hemos recibido su solicitud. Se ha enviado una clave de evaluación a la dirección de correo electrónico indicada.<br><br> Compruebe su filtro de correo no deseado si no recibe la clave de suscripción de evaluación en los próximos minutos.",
+    "messageReceived": "Hemos recibido su solicitud. Se ha enviado una clave de evaluación a la dirección de correo electrónico indicada.\n\nCompruebe su filtro de correo no deseado si no recibe la clave de suscripción de evaluación en los próximos minutos.",
     "UnitsTooltip": "Introduzca el número de unidades/página y pulse INTRO",
     "SDLTMFile": "Archivo SDLTM",
     "noUpdates": "No hay actualizaciones disponibles",
@@ -104,7 +104,10 @@
     "Converting": "Convirtiendo...",
     "UnitsLabel": "Unidades: ",
     "SaveChanges": "¿Guardar cambios?",
-    "fileAttributesSaved": "Atributos de archivo guardados"
+    "fileAttributesSaved": "Atributos de archivo guardados",
+    "RemoveProperties": "Eliminar Propiedad",
+    "RemoveNotes": "Eliminar Nota"   ,
+    "tagColors": "El color de las etiquetas se actualizará en el próximo inicio"
   },
   "registerExpired": {"enterSubscription": "Introduzca la clave de suscripción"},
   "excelLanguages": {"selectAllLanguages": "Seleccione todos los idiomas"},
@@ -205,7 +208,8 @@
   "mergeFiles": {
     "selectFiles": "Seleccione archivos",
     "selectMerged": "Seleccione archivo TMX combinado",
-    "addMoreTmx": "Añadir más archivos TMX"
+    "addMoreTmx": "Añadir más archivos TMX",
+    "removeFileText": "Eliminar Archivo"
   },
   "requestEvaluation": {
     "enterEmail": "Introduzca email",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -12,9 +12,11 @@
 
 package com.maxprograms.tmxserver.tmx;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,6 +33,8 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
 import com.maxprograms.tmxserver.utils.TextUtils;
@@ -225,9 +229,26 @@ public class TmxUtils {
 			}
 		}
 		if (!sb.isEmpty()) {
-			result = result.substring(0, result.length() - sb.length()) + "<span " + SPACE + ">" + sb.toString() + "</span>";
+			result = result.substring(0, result.length() - sb.length()) + "<span " + SPACE + ">" + sb.toString()
+					+ "</span>";
 		}
 		return result;
+	}
+
+	public static JSONObject readJSON(File json) throws IOException, JSONException {
+		StringBuilder builder = new StringBuilder();
+		try (FileReader reader = new FileReader(json, StandardCharsets.UTF_8)) {
+			try (BufferedReader buffer = new BufferedReader(reader)) {
+				String line = "";
+				while ((line = buffer.readLine()) != null) {
+					if (!builder.isEmpty()) {
+						builder.append('\n');
+					}
+					builder.append(line);
+				}
+			}
+		}
+		return new JSONObject(builder.toString());
 	}
 
 	protected static String highlight(String string, String target, boolean caseSensitive, String filterLanguage) {
@@ -278,9 +299,26 @@ public class TmxUtils {
 		File folder = new File(getWorkFolder(), "images");
 		if (!folder.exists()) {
 			Files.createDirectories(folder.toPath());
+			File tagColors = new File(folder, "tagColors.json");
+			JSONObject colors = new JSONObject();
+			colors.put("background", "#009688");
+			colors.put("foreground", "#ffffff");
+			try (FileOutputStream out = new FileOutputStream(tagColors)) {
+				out.write(colors.toString(2).getBytes(StandardCharsets.UTF_8));
+			}
 		}
 		File f = new File(folder, tag + ".svg");
 		if (!f.exists()) {
+			File colorsFile = new File(folder, "tagColors.json");
+			if (!colorsFile.exists()) {
+				JSONObject colors = new JSONObject();
+				colors.put("background", "#009688");
+				colors.put("foreground", "#ffffff");
+				try (FileOutputStream out = new FileOutputStream(colorsFile)) {
+					out.write(colors.toString(2).getBytes(StandardCharsets.UTF_8));
+				}
+			}
+			JSONObject colors = readJSON(colorsFile);
 			int width = 16;
 			if (tag >= 10) {
 				width = 22;
@@ -291,9 +329,10 @@ public class TmxUtils {
 			String svg = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 					+ "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"" + (width + 1)
 					+ "px\" height=\"17px\" version=\"1.1\">\n" + "   <g>\n"
-					+ "      <rect style=\"fill:#009688\" width=\"" + width
+					+ "      <rect style=\"fill:" + colors.getString("background") + "\" width=\"" + width
 					+ "px\" height=\"16px\" x=\"1\" y=\"1\" rx=\"3\" ry=\"3\" />\n"
-					+ "      <text style=\"font-size:12px;font-style:normal;font-weight:normal;text-align:center;font-family:Sans;\"  x=\"6\" y=\"14\" fill=\"#ffffff\" fill-opacity=\"1\">\n"
+					+ "      <text style=\"font-size:12px;font-style:normal;font-weight:normal;text-align:center;font-family:Sans;\"  x=\"6\" y=\"14\" fill=\""
+					+ colors.getString("foreground") + "\" fill-opacity=\"1\">\n"
 					+ "         <tspan>" + tag + "</tspan>\n" + "      </text>\n" + "   </g>\n" + "</svg>";
 			try (FileOutputStream out = new FileOutputStream(f)) {
 				out.write(svg.getBytes(StandardCharsets.UTF_8));

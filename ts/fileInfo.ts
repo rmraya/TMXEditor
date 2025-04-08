@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2024 Maxprograms.
+ * Copyright (c) 2018-2025 Maxprograms.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 1.0
@@ -15,14 +15,16 @@ class FileInfo {
     electron = require('electron');
     adminLang: string = '';
     properties: Array<string[]>;
-    propertiesChecks: HTMLInputElement[];
     notes: string[];
     notesChecks: HTMLInputElement[];
 
+    removePropertiesText: string = '';
+    removeNotesText: string = '';
+
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
-        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
-            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        this.electron.ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = css;
         });
         this.electron.ipcRenderer.send('file-properties');
         this.electron.ipcRenderer.on('set-file-properties', (event: Electron.IpcRendererEvent, arg: any) => {
@@ -56,9 +58,6 @@ class FileInfo {
             this.properties.push(prop);
             this.drawProperties();
         });
-        document.getElementById('deleteProperties').addEventListener('click', () => {
-            this.deleteProperties();
-        });
         document.getElementById('saveProperties').addEventListener('click', () => {
             this.saveProperties();
         });
@@ -68,9 +67,6 @@ class FileInfo {
         this.electron.ipcRenderer.on('set-new-note', (event: Electron.IpcRendererEvent, note: string) => {
             this.notes.push(note);
             this.drawNotes();
-        });
-        document.getElementById('deleteNotes').addEventListener('click', () => {
-            this.deleteNotes();
         });
         document.getElementById('saveNotes').addEventListener('click', () => {
             this.saveNotes();
@@ -96,7 +92,9 @@ class FileInfo {
         }, 150);
     }
 
-    setFileProperties(arg: { attributes: any, fileLanguages: Language[], properties: Array<string[]>, notes: string[] }): void {
+    setFileProperties(arg: { attributes: any, fileLanguages: Language[], properties: Array<string[]>, notes: string[], removeProperties: string, removeNotes: string }): void {
+        this.removePropertiesText = arg.removeProperties;
+        this.removeNotesText = arg.removeNotes;
         let srcLangSelect: HTMLSelectElement = document.getElementById('srclang') as HTMLSelectElement;
         srcLangSelect.innerHTML = '';
         let srcLangs: Language[] = arg.fileLanguages;
@@ -132,18 +130,21 @@ class FileInfo {
     drawProperties(): void {
         let propertiesTableBody: HTMLTableSectionElement = document.getElementById('propertiesBody') as HTMLTableSectionElement;
         propertiesTableBody.innerHTML = '';
-        this.propertiesChecks = [];
         for (let pair of this.properties) {
             let tr: HTMLTableRowElement = document.createElement('tr');
             propertiesTableBody.appendChild(tr);
             let td: HTMLTableCellElement = document.createElement('td');
             td.classList.add('middle');
             tr.appendChild(td);
-            let checkbox: HTMLInputElement = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = pair[0];
-            td.appendChild(checkbox);
-            this.propertiesChecks.push(checkbox);
+            let remove: HTMLAnchorElement = document.createElement('a');
+            remove.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" style="margin-top:4px"><path d="m400-325 80-80 80 80 51-51-80-80 80-80-51-51-80 80-80-80-51 51 80 80-80 80 51 51Zm-88 181q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480Zm-336 0v480-480Z"/></svg>' +
+                '<span class="tooltiptext bottomTooltip">' + this.removePropertiesText
+                + '</span>';
+            remove.classList.add('tooltip');
+            remove.addEventListener('click', () => {
+                this.deleteProperty(pair);
+            });
+            td.appendChild(remove);
             td = document.createElement('td');
             td.classList.add('middle');
             td.classList.add('noWrap');
@@ -156,12 +157,6 @@ class FileInfo {
             td.classList.add('fill_width');
             td.classList.add('leftBorder');
             tr.appendChild(td);
-            tr.addEventListener('click', (event: MouseEvent) => {
-                if ((event.target as HTMLElement).tagName !== 'INPUT') {
-                    let checkbox: HTMLInputElement = document.getElementById(pair[0]) as HTMLInputElement;
-                    checkbox.checked = !checkbox.checked;
-                }
-            });
         }
     }
 
@@ -175,11 +170,15 @@ class FileInfo {
             let td: HTMLTableCellElement = document.createElement('td');
             td.classList.add('middle');
             tr.appendChild(td);
-            let checkbox: HTMLInputElement = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = i.toString();
-            td.appendChild(checkbox);
-            this.notesChecks.push(checkbox);
+            let remove: HTMLAnchorElement = document.createElement('a');
+            remove.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" style="margin-top:4px"><path d="m400-325 80-80 80 80 51-51-80-80 80-80-51-51-80 80-80-80-51 51 80 80-80 80 51 51Zm-88 181q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480Zm-336 0v480-480Z"/></svg>' +
+                '<span class="tooltiptext bottomTooltip">' + this.removeNotesText
+                + '</span>';
+            remove.classList.add('tooltip');
+            remove.addEventListener('click', () => {
+                this.deleteNotes(i);
+            });
+            td.appendChild(remove);
             td = document.createElement('td');
             td.classList.add('middle');
             td.classList.add('noWrap');
@@ -317,10 +316,11 @@ class FileInfo {
         });
     }
 
-    deleteProperties(): void {
-        for (let i: number = 0; i < this.propertiesChecks.length; i++) {
-            if (this.propertiesChecks[i].checked) {
-                this.properties.splice(i, 1);
+    deleteProperty(property: string[]): void {
+        for (let pair of this.properties) {
+            if (pair[0] === property[0] && pair[1] === property[1]) {
+                this.properties.splice(this.properties.indexOf(pair), 1);
+                break;
             }
         }
         this.drawProperties();
@@ -330,12 +330,8 @@ class FileInfo {
         this.electron.ipcRenderer.send('save-file-properties', this.properties);
     }
 
-    deleteNotes(): void {
-        for (let i: number = 0; i < this.notesChecks.length; i++) {
-            if (this.notesChecks[i].checked) {
-                this.notes.splice(i, 1);
-            }
-        }
+    deleteNotes(i: number): void {
+        this.notes.splice(i, 1);
         this.drawNotes();
     }
 

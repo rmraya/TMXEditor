@@ -23,6 +23,9 @@ body {
 .hdivider {
 	width: 2px;
 	background: transparent;
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMiIgaGVpZ2h0PSIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyIiBoZWlnaHQ9IjQiIGZpbGw9ImJsYWNrIiAvPiAKPHJlY3QgeD0iMCIgeT0iNCIgd2lkdGg9IjIiIGhlaWdodD0iNCIgZmlsbD0idHJhbnNwYXJlbnQiIC8+IAo8cmVjdCB4PSIwIiB5PSI4IiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIgLz4gCjxyZWN0IHg9IjAiIHk9IjEyIiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCIgLz4gCjxyZWN0IHg9IjAiIHk9IjE2IiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIgLz4gCjwvc3ZnPg==);
+	background-repeat: no-repeat;
+	background-position: center;
 	height: 100%;
 	position: relative;
 	cursor: col-resize;
@@ -30,14 +33,31 @@ body {
 	z-index: 5;
 }
 
+.hdivider:hover {
+	background-color: var(--themePrimary);
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMiIgaGVpZ2h0PSIyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIyIiBoZWlnaHQ9IjQiIGZpbGw9ImJsYWNrIiAvPiAKPHJlY3QgeD0iMCIgeT0iNCIgd2lkdGg9IjIiIGhlaWdodD0iNCIgZmlsbD0idHJhbnNwYXJlbnQiIC8+IAo8cmVjdCB4PSIwIiB5PSI4IiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIgLz4gCjxyZWN0IHg9IjAiIHk9IjEyIiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJ0cmFuc3BhcmVudCIgLz4gCjxyZWN0IHg9IjAiIHk9IjE2IiB3aWR0aD0iMiIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIgLz4gCjwvc3ZnPg==);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 .vdivider {
 	width: 100%;
 	height: 2px;
 	background: transparent;
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjIiIGZpbGw9ImJsYWNrIiAvPiAKPHJlY3QgeD0iNCIgeT0iMCIgd2lkdGg9IjQiIGhlaWdodD0iMiIgZmlsbD0idHJhbnNwYXJlbnQiIC8+IAo8cmVjdCB4PSI4IiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJibGFjayIgLz4gCjxyZWN0IHg9IjEyIiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJ0cmFuc3BhcmVudCIgLz4gCjxyZWN0IHg9IjE2IiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJibGFjayIgLz4gCjwvc3ZnPg==);
+	background-repeat: no-repeat;
+	background-position: center;
 	position: relative;
 	cursor: row-resize;
 	display: block;
 	z-index: 5;
+}
+
+.vdivider:hover {
+	background-color: var(--themePrimary);
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gCjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjIiIGZpbGw9ImJsYWNrIiAvPiAKPHJlY3QgeD0iNCIgeT0iMCIgd2lkdGg9IjQiIGhlaWdodD0iMiIgZmlsbD0idHJhbnNwYXJlbnQiIC8+IAo8cmVjdCB4PSI4IiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJibGFjayIgLz4gCjxyZWN0IHg9IjEyIiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJ0cmFuc3BhcmVudCIgLz4gCjxyZWN0IHg9IjE2IiB5PSIwIiB3aWR0aD0iNCIgaGVpZ2h0PSIyIiBmaWxsPSJibGFjayIgLz4gCjwvc3ZnPg==);
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .wait {
@@ -189,6 +209,7 @@ th {
 }
 
 .stripes tr {
+	border-top: 2px solid var(--gray40);
 	border-bottom: 2px solid var(--gray40);
 }
 
@@ -197,8 +218,6 @@ th {
 }
 
 .currentRow {
-	border-top: 2px solid var(--themePrimary) !important;
-	border-bottom: 2px solid var(--themePrimary) !important;
 	background-color: var(--gray10) !important;
 }
 
