@@ -16,7 +16,7 @@
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Eliminar Unidades No Traducidas...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/remove_untranslated.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Eliminar Unidades No Traducidas</alt>
           </image> </stepresult>
       </step>

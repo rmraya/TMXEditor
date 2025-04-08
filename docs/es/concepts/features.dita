@@ -22,6 +22,7 @@
           <li>Archivos Excel</li>
           <li>Archivos CSV o delimitados por TAB</li>
           <li>Archivos SDLTM</li>
+          <li>Archivos TBX (TermBase eXchange)</li>
         </ul> </li>
       <li>Exportar archivos TMX como<ul>
           <li>Archivos Excel</li>

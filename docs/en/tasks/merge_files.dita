@@ -12,7 +12,7 @@
                         <uicontrol>Merge TMX Files...</uicontrol>
                     </menucascade>.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/merge_files.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Merge TMX Files Dialog</alt>
                     </image>
                 </stepresult>
@@ -26,11 +26,17 @@
             <step>
                 <cmd>Use the <uicontrol>Add Files</uicontrol> button to select the files to be
                     merged from the file system.</cmd>
+                <stepresult>The dialog shows added files:<image href="../images/merge_dialog.png"
+                        placement="break" scale="80" align="center">
+                        <alt>Merge TMX Files Dialog</alt>
+                    </image>
+                </stepresult>
             </step>
             <step>
-                <cmd>If you need to remove files from the list, select them clicking the
-                    corresponding checkboxes in the leftmost column and then click the
-                        <uicontrol>Delete Selected Files</uicontrol> button.</cmd>
+                <cmd>If you want to remove files from the list, click the corresponding
+                    <uicontrol>Remove File</uicontrol> buttons (<image
+                        href="../images/remove.svg" placement="inline" height="16"/>) on the
+                    leftmost column.</cmd>
             </step>
             <step>
                 <cmd>Click the <uicontrol>Merge TMX Files</uicontrol> button.</cmd>

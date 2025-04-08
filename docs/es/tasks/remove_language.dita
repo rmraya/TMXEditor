@@ -13,7 +13,7 @@
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Eliminar Idioma...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/remove_language.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/remove_language.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Eliminar Idioma</alt>
           </image> </stepresult>
       </step>

@@ -13,12 +13,12 @@
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Dividir Archivo TMX...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/split_file.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/split_file.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Dividir Archivo TMX</alt>
           </image> </stepresult>
       </step>
       <step>
-        <cmd>Escriba el nombre del archivo TMX en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> para seleccionar un archivo del sistema de archivos.</cmd>
+        <cmd>Escriba el nombre del archivo TMX en el cuadro de texto <uicontrol>Archivo TMX</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> para seleccionar el archivo del sistema de archivos.</cmd>
       </step>
       <step>
         <cmd>Seleccione el número de partes en las que desea dividir el archivo.</cmd>

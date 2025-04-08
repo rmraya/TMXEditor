@@ -17,7 +17,7 @@
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Cambiar Idioma Origen...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/change_source_language.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/change_source_language.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Cambiar Idioma Origen</alt>
           </image> </stepresult>
       </step>

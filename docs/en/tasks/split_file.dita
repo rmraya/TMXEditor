@@ -15,7 +15,7 @@
                         <uicontrol>Split TMX File...</uicontrol>
                     </menucascade>.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/split_file.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Split TMX File Dialog</alt>
                     </image>
                 </stepresult>

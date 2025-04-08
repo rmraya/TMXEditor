@@ -8,7 +8,7 @@
       <step>
         <cmd>Abra el cuadro de diálogo de preferencias:</cmd>
         <choices>
-          <choice>En Windows o Linux, seleccione del menú <menucascade>
+          <choice>En el menú de Windows o Linux, seleccione <menucascade>
               <uicontrol>Configuración</uicontrol>
               <uicontrol>Preferencias</uicontrol>
             </menucascade>.</choice>
@@ -18,7 +18,7 @@
               <uicontrol>Configuración</uicontrol>
             </menucascade>.</choice>
         </choices>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/preferences.png" placement="break" scale="50" align="center"/> </stepresult>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
       </step>
       <step>
         <cmd>Utilice la lista desplegable <uicontrol>Idioma de la Aplicación</uicontrol> para seleccionar el idioma utilizado en la interfaz gráfica de usuario de TMXEditor.</cmd>
@@ -30,6 +30,7 @@
           <choice><b>Predeterminado del sistema</b>: selecciona automáticamente los colores oscuros o claros según las preferencias establecidas en el sistema operativo.</choice>
           <choice><b>Oscuro</b>: utiliza fondo oscuro con texto blanco.</choice>
           <choice><b>Claro</b>: utiliza fondo gris claro con texto oscuro.</choice>
+          <choice><b>Alto Contraste</b>: tema oscuro con contrasete mejorado.</choice>
         </choices>
       </step>
       <step>

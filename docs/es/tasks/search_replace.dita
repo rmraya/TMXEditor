@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task xml:lang="es" id="search_replace">
-  <title>Buscar y Remplazar Texto</title>
+  <title>Buscar yRemplazar Texto</title>
   <shortdesc>Siga estos pasos para realizar una operación global de búsqueda y reemplazo.</shortdesc>
   <taskbody>
     <steps>
@@ -12,8 +12,8 @@
         <cmd>En el menú principal, seleccione <menucascade>
             <uicontrol>Editar</uicontrol>
             <uicontrol>Reemplazar Texto...</uicontrol>
-          </menucascade>  ([<userinput>Ctrl+F</userinput>] en Windows/Linux, [<userinput>Cmd+F</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/replaceTexts.svg" placement="inline"/> <uicontrol>Reemplazar Texto...</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/replace_text.png" placement="break" scale="50" align="center">
+          </menucascade>  ([<userinput>Ctrl+F</userinput>] en Windows/Linux, [<userinput>Cmd+F</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/replaceTexts.svg" placement="inline"/> <uicontrol>Reemplazar Texto...</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/replace_text.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Reemplazar Texto</alt>
           </image> </stepresult>
       </step>

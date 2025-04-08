@@ -8,7 +8,7 @@
       <li>En el menú principal, seleccione <menucascade>
           <uicontrol>Archivo</uicontrol>
           <uicontrol>Abrir</uicontrol>
-        </menucascade> ([<userinput>Ctrl+O</userinput>] en Windows/Linux, [<userinput>Cmd+O</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/openFile.svg" placement="inline"/> <uicontrol>Abrir</uicontrol> en la barra de herramientas superior.</li>
+        </menucascade> ([<userinput>Ctrl+O</userinput>] en Windows/Linux, [<userinput>Cmd+O</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/openFile.svg" placement="inline"/> <uicontrol>Abrir</uicontrol> de la barra de herramientas superior.</li>
       <li>Utilice el cuadro de diálogo que aparece para seleccionar un archivo TMX del sistema de archivos.</li>
     </ol>
     <p id="editing">Una vez abierto el archivo TMX, puede:</p>
@@ -20,13 +20,13 @@
       <li>Para agregar nuevas unidades al archivo TMX, seleccione <menucascade>
           <uicontrol>Editar</uicontrol>
           <uicontrol>Insertar Unidad de Traducción</uicontrol>
-        </menucascade> en el menú pricipal o haga clic en el botón <image height="16" href="../images/insertUnit.svg" placement="inline"/> <uicontrol>Insertar Unidad de Traducción</uicontrol> en la barra de herramientas superior.</li>
+        </menucascade> en el menú pricipal o haga clic en el botón <image height="16" href="../images/insertUnit.svg" placement="inline"/> <uicontrol>Insertar Unidad de Traducción</uicontrol> de la barra de herramientas superior.</li>
       <li>Para eliminar una o más unidades:<ol>
           <li>Active la casilla de verificación situada en la columna situada más a la izquierda de la ventana de edición para marcar las unidades que desea eliminar</li>
           <li>En el menú principal, seleccione <menucascade>
               <uicontrol>Editar</uicontrol>
               <uicontrol>Eliminar Unidades Seleccionadas</uicontrol>
-            </menucascade> o haga clic en el botón <image height="16" href="../images/deleteUnits.svg" placement="inline"/> <uicontrol>Eliminar Unidades Seleccionadas</uicontrol> en la barra de herramientas superior.</li>
+            </menucascade> o haga clic en el botón <image height="16" href="../images/deleteUnits.svg" placement="inline"/> <uicontrol>Eliminar Unidades Seleccionadas</uicontrol> de la barra de herramientas superior.</li>
         </ol> <note>Puede utilizar la casilla de verificación superior izquierda para seleccionar/anular la selección de todas las unidades a la vez.</note></li>
       <li>Utilice la opción <xref href="../tasks/filterUnits.dita">Filtrar Unidades de Traducción</xref> para localizar texto en el archivo.</li>
       <li>Utilice la opción <xref href="../tasks/sortData.dita">Ordenar Unidades de Traducción</xref> para mostrar las entradas de archivo ordenadas en un idioma seleccionado.</li>
@@ -34,6 +34,6 @@
     <p>Después de realizar cambios en el archivo TMX, seleccione <menucascade>
         <uicontrol>Archivo</uicontrol>
         <uicontrol>Guardar</uicontrol>
-      </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/saveFile.svg" placement="inline"/> <uicontrol>Guardar</uicontrol> en la barra de herramientas superior para guardar las modificaciones.</p>
+      </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/saveFile.svg" placement="inline"/>&nbsp;<uicontrol>Guardar</uicontrol> en la barra de herramientas superior para guardar sus modificaciones.</p>
   </conbody>
 </concept>

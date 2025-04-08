@@ -11,14 +11,14 @@
         <cmd>En el menú principal, seleccione la opción <menucascade>
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Convertir Archivo Excel a TMX</uicontrol>
-          </menucascade> o haga clic en el botón <image height="16" href="../images/importExcel.svg" placement="inline"/> <uicontrol>Convertir Archivo  Excel a TMX</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertExcel.png" placement="break" scale="50" align="center">
+          </menucascade> o haga clic en el botón <image height="16" href="../images/importExcel.svg" placement="inline"/> <uicontrol>Convertir Archivo  Excel a TMX</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertExcel.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Convertir Archivo Excel a TMX</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Escriba el nombre del archivo de Excel que se va a convertir en el cuadro de texto <uicontrol>Archivo Excel</uicontrol> o utilice el botón <uicontrol>Examinar...</uicontrol> asociado para seleccionar un archivo del sistema.</cmd>
-        <stepresult>Una vista previa de las diez filas iniciales de la primera hoja de cálculo se carga automáticamente cuando se utiliza el botón <uicontrol>Examinar...</uicontrol>: <image href="../images/excelPreviewLoaded.png" placement="break" scale="50" align="center">
+        <stepresult>Una vista previa de las diez filas iniciales de la primera hoja de cálculo se carga automáticamente cuando se utiliza el botón <uicontrol>Examinar...</uicontrol>: <image href="../images/excelPreviewLoaded.png" placement="break" scale="80" align="center">
             <alt>Vista Previa de Excel</alt>
           </image></stepresult>
       </step>
@@ -33,13 +33,13 @@
       </step>
       <step>
         <cmd>Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> si los códigos de idioma no están incluidos en el archivo o si desea cambiar los detectados automáticamente.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/excelLanguages.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/excelLanguages.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Idiomas del Archivo Excel</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Utilice los selectores desplegables para asociar un idioma a cada columna. Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> cuando haya terminado.</cmd>
-        <stepresult>El panel de vista previa se actualiza para mostrar los idiomas seleccionados para cada columna: <image href="../images/languagesSelected.png" placement="break" scale="50" align="center">
+        <stepresult>El panel de vista previa se actualiza para mostrar los idiomas seleccionados para cada columna: <image href="../images/languagesSelected.png" placement="break" scale="80" align="center">
             <alt>Panel de Vista Previa de Excel con Idiomas Seleccionados</alt>
           </image> </stepresult>
       </step>

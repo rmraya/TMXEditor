@@ -9,8 +9,8 @@
         <cmd>En el menú principal, seleccione la opción <menucascade>
             <uicontrol>Ver</uicontrol>
             <uicontrol>Filtrar Unidades de Traducción</uicontrol>
-          </menucascade> ([<userinput>F3</userinput>]) o haga clic en el botón <image height="16" href="../images/filterUnits.svg" placement="inline"/> <uicontrol>Filtrar Unidades de Traducción</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/filter_units.png" placement="break" scale="50" align="center">
+          </menucascade> ([<userinput>F3</userinput>]) o haga clic en el botón <image height="16" href="../images/filterUnits.svg" placement="inline"/> <uicontrol>Filtrar Unidades de Traducción</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/filter_units.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Filtrar Unidades de Traducción</alt>
           </image></stepresult>
       </step>
@@ -20,7 +20,7 @@
           <choice>Para localizar y resaltar un texto determinado en el archivo TMX:<ol>
               <li>Escriba el texto que desea encontrar en el cuadro de texto <uicontrol>Texto a Buscar</uicontrol>.</li>
               <li>Utilice la lista desplegable <uicontrol>Idioma a Filtrar</uicontrol> para seleccionar la columna de idioma donde se realizará la búsqueda.</li>
-              <li>Active la casilla <uicontrol>Expresión Regular</uicontrol> si desea utilizar expresiones regulares para especificar el texto que se va a buscar.</li>
+              <li>Active la casilla <uicontrol>Expresión Regular</uicontrol> si desea utilizar expresiones regulares para especificar el texto que se va a buscar</li>
               <li>Marque la casilla de verificación <uicontrol>Diferenciar Mayúsculas y Minúsculas al Buscar</uicontrol> si desea encontrar sólo entradas que coincidan con las mayúsculas y minúsculas del texto introducido.</li>
             </ol> </choice>
           <choice>Para mostrar solo unidades no traducidas:<ol>

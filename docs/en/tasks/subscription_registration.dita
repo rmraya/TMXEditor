@@ -7,26 +7,26 @@
         <steps>
             <step>
                 <cmd>When you open TMXEditor from the official installers for the first time, or
-                    when the <xref href="../glossaries/subscription_key.dita">Subscription
-                        Key</xref> is not registered, the following dialog is displayed:<image
-                        href="../images/license_registration.png" placement="break" scale="50"
+                    when the <xref href="../glossaries/subscription_key.dita">subscription
+                        key</xref> is not registered, the following dialog is displayed:<image
+                        href="../images/license_registration.png" placement="break" scale="80"
                         align="center">
                         <alt>Register Subscription Dialog</alt>
                     </image>
                 </cmd>
             </step>
             <step>
-                <cmd>If you have a Subscription Key, type it in the <uicontrol>Subscription
+                <cmd>If you have a subscription key, type it in the <uicontrol>Subscription
                         Key</uicontrol> text box and click the <uicontrol>Register
                         Subscription</uicontrol> button.</cmd>
                 <stepresult>On registration success, the main editing screen will be
                     presented.</stepresult>
             </step>
             <step>
-                <cmd>If you don't have a Subscription Key and wish to test the program during 7
+                <cmd>If you don't have a subscription key and wish to test the program during 7
                     days, click the <uicontrol>Request Evaluation Key</uicontrol> button.</cmd>
                 <stepresult> The following dialog appears:<image href="../images/trial_request.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Request Evaluation Key Dialog</alt>
                     </image>
                 </stepresult>
@@ -34,12 +34,12 @@
             <step>
                 <cmd>Enter the requested data and click the <uicontrol>Request Evaluation
                         Key</uicontrol> button.</cmd>
-                <stepresult>On success, an email with the requested Evaluation Key will be sent to
+                <stepresult>On success, an email with the requested evaluation key will be sent to
                     the indicated address and the following dialog will be displayed: <image
-                        href="../images/request_received.png" placement="break" scale="50"
+                        href="../images/request_received.png" placement="break" scale="80"
                         align="center">
                         <alt>Request Received Dialog</alt>
-                    </image> Check your email and register the Evaluation Key using the instructions
+                    </image> Check your email and register the evaluation key using the instructions
                     shown above. </stepresult>
             </step>
         </steps>

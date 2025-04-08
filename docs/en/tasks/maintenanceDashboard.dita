@@ -21,7 +21,7 @@
                         placement="inline" height="16"/>&nbsp;<uicontrol>Maintenance
                         Dashboard</uicontrol> button on the top toolbar.</cmd>
                 <stepresult>The following dialog appears:<image
-                        href="../images/maintenance_dashboard.png" placement="break" scale="50"
+                        href="../images/maintenance_dashboard.png" placement="break" scale="80"
                         align="center">
                         <alt>Maintenance Dashboard Dialog</alt>
                     </image></stepresult>

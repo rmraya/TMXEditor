@@ -6,7 +6,7 @@
   <taskbody>
     <steps>
       <step>
-        <cmd>Cuando abre TMXEditor desde los instaladores oficiales por primera vez, o cuando la <xref href="../glossaries/subscription_key.dita">Clave de Suscripción</xref> no está registrada, se muestra el siguiente cuadro de diálogo:<image href="../images/license_registration.png" placement="break" scale="50" align="center">
+        <cmd>Cuando abre TMXEditor desde los instaladores oficiales por primera vez, o cuando la <xref href="../glossaries/subscription_key.dita">clave de suscripción</xref> no está registrada, se muestra el siguiente cuadro de diálogo:<image href="../images/license_registration.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Registrar Suscripción</alt>
           </image> </cmd>
       </step>
@@ -15,14 +15,14 @@
         <stepresult>Si el registro se realiza correctamente, aparecerá la pantalla principal de edición.</stepresult>
       </step>
       <step>
-        <cmd>Si no tiene una Clave de Suscripción y desea probar el programa durante 7 días, haga clic en el botón <uicontrol>Solicitar Clave de Evaluación</uicontrol>.</cmd>
-        <stepresult> Aparece el siguiente cuadro de diálogo:<image href="../images/trial_request.png" placement="break" scale="50" align="center">
+        <cmd>Si no tiene una clave de suscripción y desea probar el programa durante 7 días, haga clic en el botón <uicontrol>Solicitar Clave de Evaluación</uicontrol>.</cmd>
+        <stepresult> Aparece el siguiente cuadro de diálogo:<image href="../images/trial_request.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Solicitar Clave de Evaluación</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Escriba los datos solicitados y haga clic en el botón <uicontrol>Solicitar Clave de Evaluación</uicontrol>.</cmd>
-        <stepresult>Si tiene éxito, se enviará un correo electrónico con la Clave de Evaluación solicitada a la dirección indicada y se mostrará el siguiente cuadro de diálogo: <image href="../images/request_received.png" placement="break" scale="50" align="center">
+        <stepresult>Si tiene éxito, se enviará un correo electrónico con la Clave de Evaluación solicitada a la dirección indicada y se mostrará el siguiente cuadro de diálogo: <image href="../images/request_received.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Solicitud Recibida</alt>
           </image> Compruebe su correo electrónico y registre la Clave de Evaluación siguiendo las instrucciones indicadas anteriormente. </stepresult>
       </step>

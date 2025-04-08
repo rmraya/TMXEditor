@@ -20,7 +20,7 @@
                         <uicontrol>Remove Untranslated Units...</uicontrol>
                     </menucascade>.</cmd>
                 <stepresult>The following dialog appears:<image
-                        href="../images/remove_untranslated.png" placement="break" scale="50"
+                        href="../images/remove_untranslated.png" placement="break" scale="80"
                         align="center">
                         <alt>Remove Untranslated Units Dialog</alt>
                     </image>

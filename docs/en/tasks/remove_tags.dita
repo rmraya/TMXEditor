@@ -10,7 +10,7 @@
         </context>
         <steps>
             <step>
-                <cmd>Open the TMX file that you want to clean.</cmd>
+                <cmd>Open the TMX file that you want to process.</cmd>
             </step>
             <step>
                 <cmd>In main menu, select <menucascade>

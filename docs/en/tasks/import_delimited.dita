@@ -28,7 +28,7 @@
                         placement="inline" height="16"/>&nbsp;<uicontrol>Convert CSV to
                         TMX</uicontrol> button on the top toolbar.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/convertCSV.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Convert CSV File to TMX Dialog</alt>
                     </image>
                 </stepresult>
@@ -56,7 +56,7 @@
                     language codes are included in the first row of the CSV file, they will be
                     automatically detected and will also be displayed highlighted in the panel, as
                     shown in this picture: <image href="../images/correctSettings.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Correct Settings Example</alt>
                     </image>
                 </stepresult>
@@ -64,14 +64,14 @@
                     <p>Unexpected characters, like the ones shown in the picture below, indicate
                         wrong <xref href="../glossaries/character_set.dita">character set</xref>
                         selection.</p>
-                    <image href="../images/wrongCharacterSet.png" placement="break" scale="50"
+                    <image href="../images/wrongCharacterSet.png" placement="break" scale="80"
                         align="center">
                         <alt>Wrong Character Set Example</alt>
                     </image>
                     <p>Readable text that is not displayed as a table, is a sign of incorrect
                         selection of column separator or text delimiter. Use the preview panel to
                         check the correct values.</p>
-                    <image href="../images/wrongDelimiters.png" placement="break" scale="50"
+                    <image href="../images/wrongDelimiters.png" placement="break" scale="80"
                         align="center">
                         <alt>Wrong Delimiters Example</alt>
                     </image>
@@ -82,7 +82,7 @@
                     included in the file or you wish to change the automatically detected
                     ones.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/csvLanguages.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>CSV/Text Languages Dialog</alt>
                     </image>
                 </stepresult>

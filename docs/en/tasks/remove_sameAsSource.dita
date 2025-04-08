@@ -22,7 +22,7 @@
                         <uicontrol>Remove Translation Same as Source...</uicontrol>
                     </menucascade> option.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/sameAsSource.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Remove Translation Same as Source Dialog</alt>
                     </image>
                 </stepresult>

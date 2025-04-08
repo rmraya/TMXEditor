@@ -14,7 +14,7 @@
                         <uicontrol>Remove Language...</uicontrol>
                     </menucascade> option.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/remove_language.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>Remove Language Dialog</alt>
                     </image>
                 </stepresult>

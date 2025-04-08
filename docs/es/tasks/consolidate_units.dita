@@ -6,11 +6,11 @@
   <taskbody>
     <context>
       <p>En archivos con tres o más idiomas, es posible que las traducciones de un texto de origen determinado a diferentes idiomas aparezcan en diferentes unidades de traducción, como se ilustra en la siguiente imagen.</p>
-      <image href="../images/needs_consolidation.png" placement="break" scale="50" align="center">
+      <image href="../images/needs_consolidation.png" placement="break" scale="80" align="center">
         <alt>Ejemplo de Unidades Que Necesitan Consolidación</alt>
       </image>
       <p>Consolidar unidades coloca todas las traducciones relacionadas en una misma unidad. La siguiente imagen muestra la versión consolidada de la anterior.</p>
-      <image href="../images/consolidated.png" placement="break" scale="50" align="center">
+      <image href="../images/consolidated.png" placement="break" scale="80" align="center">
         <alt>Ejemplo de Unidades Consolidadas</alt>
       </image>
     </context>
@@ -23,7 +23,7 @@
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Consolidar Unidades...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/consolidate_units.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/consolidate_units.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Consolidar Unidades</alt>
           </image> </stepresult>
       </step>

@@ -12,8 +12,8 @@
         <cmd>En el menú principal, seleccione la opción  <menucascade>
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Convertir Archivo TBX a TMX</uicontrol>
-          </menucascade> o haga clic en el botón  <image height="16" href="../images/importTBX.svg" placement="inline"/> <uicontrol>Convertir Archivo TBX a TMX</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertTBX.png" placement="break" scale="50" align="center">
+          </menucascade> o haga clic en el botón  <image height="16" href="../images/importTBX.svg" placement="inline"/> <uicontrol>Convertir Archivo TBX a TMX</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/convertTBX.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Convertir Archivo TBX a TMX</alt>
           </image> </stepresult>
       </step>

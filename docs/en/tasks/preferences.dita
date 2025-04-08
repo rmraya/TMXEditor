@@ -19,7 +19,7 @@
                         </menucascade>.</choice>
                 </choices>
                 <stepresult>The following dialog appears:<image href="../images/preferences.png"
-                        placement="break" scale="50" align="center"/>
+                        placement="break" scale="80" align="center"/>
                 </stepresult>
             </step>
             <step>
@@ -36,6 +36,7 @@
                         according to the preferences set in the operating system.</choice>
                     <choice><b>Dark</b>: Uses dark background with white text.</choice>
                     <choice><b>Light</b>: Uses light grey background with dark text.</choice>
+                    <choice><b>High Contrast</b>: Dark theme with enhanced contrast.</choice>
                 </choices>
             </step>
             <step>

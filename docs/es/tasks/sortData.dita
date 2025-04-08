@@ -13,8 +13,8 @@
         <cmd>En el menú principal, seleccione la opción <menucascade>
             <uicontrol>Ver</uicontrol>
             <uicontrol>Ordenar Unidades de Traducción</uicontrol>
-          </menucascade> ([<userinput>F5</userinput>]) o haga clic en el botón <image height="16" href="../images/sortUnits.svg" placement="inline"/> <uicontrol>Ordenar Unidades de Traducción</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/sort_units.png" placement="break" scale="50" align="center">
+          </menucascade> ([<userinput>F5</userinput>]) o haga clic en el botón <image height="16" href="../images/sortUnits.svg" placement="inline"/> <uicontrol>Ordenar Unidades de Traducción</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/sort_units.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Ordenar Unidades de Traducción</alt>
           </image> </stepresult>
       </step>

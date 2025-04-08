@@ -13,7 +13,7 @@
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Nuevo</uicontrol>
           </menucascade> ([<userinput>Ctrl+N</userinput>] en Windows/Linux, [<userinput>Cmd+N</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/newFile.svg" placement="inline"/> <uicontrol>Nuevo</uicontrol> de la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/new_file.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/new_file.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Nuevo Archivo TMX</alt>
           </image> </stepresult>
       </step>
@@ -40,7 +40,7 @@
         <cmd>Para guardar los cambios en el archivo TMX, seleccione <menucascade>
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Guardar</uicontrol>
-          </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón  <image height="16" href="../images/saveFile.svg" placement="inline"/> <uicontrol>Guardar</uicontrol> en la barra de herramientas superior para guardar las modificaciones.</cmd>
+          </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón  <image height="16" href="../images/saveFile.svg" placement="inline"/> <uicontrol>Guardar</uicontrol> de la barra de herramientas superior.</cmd>
       </step>
       <step>
         <cmd>Utilice el cuadro de diálogo que aparece para indicar el nombre y la ubicación donde se guardará el nuevo archivo TMX.</cmd>

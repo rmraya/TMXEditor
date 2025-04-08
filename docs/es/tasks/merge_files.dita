@@ -10,7 +10,7 @@
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Combinar Archivos TMX...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/merge_files.png" placement="break" scale="50" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Combinar Archivos TMX</alt>
           </image> </stepresult>
       </step>
@@ -19,9 +19,12 @@
       </step>
       <step>
         <cmd>Utilice el botón <uicontrol>Añadir Archivos</uicontrol> para seleccionar los archivos que se van a combinar desde el sistema de archivos.</cmd>
+        <stepresult>El dialogo muestra los archivos añadidos:<image href="../images/merge_dialog.png" placement="break" scale="80" align="center">
+            <alt>Cuadro de diálogo Combinar Archivos TMX</alt>
+          </image> </stepresult>
       </step>
       <step>
-        <cmd>Si necesita eliminar archivos de la lista, selecciónelos haciendo clic en las casillas de verificación correspondientes en la columna situada más a la izquierda y, a continuación, haga clic en el botón <uicontrol>Eliminar Archivos Seleccionados</uicontrol>.</cmd>
+        <cmd>Si desea eliminar archivos de la lista, haga clic en los correspondientes botones <uicontrol>Eliminar Archivo</uicontrol> (<image height="16" href="../images/remove.svg" placement="inline"/>) de la columna situada más a la izquierda.</cmd>
       </step>
       <step>
         <cmd>Haga clic en el botón <uicontrol>Combinar Archivos TMX</uicontrol>.</cmd>

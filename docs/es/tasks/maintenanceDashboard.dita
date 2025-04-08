@@ -15,8 +15,8 @@
         <cmd>En el menú principal, seleccione <menucascade>
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Panel de Mantenimiento</uicontrol>
-          </menucascade>  o haga clic en el botón <image height="16" href="../images/maintenance.svg" placement="inline"/> <uicontrol>Panel de Mantenimiento</uicontrol> en la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/maintenance_dashboard.png" placement="break" scale="50" align="center">
+          </menucascade>  o haga clic en el botón <image height="16" href="../images/maintenance.svg" placement="inline"/> <uicontrol>Panel de Mantenimiento</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
             <alt>Cuadro de diálogo Panel de Mantenimiento</alt>
           </image></stepresult>
       </step>
@@ -26,8 +26,8 @@
           <choice><uicontrol>Eliminar Todas las Etiquetas</uicontrol>: eliminar todas las etiquetas del archivo TMX.</choice>
           <choice><uicontrol>Eliminar Unidades Duplicadas</uicontrol>: eliminar unidades de traducción duplicadas.</choice>
           <choice><uicontrol>Eliminar Unidades No Traducidas</uicontrol>: eliminar todas las unidades no traducidas.</choice>
-          <choice><uicontrol>Eliminar Espacios Iniciales y Finales</uicontrol>: remove spaces at the start and end of all language entries.</choice>
-          <choice><uicontrol>Consolidar Unidades</uicontrol>: merge translation units that share a common source language entry.</choice>
+          <choice><uicontrol>Eliminar Espacios Iniciales y Finales</uicontrol>: elimina los espacios al principio y al final de todas las entradas de idioma.</choice>
+          <choice><uicontrol>Consolidar Unidades</uicontrol>: combina unidades de traducción que comparten una entrada de idioma de origen común.</choice>
         </choices>
       </step>
       <step>

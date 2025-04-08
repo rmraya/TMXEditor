@@ -13,7 +13,7 @@
         <uicontrol>Archivo</uicontrol>
         <uicontrol>Propiedades del Archivo</uicontrol>
       </menucascade> en el menú principal o haga clic en el botón <image height="16" href="../images/fileInfo.svg" placement="inline"/> <uicontrol>Propiedades del Archivo</uicontrol> de la barra de herramientas superior.</p>
-    <p>Aparece el siguiente cuadro de diálogo:<image href="../images/fileAttributes.png" placement="break" scale="50" align="center">
+    <p>Aparece el siguiente cuadro de diálogo:<image href="../images/fileAttributes.png" placement="break" scale="80" align="center">
         <alt>Cuadro de diálogo Propiedades del Archivo</alt>
       </image></p>
     <section>
@@ -22,23 +22,23 @@
     </section>
     <section>
       <title>Propiedades a Nivel de Archivo</title>
-      <p>Para editar las propiedades a nivel de archivo, haga clic en la pestaña <uicontrol>Propiedades</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileProperties.png" placement="break" scale="50" align="center">
+      <p>Para editar las propiedades a nivel de archivo, haga clic en la pestaña <uicontrol>Propiedades</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileProperties.png" placement="break" scale="80" align="center">
           <alt>Cuadro de diálogo Propiedades del Archivo</alt>
         </image></p>
       <ul>
         <li>Haga clic en el botón <uicontrol>Añadir Propiedad</uicontrol> para abrir un cuadro de diálogo en el que introducir el tipo y el valor de la nueva propiedad que desea añadir.</li>
-        <li>Seleccione las casillas de verificación situadas junto a las propiedades que desea eliminar y, a continuación, haga clic en el botón <uicontrol>Eliminar Propiedades Seleccionadas</uicontrol> para eliminarlas.</li>
+        <li>Si desea eliminar propiedades de la lista, haga clic en los correspondientes botones <uicontrol>Eliminar Propiedad</uicontrol> (<image height="16" href="../images/remove.svg" placement="inline" id="image_n1h_srn_x2c"/>) de la columna situada más a la izquierda.</li>
         <li>Haga clic en el botón <uicontrol>Guardar Propiedades</uicontrol> para guardar los cambios.</li>
       </ul>
     </section>
     <section>
       <title>Notas a Nivel de Archivo</title>
-      <p>Para editar notas a nivel de archivo, haga clic en la pestaña <uicontrol>Notas</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileNotes.png" placement="break" scale="50" align="center">
+      <p>Para editar notas a nivel de archivo, haga clic en la pestaña <uicontrol>Notas</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileNotes.png" placement="break" scale="80" align="center">
           <alt>Cuadro de diálogo Propiedades del Archivo</alt>
         </image></p>
       <ul>
         <li>Haga clic en el botón <uicontrol>Añadir Nota</uicontrol> para abrir un cuadro de diálogo en el que podrá introducir el texto de la nueva nota que se agregará.</li>
-        <li>Seleccione las casillas de verificación situadas junto a las notas que desea eliminar y, a continuación, haga clic en el botón <uicontrol>Eliminar Notas Seleccionadas</uicontrol> para eliminarlas.</li>
+        <li>Si desea eliminar notas de la lista, haga clic en los correspondientes botones <uicontrol>Eliminar Nota</uicontrol> (<image height="16" href="../images/remove.svg" placement="inline" id="image_xlv_qrn_x2c"/>) de la columna situada más a la izquierda.</li>
         <li>Haga clic en el botón <uicontrol>Guardar Notas</uicontrol> para guardar los cambios.</li>
       </ul>
     </section>

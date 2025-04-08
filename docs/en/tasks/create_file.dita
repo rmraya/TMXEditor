@@ -18,7 +18,7 @@
                         > </image>&nbsp;<uicontrol>New</uicontrol> button from the top
                     toolbar.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/new_file.png"
-                        placement="break" scale="50" align="center">
+                        placement="break" scale="80" align="center">
                         <alt>New TMX File Dialog</alt>
                     </image>
                 </stepresult>
