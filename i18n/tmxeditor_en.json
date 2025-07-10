@@ -222,7 +222,7 @@
         "selectLanguageWarning": "Select new language"
     },
     "newFile": {
-        "selectsrcLanguageWarning": "Select source language",
+        "selectSrcLanguageWarning": "Select source language",
         "selectTgtLanguageWarning": "Select target language",
         "selectDifferentLanguages": "Select different languages"
     },

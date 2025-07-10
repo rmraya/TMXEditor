@@ -116,7 +116,7 @@
   "newFile": {
     "selectTgtLanguageWarning": "Seleccione idioma destino",
     "selectDifferentLanguages": "Seleccione idiomas diferentes",
-    "selectsrcLanguageWarning": "Seleccione idioma origen"
+    "selectSrcLanguageWarning": "Seleccione idioma origen"
   },
   "fileInfo": {
     "creationtool": "Herramienta de Creación es obligatorio",
