@@ -16,6 +16,7 @@ class Attributes {
 
     currentId: string;
     currentType: string;
+    langAttributesText: string = 'Attributes';
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -40,13 +41,19 @@ class Attributes {
                 this.electron.ipcRenderer.send('close-attributes');
             }
         });
+        this.electron.ipcRenderer.send('get-lang-attributes-text');
+        this.electron.ipcRenderer.on('set-lang-attributes-text', (event: Electron.IpcRendererEvent, text: string) => {
+            this.langAttributesText = text;
+        });
         this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     setUnitAttributes(arg: any): void {
         this.currentId = arg.id;
         this.currentType = arg.type;
-        document.getElementById('title').innerHTML = this.currentType + ' Attributes';
+        if (this.currentType !== 'TU') {
+            document.getElementById('title').innerHTML = this.langAttributesText;
+        }
 
         let attributes: Array<string[]> = arg.atts;
         for (let pair of attributes) {
