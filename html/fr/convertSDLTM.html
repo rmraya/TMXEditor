@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Convert SDLTM File to TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body class="dialog_body" onload="new ConvertSDLTM();">
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="sdltmFile">SDLTM File</label></td>
+            <td class="middle fill_width"><input type="text" id="sdltmFile" class="fill_width"></td>
+            <td><button id="browseSdltmFiles">Browse...</button></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="tmxFile">TMX File</label></td>
+            <td class="middle fill_width"> <input type="text" id="tmxFile" class="fill_width"></td>
+            <td class="middle"><button id="browseTmxFiles">Browse...</button></td>
+        </tr>
+    </table>
+    <div style="padding: 4px; margin:4px 8px;">
+        <input type="checkbox" style="padding-top:4px;" id="openTMX" checked> <label for="openTMX">Open Generated TMX
+            File</label>
+    </div>
+    <div class="buttonArea">
+        <button id="convert">Convert SDLTM File to TMX</button>
+    </div>
+
+    <script src="../../js/convertSDLTM.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Maintenance Dashboard</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body class="dialog_body" onload="new Maintenance();">
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle">
+                <input id="tags" type="checkbox" checked>
+            </td>
+            <td class="middle fill_width">
+                <label for="tags">Remove All Tags</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <input id="duplicates" type="checkbox" checked>
+            </td>
+            <td class="middle fill_width">
+                <label for="duplicates">Remove Duplicated Units</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <input id="untranslated" type="checkbox" checked>
+            </td>
+            <td class="middle fill_width">
+                <label for="untranslated">Remove Untranslated Units</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <input id="spaces" type="checkbox" checked>
+            </td>
+            <td class="middle fill_width">
+                <label for="spaces">Remove Initial/Trailing Spaces</label>
+            </td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <input id="consolidate" type="checkbox" checked>
+            </td>
+            <td class="middle fill_width">
+                <label for="consolidate">Consolidate Units</label>
+            </td>
+        </tr>
+    </table>
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap">
+                <label for="sourceLanguage">Source Language</label>
+            </td>
+            <td class="middle fill_width">
+                <select id="sourceLanguage" class="table_select">
+
+                </select>
+            </td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="execute">Perform Maintenance</button>
+    </div>
+
+    <script src="../../js/maintenance.js"></script>
+</body>
+
+</html>

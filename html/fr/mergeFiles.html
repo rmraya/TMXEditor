@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Merge TMX Files</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body class="dialog_body" onload="new MergeFiles();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="file">Merged TMX File</label></td>
+            <td class="middle fill_width"><input type="text" id="file" class="fill_width"></td>
+            <td><Button id="browseMergedFile">Browse...</Button></td>
+        </tr>
+    </table>
+
+    <div style="height: 300px; overflow-y: auto; margin-right: 8px; margin-left:8px;" class="bordered">
+        <table id="table" class="stripes">
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="buttonArea">
+        <button id="addFiles">Add Files</button>
+        <button id="mergeFiles">Merge TMX Files</button>
+    </div>
+    <script src="../../js/mergeFiles.js"></script>
+</body>
+
+</html>

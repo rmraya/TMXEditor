@@ -1533,6 +1533,9 @@ class App {
                 if (locales[0].startsWith('es')) {
                     appLang = 'es';
                 }
+                if (locales[0].startsWith('fr')) {
+                    appLang = 'fr';
+                }
             }
             this.savePreferences({ theme: 'system', indentation: 2, appLang: appLang, changeId: false });
         }
