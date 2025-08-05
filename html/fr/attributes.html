@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
-    <title id="title">Translation Unit Attributes</title>
+    <title id="title">Attributs de l&rsquo;unit&eacute; de traduction</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
 </head>
 
 <body class="dialog_body" onload="new Attributes();">
@@ -12,74 +13,74 @@
     <table class="fill_width">
         <tr id="topRow">
             <td class="middle">
-                <label for="tuid" class="noWrap">Translation Unit Identifier</label>
+                <label for="tuid" class="noWrap">ID de l&rsquo;unit&eacute; de traduction</label>
                 <input type="text" id="tuid" class="table_input" readonly>
             </td>
             <td class="middle">
-                <label for="srclang" class="noWrap">Source Language</label>
+                <label for="srclang" class="noWrap">Langue source</label>
                 <select id="srclang" class="table_select">
                 </select>
             </td>
             <td class="middle">
-                <label for="segtype" class="noWrap">Segment Type</label>
+                <label for="segtype" class="noWrap">Type de segment</label>
                 <select id="segtype" class="table_select">
                     <option value=""></option>
-                    <option value="block">block</option>
-                    <option value="paragraph">paragraph</option>
-                    <option value="sentence">sentence</option>
+                    <option value="block">bloc</option>
+                    <option value="paragraph">paragraphe</option>
+                    <option value="sentence">phrase</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td class="middle">
-                <label for="datatype" class="noWrap">Data Type</label>
+                <label for="datatype" class="noWrap">Type de donn&eacute;e</label>
                 <input type="text" id="datatype" class="table_input">
             </td>
             <td class="middle">
-                <label for="o-encoding" class="noWrap">Original Encoding</label>
+                <label for="o-encoding" class="noWrap">Codage d&rsquo;origine</label>
                 <input type="text" id="o-encoding" class="table_input">
             </td>
             <td class="middle">
-                <label for="o-tmf" class="noWrap">Translation Memory Format</label>
+                <label for="o-tmf" class="noWrap">Format de la m&eacute;moire</label>
                 <input type="text" id="o-tmf" class="table_input">
             </td>
         </tr>
         <tr>
             <td class="middle">
-                <label for="creationdate" class="noWrap">Creation Date</label>
+                <label for="creationdate" class="noWrap">Date de cr&eacute;ation</label>
                 <input type="text" id="creationdate" class="table_input">
             </td>
             <td class="middle">
-                <label for="creationid" class="noWrap">Creation Identifier</label>
+                <label for="creationid" class="noWrap">ID du cr&eacute;ateur</label>
                 <input type="text" id="creationid" class="table_input">
             </td>
             <td class="middle">
-                <label for="creationtool" class="noWrap">Creation Tool</label>
+                <label for="creationtool" class="noWrap">Outil de cr&eacute;ation</label>
                 <input type="text" id="creationtool" class="table_input">
             </td>
         </tr>
         <tr>
             <td class="middle">
-                <label for="changedate" class="noWrap">Change Date</label>
+                <label for="changedate" class="noWrap">Date de modification</label>
                 <input type="text" id="changedate" class="table_input">
             </td>
             <td class="middle">
-                <label for="changeid" class="noWrap">Change Identifier</label>
+                <label for="changeid" class="noWrap">ID du modificateur</label>
                 <input type="text" id="changeid" class="table_input">
             </td>
             <td class="middle">
-                <label for="creationtoolversion" class="noWrap">Creation Tool Version</label>
+                <label for="creationtoolversion" class="noWrap">Version de l&rsquo;outil</label>
                 <input type="text" id="creationtoolversion" class="table_input">
             </td>
         </tr>
         <tr>
             <td class="middle">
-                <label for="lastusagedate" class="noWrap">Last Usage Date</label>
+                <label for="lastusagedate" class="noWrap">Date de la derni&egrave;re utilisation</label>
                 <input type="text" id="lastusagedate" class="table_input">
             </td>
             </td>
             <td class="middle">
-                <label for="usagecount" class="noWrap">Usage Count</label>
+                <label for="usagecount" class="noWrap">Nombre d&rsquo;utilisations</label>
                 <input type="text" id="usagecount" class="table_input">
             </td>
             </td>
@@ -88,7 +89,7 @@
     </table>
 
     <div class="buttonArea">
-        <button id="saveAttributes">Save Attributes</button>
+        <button id="saveAttributes">Enregistrer les attributs</button>
     </div>
 
     <script src="../../js/attributes.js"></script>
