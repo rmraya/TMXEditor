@@ -2,45 +2,46 @@
 <html lang="en">
 
 <head>
-    <title>Preferences</title>
+    <title>Pr&eacute;f&eacute;rences utilisateur</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
 </head>
 
 <body class="dialog_body" onload="new PreferencesDialog();">
     <table class="fill_width">
         <tr>
-            <td class="middle noWrap"><label for="sourceSelect">Application Language</label></td>
+            <td class="middle noWrap"><label for="sourceSelect">Langue de l&rsquo;application</label></td>
             <td class="middle fill_width">
                 <select id="appLangSelect"  class="table_select">
-                    <option value="en">English</option>
-                    <option value="fr">French</option>
-                    <option value="es">Spanish</option>
+                    <option value="en">Anglais</option>
+                    <option value="es">Espagnol</option>
+                    <option value="fr">Fran&ccedil;ais</option>
                 </select>
             </td>
         </tr>
         <tr>
-            <td class="middle noWrap"><label for="themeColor">Theme</label></td>
+            <td class="middle noWrap"><label for="themeColor">Th&egrave;me</label></td>
             <td class="middle fill_width">
                 <select id="themeColor" class="table_select">
-                    <option value="system">System Default</option>
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="highcontrast">High Contrast</option>
+                    <option value="system">Automatique</option>
+                    <option value="dark">Sombre</option>
+                    <option value="light">Clair</option>
+                    <option value="highcontrast">Contraste &eacute;lev&eacute;</option>
                 </select>
             </td>
         </tr>
         <tr>
             <td class="middle noWrap"><label for="indentation">Indentation</label></td>
-            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4"> spaces</td>
+            <td class="middle fill_width"><input type="number" id="indentation" min="0" max="8" value="4">espaces</td>
         </tr>
     </table>
     <div class="row middle">
         <input id="changeId" type="checkbox">
-        <label for="changeId" class="middleLabel">Set 'changeid' / 'changedate' Attributes</label>
+        <label for="changeId" class="middleLabel">Mettre &agrave; jour les attributs changeid et changedate</label>
     </div>
     <div class="buttonArea">
-        <button id="savePreferences">Save Preferences</button>
+        <button id="savePreferences">Enregistrer les pr&eacute;f&eacute;rences</button>
     </div>
     <script src="../../js/preferencesDialog.js"></script>
 </body>

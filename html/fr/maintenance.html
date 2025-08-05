@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
-    <title>Maintenance Dashboard</title>
+    <title>Tableau de bord de maintenance</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
 </head>
 
 <body class="dialog_body" onload="new Maintenance();">
@@ -15,7 +16,7 @@
                 <input id="tags" type="checkbox" checked>
             </td>
             <td class="middle fill_width">
-                <label for="tags">Remove All Tags</label>
+                <label for="tags">Supprimer toutes les balises</label>
             </td>
         </tr>
         <tr>
@@ -23,7 +24,7 @@
                 <input id="duplicates" type="checkbox" checked>
             </td>
             <td class="middle fill_width">
-                <label for="duplicates">Remove Duplicated Units</label>
+                <label for="duplicates">Supprimer les unit&eacute;s en doublon</label>
             </td>
         </tr>
         <tr>
@@ -31,7 +32,7 @@
                 <input id="untranslated" type="checkbox" checked>
             </td>
             <td class="middle fill_width">
-                <label for="untranslated">Remove Untranslated Units</label>
+                <label for="untranslated">Supprimer les unit&eacute;s non traduites</label>
             </td>
         </tr>
         <tr>
@@ -39,7 +40,7 @@
                 <input id="spaces" type="checkbox" checked>
             </td>
             <td class="middle fill_width">
-                <label for="spaces">Remove Initial/Trailing Spaces</label>
+                <label for="spaces">Supprimer les espaces &agrave; gauche et &agrave; droite</label>
             </td>
         </tr>
         <tr>
@@ -47,7 +48,7 @@
                 <input id="consolidate" type="checkbox" checked>
             </td>
             <td class="middle fill_width">
-                <label for="consolidate">Consolidate Units</label>
+                <label for="consolidate">Consolider les unit&eacute;s de traduction</label>
             </td>
         </tr>
     </table>
@@ -55,7 +56,7 @@
     <table class="fill_width">
         <tr>
             <td class="middle noWrap">
-                <label for="sourceLanguage">Source Language</label>
+                <label for="sourceLanguage">Langue source</label>
             </td>
             <td class="middle fill_width">
                 <select id="sourceLanguage" class="table_select">
@@ -65,7 +66,7 @@
         </tr>
     </table>
     <div class="buttonArea">
-        <button id="execute">Perform Maintenance</button>
+        <button id="execute">Ex&eacute;cuter la maintenance</button>
     </div>
 
     <script src="../../js/maintenance.js"></script>

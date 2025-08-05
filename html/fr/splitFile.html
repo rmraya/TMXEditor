@@ -2,27 +2,28 @@
 <html lang="en">
 
 <head>
-    <title>Split TMX File</title>
+    <title>D&eacute;couper un fichier TMX</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
 </head>
 
 <body class="dialog_body" onload="new SplitFile();">
     <table class="fill_width">
         <tr>
-            <td class="middle noWrap"><label for="file">TMX File</label></td>
+            <td class="middle noWrap"><label for="file">Fichier TMX</label></td>
             <td class="middle fill_width"><input type="text" id="file" class="fill_width"></td>
-            <td class="middle"><Button id="browseFiles">Browse...</Button></td>
+            <td class="middle"><Button id="browseFiles">Parcourir</Button></td>
         </tr>
     </table>
     <table class="fill_width">
         <tr>
-            <td class="middle noWrap"><label for="parts">Number of parts</label></td>
+            <td class="middle noWrap"><label for="parts">Nombre de morceaux</label></td>
             <td class="middle fill_width"><input type="number" min="2" id="parts" value="2"></td>
         </tr>
     </table>
     <div class="buttonArea">
-        <button id="splitFile">Split TMX File</button>
+        <button id="splitFile">D&eacute;couper le fichier</button>
     </div>
     <script src="../../js/splitFile.js"></script>
 </body>
