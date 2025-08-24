@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Convertir un fichier CSV en TMX</title>
+    <title>Convertir un fichier CSV ou TSV en TMX</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
 <meta charset="utf-8">
@@ -12,7 +12,7 @@
 
     <table class="fill_width">
         <tr>
-            <td class="middle noWrap"><label for="csvFile">Fichier CSV/texte</label></td>
+            <td class="middle noWrap"><label for="csvFile">Fichier CSV/TSV</label></td>
             <td class="middle fill_width"><input type="text" id="csvFile" class="fill_width"></td>
             <td><button id="browseCsvFiles">Parcourir</button></td>
         </tr>
@@ -62,10 +62,10 @@
             <pre id="preview" style="width: 100%;">Aper&ccedil;u non disponible</pre>
         </div>
     </div>
-    <div class="right" style="padding: 4px; margin:4px 8px;">Nombre de colonnes d&eacute;tect&eacute;&nbsp; <span id="columns">0</span></div>
+    <div class="right" style="padding: 4px; margin:4px 8px;">Nombre de colonnes d&eacute;tect&eacute;&nbsp;:&nbsp<span id="columns">0</span></div>
     <div style="padding: 4px; margin:4px 8px;">
         <input type="checkbox" style="padding-top:4px;" id="fixQuotes"><label for="fixQuotes" class="noWrap">Corriger les guillemets doubles d&rsquo;Excel</label><br><input type="checkbox" style="padding-top:4px;" id="optionalDelims"><label for="optionalDelims"
-            class="noWrap">Les d&eacute;limiteurs de texte sont facultatifs</label><br><input type="checkbox" style="padding-top:4px;" id="openTMX" checked><label for="openTMX">Ouvrir le fichier TMX g&eacute;n&eacute;r&eacute;</label>
+            class="noWrap">Tolérer les d&eacute;limiteurs de texte manquants</label><br><input type="checkbox" style="padding-top:4px;" id="openTMX" checked><label for="openTMX">Ouvrir le fichier TMX g&eacute;n&eacute;r&eacute;</label>
     </div>
     <div class="buttonArea">
         <button id="refreshPreview">Actualiser l&rsquo;aper&ccedil;u</button>

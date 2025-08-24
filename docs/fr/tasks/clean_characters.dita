@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="clean_characters">
+  <title>Supprimer les caractères invalides</title>
+  <shortdesc>Marche à suivre pour supprimer les caractères invalides d’un fichier TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Comme le format TMX est basé sur la syntaxe XML, les fichiers TMX ne doivent pas contenir de caractères que la norme XML interdit.</p>
+      <p>Un fichier TMX contenant des caractères invalides doit être nettoyé pour devenir éditable.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Supprimer les caractères invalides.</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Sélectionnez le fichier à réparer à l’aide de la boîte de dialogue.</cmd>
+        <stepresult/>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Une sauvegarde du fichier original est conservée dans le dossier à côté du fichier traité.</result>
+  </taskbody>
+</task>

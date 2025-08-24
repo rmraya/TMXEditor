@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="change_language">
+  <title>Modifier une langue</title>
+  <shortdesc>Marche à suivre pour modifier le code d’une langue dans un fichier TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>En général, les systèmes à <xref href="../glossaries/translation_memory.dita">mémoire de traduction</xref> sont pointilleux sur les <xref href="../glossaries/language_code.dita">codes de langue</xref>. Ils peuvent par exemple considérer que le code "en" (anglais) diffère du code "en-US" (anglais américain) et du code "en-GB" (anglais britannique).</p>
+      <p>TMXEditor permet de changer le code des langues présentes dans un fichier TMX.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Modifier une langue.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Modifier une langue" s’ouvre :<image href="../images/change_language.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Modifier une langue"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue à modifier à l’aide de la liste déroulante <uicontrol>Langue à modifier</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Sélectionnez la nouvelle langue à appliquer à l’aide de la liste déroulante <uicontrol>Nouvelle langue</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Modifier la langue</uicontrol>.</cmd>
+        <stepresult>La boîte de dialogue se ferme et la nouvelle langue apparaît dans la fenêtre principale.</stepresult>
+      </step>
+    </steps>
+  </taskbody>
+</task>

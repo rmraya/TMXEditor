@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="fr-FR" id="credits">
+  <title>Licences</title>
+  <conbody>
+    <p>TMXEditor utilise des composants des projets open source suivants&nbsp;:</p>
+    <p>
+      <b>Electron</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://www.electronjs.org/" scope="external" format="html">https://www.electronjs.org/
+          </xref>
+        </li>
+      <li>Publié sous <xref href="https://raw.githubusercontent.com/electron/electron/main/LICENSE" scope="external" format="html">Licence MIT
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>Java</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://adoptium.net/" scope="external" format="html">https://adoptium.net
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://raw.githubusercontent.com/adoptium/jdk/master/LICENSE" scope="external" format="html">GPL with Classpath Exception
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>BCP47J</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/rmraya/JavaBCP47" scope="external" format="html">https://github.com/rmraya/BCP47J
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Eclipse Public License 1.0
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>JSON-java</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/stleary/JSON-java" scope="external" format="html">https://github.com/stleary/JSON-java
+          </xref>
+        </li>
+      <li>Dans le domaine public</li>
+    </ul>
+    <p>
+      <b>sdltm</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/rmraya/sdltm" scope="external" format="html">https://github.com/rmraya/sdltm
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Eclipse Public License 1.0
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>SL4J</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://slf4j.org" scope="external" format="html">https://slf4j.org
+          </xref>
+        </li>
+      <li>Publié sous <xref href="https://slf4j.org/license.html" scope="external" format="html">Licence MIT
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>SQLite JDBC Driver</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/xerial/sqlite-jdbc" scope="external" format="html">https://github.com/xerial/sqlite-jdbc
+          </xref>
+        </li>
+      <li>Publié sous <xref href="https://raw.githubusercontent.com/xerial/sqlite-jdbc/master/LICENSE" scope="external" format="html">Licence Apache
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>TMXValidator</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://www.maxprograms.com/products/tmxvalidator.html" scope="external" format="html">https://www.maxprograms.com/products/tmxvalidator.html
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Eclipse Public License 1.0
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>TypesXML</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/rmraya/JavaBCP47" scope="external" format="html">https://github.com/rmraya/TypesXML
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Eclipse Public License 1.0
+          </xref>
+        </li>
+    </ul>
+    <p>
+      <b>XMLJava</b>
+    </p>
+    <ul>
+      <li>Disponible à l’adresse <xref href="https://github.com/rmraya/XMLJava" scope="external" format="html">https://github.com/rmraya/XMLJava
+          </xref>
+        </li>
+      <li>Publié sous licence <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Eclipse Public License 1.0
+          </xref>
+        </li>
+    </ul>
+  </conbody>
+</concept>

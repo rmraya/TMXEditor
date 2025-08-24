@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="untitled1">
+  <title>Renouvellement d’un abonnement</title>
+  <shortdesc/>
+  <taskbody>
+    <context>Vous pouvez enregistrer un nouvel abonnement avant que votre abonnement actuel expire.</context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Aide</uicontrol>
+            <uicontrol>Abonnement.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue suivante apparaît alors&nbsp;:<image href="../images/register_subscription.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Abonnement"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Si vous n’avez pas de clé d’abonnement, cliquez sur le bouton <uicontrol>Acheter un abonnement</uicontrol> pour accéder à la <xref href="https://www.maxprograms.com/store/buy.html" scope="external" format="html">boutique en ligne de Maxprograms</xref> dans le navigateur internet.</cmd>
+      </step>
+      <step>
+        <cmd>Si vous avez une clé d’abonnement, saisissez-la dans le champ <uicontrol>Clé d’abonnement</uicontrol>, puis cliquez sur le bouton <uicontrol>Enregistrer l’abonnement</uicontrol>.</cmd>
+        <stepresult>Si la clé est acceptée, la petite boîte de dialogue suivante apparaît&nbsp;:<image href="../images/subscription_registered.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Abonnement validé"</alt>
+          </image> </stepresult>
+      </step>
+    </steps>
+  </taskbody>
+</task>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="converttbx">
+  <title>Convertir un fichier TBX en TMX</title>
+  <shortdesc/>
+  <taskbody>
+    <context>
+      <p/>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Convertir un fichier TBX en TMX</uicontrol>
+          </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importTBX.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier TBX en TMX</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Convertir un fichier TBX en TMX" s’ouvre :<image href="../images/convertTBX.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue "Convertir un fichier TBX en TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier TBX</uicontrol>, saisissez le chemin du fichier TBX à convertir, ou sélectionnez le fichier à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier TMX</uicontrol>, saisissez le nom fichier TMX à générer, ou indiquez son emplacement et son nom à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Convertir le fichier en TMX</uicontrol> pour lancer le traitement.</cmd>
+      </step>
+    </steps>
+    <result>Le fichier TMX est généré à l’emplacement défini. Si la case <uicontrol>Ouvrir le fichier TMX généré</uicontrol> est cochée, ce fichier s’ouvre dans la fenêtre principale.</result>
+  </taskbody>
+</task>

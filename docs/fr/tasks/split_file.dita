@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="split_file">
+  <title>Découper le fichier</title>
+  <shortdesc>Marche à suivre pour découper un fichier TMX en un plusieurs morceaux.</shortdesc>
+  <taskbody>
+    <context>
+      <p>L’exploitation ou le traitement d’un fichier TMX volumineux pose parfois problème. Découper ce fichier en plusieurs petits morceaux peut permettre de s’en sortir.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Découper un fichier TMX.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre :<image href="../images/split_file.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Découper un fichier TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier TMX</uicontrol>, saisissez le chemin du fichier à convertir, ou sélectionnez le fichier à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Indiquez en combien de morceaux vous souhaitez découper le fichier.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Découper le fichier</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Les petits fichiers TMX sont créés dans le répertoire du fichier sélectionné. Le traitement ne modifie pas le fichier original.</result>
+  </taskbody>
+</task>

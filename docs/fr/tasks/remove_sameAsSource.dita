@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="sameAsSource">
+  <title>Supprimer les traductions identiques à la source</title>
+  <shortdesc>Marche à suivre pour supprimer les traductions qui sont identiques au texte source dans un fichier TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Certaines unités de traduction peuvent contenir des traductions qui sont identiques au texte en langue source. Ce traitement supprime les unités de traductions dont le texte est le même dans toutes les langues. Il supprime également les traductions qui sont identiques à la source (tout en laissant dans l’unité de traduction toutes les traductions qui diffèrent).</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Supprimer les traductions identiques à la source</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Supprimer les traductions identiques à la source" s’ouvre :<image href="../images/sameAsSource.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Supprimer les traductions identiques à la source"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>À l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>, sélectionnez la langue devant être considérée comme la langue source pour ce traitement. (Cette langue n’est pas forcément la même que la langue source définie au niveau du fichier.)</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Supprimer les traductions identiques à la source</uicontrol>.</cmd>
+        <stepresult>Un petit message s’affiche pendant le traitement.</stepresult>
+      </step>
+    </steps>
+    <result>Les données du fichier nettoyé apparaissent dans la fenêtre principale.</result>
+  </taskbody>
+</task>

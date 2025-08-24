@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="remove_untranslated">
+  <title>Supprimer les unités non traduites</title>
+  <shortdesc>Marche à suivre pour supprimer les unités non traduites d’un fichier TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Une unité de traduction est dite «&nbsp;non traduite&nbsp;» si elle ne contient qu’une seule balise &lt;tuv&gt; avec du texte dedans. Les unités non traduites ne fournissent aucune correspondance aux systèmes à <xref href="../glossaries/translation_memory.dita">mémoire de traduction</xref>.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Supprimer les unités non traduites.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Supprimer les unités non traduites" s’ouvre :<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Supprimer les unités non traduites"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>À l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>, sélectionnez la langue devant être considérée comme la langue source pour ce traitement. (Cette langue n’est pas forcément la même que la langue source définie au niveau du fichier.)</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Supprimer les unités non traduites</uicontrol>.</cmd>
+        <stepresult>Un petit message s’affiche pendant le traitement.</stepresult>
+      </step>
+    </steps>
+    <result>Les données du fichier nettoyé apparaissent dans la fenêtre principale.</result>
+  </taskbody>
+</task>

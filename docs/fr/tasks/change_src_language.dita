@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="change_src_language">
+  <title>Changer de langue source</title>
+  <shortdesc>Marche à suivre pour modifier la langue source d’un fichier TMX</shortdesc>
+  <taskbody>
+    <context>
+      <p>Certains systèmes à <xref href="../glossaries/translation_memory.dita">mémoire de traduction</xref> utilisent des fichiers TMX bilingues et ne traduisent que dans un sens.</p>
+      <p>Afin de contourner les limitations de ces systèmes, TMXEditor permet de sélectionner dans un fichier TMX la langue qui doit être considérée comme la <xref href="../glossaries/source_language.dita">langue source</xref>.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Changer de langue source</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Changer de langue source" s’ouvre :<image href="../images/change_source_language.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Changer de langue source"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la nouvelle langue source à l’aide de la liste déroulante <uicontrol>Langue</uicontrol>.</cmd>
+        <info>La première valeur dans la liste <uicontrol>Langue</uicontrol> est <uicontrol>N’importe laquelle</uicontrol>. Choisissez cette valeur pour indiquer que le fichier est utilisable dans tous les sens de traduction.</info>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Changer la langue source</uicontrol>.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

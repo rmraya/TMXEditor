@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/glossary.dtd">
+<glossentry xml:lang="fr-FR" id="TMX">
+  <glossterm>TMX</glossterm>
+  <glossdef>Translation Memory eXchange (TMX) est un format ouvert développé à l’origine par LISA (Localization Industry Standards Association). L’objectif de TMX est de faciliter l’échange de données de mémoire de traduction entre différents outils et/ou prestataires de traduction, en évitant autant que possible les pertes de données essentielles durant le processus.</glossdef>
+</glossentry>
