@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="fr-FR" id="conversionTasks">
+  <title>Tâches de conversion</title>
+  <conbody>
+    <p>TMXEditor peut effectuer les tâches de conversion suivantes&nbsp;:</p>
+    <ul>
+      <li>
+        <image height="16" href="../images/importExcel.svg" placement="inline"/>
+        <xref href="../tasks/importExcel.dita">Convertir un fichier Excel en TMX
+          </xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/exportExcel.dita">Exporter un fichier TMX en fichier Excel
+          </xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importDelimited.svg" placement="inline"/>
+        <xref href="../tasks/import_delimited.dita">Convertir un fichier CSV ou TSV en TMX
+          </xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/export_delimited.dita">Exporter un fichier TMX en fichier TSV (séparateur Tab)
+          </xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importSDLTM.svg" placement="inline"/>
+        <xref href="../tasks/importSDLTM.dita">Convertir un fichier SDLTM en TMX
+          </xref>
+      </li>
+      <li>
+        <image height="16" href="../images/importTBX.svg" placement="inline"/>
+        <xref href="../tasks/importTBX.dita">Convertir un fichier TBX en TMX
+          </xref>
+      </li>
+    </ul>
+    <note>Le format Excel est plus performant que les formats CSV ou TSV lorsque les cellules ou unités de traduction contiennent plusieurs lignes de texte.</note>
+  </conbody>
+</concept>

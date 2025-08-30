@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Registrar Suscripci&oacute;n</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body class="dialog_body" onload="new RegisterExpired();">
+    <div class="paddedArea">
+        <p>Su suscripci&oacute;n actual ha caducado.</p>
+        <p>Se necesita una nueva clave de suscripci&oacute;n para seguir utilizando este programa.</p>
+    </div>
+    <table class="fill_width">
+        <tr>
+            <td class="middle">
+                <label for="subscription" class="noWrap">Clave de Suscripci&oacute;n</label>
+            </td>
+            <td class="middle fill_width"><input type="text" id="subscription" class="table_input" /></td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="purchaseSubscription">Comprar Suscripci&oacute;n</button> <button id="registerNewSubscription">Registrar Suscripci&oacute;n</button>
+    </div>
+    <script src="../../js/registerExpired.js"></script>
+</body>
+
+</html>

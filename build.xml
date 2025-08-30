@@ -6,7 +6,7 @@
     <path id="TMXServer.classpath">
         <pathelement location="jars/bcp47j.jar" />
         <pathelement location="jars/json.jar" />
-        <pathelement location="jars/sqlite-jdbc-3.49.1.0.jar" />
+        <pathelement location="jars/sqlite-jdbc-3.50.3.0.jar" />
         <pathelement location="jars/tmxvalidator.jar" />
         <pathelement location="jars/xmljava.jar" />
     </path>

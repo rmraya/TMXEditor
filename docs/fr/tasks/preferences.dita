@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="preferences">
+  <title>Paramètres du programme</title>
+  <shortdesc/>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Pour ouvrir la boîte de dialogue des préférences utilisateur&nbsp;:</cmd>
+        <choices>
+          <choice>Sur Windows ou Linux, sélectionnez <menucascade>
+              <uicontrol>Paramètres</uicontrol>
+              <uicontrol>Préférences utilisateur</uicontrol>
+            </menucascade> dans le menu.</choice>
+          <choice> Sur macOS, sélectionnez <menucascade>
+              <uicontrol>TMXEditor</uicontrol>
+              <uicontrol>Préférences utilisateur
+          </uicontrol>
+              <uicontrol>Paramètres</uicontrol>
+            </menucascade> dans le menu.</choice>
+        </choices>
+        <stepresult>La boîte de dialogue "Préférences utilisateur" s’ouvre&nbsp;:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue de l’interface graphique de TMXEditor à l’aide de la liste déroulante <uicontrol>Langue de l’application</uicontrol>.</cmd>
+        <info>Le changement de langue deviendra effectif au prochain redémarrage du programme.</info>
+      </step>
+      <step>
+        <cmd>Sélectionnez le jeu de couleur de l’interface graphique à l’aide de la liste déroulante <uicontrol>Thème</uicontrol>. Les quatre thèmes disponibles sont les suivants&nbsp;: </cmd>
+        <choices>
+          <choice>
+          <b>
+        Automatique</b>&nbsp;: sombre ou clair selon ce qui a été défini au niveau du système d’exploitation.</choice>
+          <choice>
+          <b>
+        Sombre</b>&nbsp;: texte blanc sur fond gris foncé.</choice>
+          <choice>
+          <b>
+        Clair</b>&nbsp;: texte noir sur fond gris clair.</choice>
+          <choice>
+          <b>
+        Contraste élevé</b>&nbsp;: sombre avec un contraste renforcé.</choice>
+        </choices>
+      </step>
+      <step>
+        <cmd>Concernant le formatage des fichiers TMX, réglez la largeur du retrait des balises XML imbriquées en saisissant dans le champ <uicontrol>Indentation</uicontrol> le nombre d’espaces à insérer.</cmd>
+        <info>
+          <i>
+        Remarque</i>&nbsp;: L’indentation aide visuellement à comprendre la structure des fichiers XML lorsqu’on les ouvre dans un éditeur de texte. Elle n’a par contre aucun effet sur les traitements des fichiers TMX effectués par les outils de traduction.</info>
+      </step>
+      <step>
+        <cmd>Cochez la case <uicontrol>Mettre à jour les attributs changeid et changedate</uicontrol> si vous souhaitez activer l’enregistrement du nom de l’utilisateur ayant effectué la dernière modification d’un élément ou d’un fichier, ainsi que la date de cette modification.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Enregistrer les préférences</uicontrol> pour enregistrer et activer les nouveaux paramètres.</cmd>
+      </step>
+    </steps>
+    <result>Les changements de thème sont appliqués immédiatement. Les changements de langue sont pris en compte au prochain redémarrage de TMXEditor. Les paramètres concernant l’utilisation de la mémoire sont appliqués à la prochaine ouverture d’un fichier TMX. Le paramètre d’indentation est appliqué au prochain fichier TMX qu’on enregistre.</result>
+  </taskbody>
+</task>

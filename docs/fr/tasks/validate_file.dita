@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="validate_file">
+  <title>Validation TMX</title>
+  <shortdesc/>
+  <taskbody>
+    <context>
+      <p>La plupart des outils de TAO (Traduction Assistée par Ordinateur) s’appuient sur la norme TMX (Translation Memory Echange) pour l’échange des mémoires de traduction. Malheureusement, il y a des outils qui produisent des fichiers TMX non conformes, ou qui n’arrivent pas à lire certains fichiers TMX dont le format est pourtant correct.</p>
+      <p>TMXEditor permet de vérifier la validité des fichiers TMX par rapport à la DTD et par rapport aux spécifications de la norme TMX.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Valider un fichier TMX</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Sélectionnez le fichier à valider à l’aide de la boîte de dialogue.</cmd>
+        <stepresult>Un petit message s’affiche pendant la validation.</stepresult>
+      </step>
+    </steps>
+    <result>Le résultat de la validation s’affiche dans une boîte de dialogue.</result>
+  </taskbody>
+</task>

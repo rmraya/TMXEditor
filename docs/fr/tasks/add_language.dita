@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="add_language">
+  <title>Ajouter une langue</title>
+  <shortdesc>Voici les étapes à suivre pour ajouter une langue (et une colonne vide) dans un fichier TMX</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Ajouter une langue.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Ajouter une langue" s’ouvre&nbsp;:<image href="../images/add_language.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Ajouter une langue"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue à ajouter à l’aide de la liste déroulante.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Ajouter la langue</uicontrol>.</cmd>
+        <stepresult>La boîte de dialogue se ferme et la nouvelle langue apparaît dans la fenêtre principale.</stepresult>
+      </step>
+    </steps>
+  </taskbody>
+</task>

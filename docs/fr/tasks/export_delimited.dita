@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="export_delimited">
+  <title>Exporter un fichier TMX en fichier TSV (séparateur Tab)</title>
+  <shortdesc>Marche à suivre pour convertir un fichier TMX en un format tabulaire (séparateur Tab) lisible par Microsoft Excel et les autres tableurs.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Les fichiers TSV (Tab-Separated Values) sont des fichiers texte brut contenant des données tabulaires (tables de bases de données, feuilles de calcul...). Ils sont notamment utilisés pour échanger des données d’une base de données à l’autre. Chaque ligne du fichier contient un enregistrement de la table, les champs étant séparés les uns des autres par le caractère Tab.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à exporter.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Exporter en fichier TSV</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Définissez le nom et l’emplacement du fichier à générer à l’aide de la boîte de dialogue.</cmd>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Le fichier TSV généré est conforme au format standard d’Excel (<xref href="../glossaries/character_set.dita">jeu de caractères</xref> UTF-16LE, séparateur Tab pour les colonnes, sans délimiteur de texte).</result>
+  </taskbody>
+</task>

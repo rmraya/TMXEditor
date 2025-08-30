@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="fr-FR" id="supported_platforms">
+  <title>Plateformes compatibles</title>
+  <conbody>
+    <p>Le logiciel TMXEditor fonctionne sur les OS suivants&nbsp;: <ul>
+        <li>Microsoft Windows 10 et 11</li>
+        <li>macOS Big&nbsp;Sur (11.0), Monterey (12.0), Ventura (13.0), Sonoma (14.0) et Sequoia (15.0)</li>
+        <li>Linux (avec le gestionnaire de bureau GNOME)</li>
+      </ul> </p>
+  </conbody>
+</concept>

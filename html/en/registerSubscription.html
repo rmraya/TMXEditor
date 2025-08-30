@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register Subscription</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+</head>
+
+<body class="dialog_body" onload="new RegisterSubscription();">
+    <div class="paddedArea">
+        <ul>
+            <li>Enter your Subscription Key below and click on <i>Register Subscription</i>.</li>
+            <li>Click on <i>Request Evaluation Key</i> to try this application for 7 days.</li>
+            <li>Click on <i>Purchase Subscription</i> to get a new Subscription Key.</li>
+        </ul>
+    </div>
+    <table class="fill_width">
+        <tr>
+            <td class="middle">
+                <label for="subscription" class="noWrap">Subscription Key</label>
+            </td>
+            <td class="middle fill_width"><input type="text" id="subscription" class="table_input" /></td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="purchaseSubscription">Purchase Subscription</button>
+        <button id="requestEvaluation">Request Evaluation Key</button>
+        <button id="registerSubscription">Register Subscription</button>
+    </div>
+    <script src="../../js/registerSubscription.js"></script>
+</body>
+
+</html>

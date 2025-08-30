@@ -603,7 +603,7 @@ th svg {
 }
 
 .tooltip .tooltiptext {
-	background-color: var(--themeLight);
+	background-color: var(--themeLighterAlt);
 	color: var(--black);
 	visibility: hidden;
 	padding: 4px;
@@ -614,24 +614,65 @@ th svg {
 	z-index: 100;
 }
 
-.topTooltip {
-	bottom: 120%;
-	left: 20px;
+/* Tooltip arrow */
+.bottomTooltip .tooltiptext::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent var(--themeLighterAlt) transparent;
 }
 
-.bottomTooltip {
-	top: 120%;
-	left: 20px;
+.bottomRightTooltip .tooltiptext::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent var(--themeLighterAlt) transparent;
 }
 
-.bottomCenterTooltip {
-	top: 120%;
+.bottomCenterTooltip .tooltiptext::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 80px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent var(--themeLighterAlt) transparent;
+}
+
+.topTooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--themeLighterAlt) transparent transparent transparent;
+}
+
+.topTooltip .tooltiptext {
+	bottom: 130%;
+	left: 0px;
+}
+
+.bottomTooltip .tooltiptext {
+	top: 140%;
+	left: 0px;
+}
+
+.bottomCenterTooltip .tooltiptext {
+	top: 130%;
 	left: -80px;
 }
 
-.bottomRightTooltip {
-	top: 120%;
-	right: 20px;
+.bottomRightTooltip .tooltiptext {
+	top: 130%;
+	right: 0px;
 }
 
 .tooltip:hover .tooltiptext {

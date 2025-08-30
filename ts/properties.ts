@@ -99,6 +99,7 @@ class Properties {
                 '<span class="tooltiptext bottomTooltip">' + this.removePropertiesText
                 + '</span>';
             remove.classList.add('tooltip');
+            remove.classList.add('bottomTooltip');
             remove.addEventListener('click', () => {
                 this.deleteProperty(pair);
             });

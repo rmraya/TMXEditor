@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="sortData">
+  <title>Trier les unités de traduction</title>
+  <shortdesc>Marche à suivre pour afficher les textes d’un fichier TMX par ordre alphabétique sur une langue donnée.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Dans un fichier TMX, l’ordre des unités de traduction n’est pas significatif. Pour faciliter la navigation et l’édition, il est parfois pratique de trier les textes d’une langue donnée par ordre alphabétique.</p>
+      <p>Voici les étapes à suivre pour trier les textes d’un fichier TMX.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Affichage</uicontrol>
+            <uicontrol>Trier les unités de traduction</uicontrol>
+          </menucascade> (touche [<userinput>F5</userinput>]), ou cliquez sur le bouton <image height="16" href="../images/sortUnits.svg" placement="inline"/>&nbsp;<uicontrol>Trier les unités de traduction</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Trier les unités de traduction" s’ouvre&nbsp;:<image href="../images/sort_units.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Trier les unités de traduction"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue à utiliser pour le tri à l’aide de la liste déroulante <uicontrol>Langue sur laquelle trier</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Cochez la case <uicontrol>Par ordre décroissant</uicontrol> si vous souhaitez afficher les unités de traduction par ordre alphabétique inverse. Laissez la case décochée si vous voulez juste l’ordre alphabétique normal.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Trier les unités de traduction</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Les unités triées sur la langue sélectionnée apparaissent dans la fenêtre principale. Pour afficher les unités de traduction dans l’ordre d’origine, ouvrez à nouveau la boîte de dialogue et cliquez sur le bouton <uicontrol>Annuler le tri</uicontrol>.</result>
+  </taskbody>
+</task>

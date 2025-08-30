@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
+<glossentry xml:lang="fr-FR" id="subscription_key">
+  <glossterm>Clé d’abonnement</glossterm>
+  <glossdef>Une clé d’abonnement est un code permettant de s’inscrire et d’utiliser un programme pendant une période donnée.</glossdef>
+</glossentry>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="exportExcel">
+  <title>Exporter un fichier TMX en fichier Excel</title>
+  <shortdesc>Marche à suivre pour convertir un fichier TMX en une feuille Excel.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Les fichiers Microsoft Excel sont couramment utilisés pour échanger des tableaux de données. TMXEditor permet d’exporter des données TMX (sans les balises inline) dans un fichier <tt>.xlsx</tt>.</p>
+      <note>Avec Office 365 et les versions récentes de Microsoft Office (à partir de 2007), une feuille Excel peut contenir jusqu’à 1&nbsp;048&nbsp;576&nbsp;lignes et 16&nbsp;384&nbsp;colonnes. Dans les versions plus anciennes d’Excel, les feuilles de calcul sont limitées à 65&nbsp;536&nbsp;lignes et 256&nbsp;colonnes.</note>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à exporter.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Exporter en fichier Excel</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+      <step>
+        <cmd>Définissez le nom et l’emplacement du fichier à générer à l’aide de la boîte de dialogue.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>
