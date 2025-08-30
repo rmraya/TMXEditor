@@ -17,7 +17,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Changer de langue source</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Changer de langue source" s’ouvre :<image href="../images/change_source_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Changer de langue source" s’ouvre&nbsp;:<image href="../images/change_source_language.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Changer de langue source"</alt>
           </image> </stepresult>
       </step>

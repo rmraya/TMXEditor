@@ -16,8 +16,8 @@
           </xref>
       </li>
       <li>
-        <image height="16" href="../images/convertCSV.svg" placement="inline"/>
-        <xref href="../tasks/import_delimited.dita">Convertir un CSV ou TSV (séparateur Tab) en TMX
+        <image height="16" href="../images/importDelimited.svg" placement="inline"/><!-- Manual href fix by Japotrad -->
+        <xref href="../tasks/import_delimited.dita">Convertir un fichier CSV ou TSV (séparateur Tab) en TMX
           </xref>
       </li>
     </ul>

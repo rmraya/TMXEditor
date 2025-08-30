@@ -13,7 +13,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer une langue</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer une langue" s’ouvre :<image href="../images/remove_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Supprimer une langue" s’ouvre&nbsp;:<image href="../images/remove_language.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer une langue"</alt>
           </image> </stepresult>
       </step>

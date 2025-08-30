@@ -5,7 +5,7 @@
   <shortdesc>Marche à suivre pour supprimer toutes les balises inline d’un fichier TMX.</shortdesc>
   <taskbody>
     <context>
-      <p>La présence de balises inline est susceptible de perturber la recherche de correspondances si une pénalité est lorsque les balises ne coïncident pas exactement.</p>
+      <p>La présence de balises inline est susceptible de perturber la recherche de correspondances si une pénalité est appliquée lorsque les balises ne coïncident pas exactement.</p>
     </context>
     <steps>
       <step>

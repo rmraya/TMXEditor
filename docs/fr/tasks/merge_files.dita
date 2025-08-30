@@ -8,9 +8,9 @@
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Fichier</uicontrol>
-            <uicontrol>Fusionner des fichiers TMX.</uicontrol>
+            <uicontrol>Fusionner des fichiers TMX</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Fusionner des fichiers TMX" s’ouvre :<image href="../images/merge_files.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Fusionner des fichiers TMX" s’ouvre&nbsp;:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Fusionner des fichiers TMX"</alt>
           </image> </stepresult>
       </step>
@@ -24,7 +24,7 @@
           </image> </stepresult>
       </step>
       <step>
-        <cmd>Pour supprimer un fichier de la liste, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline"/> <uicontrol>Retirer le fichier</uicontrol> en regard du fichier à retirer.</cmd>
+        <cmd>Pour enlever un fichier de la liste, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline"/> <uicontrol>Retirer le fichier</uicontrol> en regard du fichier à retirer.</cmd>
       </step>
       <step>
         <cmd>Cliquez sur le bouton <uicontrol>Fusionner les fichiers</uicontrol>.</cmd>

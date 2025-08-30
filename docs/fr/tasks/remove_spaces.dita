@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task xml:lang="fr-FR" id="remove_spaces">
-  <title>Supprimer les espaces à gauche à droite</title>
+  <title>Supprimer les espaces à gauche et à droite</title>
   <shortdesc>Marche à suivre pour supprimer les espaces qui se trouvent au début ou à la fin des segments d’un fichier TMX.</shortdesc>
   <taskbody>
     <context>

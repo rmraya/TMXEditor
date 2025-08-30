@@ -16,7 +16,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer les traductions identiques à la source</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer les traductions identiques à la source" s’ouvre :<image href="../images/sameAsSource.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Supprimer les traductions identiques à la source" s’ouvre&nbsp;:<image href="../images/sameAsSource.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer les traductions identiques à la source"</alt>
           </image> </stepresult>
       </step>

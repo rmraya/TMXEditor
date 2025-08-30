@@ -17,7 +17,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Modifier une langue.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Modifier une langue" s’ouvre :<image href="../images/change_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Modifier une langue" s’ouvre&nbsp;:<image href="../images/change_language.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Modifier une langue"</alt>
           </image> </stepresult>
       </step>
@@ -29,7 +29,7 @@
       </step>
       <step>
         <cmd>Cliquez sur le bouton <uicontrol>Modifier la langue</uicontrol>.</cmd>
-        <stepresult>La boîte de dialogue se ferme et la nouvelle langue apparaît dans la fenêtre principale.</stepresult>
+        <stepresult>La boîte de dialogue se ferme et la langue modifiée apparaît dans l’en-tête de colonne dans la fenêtre principale.</stepresult>
       </step>
     </steps>
   </taskbody>

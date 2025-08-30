@@ -10,7 +10,7 @@
             <uicontrol>Affichage</uicontrol>
             <uicontrol>Filtrez les unités de traduction</uicontrol>
           </menucascade> (touche [<userinput>F3</userinput>]), ou cliquez sur le bouton <image height="16" href="../images/filterUnits.svg" placement="inline"/>&nbsp;<uicontrol>Filtrer les unités de traduction</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Filtrer les unités de traduction" s’ouvre :<image href="../images/filter_units.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Filtrer les unités de traduction" s’ouvre&nbsp;:<image href="../images/filter_units.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Filtrer les unités de traduction"</alt>
           </image></stepresult>
       </step>
@@ -33,6 +33,6 @@
         <cmd>Cliquez sur le bouton <uicontrol>Filtrer</uicontrol>.</cmd>
       </step>
     </steps>
-    <result>Seules les unités de traductions correspondant aux critères de recherche sont affichées dans la fenêtre principale. Pour visualiser à nouveau toutes les unités de traduction, ouvrez à nouveau la boîte de dialogue <uicontrol>Filtrer les unités de traduction</uicontrol>, et appuyez sur le bouton <uicontrol>Annuler le filtrage</uicontrol>.</result>
+    <result>Seules les unités de traductions correspondant aux critères de recherche sont affichées dans la fenêtre principale. Pour afficher comme avant toutes les unités de traduction, ouvrez à nouveau la boîte de dialogue <uicontrol>Filtrer les unités de traduction</uicontrol>, et appuyez sur le bouton <uicontrol>Annuler le filtrage</uicontrol>.</result>
   </taskbody>
 </task>

@@ -16,7 +16,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer les unités non traduites.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer les unités non traduites" s’ouvre :<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Supprimer les unités non traduites" s’ouvre&nbsp;:<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer les unités non traduites"</alt>
           </image> </stepresult>
       </step>

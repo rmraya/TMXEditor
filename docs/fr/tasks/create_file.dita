@@ -13,7 +13,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Créer un fichier</uicontrol>
           </menucascade> ([<userinput>Ctrl+N</userinput>] sur Windows/Linux, [<userinput>Cmd+N</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/newFile.svg" placement="inline"/>&nbsp;<uicontrol>Créer un fichier</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Créer un fichier TMX" s’ouvre :<image href="../images/new_file.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Créer un fichier TMX" s’ouvre&nbsp;:<image href="../images/new_file.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Créer un fichier TMX"</alt>
           </image> </stepresult>
       </step>
@@ -28,7 +28,7 @@
         <stepresult>Le fichier créé s’affiche immédiatement dans la fenêtre principale.</stepresult>
       </step>
       <step>
-        <cmd>Commencez à saisir des données en cliquant sur le bouton <image height="16" href="../images/insertUnit.svg" placement="inline"/>&nbsp;<uicontrol>Ajouter une unité de traduction</uicontrol> de la barre d’outils, ou en sélectionnant <menucascade>
+        <cmd>Commencez à saisir des données en cliquant sur le bouton <image height="16" href="../images/insertUnit.svg" placement="inline"/>&nbsp;<uicontrol>Ajouter une unité de traduction</uicontrol> dans la barre d’outils, ou en sélectionnant <menucascade>
             <uicontrol>Édition</uicontrol>
             <uicontrol>Ajouter une unité de traduction</uicontrol>
           </menucascade> dans le menu.</cmd>

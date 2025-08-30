@@ -9,13 +9,13 @@
       <li>Définir des attributs, propriétés et notes au niveau du fichier.</li>
       <li>Éditer les segments du fichier TMX pour corriger des erreurs.</li>
       <li>Découper et fusionner des fichiers TMX.</li>
-      <li>Ajouter ou supprimer une langue dans le fichier TMX.</li>
-      <li>Modifier une langue du fichier TMX.</li>
+      <li>Ajouter ou supprimer une langue dans un fichier TMX.</li>
+      <li>Modifier une langue dans un fichier TMX.</li>
       <li>Supprimer les doublons.</li>
       <li>Supprimer les unités non traduites.</li>
       <li>Supprimer les balises inline.</li>
       <li>Supprimer les espaces à gauche et à droite.</li>
-      <li>Consolider les unités de traduction des fichiers TMX ayant trois langues ou plus</li>
+      <li>Consolider les unités de traduction dans un fichier TMX ayant plus de deux langues</li>
       <li>Vérifier le format d’un fichier (validité TMX).</li>
       <li>Supprimer les caractères XML invalides d’un fichier TMX.</li>
       <li>Convertir au format TMX<ul>

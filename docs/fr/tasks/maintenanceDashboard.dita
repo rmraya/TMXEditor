@@ -11,14 +11,14 @@
     </context>
     <steps>
       <step>
-        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+        <cmd>Ouvrez le fichier TMX à traiter.</cmd>
       </step>
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Tableau de bord de maintenance</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/maintenance.svg" placement="inline"/>&nbsp;<uicontrol>Tableau de bord de maintenance</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Tableau de bord de maintenance" s’ouvre :<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Tableau de bord de maintenance" s’ouvre&nbsp;:<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Tableau de bord de maintenance"</alt>
           </image></stepresult>
       </step>

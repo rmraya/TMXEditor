@@ -8,7 +8,7 @@
       <p>Les fichiers CSV (Comma-Separated Values) sont des fichiers texte brut contenant des données tabulaires. La virgule est utilisée comme séparateur de colonnes, et les valeurs sont entre guillemets.</p>
       <p>Les fichiers TSV (Tab-Separated Values) sont similaires aux fichiers CSV, sauf que le séparateur de colonnes est le caractère Tab et qu’il n’y a pas de guillemets en général.</p>
       <p>TMXEditor permet de convertir ces types de fichiers en fichiers TMX. Plusieurs séparateurs de colonne et délimiteurs de texte sont pris en charge.</p>
-      <note>Par défaut, Microsoft Excel applique les réglages suivants lors de l’export : <ul>
+      <note>Par défaut, Microsoft Excel applique les réglages suivants lors de l’export&nbsp;: <ul>
           <li>Jeu de caractères&nbsp;: UTF-16LE</li>
           <li>Séparateur de colonnes&nbsp;: Tab</li>
           <li>Délimiteur de texte&nbsp;: aucun</li>
@@ -20,7 +20,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importDelimited.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Convertir un fichier CSV ou TSV en TMX" s’ouvre :<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
+        <stepresult>La boîte de dialogue "Convertir un fichier CSV ou TSV en TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Convertir un fichier CSV ou TSV en TMX"</alt>
           </image> </stepresult>
       </step>
@@ -48,7 +48,7 @@
       </step>
       <step>
         <cmd>Si les codes de langue ne sont pas présents dans le fichier, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
-        <stepresult>La boîte de dialogue "Langues du fichier CSV ou TSV" s’ouvre :<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Langues du fichier CSV ou TSV" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Langues du fichier CSV ou TSV"</alt>
           </image> </stepresult>
       </step>

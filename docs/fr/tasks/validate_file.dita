@@ -12,7 +12,7 @@
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Fichier</uicontrol>
-            <uicontrol>Valider un fichier TMX.</uicontrol>
+            <uicontrol>Valider un fichier TMX</uicontrol>
           </menucascade>.</cmd>
       </step>
       <step>
@@ -20,6 +20,6 @@
         <stepresult>Un petit message s’affiche pendant la validation.</stepresult>
       </step>
     </steps>
-    <result>Le résultat de la validation s’affiche dans une petite boîte de dialogue.</result>
+    <result>Le résultat de la validation s’affiche dans une boîte de dialogue.</result>
   </taskbody>
 </task>

@@ -19,7 +19,7 @@
               <uicontrol>Paramètres</uicontrol>
             </menucascade> dans le menu.</choice>
         </choices>
-        <stepresult>La boîte de dialogue "Préférences utilisateur" s’ouvre :<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
+        <stepresult>La boîte de dialogue "Préférences utilisateur" s’ouvre&nbsp;:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
       </step>
       <step>
         <cmd>Sélectionnez la langue de l’interface graphique de TMXEditor à l’aide de la liste déroulante <uicontrol>Langue de l’application</uicontrol>.</cmd>
@@ -30,16 +30,16 @@
         <choices>
           <choice>
           <b>
-        Automatique</b>&nbsp;: thème sombre ou clair selon ce qui a été défini au niveau du système d’exploitation.</choice>
+        Automatique</b>&nbsp;: sombre ou clair selon ce qui a été défini au niveau du système d’exploitation.</choice>
           <choice>
           <b>
-        Sombre</b>&nbsp;: texte blanc sur un fond gris foncé.</choice>
+        Sombre</b>&nbsp;: texte blanc sur fond gris foncé.</choice>
           <choice>
           <b>
-        Clair</b>&nbsp;: texte noir sur un fond gris clair.</choice>
+        Clair</b>&nbsp;: texte noir sur fond gris clair.</choice>
           <choice>
           <b>
-        Contraste élevé</b>&nbsp;: thème sombre avec un contraste renforcé.</choice>
+        Contraste élevé</b>&nbsp;: sombre avec un contraste renforcé.</choice>
         </choices>
       </step>
       <step>
@@ -55,6 +55,6 @@
         <cmd>Cliquez sur le bouton <uicontrol>Enregistrer les préférences</uicontrol> pour enregistrer et activer les nouveaux paramètres.</cmd>
       </step>
     </steps>
-    <result>Les changements de thème sont appliqués immédiatement. Les changements de langue seront pris en compte au prochain redémarrage de TMXEditor. Les paramètres concernant l’utilisation de la mémoire seront appliqués à la prochaine ouverture d’un fichier TMX. Le paramètre d’indentation sera appliqué au prochain fichier que l’on enregistrera.</result>
+    <result>Les changements de thème sont appliqués immédiatement. Les changements de langue sont pris en compte au prochain redémarrage de TMXEditor. Les paramètres concernant l’utilisation de la mémoire sont appliqués à la prochaine ouverture d’un fichier TMX. Le paramètre d’indentation est appliqué au prochain fichier TMX qu’on enregistre.</result>
   </taskbody>
 </task>

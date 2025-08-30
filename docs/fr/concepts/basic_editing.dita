@@ -22,7 +22,7 @@
           <uicontrol>Ajouter une unité de traduction</uicontrol>
         </menucascade> dans le menu, ou en cliquant sur le bouton <image height="16" href="../images/insertUnit.svg" placement="inline"/>&nbsp;<uicontrol>Ajouter une unité de traduction</uicontrol> dans la barre d’outils.</li>
       <li>Effacer une ou plusieurs unités de traduction de la façon suivante&nbsp;:<ol>
-          <li>Dans la colonne de gauche, cochez la case des unités que vous souhaitez supprimer.</li>
+          <li>Sélectionnez les unités de traduction à supprimer en cochant les cases correspondantes dans la colonne de gauche.</li>
           <li>Sélectionnez <menucascade>
               <uicontrol>Edition</uicontrol>
               <uicontrol>Supprimer les unités sélectionnées</uicontrol>

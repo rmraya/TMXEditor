@@ -13,7 +13,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Convertir un fichier TBX en TMX</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importTBX.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier TBX en TMX</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Convertir un fichier TBX en TMX" s’ouvre :<image href="../images/convertTBX.png" placement="break" scale="60" align="center">
+        <stepresult>La boîte de dialogue "Convertir un fichier TBX en TMX" s’ouvre&nbsp;:<image href="../images/convertTBX.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Convertir un fichier TBX en TMX"</alt>
           </image> </stepresult>
       </step>

@@ -6,7 +6,7 @@
   <taskbody>
     <context>
       <p>Les fichiers Microsoft Excel sont couramment utilisés pour échanger des tableaux de données. TMXEditor permet d’exporter des données TMX (sans les balises inline) dans un fichier <tt>.xlsx</tt>.</p>
-      <note>Avec Office 365 et les versions récentes de Microsoft Office (à partir de 2007), une feuille Excel peut contenir jusqu’à 1 048 576&nbsp;lignes et 16 384&nbsp;colonnes. Avec les versions plus anciennes, une feuille Excel est limitée à 65 536&nbsp;lignes et 256&nbsp;colonnes.</note>
+      <note>Avec Office 365 et les versions récentes de Microsoft Office (à partir de 2007), une feuille Excel peut contenir jusqu’à 1&nbsp;048&nbsp;576&nbsp;lignes et 16&nbsp;384&nbsp;colonnes. Dans les versions plus anciennes d’Excel, les feuilles de calcul sont limitées à 65&nbsp;536&nbsp;lignes et 256&nbsp;colonnes.</note>
     </context>
     <steps>
       <step>
@@ -15,7 +15,7 @@
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Fichier</uicontrol>
-            <uicontrol>Exporter en fichier Excel.</uicontrol>
+            <uicontrol>Exporter en fichier Excel</uicontrol>
           </menucascade>.</cmd>
       </step>
       <step>
