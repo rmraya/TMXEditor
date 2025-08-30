@@ -17,7 +17,7 @@
                 <cmd>Open the TMX file that you want to modify.</cmd>
             </step>
             <step>
-                <cmd>In main menu, seect <menucascade>
+                <cmd>In main menu, select <menucascade>
                         <uicontrol>Tasks</uicontrol>
                         <uicontrol>Remove Translation Same as Source...</uicontrol>
                     </menucascade> option.</cmd>

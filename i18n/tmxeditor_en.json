@@ -211,6 +211,7 @@
     },
     "mergeFiles": {
         "selectMerged": "Select merged TMX file",
+        "addTmxFiles": "Add TMX files",
         "addMoreTmx": "Add more TMX files",
         "selectFiles": "Select files",
         "removeFileText": "Remove File"

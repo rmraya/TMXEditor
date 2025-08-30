@@ -57,7 +57,6 @@
             </step>
         </steps>
         <result>Theme changes are applied immediately. Changing the application language requires a
-            restart. Memory usage settings are applied when a new TMX file is opened. Indentation is
-            applied the next time a file is saved.</result>
+            restart. Indentation is applied the next time a file is saved.</result>
     </taskbody>
 </task>

@@ -211,6 +211,7 @@
   },
   "mergeFiles": {
     "selectMerged": "Veuillez définir l’emplacement du fichier TMX résultat",
+    "addTmxFiles": "Veuillez ajouter des fichiers TMX",
     "addMoreTmx": "Veuillez ajouter au moins un autre fichier TMX",
     "selectFiles": "Veuillez sélectionner des fichiers TMX",
     "removeFileText": "Retirer le fichier"

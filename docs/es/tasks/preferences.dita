@@ -44,6 +44,7 @@
         <cmd>Haga clic en el botón <uicontrol>Guardar Preferencias</uicontrol> para guardar y activar la configuración seleccionada.</cmd>
       </step>
     </steps>
-    <result>Los cambios de tema se aplican inmediatamente. Cambiar el idioma de la aplicación requiere un reinicio. La configuración de uso de memoria se aplica cuando se abre un nuevo archivo TMX. La sangría se aplica la próxima vez que se guarda un archivo.</result>
+    <result>Los cambios de tema se aplican inmediatamente. Cambiar el idioma de la aplicación
+      requiere un reinicio. La sangría se aplica la próxima vez que se guarda un archivo.</result>
   </taskbody>
 </task>

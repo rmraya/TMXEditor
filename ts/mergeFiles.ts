@@ -60,7 +60,7 @@ class MergeFiles {
             return;
         }
         if (this.files.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add TMX files', parent: 'mergeFiles' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'addTmxFiles', parent: 'mergeFiles' });
             return;
         }
         if (this.files.length < 2) {
