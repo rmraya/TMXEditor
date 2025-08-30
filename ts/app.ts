@@ -1245,10 +1245,6 @@ class App {
                 licenseFile = 'electron.txt';
                 title = 'MIT License';
                 break;
-            case "SLF4J":
-                licenseFile = 'slf4j.txt';
-                title = 'MIT License';
-                break;
             case "SQLite":
                 licenseFile = 'Apache2.0.html';
                 title = 'Apache 2.0';

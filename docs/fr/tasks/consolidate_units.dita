@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="consolidate_units">
+  <title>Consolider les unités de traduction</title>
+  <shortdesc>Marche à suivre pour consolider les unités de traduction dans un fichier TMX contenant au moins trois langues.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Dans les fichiers contenant trois langues ou plus, il arrive que les traductions dans différentes langues d’un même segment source soient réparties dans des unités de traduction distinctes, comme sur l’image ci-dessous.</p>
+      <image href="../images/needs_consolidation.png" placement="break" scale="60" align="center">
+        <alt>Unités de traduction avant consolidation</alt>
+      </image>
+      <p>La consolidation consiste à regrouper toutes les traductions qui vont ensemble. Une fois consolidés, les 5&nbsp;segments de l’image précédente n’en forment plus que&nbsp;3.</p>
+      <image href="../images/consolidated.png" placement="break" scale="60" align="center">
+        <alt>Unités de traduction après consolidation</alt>
+      </image>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à consolider.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Consolider les unités de traduction.</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Consolider les unités de traduction" s’ouvre&nbsp;:<image href="../images/consolidate_units.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Consolider les unités de traduction"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>À l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>, sélectionnez la langue devant être considérée comme la langue source lors du regroupement des unités de traduction. (Cette langue n’est pas forcément la même que la langue source définie au niveau du fichier.)</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Consolider</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Les données du fichier consolidé apparaissent dans la fenêtre principale.</result>
+  </taskbody>
+</task>

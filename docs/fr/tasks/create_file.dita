@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="create_file">
+  <title>Créer un fichier TMX</title>
+  <shortdesc>Voici les étapes à suivre pour créer un fichier TMX</shortdesc>
+  <taskbody>
+    <context>
+      <p/>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Créer un fichier</uicontrol>
+          </menucascade> ([<userinput>Ctrl+N</userinput>] sur Windows/Linux, [<userinput>Cmd+N</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/newFile.svg" placement="inline"/>&nbsp;<uicontrol>Créer un fichier</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Créer un fichier TMX" s’ouvre&nbsp;:<image href="../images/new_file.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Créer un fichier TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue de départ à l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Sélectionnez la langue d’arrivée à l’aide de la liste déroulante <uicontrol>Langue cible</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Créer le fichier</uicontrol>.</cmd>
+        <stepresult>Le fichier créé s’affiche immédiatement dans la fenêtre principale.</stepresult>
+      </step>
+      <step>
+        <cmd>Commencez à saisir des données en cliquant sur le bouton <image height="16" href="../images/insertUnit.svg" placement="inline"/>&nbsp;<uicontrol>Ajouter une unité de traduction</uicontrol> dans la barre d’outils, ou en sélectionnant <menucascade>
+            <uicontrol>Édition</uicontrol>
+            <uicontrol>Ajouter une unité de traduction</uicontrol>
+          </menucascade> dans le menu.</cmd>
+      </step>
+      <step>
+        <cmd>Éditez les cellules comme expliqué au chapitre <xref href="../concepts/basic_editing.dita">Éditer un fichier existant</xref>.</cmd>
+      </step>
+      <step>
+        <cmd>Pour enregistrer le fichier TMX, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Enregistrer</uicontrol>
+          </menucascade> ([<userinput>Ctrl+S</userinput>] sur Windows/Linux, [<userinput>Cmd+S</userinput>] sur macOS) dans le menu, ou cliquez sur le bouton <image height="16" href="../images/saveFile.svg" placement="inline"/>&nbsp;<uicontrol>Enregistrer</uicontrol> dans la barre d’outils.</cmd>
+      </step>
+      <step>
+        <cmd>Dans la boîte de dialogue qui s’ouvre, indiquez l’emplacement et le nom du fichier à enregistrer.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

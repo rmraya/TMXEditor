@@ -51,13 +51,6 @@
                                         format="html" scope="external">Eclipse Public License
                                         1.0</xref></li>
                 </ul>
-                <p><b>SL4J</b></p>
-                <ul>
-                        <li>Available from <xref href="https://slf4j.org" format="html"
-                                        scope="external">https://slf4j.org</xref></li>
-                        <li>Published under <xref href="https://slf4j.org/license.html"
-                                        format="html" scope="external">MIT License</xref></li>
-                </ul>
                 <p><b>SQLite JDBC Driver</b></p>
                 <ul>
                         <li>Available from <xref href="https://github.com/xerial/sqlite-jdbc"

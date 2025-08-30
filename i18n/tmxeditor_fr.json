@@ -7,10 +7,10 @@
     "unknownLicense": "Licence inconnue",
     "fileConverted": "Conversion du fichier réussie",
     "convertedEntries": "{0} entrées converties",
-    "openTmxFile": "Ouvrir un fichier TMX",
+    "openTmxFile": "Veuillez ouvrir un fichier TMX",
     "fileExported": "Export du fichier réussi",
     "fileIsValid": "Le fichier est valide",
-    "fileCleaned": "Nettoyage du fichier effectué",
+    "fileCleaned": "Nettoyage du fichier terminé",
     "fileSplit": "Le fichier a été découpé avec succès",
     "filesMerged": "Les fichiers ont été fusionnés",
     "unknownErrorMerging": "Erreur inconnue lors de la fusion des fichiers",
@@ -22,7 +22,7 @@
     "subscriptionRegistered": "Abonnement validé",
     "messageReceived": "Nous avons reçu votre demande. Une clé d’évaluation a été envoyée à l’adresse mail indiquée.\n\nSi vous ne la recevez pas dans les minutes qui viennent, regardez dans le dossier du courrier indésirable.",
     "SaveChanges": "Enregistrer les modifications ?",
-    "UnsavedWarning": "Vos modifications seront perdues si vous ne les enregistrez pas",
+    "UnsavedWarning": "Vos modifications seront perdues si vous ne les enregistrez pas.",
     "DontSave": "Ne pas enregistrer",
     "Cancel": "Annuler",
     "Save": "Enregistrer",
@@ -39,16 +39,16 @@
     "TMXFile": "Fichiers TMX",
     "TMXFiles": "Fichiers TMX",
     "AnyFile": "Tous les fichiers",
-    "CSVFile": "Fichiers CSV/texte",
+    "CSVFile": "Fichiers CSV/TSV",
     "TextFile": "Fichiers texte",
     "TBXFile": "Fichiers TBX",
     "SDLTMFile": "Fichiers SDLTM",
     "ExcelFile": "Fichiers Excel",
     "SaveTMX": "Enregistrer le fichier TMX",
-    "OpenCSV": "Ouvrir le fichier CSV/texte",
-    "OpenTBX": "Ouvrir le fichier TBX",
-    "OpenSDLTM": "Ouvrir le fichier SDLTM",
-    "OpenExcel": "Ouvrir le fichier Excel",
+    "OpenCSV": "Ouvrir un fichier CSV ou TSV",
+    "OpenTBX": "Ouvrir un fichier TBX",
+    "OpenSDLTM": "Ouvrir un fichier SDLTM",
+    "OpenExcel": "Ouvrir un fichier Excel",
     "ExportExcel": "Exporter le fichier Excel",
     "ConvertedTMX": "Fichier TMX converti",
     "ExportTabDelimited": "Exporter le fichier TSV",
@@ -59,7 +59,7 @@
     "ValidateTMX": "Valider un fichier TMX",
     "Validating": "Validation en cours...",
     "ErrorValidating": "Erreur inconnue lors de la validation du fichier",
-    "CleanCharacters": "Effacer les caractères invalides",
+    "CleanCharacters": "Supprimer les caractères invalides",
     "Cleaning": "Effacement en cours...",
     "ErrorCleaning": "Erreur inconnue lors de l’effacement des caractères",
     "Splitting": "Découpage en cours...",
@@ -107,7 +107,7 @@
     "tuNotes": "Notes sur la TU",
     "RemoveProperties": "Supprimer la propriété",
     "RemoveNotes": "Supprimer la note",
-    "tagColors": "Les couleurs des balises seront corrigées au prochain redémarrage de l’application"
+    "tagColors": "Les couleurs des balises seront ajustées au prochain redémarrage de l’application"
   },
   "menu": {
     "FileMenu": "&Fichier",
@@ -122,7 +122,7 @@
     "ExportCSV": "Exporter en fichier TSV",
     "ConvertSDLTM": "Convertir un fichier SDLTM en TMX",
     "ConvertTBX": "Convertir un fichier TBX en TMX",
-    "FileProperties": "Propriétés du fichier",
+    "FileProperties": "Métadonnées du fichier",
     "ValidateTMX": "Valider un fichier TMX",
     "CleanInvalidChars": "Supprimer les caractères invalides",
     "SplitTMX": "Découper un fichier TMX",
@@ -151,9 +151,9 @@
     "ChangeLanguage": "Modifier une langue",
     "AddLanguage": "Ajouter une langue",
     "RemoveLanguage": "Supprimer une langue",
-    "ChangeSourceLanguage": "Modifier la langue source",
+    "ChangeSourceLanguage": "Changer de langue source",
     "MaintenanceDashboard": "Tableau de bord de maintenance",
-    "RemoveTags": "Supprimer toutes les balises",
+    "RemoveTags": "Supprimer les balises inline",
     "RemoveDuplicates": "Supprimer les unités en doublon",
     "RemoveUntranslated": "Supprimer les unités non traduites",
     "RemoveSameAsSource": "Supprimer les traductions identiques à la source",
@@ -185,11 +185,11 @@
     "invalidType": "Type invalide"
   },
   "convertCSV": {
-    "selectCsv": "Sélectionner le fichier CSV/texte",
+    "selectCsv": "Veuillez sélectionner le fichier CSV ou TSV",
     "columnsNotDetected": "Colonnes non détectées",
-    "selectTmx": "Sélectionner le fichier TMX",
+    "selectTmx": "Veuillez sélectionner le fichier TMX",
     "setLanguages": "Définir les langues",
-    "setAllLanguages": "Définir les langues pour toutes le colonnes"
+    "setAllLanguages": "Veuillez définir les langues pour toutes les colonnes"
   },
   "convertExcel": {
     "selectExcel": "Sélectionner le fichier Excel",
@@ -201,30 +201,30 @@
     "selectTmx": "Sélectionner le fichier TMX"
   },
   "csvLanguages": {
-    "selectAllLanguages": "Sélectionner toutes les langues"
+    "selectAllLanguages": "Veuillez sélectionner toutes les langues"
   },
   "excelLanguages": {
-    "selectAllLanguages": "Sélectionner toutes les langues"
+    "selectAllLanguages": "Veuillez sélectionner toutes les langues"
   },
   "filters": {
     "enterText": "Recherche"
   },
   "mergeFiles": {
-    "selectMerged": "Sélectionner le fichier TMX résultat",
-    "addMoreTmx": "Ajouter d’autres fichiers TMX",
-    "selectFiles": "Sélectionner les fichiers",
+    "selectMerged": "Veuillez définir l’emplacement du fichier TMX résultat",
+    "addMoreTmx": "Veuillez ajouter au moins un autre fichier TMX",
+    "selectFiles": "Veuillez sélectionner des fichiers TMX",
     "removeFileText": "Retirer le fichier"
   },
   "addLanguage": {
-    "selectLanguageWarning": "Sélectionner une langue"
+    "selectLanguageWarning": "Veuillez sélectionner une langue"
   },
   "changeLanguage": {
-    "selectLanguageWarning": "Sélectionner la nouvelle langue"
+    "selectLanguageWarning": "Veuillez sélectionner la nouvelle langue"
   },
   "newFile": {
-    "selectSrcLanguageWarning": "Sélectionner la langue source",
-    "selectTgtLanguageWarning": "Sélectionner la langue cible",
-    "selectDifferentLanguages": "Sélectionner d’autres langues"
+    "selectSrcLanguageWarning": "Veuillez sélectionner la langue source",
+    "selectTgtLanguageWarning": "Veuillez sélectionner la langue cible",
+    "selectDifferentLanguages": "Veuillez sélectionner une langue différente"
   },
   "registerNewSubscription": {
     "enterSubscription": "Saisir la clé de l’abonnement"

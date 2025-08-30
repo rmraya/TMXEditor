@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept xml:lang="fr-FR" id="basic_editing">
+  <title>Éditer un fichier TMX existant</title>
+  <shortdesc/>
+  <conbody>
+    <ol>
+      <li>Dans le menu, sélectionnez <menucascade>
+          <uicontrol>Fichier</uicontrol>
+          <uicontrol>Ouvrir</uicontrol>
+        </menucascade> ([<userinput>Ctrl+O</userinput>] sur Windows/Linux, [<userinput>Cmd+O</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/openFile.svg" placement="inline"/>&nbsp;<uicontrol>Ouvrir</uicontrol> dans la barre d’outils.</li>
+      <li>À l’aide de la boîte de dialogue qui apparaît, sélectionnez dans le système de fichiers le fichier TMX à ouvrir.</li>
+    </ol>
+    <p id="editing">Une fois le fichier ouvert, vous pouvez&nbsp;:</p>
+    <ul>
+      <li>Modifier le texte d’une cellule en cliquant dedans. Quand la saisie est terminée,<ul>
+          <li>cliquez en dehors de la cellule ou appuyez sur [<userinput>Alt+Entrée</userinput>] pour enregistrer la modification,</li>
+          <li>ou appuyez sur la touche [<userinput>Échap</userinput>] pour abandonner la modification.</li>
+        </ul> </li>
+      <li>Ajouter une nouvelle unité de traduction, en sélectionnant <menucascade>
+          <uicontrol>Édition</uicontrol>
+          <uicontrol>Ajouter une unité de traduction</uicontrol>
+        </menucascade> dans le menu, ou en cliquant sur le bouton <image height="16" href="../images/insertUnit.svg" placement="inline"/>&nbsp;<uicontrol>Ajouter une unité de traduction</uicontrol> dans la barre d’outils.</li>
+      <li>Effacer une ou plusieurs unités de traduction de la façon suivante&nbsp;:<ol>
+          <li>Sélectionnez les unités de traduction à supprimer en cochant les cases correspondantes dans la colonne de gauche.</li>
+          <li>Sélectionnez <menucascade>
+              <uicontrol>Edition</uicontrol>
+              <uicontrol>Supprimer les unités sélectionnées</uicontrol>
+            </menucascade> dans le menu, ou cliquez sur le bouton <image height="16" href="../images/deleteUnits.svg" placement="inline"/>&nbsp;<uicontrol>Supprimer les unités sélectionnées</uicontrol> dans la barre d’outils.</li>
+        </ol> <note>Pour sélectionner ou désélectionner toutes les unités de traductions du fichier, cochez la case en haut à gauche.</note></li>
+      <li>
+          <xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction</xref> pour effectuer une recherche de texte dans le fichier.</li>
+      <li>
+          <xref href="../tasks/sortData.dita">Trier les unités de traduction</xref> pour afficher les unités de traduction selon une des langues du fichier.</li>
+    </ul>
+    <p>Pour enregistrer vos modifications dans le fichier TMX, sélectionnez <menucascade>
+        <uicontrol>Fichier</uicontrol>
+        <uicontrol>Enregistrer</uicontrol>
+      </menucascade> dans le menu ([<userinput>Ctrl+S</userinput>] sur Windows/Linux, [<userinput>Cmd+S</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/saveFile.svg" placement="inline"/>&nbsp;<uicontrol>Enregistrer</uicontrol> dans la barre d’outils.</p>
+  </conbody>
+</concept>
