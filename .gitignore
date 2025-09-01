@@ -21,3 +21,4 @@ package-lock.json
 sonar-project.properties
 sonarqube.sh
 .scannerwork
+.gradle/

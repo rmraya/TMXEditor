@@ -51,15 +51,15 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 ## Requirements
 
 - JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
-- Apache Ant 1.10.14 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
-- Node.js 22.17.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 5.9.2. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- Gradle 9.0 or newer. Get it from [https://gradle.org/](https://gradle.org/)
+- Node.js 22.13.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- TypeScript 5.9.2 or newer, get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 
-- Checkout this repository.
+- Checkout this repository
 - Point your `JAVA_HOME` environment variable to JDK 21
-- Run `ant` to compile the Java code
+- Run `gradle` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
 
