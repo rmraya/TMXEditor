@@ -68,7 +68,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 ``` bash
   git clone https://github.com/rmraya/TMXEditor.git
   cd TMXEditor
-  ant
+  gradle
   npm install
   npm start
 ```
