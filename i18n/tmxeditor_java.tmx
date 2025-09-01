@@ -1,368 +1,469 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd" >
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd">
 <tmx version="1.4">
-<header 
-      creationtool="OpenXLIFF" 
-      creationtoolversion="3.13.0" 
-      srclang="en" 
-      adminlang="en"  
-      datatype="xml" 
-      o-tmf="XLIFF" 
-      segtype="block"
->
-</header>
-<body>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-48" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>No subscription</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Sin subscripción</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-49" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error verifying subscription status</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al verificar el estado de la suscripción</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-50" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error sending request to server. Check your firewall or antivirus.</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al enviar la solicitud al servidor. Compruebe su firewall o antivirus.</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-51" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error reading answer from server. Check your firewall or antivirus.</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al leer la respuesta del servidor. Compruebe su firewall o antivirus.</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-52" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Selected email account is not supported</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>La cuenta de correo electrónico seleccionada no es compatible</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-53" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>An evaluation license has been requested for this computer before</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Se ha solicitado una licencia de evaluación para este equipo antes</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-54" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Evaluation request failed</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error en la solicitud de evaluación</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-55" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Expired Subscription</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Suscripción caducada</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-56" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unsupported hard disks</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Discos duros no compatibles</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-57" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error registering subscription</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al registrar la suscripción</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1567" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error registering subscription</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al registrar la suscripción</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1568" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>A computer user account is required</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Se requiere una cuenta de usuario de computadora</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1569" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Running on sandbox, evaluation request discarded.</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Al ejecutarse en sandbox, se descartó la solicitud de evaluación.</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1570" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error generating evaluation key</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al generar la clave de evaluación</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1571" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Cannot register evaluation in this computer</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>No se puede registrar la evaluación en esta computadora</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1572" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unsupported macOS version</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Versión de macOS no compatible</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1573" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unsupported Linux distribution</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Distribución de Linux no compatible</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1574" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unsupported Windows version</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Versión de Windows no compatible</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1575" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unsupported computer type</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Tipo de computadora no compatible</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1576" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Empty request</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Solicitud vacía</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1598" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unknown command</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Comando desconocido</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1599" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>{0} Build: {1}</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>{0} Compilación {1}</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1600" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>{0} Vendor: {1}</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>{0} Proveedor: {1}</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1601" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Requested languages while parsing</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Idiomas solicitados durante el análisis</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1602" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error getting languages from store</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al obtener idiomas desde el almacenamiento</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1603" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error reading CSV file</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al leer el archivo CSV</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1604" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error getting languages</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al obtener idiomas</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1605" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error checking CSV languages</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al comprobar los idiomas CSV</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1606" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>{0} (Unknown Variant)</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>{0} (Variante Desconocida)</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1607" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Unknown Language</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Idioma Desconocido</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1629" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Selected TMX file is empty</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>El archivo TMX seleccionado está vacío</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1630" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Null Store</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Almacenamiento nulo</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1631" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>File does not exist</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>El archivo no existe</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1632" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error splitting files</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al dividir archivos</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1633" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>\ units counted</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>\ unidades contadas</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1634" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>\ units written</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>\ unidades escritas</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1635" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error merging files</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al combinar archivos</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1636" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>File has invalid source language: {0}</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>El archivo tiene un idioma de origen no válido: {0}</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1637" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error reading Excel file</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al leer el archivo Excel</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-48" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Wrong filtering option</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Opción de filtrado incorrecta</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-49" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Wrong filtering option</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Opción de filtrado incorrecta</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-50" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error creating backup</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al crear una copia de seguridad</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-51" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Error renaming cleaned file</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Error al cambiar el nombre del archivo limpio</seg>
-</tuv>
-</tu>
-<tu creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-52" creationdate="20240811T224916Z">
-<tuv xml:lang="en" creationdate="20240811T224916Z">
-<seg>Wrong number of columns. Review optional delimiters.</seg>
-</tuv>
-<tuv xml:lang="es" creationdate="20240811T224916Z">
-<seg>Número incorrecto de columnas. Revise los delimitadores opcionales.</seg>
-</tuv>
-</tu>
-</body>
+  <header adminlang="en" creationdate="20250901T094408Z" creationtool="TMXEditor" creationtoolversion="3.5.0" datatype="xml" o-tmf="unknown" segtype="block" srclang="*all*"/>
+  <body>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-48">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>No subscription</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Sin subscripción</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Aucun abonnement</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-49">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error verifying subscription status</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al verificar el estado de la suscripción</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la vérification de l’état de l’abonnement</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-50">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error sending request to server. Check your firewall or antivirus.</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al enviar la solicitud al servidor. Compruebe su firewall o antivirus.</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de l’envoi de la requête au serveur. Vérifiez votre pare-feu et votre antivirus.</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-51">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error reading answer from server. Check your firewall or antivirus.</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al leer la respuesta del servidor. Compruebe su firewall o antivirus.</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la réception de la réponse du serveur. Vérifiez votre pare-feu et votre antivirus.</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-52">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Selected email account is not supported</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>La cuenta de correo electrónico seleccionada no es compatible</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Le compte mail sélectionné n’est pas compatible</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-53">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>An evaluation license has been requested for this computer before</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Se ha solicitado una licencia de evaluación para este equipo antes</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Une licence d’évaluation a déjà été demandée par le passé pour cet ordinateur</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-54">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Evaluation request failed</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error en la solicitud de evaluación</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Échec de la demande d’évaluation</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-55">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Expired Subscription</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Suscripción caducada</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Abonnement expiré</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-56">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unsupported hard disks</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Discos duros no compatibles</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Disques durs non compatibles</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-57">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error registering subscription</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al registrar la suscripción</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de l’enregistrement de l’abonnement</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1568">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>A computer user account is required</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Se requiere una cuenta de usuario de computadora</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Un compte utilisateur sur l’ordinateur est nécessaire</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1569">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Running on sandbox, evaluation request discarded.</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Al ejecutarse en sandbox, se descartó la solicitud de evaluación.</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>La demande d’évaluation n’a pas été traitée car le programme s’exécute en mode bac à sable</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1570">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error generating evaluation key</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al generar la clave de evaluación</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la génération de la clé d’évaluation</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1571">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Cannot register evaluation in this computer</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>No se puede registrar la evaluación en esta computadora</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Enregistrement de la clé d’évaluation impossible sur cet ordinateur</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1572">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unsupported macOS version</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Versión de macOS no compatible</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Version macOS non compatible</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1573">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unsupported Linux distribution</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Distribución de Linux no compatible</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Distribution Linux non compatible</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1574">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unsupported Windows version</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Versión de Windows no compatible</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Version Windows non compatible</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1575">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unsupported computer type</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Tipo de computadora no compatible</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Type d’ordinateur non compatible</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1576">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Empty request</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Solicitud vacía</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Requête vide</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1598">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unknown command</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Comando desconocido</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Commande inconnue</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1599">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>{0} Build: {1}</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>{0} Compilación {1}</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>{0} Build : {1}</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1600">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>{0} Vendor: {1}</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>{0} Proveedor: {1}</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>{0} Distribution : {1}</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1601">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Requested languages while parsing</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Idiomas solicitados durante el análisis</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Langues demandées durant l’analyse</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1602">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error getting languages from store</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al obtener idiomas desde el almacenamiento</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la récupération des langues à partir du stockage</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1603">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error reading CSV file</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al leer el archivo CSV</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la lecture du fichier CSV</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1604">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error getting languages</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al obtener idiomas</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la récupération des langues</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1605">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error checking CSV languages</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al comprobar los idiomas CSV</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la vérification des langues du CSV</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1606">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>{0} (Unknown Variant)</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>{0} (Variante Desconocida)</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>{0} (Variante inconnue)</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1607">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Unknown Language</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Idioma Desconocido</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Langue inconnue</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1629">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Selected TMX file is empty</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>El archivo TMX seleccionado está vacío</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Le fichier TMX sélectionné est vide</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1630">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Null Store</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Almacenamiento nulo</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Stockage vide</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1631">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>File does not exist</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>El archivo no existe</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Le fichier n’existe pas</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1632">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error splitting files</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al dividir archivos</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors du découpage des fichiers</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1633">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>\ units counted</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>\ unidades contadas</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>\ unités comptées</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1634">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>\ units written</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>\ unidades escritas</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>\ unités écrites</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1635">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error merging files</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al combinar archivos</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la fusion des fichiers</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1636">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>File has invalid source language: {0}</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>El archivo tiene un idioma de origen no válido: {0}</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>La langue source du fichier est invalide : {0}</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="-504369953-0-1637">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error reading Excel file</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al leer el archivo Excel</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la lecture du fichier Excel</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-48">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Wrong filtering option</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Opción de filtrado incorrecta</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Option de filtrage incorrecte</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-50">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error creating backup</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al crear una copia de seguridad</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors de la création de la sauvegarde</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-51">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Error renaming cleaned file</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Error al cambiar el nombre del archivo limpio</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Erreur lors du renommage du fichier nettoyé</seg>
+      </tuv>
+    </tu>
+    <tu creationdate="20240811T224916Z" creationtool="OpenXLIFF Filters" creationtoolversion="3.13.0" tuid="516426604-1-52">
+      <tuv creationdate="20240811T224916Z" xml:lang="en">
+        <seg>Wrong number of columns. Review optional delimiters.</seg>
+      </tuv>
+      <tuv creationdate="20240811T224916Z" xml:lang="es">
+        <seg>Número incorrecto de columnas. Revise los delimitadores opcionales.</seg>
+      </tuv>
+      <tuv creationdate="20250901T064156Z" xml:lang="fr">
+        <seg>Nombre incorrect de colonnes. Vérifiez les délimiteurs optionnels.</seg>
+      </tuv>
+    </tu>
+  </body>
 </tmx>
