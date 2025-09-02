@@ -288,6 +288,12 @@ class App {
         ipcMain.on('get-unit-attributes', (event: IpcMainEvent) => {
             event.sender.send('set-unit-attributes', App.attributesArg);
         });
+        ipcMain.on('get-lang-attributes-text', (event: IpcMainEvent) => {
+            let attributesArg = App.attributesArg;
+            let attributesLabel: string = App.i18n.getString('App', 'langAttributes');
+            console.log(JSON.stringify(attributesArg));
+            event.sender.send('set-lang-attributes-text', App.i18n.format(attributesLabel, [attributesArg.type]));
+        });
         ipcMain.on('save-attributes', (event: IpcMainEvent, arg: any) => {
             this.saveAttributes(arg);
         });

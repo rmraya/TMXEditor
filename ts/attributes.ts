@@ -16,6 +16,7 @@ class Attributes {
 
     currentId: string;
     currentType: string;
+    langAttributesText: string = 'Attributes';
 
     constructor() {
         this.electron.ipcRenderer.send('get-theme');
@@ -40,13 +41,21 @@ class Attributes {
                 this.electron.ipcRenderer.send('close-attributes');
             }
         });
-        this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        this.electron.ipcRenderer.send('get-lang-attributes-text');
+        this.electron.ipcRenderer.on('set-lang-attributes-text', (event: Electron.IpcRendererEvent, text: string) => {
+            this.langAttributesText = text;
+        });
+        setTimeout(() => {
+            this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 150);
     }
 
     setUnitAttributes(arg: any): void {
         this.currentId = arg.id;
         this.currentType = arg.type;
-        document.getElementById('title').innerHTML = this.currentType + ' Attributes';
+        if (this.currentType !== 'TU') {
+            document.getElementById('title').innerHTML = this.langAttributesText;
+        }
 
         let attributes: Array<string[]> = arg.atts;
         for (let pair of attributes) {
@@ -65,13 +74,15 @@ class Attributes {
         if (this.currentType !== 'TU') {
             (document.getElementById('topRow') as HTMLTableRowElement).style.display = 'none';
         }
-        this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            this.electron.ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 150);
     }
 
     filterLanguages(langs: Language[]): void {
         let language: HTMLSelectElement = document.getElementById('srclang') as HTMLSelectElement;
         let options: string = '<option value=""></option><option value="*all*">*all*</option>';
-        for (let lang of langs){
+        for (let lang of langs) {
             options = options + '<option value="' + lang.code + '">' + lang.code + '</option>'
         }
         language.innerHTML = options;
