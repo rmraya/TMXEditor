@@ -4,6 +4,9 @@
 :root {
 	--error-color: #960303;
 	font-size: 16px;
+
+	scrollbar-color: var(--themeDarker) var(--gray150);
+	scrollbar-width: thin;
 }
 
 body {
@@ -770,26 +773,24 @@ th svg {
 }
 
 ::-webkit-scrollbar {
-	mix-blend-mode: darken;
-	width: 12px;
-	height: 12px;
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+	background: var(--gray110);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-	min-height: 30px !important;
-	background-color: var(--gray110);
-	border-radius: 6px;
+	background-color: var(--themeDarker);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-corner {
-	background-color: inherit;
-	border-radius: inherit;
+	background-color: var(--themeDarker);
 }
 
 ::-webkit-scrollbar-button {
-	border-radius: inherit;
-}
-
-::-webkit-scrollbar-button {
-	border-radius: inherit;
+	background-color: var(--themeDarker);
 }

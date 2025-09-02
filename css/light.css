@@ -4,6 +4,9 @@
 :root {
 	--error-color: #960303;
 	font-size: 16px;
+
+	scrollbar-color: var(--themeDark) var(--gray40);
+	scrollbar-width: thin;
 }
 
 body {
@@ -597,7 +600,7 @@ th svg {
 	visibility: hidden;
 	padding: 4px;
 	border-radius: 2px;
-	box-shadow: 0px 2px 4px var(--gray160);
+	box-shadow: 0px 2px 4px var(--gray110);
 	white-space: nowrap;
 	/* Position the tooltip */
 	position: absolute;
@@ -770,22 +773,24 @@ th svg {
 }
 
 ::-webkit-scrollbar {
-	mix-blend-mode: lighten;
-	width: 12px;
-	height: 12px;
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+	background: var(--gray50);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-	min-height: 30px !important;
-	background-color: var(--gray90);
-	border-radius: 6px;
+	background: var(--themeDark);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-corner {
-	background-color: inherit;
-	border-radius: inherit;
+	background: var(--themeDark);
 }
 
 ::-webkit-scrollbar-button {
-	border-radius: inherit;
+	background: var(--themeDark);
 }

@@ -8,6 +8,9 @@
 	--orange: #ff9100;
 	--teal: #8bc34a;
 	font-size: 16px;
+
+	scrollbar-color: var(--themeLight) var(--gray160);
+	scrollbar-width: thin;
 }
 
 body {
@@ -780,26 +783,24 @@ th svg {
 }
 
 ::-webkit-scrollbar {
-	mix-blend-mode: darken;
-	width: 12px;
-	height: 12px;
+	width: 8px;
+	height: 8%;
+}
+
+::-webkit-scrollbar-track-piece {
+	background: var(--gray160);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-	min-height: 30px !important;
-	background-color: var(--themeDark);
-	border-radius: 6px;
+	background-color: var(--themeLight);
+	border-radius: 4px;
 }
 
 ::-webkit-scrollbar-corner {
-	background-color: inherit;
-	border-radius: inherit;
+	background-color: var(--themeLight);
 }
 
 ::-webkit-scrollbar-button {
-	border-radius: inherit;
-}
-
-::-webkit-scrollbar-button {
-	border-radius: inherit;
+	background-color: var(--themeLight);
 }
