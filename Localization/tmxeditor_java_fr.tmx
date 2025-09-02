@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "tmx14.dtd" >
+<tmx version="1.4">
+<header creationtool="Swordfish" creationtoolversion="5.14.2" srclang="en"  adminlang="en" datatype="xml" o-tmf="unknown" segtype="block" creationdate="20250901T064156Z"/>
+<body>
+<tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-0-0">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="next-en-fr">301082034-1-1-1</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>No subscription</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Aucun abonnement</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-1-1">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-0-0</prop>
+  <prop type="next-en-fr">301082034-1-2-2</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error verifying subscription status</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la vérification de l’état de l’abonnement</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-10-10">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-9-9</prop>
+  <prop type="next-en-fr">301082034-1-11-11</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error registering subscription</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de l’enregistrement de l’abonnement</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-11-11">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-10-10</prop>
+  <prop type="next-en-fr">301082034-1-12-12</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>A computer user account is required</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Un compte utilisateur sur l’ordinateur est nécessaire</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-12-12">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-11-11</prop>
+  <prop type="next-en-fr">301082034-1-13-13</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Running on sandbox, evaluation request discarded.</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>La demande d’évaluation n’a pas été traitée car le programme s’exécute en mode bac à sable</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-13-13">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-12-12</prop>
+  <prop type="next-en-fr">301082034-1-14-14</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error generating evaluation key</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la génération de la clé d’évaluation</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-14-14">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-13-13</prop>
+  <prop type="next-en-fr">301082034-1-15-15</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Cannot register evaluation in this computer</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Enregistrement de la clé d’évaluation impossible sur cet ordinateur</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-15-15">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-14-14</prop>
+  <prop type="next-en-fr">301082034-1-16-16</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unsupported macOS version</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Version macOS non compatible</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-16-16">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-15-15</prop>
+  <prop type="next-en-fr">301082034-1-17-17</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unsupported Linux distribution</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Distribution Linux non compatible</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-17-17">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-16-16</prop>
+  <prop type="next-en-fr">301082034-1-18-18</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unsupported Windows version</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Version Windows non compatible</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-18-18">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-17-17</prop>
+  <prop type="next-en-fr">301082034-1-19-19</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unsupported computer type</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Type d’ordinateur non compatible</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-19-19">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-18-18</prop>
+  <prop type="next-en-fr">301082034-1-20-20</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Empty request</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Requête vide</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-2-2">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-1-1</prop>
+  <prop type="next-en-fr">301082034-1-3-3</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error sending request to server. Check your firewall or antivirus.</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de l’envoi de la requête au serveur. Vérifiez votre pare-feu et votre antivirus.</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-20-20">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-19-19</prop>
+  <prop type="next-en-fr">301082034-1-21-21</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unknown command</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Commande inconnue</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-21-21">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-20-20</prop>
+  <prop type="next-en-fr">301082034-1-22-22</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>{0} Build: {1}</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>{0} Build : {1}</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-22-22">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-21-21</prop>
+  <prop type="next-en-fr">301082034-1-23-23</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>{0} Vendor: {1}</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>{0} Distribution : {1}</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-23-23">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-22-22</prop>
+  <prop type="next-en-fr">301082034-1-24-24</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Requested languages while parsing</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Langues demandées durant l’analyse</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-24-24">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-23-23</prop>
+  <prop type="next-en-fr">301082034-1-25-25</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error getting languages from store</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la récupération des langues à partir du stockage</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-25-25">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-24-24</prop>
+  <prop type="next-en-fr">301082034-1-26-26</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error reading CSV file</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la lecture du fichier CSV</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-26-26">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-25-25</prop>
+  <prop type="next-en-fr">301082034-1-27-27</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error getting languages</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la récupération des langues</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-27-27">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-26-26</prop>
+  <prop type="next-en-fr">301082034-1-28-28</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error checking CSV languages</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la vérification des langues du CSV</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-28-28">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-27-27</prop>
+  <prop type="next-en-fr">301082034-1-29-29</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>{0} (Unknown Variant)</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>{0} (Variante inconnue)</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-29-29">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-28-28</prop>
+  <prop type="next-en-fr">301082034-1-30-30</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unknown Language</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Langue inconnue</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-3-3">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-2-2</prop>
+  <prop type="next-en-fr">301082034-1-4-4</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error reading answer from server. Check your firewall or antivirus.</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la réception de la réponse du serveur. Vérifiez votre pare-feu et votre antivirus.</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-30-30">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-29-29</prop>
+  <prop type="next-en-fr">301082034-1-31-31</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Selected TMX file is empty</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Le fichier TMX sélectionné est vide</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-31-31">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-30-30</prop>
+  <prop type="next-en-fr">301082034-1-32-32</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Null Store</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Stockage vide</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-32-32">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-31-31</prop>
+  <prop type="next-en-fr">301082034-1-33-33</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>File does not exist</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Le fichier n’existe pas</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-33-33">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-32-32</prop>
+  <prop type="next-en-fr">301082034-1-34-34</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error splitting files</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors du découpage des fichiers</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-34-34">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-33-33</prop>
+  <prop type="next-en-fr">301082034-1-35-35</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>\ units counted</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>\ unités comptées</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-35-35">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-34-34</prop>
+  <prop type="next-en-fr">301082034-1-36-36</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>\ units written</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>\ unités écrites</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-36-36">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-35-35</prop>
+  <prop type="next-en-fr">301082034-1-37-37</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error merging files</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la fusion des fichiers</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-37-37">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-36-36</prop>
+  <prop type="next-en-fr">301082034-1-38-38</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>File has invalid source language: {0}</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>La langue source du fichier est invalide : {0}</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-38-38">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-37-37</prop>
+  <prop type="next-en-fr">301082034-1-39-39</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error reading Excel file</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la lecture du fichier Excel</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-39-39">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-38-38</prop>
+  <prop type="next-en-fr">301082034-1-40-40</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Wrong filtering option</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Option de filtrage incorrecte</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-4-4">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-3-3</prop>
+  <prop type="next-en-fr">301082034-1-5-5</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Selected email account is not supported</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Le compte mail sélectionné n’est pas compatible</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-40-40">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-39-39</prop>
+  <prop type="next-en-fr">301082034-1-41-41</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Wrong filtering option</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Option de filtrage incorrecte</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-41-41">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-40-40</prop>
+  <prop type="next-en-fr">301082034-1-42-42</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error creating backup</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de la création de la sauvegarde</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-42-42">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-41-41</prop>
+  <prop type="next-en-fr">301082034-1-43-43</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error renaming cleaned file</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors du renommage du fichier nettoyé</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-43-43">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-42-42</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Wrong number of columns. Review optional delimiters.</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Nombre incorrect de colonnes. Vérifiez les délimiteurs optionnels.</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-5-5">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-4-4</prop>
+  <prop type="next-en-fr">301082034-1-6-6</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>An evaluation license has been requested for this computer before</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Une licence d’évaluation a déjà été demandée par le passé pour cet ordinateur</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-6-6">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-5-5</prop>
+  <prop type="next-en-fr">301082034-1-7-7</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Evaluation request failed</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Échec de la demande d’évaluation</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-7-7">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-6-6</prop>
+  <prop type="next-en-fr">301082034-1-8-8</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Expired Subscription</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Abonnement expiré</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-8-8">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-7-7</prop>
+  <prop type="next-en-fr">301082034-1-9-9</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Unsupported hard disks</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Disques durs non compatibles</seg>
+  </tuv>
+</tu><tu creationdate="20250901T064156Z" creationtool="Swordfish" creationtoolversion="5.14.2" tuid="301082034-1-9-9">
+  <prop type="project">Documents/GitHub/TMXEditor/i18n/tmxeditor_java_fr.xlf</prop>
+  <prop type="prev-en-fr">301082034-1-8-8</prop>
+  <prop type="next-en-fr">301082034-1-10-10</prop>
+  <tuv creationdate="20250901T064156Z" xml:lang="en">
+    <seg>Error registering subscription</seg>
+  </tuv>
+  <tuv creationdate="20250901T064156Z" xml:lang="fr">
+    <seg>Erreur lors de l’enregistrement de l’abonnement</seg>
+  </tuv>
+</tu></body>
+</tmx>

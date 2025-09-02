@@ -29,7 +29,7 @@ Ready to use installers and technical support for TMXEditor are available as yea
 
 The version of TMXEditor included in the official installers from [TMXEditor's Home Page](https://www.maxprograms.com/products/tmxeditor.html) can be used at no cost for 7 days requesting a free Evaluation Key.
 
-Subscription version includes unlimited email support at tech@maxprograms.com
+Subscription version includes unlimited email support at <tech@maxprograms.com>
 
 ### Differences sumary
 
@@ -40,7 +40,7 @@ Notarized macOS launcher| No | Yes
 Signed launcher and installer for Windows | No | Yes
 Associate app with `.tmx` extension | No | Yes
 Restricted Features | None | None
-Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at tech@maxprograms.com  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
+Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at <tech@maxprograms.com>  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
 
 ## Related Projects
 
@@ -51,15 +51,15 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 ## Requirements
 
 - JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
-- Apache Ant 1.10.14 or newer. Get it from [https://ant.apache.org/](https://ant.apache.org/)
-- Node.js 20.11.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
-- TypeScript 5.8.3. get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
+- Gradle 9.0 or newer. Get it from [https://gradle.org/](https://gradle.org/)
+- Node.js 22.13.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- TypeScript 5.9.2 or newer, get it from [https://www.typescriptlang.org/](https://www.typescriptlang.org/)
 
 ## Building
 
-- Checkout this repository.
+- Checkout this repository
 - Point your `JAVA_HOME` environment variable to JDK 21
-- Run `ant` to compile the Java code
+- Run `gradle` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
 
@@ -68,7 +68,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 ``` bash
   git clone https://github.com/rmraya/TMXEditor.git
   cd TMXEditor
-  ant
+  gradle
   npm install
   npm start
 ```

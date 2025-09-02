@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic xml:lang="fr-FR" id="fileMetadata">
+  <title>Définir les métadonnées d’un fichier TMX</title>
+  <body>
+    <p>Dans l’en-tête d’un fichier TMX (balise <codeph>&lt;header&gt;</codeph>), on trouve trois types d’informations propres au fichier&nbsp;:</p>
+    <ul>
+      <li>les attributs,</li>
+      <li>les propriétés,</li>
+      <li>les notes.</li>
+    </ul>
+    <p>Pour éditer les métadonnées d’un fichier TMX, ouvrez-le, puis sélectionnez <menucascade>
+        <uicontrol>Fichier</uicontrol>
+        <uicontrol>Métadonnées du fichier</uicontrol>
+      </menucascade> dans le menu (ou cliquez sur le bouton <image height="16" href="../images/fileInfo.svg" placement="inline"/>&nbsp;<uicontrol>Métadonnées du fichier</uicontrol> dans la barre d’outils).</p>
+    <p>La boîte de dialogue "Métadonnées du fichier" s’ouvre&nbsp;:<image href="../images/fileAttributes.png" placement="break" scale="80" align="center">
+        <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
+      </image></p>
+    <section>
+      <title>Attributs du fichier</title>
+      <p>Vous pouvez modifier les attributs du fichier TMX en changeant les valeurs dans les champs texte et dans les listes déroulantes, puis en cliquant sur le bouton <uicontrol>Enregistrer les attributs</uicontrol>.</p>
+    </section>
+    <section>
+      <title>Propriétés du fichier</title>
+      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Propriétés</uicontrol> pour accéder aux propriétés du fichier. La boîte de dialogue affiche alors les propriétés du fichier.<image href="../images/fileProperties.png" placement="break" scale="80" align="center">
+          <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
+        </image></p>
+      <ul>
+        <li>Pour ajouter une propriété, cliquez sur le bouton <uicontrol>Ajouter une propriété</uicontrol>, puis saisissez le type et la valeur de la propriété à ajouter.</li>
+        <li>Pour supprimer une propriété, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline" id="image_n1h_srn_x2c"/> <uicontrol>Supprimer la propriété</uicontrol> en regard de la propriété à supprimer.</li>
+        <li>Pour enregistrer vos modifications, cliquez sur le bouton <uicontrol>Enregistrer les propriétés</uicontrol>.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Notes sur le fichier</title>
+      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Notes</uicontrol> pour accéder aux notes relatives au fichier. La boîte de dialogue affiche alors les notes attachées au fichier.<image href="../images/fileNotes.png" placement="break" scale="80" align="center">
+          <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
+        </image></p>
+      <ul>
+        <li>Pour ajouter une note, cliquez sur le bouton <uicontrol>Ajouter une note</uicontrol>, puis saisissez la note à ajouter.</li>
+        <li>Pour supprimer une note, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline" id="image_xlv_qrn_x2c"/> <uicontrol>Supprimer la note</uicontrol> en regard de la note à supprimer.</li>
+        <li>Pour enregistrer vos modifications, cliquez sur le bouton <uicontrol>Enregistrer les notes</uicontrol>.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

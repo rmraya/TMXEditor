@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="filterUnits">
+  <title>Filtrer les unités de traduction</title>
+  <shortdesc>Voici les étapes à suivre pour n’afficher que les unités non traduites, ou celles contenant un texte donné.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Affichage</uicontrol>
+            <uicontrol>Filtrez les unités de traduction</uicontrol>
+          </menucascade> (touche [<userinput>F3</userinput>]), ou cliquez sur le bouton <image height="16" href="../images/filterUnits.svg" placement="inline"/>&nbsp;<uicontrol>Filtrer les unités de traduction</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Filtrer les unités de traduction" s’ouvre&nbsp;:<image href="../images/filter_units.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Filtrer les unités de traduction"</alt>
+          </image></stepresult>
+      </step>
+      <step>
+        <cmd>Définissez les critères de votre filtre&nbsp;:</cmd>
+        <choices>
+          <choice>Pour afficher et mettre en surbrillances toutes les occurrences d’un texte donné&nbsp;:<ol>
+              <li>Saisissez le texte à rechercher dans le champ <uicontrol>Recherche</uicontrol>.</li>
+              <li>Sélectionnez la langue dans laquelle la recherche doit s’effectuer à l’aide de la liste déroulante <uicontrol>Langue sur laquelle porte le filtre</uicontrol>.</li>
+              <li>Cochez la case <uicontrol>Expression régulière</uicontrol> si votre critère de recherche est une expression régulière.</li>
+              <li>Cochez la case <uicontrol>Respecter la casse</uicontrol> si vous ne voulez afficher que les unités de traductions qui respectent la casse de votre critère de recherche.</li>
+            </ol> </choice>
+          <choice>Pour n’afficher que les unités non traduites&nbsp;:<ol>
+              <li>Cochez la case <uicontrol>Afficher uniquement les unités non traduites</uicontrol>.</li>
+              <li>À l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>, sélectionnez la langue devant être considérée comme la langue source lors du filtrage.</li>
+            </ol> </choice>
+        </choices>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Filtrer</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Seules les unités de traductions correspondant aux critères de recherche sont affichées dans la fenêtre principale. Pour afficher comme avant toutes les unités de traduction, ouvrez à nouveau la boîte de dialogue <uicontrol>Filtrer les unités de traduction</uicontrol>, et appuyez sur le bouton <uicontrol>Annuler le filtrage</uicontrol>.</result>
+  </taskbody>
+</task>

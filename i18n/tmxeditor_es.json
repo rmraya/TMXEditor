@@ -208,6 +208,7 @@
   "mergeFiles": {
     "selectFiles": "Seleccione archivos",
     "selectMerged": "Seleccione archivo TMX combinado",
+    "addTmxFiles": "Añadir archivos TMX",        
     "addMoreTmx": "Añadir más archivos TMX",
     "removeFileText": "Eliminar Archivo"
   },

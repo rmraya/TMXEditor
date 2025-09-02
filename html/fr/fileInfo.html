@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Métadonnées du fichier</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
+</head>
+
+<body onload="new FileInfo();">
+
+    <div id="tabHolder" class="tabHolder">
+        <div class="tab selectedTab" id="atributesTab"><a id="showAttributes" class="button">Attributs TMX</a></div>
+        <div class="tab " id="propertiesTab"><a id="showProperties" class="button">Propriétés</a></div>
+        <div class="tab " id="notesTab"><a id="showNotes" class="button">Notes</a></div>
+    </div>
+
+    <div>
+        <div id="attributes" class="tabContent ">
+            <table style="margin-left: 8px; width: calc(100% - 12px);">
+                <tr>
+                    <td class="middle" width="50%">
+                        <label for="creationid" class="noWrap">Identifiant du créateur</label>
+                        <input id="creationid" class="table_input">
+                    </td>
+                    <td class="middle" width="50%">
+                        <label for="creationdate" class="noWrap">Date de création</label>
+                        <input id="creationdate" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="creationtool" class="noWrap">Outil de création</label>
+                        <input id="creationtool" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="creationtoolversion">Version de l’outil de création</label>
+                        <input id="creationtoolversion" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="changeid" class="noWrap">Identifiant du modificateur</label>
+                        <input id="changeid" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="changedate" class="noWrap">Date de modification</label>
+                        <input id="changedate" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="segtype">Type de segment</label>
+                        <select id="segtype" class="table_select">
+                            <option value=""></option>
+                            <option value="block">bloc</option>
+                            <option value="paragraph">paragraphe</option>
+                            <option value="sentence">phrase</option>
+                        </select>
+                    </td>
+                    <td class="middle">
+                        <label for="o-tmf" class="noWrap">Format de la mémoire de traduction</label>
+                        <input id="o-tmf" class="table_input">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="srclang" class="noWrap">Langue source</label>
+                        <select id="srclang" class="table_select"></select>
+                    </td>
+                    <td class="middle">
+                        <label for="adminlang" class="noWrap">Langue de gestion</label>
+                        <select id="adminlang" class="table_select"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="middle">
+                        <label for="datatype" class="noWrap">Type de donnée</label>
+                        <input id="datatype" class="table_input">
+                    </td>
+                    <td class="middle">
+                        <label for="o-encoding" class="noWrap">Codage d’origine</label>
+                        <input id="o-encoding" class="table_input">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="properties" class="hidden">
+            <div id="propertiesPanel" class="divContainer" style="height: 396px;">
+                <table class="stripes">
+                    <tbody id="propertiesBody">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                    </table>
+            </div>
+        </div>
+
+        <div id="notes" class="hidden">
+            <div id="notesPanel" class="divContainer" style="height: 396px;">
+                <table class="stripes">
+                    <tbody id="notesTable">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="attributesButtons" class="buttonArea">
+        <button id="saveAttributes">Enregistrer les attributs</button>
+    </div>
+
+    <div id="propButtons" class="hidden">
+        <button id="addProperty">Ajouter une propriété</button>
+        <button id="saveProperties">Enregistrer les propriétés</button>
+    </div>
+
+    <div id="notesButtons" class="hidden">
+        <button id="addNote">Ajouter une note</button>
+        <button id="saveNotes">Enregistrer les notes</button>
+    </div>
+
+    <script src="../../js/fileInfo.js"></script>
+</body>
+
+</html>

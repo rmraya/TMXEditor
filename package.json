@@ -19,12 +19,12 @@
         "url": "https://github.com/rmraya/TMXEditor.git"
     },
     "devDependencies": {
-        "electron": "^35.1.4",
-        "typescript": "^5.8.3"
+        "electron": "^37.4.0",
+        "typescript": "^5.9.2"
     },
     "dependencies": {
-        "typesxml": "^1.7.0",
-        "typesbcp47": "^1.5.4",
-        "sdltm": "^1.4.3"
+        "typesxml": "^1.8.0",
+        "typesbcp47": "^1.9.0",
+        "sdltm": "^1.5.0"
     }
 }

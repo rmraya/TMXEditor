@@ -1,0 +1,164 @@
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+defaultTasks 'dist'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    // Empty - using local JAR files only
+}
+
+dependencies {
+    implementation files('jars/capi.jar')
+    implementation files('jars/bcp47j.jar')
+    implementation files('jars/json.jar')
+    implementation files('jars/sqlite-jdbc-3.50.3.0.jar')
+    implementation files('jars/tmxvalidator.jar')
+    implementation files('jars/xmljava.jar')
+}
+
+application {
+    mainModule = 'tmxserver'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['src']
+            exclude '**/*.java'
+        }
+    }
+}
+
+compileJava {
+    outputs.upToDateWhen { false }  // Always rebuild
+    doFirst {
+        delete 'out'
+        mkdir 'out'
+    }
+    options.compilerArgs = ['--module-path', configurations.compileClasspath.asPath]
+    destinationDirectory = file('out')
+    doLast {
+        copy {
+            from 'src'
+            into 'out'
+            exclude '**/*.java'
+        }
+        println "✓ Java compilation and resource copying completed"
+    }
+}
+
+tasks.register('createJar', Jar) {
+    dependsOn compileJava
+    outputs.upToDateWhen { false }
+    description = 'Build tmxserver.jar file'
+    group = 'build'
+    archiveBaseName = 'tmxserver'
+    destinationDirectory = file('jars')
+    from 'out'
+    doFirst {
+        delete 'jars/tmxserver.jar'
+    }
+    include '**/*'
+    exclude '**/*.java'
+    manifest {
+        attributes(
+            'Automatic-Module-Name': 'tmxserver',
+            'Module-Path': configurations.runtimeClasspath.asPath
+        )
+    }
+    doLast {
+        println "✓ JAR created: ${archiveFile.get()}"
+    }
+}
+
+tasks.register('linkJava', Exec) {
+    dependsOn createJar
+    outputs.upToDateWhen { false }
+    doFirst {
+        delete 'dist'
+    }
+    def pathSeparator = File.pathSeparator
+    def fileSeparator = File.separator
+    def javaHome = System.getProperty('java.home')
+    def jmodsPath = javaHome + fileSeparator + 'jmods'
+    def modulePath = 'jars' + pathSeparator + jmodsPath
+    commandLine 'jlink',
+        '--module-path', modulePath,
+        '--add-modules', 'tmxserver',
+        '--output', 'dist',
+        '--verbose'
+    doLast {
+        def jrtFile = file('dist/lib/jrt-fs.jar')
+        if (jrtFile.exists()) {
+            delete jrtFile
+        }
+        println "✓ Runtime image created successfully"
+    }
+}
+
+tasks.register('copyWindows') {
+    dependsOn linkJava
+    outputs.upToDateWhen { false }
+    onlyIf { System.getProperty('os.name').toLowerCase().contains('windows') }
+    doLast {
+        delete 'bin', 'conf', 'include', 'legal', 'lib', 'release'
+        copy { from 'dist/bin'; into 'bin' }
+        copy { from 'dist/conf'; into 'conf' }
+        copy { from 'dist/include'; into 'include' }
+        copy { from 'dist/legal'; into 'legal' }
+        copy { from 'dist/lib'; into 'lib' }
+        copy { from 'dist/release'; into '.' }
+        delete 'dist', 'build', 'out'
+    }
+}
+
+tasks.register('copyUnix') {
+    dependsOn linkJava
+    outputs.upToDateWhen { false }
+    onlyIf { !System.getProperty('os.name').toLowerCase().contains('windows') }
+    doLast {
+        delete 'bin', 'conf', 'include', 'legal', 'lib', 'release'
+        copy { from 'dist/bin'; into 'bin' }
+        copy { from 'dist/conf'; into 'conf' }
+        copy { from 'dist/include'; into 'include' }
+        copy { from 'dist/legal'; into 'legal' }
+        copy { from 'dist/lib'; into 'lib' }
+        copy { from 'dist/release'; into '.' }
+        delete 'dist', 'build', 'out'
+    }
+}
+
+tasks.register('dist') {
+    dependsOn copyWindows, copyUnix
+    outputs.upToDateWhen { false }
+    description = 'Prepare distribution'
+    doFirst {
+        println "✓ Starting distribution build..."
+    }
+    doLast {
+        delete 'jars/tmxserver.jar'
+        println "✓ Distribution ready"
+    }
+}
+
+tasks.register('distclean', Delete) {
+    delete 'dist', 'bin', 'conf', 'include', 'legal', 'lib', 'release'
+}
+
+clean {
+    delete 'out', 'build'
+}
+
+
+

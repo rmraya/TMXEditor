@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff srcLang="en" xmlns:mtc="urn:oasis:names:tc:xliff:matches:2.0" version="2.0" xmlns:mda="urn:oasis:names:tc:xliff:metadata:2.0" trgLang="fr" xmlns="urn:oasis:names:tc:xliff:document:2.0">
+  <file original="com/maxprograms/tmxserver/tmxserver.properties" id="0">
+    <skeleton>U3Vic2NyaXB0aW9ucy4wPSUlJTAlJSUKU3Vic2NyaXB0aW9ucy4xPSUlJTElJSUKU3Vic2NyaXB0
+aW9ucy4xMD0lJSUyJSUlClN1YnNjcmlwdGlvbnMuMTE9JSUlMyUlJQpTdWJzY3JpcHRpb25zLjEy
+PSUlJTQlJSUKU3Vic2NyaXB0aW9ucy4xMz0lJSU1JSUlClN1YnNjcmlwdGlvbnMuMTQ9JSUlNiUl
+JQpTdWJzY3JpcHRpb25zLjE1PSUlJTclJSUKU3Vic2NyaXB0aW9ucy4xNj0lJSU4JSUlClN1YnNj
+cmlwdGlvbnMuMTc9JSUlOSUlJQpTdWJzY3JpcHRpb25zLjE4PSUlJTEwJSUlClN1YnNjcmlwdGlv
+bnMuMj0lJSUxMSUlJQpTdWJzY3JpcHRpb25zLjM9JSUlMTIlJSUKU3Vic2NyaXB0aW9ucy40PSUl
+JTEzJSUlClN1YnNjcmlwdGlvbnMuNT0lJSUxNCUlJQpTdWJzY3JpcHRpb25zLjY9JSUlMTUlJSUK
+U3Vic2NyaXB0aW9ucy43PSUlJTE2JSUlClN1YnNjcmlwdGlvbnMuOD0lJSUxNyUlJQpTdWJzY3Jp
+cHRpb25zLjk9JSUlMTglJSUKVE1YU2VydmVyLjA9JSUlMTklJSUKVE1YU2VydmVyLjE9JSUlMjAl
+JSUKVE1YU2VydmVyLjI9JSUlMjElJSUKVE1YU2VydmVyLjM9JSUlMjIlJSUKVE1YU2VydmljZS4w
+PSUlJTIzJSUlClRNWFNlcnZpY2UuMT0lJSUyNCUlJQpUTVhTZXJ2aWNlLjEwPSUlJTI1JSUlClRN
+WFNlcnZpY2UuMTE9JSUlMjYlJSUKVE1YU2VydmljZS4xMj0lJSUyNyUlJQpUTVhTZXJ2aWNlLjEz
+PSUlJTI4JSUlClRNWFNlcnZpY2UuMTQ9JSUlMjklJSUKVE1YU2VydmljZS4xNT0lJSUzMCUlJQpU
+TVhTZXJ2aWNlLjI9JSUlMzElJSUKVE1YU2VydmljZS4zPSUlJTMyJSUlClRNWFNlcnZpY2UuND0l
+JSUzMyUlJQpUTVhTZXJ2aWNlLjU9JSUlMzQlJSUKVE1YU2VydmljZS42PSUlJTM1JSUlClRNWFNl
+cnZpY2UuNz0lJSUzNiUlJQpUTVhTZXJ2aWNlLjg9JSUlMzclJSUKVE1YU2VydmljZS45PSUlJTM4
+JSUlCg==</skeleton>
+    <mda:metadata>
+      <mda:metaGroup category="format">
+        <mda:meta type="datatype">javapropertyresourcebundle</mda:meta>
+      </mda:metaGroup>
+      <mda:metaGroup category="tool">
+        <mda:meta type="tool-id">OpenXLIFF</mda:meta>
+        <mda:meta type="tool-name">OpenXLIFF Filters</mda:meta>
+        <mda:meta type="tool-version">3.13.0 20230829_0823</mda:meta>
+      </mda:metaGroup>
+      <mda:metaGroup category="PI">
+        <mda:meta type="encoding">UTF-8</mda:meta>
+      </mda:metaGroup>
+    </mda:metadata>
+    <unit id="0">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="0">
+        <source xml:space="preserve">No subscription</source>
+        <target xml:space="preserve">Aucun abonnement</target>
+      </segment>
+    </unit>
+    <unit id="1">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.1</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="1">
+        <source xml:space="preserve">Error verifying subscription status</source>
+        <target xml:space="preserve">Erreur lors de la vérification de l’état de l’abonnement</target>
+      </segment>
+    </unit>
+    <unit id="2">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.10</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="2">
+        <source xml:space="preserve">Error sending request to server. Check your firewall or antivirus.</source>
+        <target xml:space="preserve">Erreur lors de l’envoi de la requête au serveur. Vérifiez votre pare-feu et votre antivirus.</target>
+      </segment>
+    </unit>
+    <unit id="3">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.11</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="3">
+        <source xml:space="preserve">Error reading answer from server. Check your firewall or antivirus.</source>
+        <target xml:space="preserve">Erreur lors de la réception de la réponse du serveur. Vérifiez votre pare-feu et votre antivirus.</target>
+      </segment>
+    </unit>
+    <unit id="4">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.12</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="4">
+        <source xml:space="preserve">Selected email account is not supported</source>
+        <target xml:space="preserve">Le compte mail sélectionné n’est pas compatible</target>
+      </segment>
+    </unit>
+    <unit id="5">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.13</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="5">
+        <source xml:space="preserve">An evaluation license has been requested for this computer before</source>
+        <target xml:space="preserve">Une licence d’évaluation a déjà été demandée par le passé pour cet ordinateur</target>
+      </segment>
+    </unit>
+    <unit id="6">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.14</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="6">
+        <source xml:space="preserve">Evaluation request failed</source>
+        <target xml:space="preserve">Échec de la demande d’évaluation</target>
+      </segment>
+    </unit>
+    <unit id="7">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.15</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="7">
+        <source xml:space="preserve">Expired Subscription</source>
+        <target xml:space="preserve">Abonnement expiré</target>
+      </segment>
+    </unit>
+    <unit id="8">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.16</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="8">
+        <source xml:space="preserve">Unsupported hard disks</source>
+        <target xml:space="preserve">Disques durs non compatibles</target>
+      </segment>
+    </unit>
+    <unit id="9">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.17</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="9">
+        <source xml:space="preserve">Error registering subscription</source>
+        <target xml:space="preserve">Erreur lors de l’enregistrement de l’abonnement</target>
+      </segment>
+    </unit>
+    <unit id="10">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.18</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="10">
+        <source xml:space="preserve">Error registering subscription</source>
+        <target xml:space="preserve">Erreur lors de l’enregistrement de l’abonnement</target>
+      </segment>
+    </unit>
+    <unit id="11">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.2</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="11">
+        <source xml:space="preserve">A computer user account is required</source>
+        <target xml:space="preserve">Un compte utilisateur sur l’ordinateur est nécessaire</target>
+      </segment>
+    </unit>
+    <unit id="12">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.3</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="12">
+        <source xml:space="preserve">Running on sandbox, evaluation request discarded.</source>
+        <target xml:space="preserve">La demande d’évaluation n’a pas été traitée car le programme s’exécute en mode bac à sable</target>
+      </segment>
+    </unit>
+    <unit id="13">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.4</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="13">
+        <source xml:space="preserve">Error generating evaluation key</source>
+        <target xml:space="preserve">Erreur lors de la génération de la clé d’évaluation</target>
+      </segment>
+    </unit>
+    <unit id="14">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.5</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="14">
+        <source xml:space="preserve">Cannot register evaluation in this computer</source>
+        <target xml:space="preserve">Enregistrement de la clé d’évaluation impossible sur cet ordinateur</target>
+      </segment>
+    </unit>
+    <unit id="15">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.6</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="15">
+        <source xml:space="preserve">Unsupported macOS version</source>
+        <target xml:space="preserve">Version macOS non compatible</target>
+      </segment>
+    </unit>
+    <unit id="16">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.7</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="16">
+        <source xml:space="preserve">Unsupported Linux distribution</source>
+        <target xml:space="preserve">Distribution Linux non compatible</target>
+      </segment>
+    </unit>
+    <unit id="17">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.8</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="17">
+        <source xml:space="preserve">Unsupported Windows version</source>
+        <target xml:space="preserve">Version Windows non compatible</target>
+      </segment>
+    </unit>
+    <unit id="18">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">Subscriptions.9</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="18">
+        <source xml:space="preserve">Unsupported computer type</source>
+        <target xml:space="preserve">Type d’ordinateur non compatible</target>
+      </segment>
+    </unit>
+    <unit id="19">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXServer.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="19">
+        <source xml:space="preserve">Empty request</source>
+        <target xml:space="preserve">Requête vide</target>
+      </segment>
+    </unit>
+    <unit id="20">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXServer.1</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="20">
+        <source xml:space="preserve">Unknown command</source>
+        <target xml:space="preserve">Commande inconnue</target>
+      </segment>
+    </unit>
+    <unit id="21">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXServer.2</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="21">
+        <source xml:space="preserve">{0} Build: {1}</source>
+        <target xml:space="preserve">{0} Build : {1}</target>
+      </segment>
+    </unit>
+    <unit id="22">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXServer.3</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="22">
+        <source xml:space="preserve">{0} Vendor: {1}</source>
+        <target xml:space="preserve">{0} Distribution : {1}</target>
+      </segment>
+    </unit>
+    <unit id="23">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="23">
+        <source xml:space="preserve">Requested languages while parsing</source>
+        <target xml:space="preserve">Langues demandées durant l’analyse</target>
+      </segment>
+    </unit>
+    <unit id="24">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.1</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="24">
+        <source xml:space="preserve">Error getting languages from store</source>
+        <target xml:space="preserve">Erreur lors de la récupération des langues à partir du stockage</target>
+      </segment>
+    </unit>
+    <unit id="25">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.10</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="25">
+        <source xml:space="preserve">Error reading CSV file</source>
+        <target xml:space="preserve">Erreur lors de la lecture du fichier CSV</target>
+      </segment>
+    </unit>
+    <unit id="26">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.11</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="26">
+        <source xml:space="preserve">Error getting languages</source>
+        <target xml:space="preserve">Erreur lors de la récupération des langues</target>
+      </segment>
+    </unit>
+    <unit id="27">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.12</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="27">
+        <source xml:space="preserve">Error checking CSV languages</source>
+        <target xml:space="preserve">Erreur lors de la vérification des langues du CSV</target>
+      </segment>
+    </unit>
+    <unit id="28">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.13</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="28">
+        <source xml:space="preserve">{0} (Unknown Variant)</source>
+        <target xml:space="preserve">{0} (Variante inconnue)</target>
+      </segment>
+    </unit>
+    <unit id="29">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.14</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="29">
+        <source xml:space="preserve">Unknown Language</source>
+        <target xml:space="preserve">Langue inconnue</target>
+      </segment>
+    </unit>
+    <unit id="30">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.15</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="30">
+        <source xml:space="preserve">Selected TMX file is empty</source>
+        <target xml:space="preserve">Le fichier TMX sélectionné est vide</target>
+      </segment>
+    </unit>
+    <unit id="31">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.2</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="31">
+        <source xml:space="preserve">Null Store</source>
+        <target xml:space="preserve">Stockage vide</target>
+      </segment>
+    </unit>
+    <unit id="32">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.3</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="32">
+        <source xml:space="preserve">File does not exist</source>
+        <target xml:space="preserve">Le fichier n’existe pas</target>
+      </segment>
+    </unit>
+    <unit id="33">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.4</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="33">
+        <source xml:space="preserve">Error splitting files</source>
+        <target xml:space="preserve">Erreur lors du découpage des fichiers</target>
+      </segment>
+    </unit>
+    <unit id="34">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.5</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="34">
+        <source xml:space="preserve">\ units counted</source>
+        <target xml:space="preserve">\ unités comptées</target>
+      </segment>
+    </unit>
+    <unit id="35">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.6</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="35">
+        <source xml:space="preserve">\ units written</source>
+        <target xml:space="preserve">\ unités écrites</target>
+      </segment>
+    </unit>
+    <unit id="36">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.7</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="36">
+        <source xml:space="preserve">Error merging files</source>
+        <target xml:space="preserve">Erreur lors de la fusion des fichiers</target>
+      </segment>
+    </unit>
+    <unit id="37">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.8</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="37">
+        <source xml:space="preserve">File has invalid source language: {0}</source>
+        <target xml:space="preserve">La langue source du fichier est invalide : {0}</target>
+      </segment>
+    </unit>
+    <unit id="38">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXService.9</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="38">
+        <source xml:space="preserve">Error reading Excel file</source>
+        <target xml:space="preserve">Erreur lors de la lecture du fichier Excel</target>
+      </segment>
+    </unit>
+  </file>
+  <file original="com/maxprograms/tmxserver/tmx/tmx.properties" id="1">
+    <skeleton>U3FsU3RvcmUuMD0lJSUwJSUlClNpbXBsZVN0b3JlLjA9JSUlMSUlJQpUTVhDbGVhbmVyLjA9JSUl
+MiUlJQpUTVhDbGVhbmVyLjE9JSUlMyUlJQpUTVhDb252ZXJ0ZXIuMD0lJSU0JSUlCg==</skeleton>
+    <mda:metadata>
+      <mda:metaGroup category="format">
+        <mda:meta type="datatype">javapropertyresourcebundle</mda:meta>
+      </mda:metaGroup>
+      <mda:metaGroup category="tool">
+        <mda:meta type="tool-id">OpenXLIFF</mda:meta>
+        <mda:meta type="tool-name">OpenXLIFF Filters</mda:meta>
+        <mda:meta type="tool-version">3.13.0 20230829_0823</mda:meta>
+      </mda:metaGroup>
+      <mda:metaGroup category="PI">
+        <mda:meta type="encoding">utf-8</mda:meta>
+      </mda:metaGroup>
+    </mda:metadata>
+    <unit id="0">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">SqlStore.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="0">
+        <source xml:space="preserve">Wrong filtering option</source>
+        <target xml:space="preserve">Option de filtrage incorrecte</target>
+      </segment>
+    </unit>
+    <unit id="1">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">SimpleStore.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="1">
+        <source xml:space="preserve">Wrong filtering option</source>
+        <target xml:space="preserve">Option de filtrage incorrecte</target>
+      </segment>
+    </unit>
+    <unit id="2">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXCleaner.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="2">
+        <source xml:space="preserve">Error creating backup</source>
+        <target xml:space="preserve">Erreur lors de la création de la sauvegarde</target>
+      </segment>
+    </unit>
+    <unit id="3">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXCleaner.1</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="3">
+        <source xml:space="preserve">Error renaming cleaned file</source>
+        <target xml:space="preserve">Erreur lors du renommage du fichier nettoyé</target>
+      </segment>
+    </unit>
+    <unit id="4">
+      <mda:metadata>
+        <mda:metaGroup category="transUnitAttributes">
+          <mda:meta type="resname">TMXConverter.0</mda:meta>
+        </mda:metaGroup>
+      </mda:metadata>
+      <segment state="final" id="4">
+        <source xml:space="preserve">Wrong number of columns. Review optional delimiters.</source>
+        <target xml:space="preserve">Nombre incorrect de colonnes. Vérifiez les délimiteurs optionnels.</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

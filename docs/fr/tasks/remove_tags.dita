@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="remove_tags">
+  <title>Supprimer les balises inline</title>
+  <shortdesc>Marche à suivre pour supprimer toutes les balises inline d’un fichier TMX.</shortdesc>
+  <taskbody>
+    <context>
+      <p>La présence de balises inline est susceptible de perturber la recherche de correspondances si une pénalité est appliquée lorsque les balises ne coïncident pas exactement.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Supprimer les balises inline</uicontrol>
+          </menucascade>.</cmd>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Les données du fichier nettoyé apparaissent dans la fenêtre principale.</result>
+  </taskbody>
+</task>

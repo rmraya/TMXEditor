@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Convertir un fichier TBX en TMX</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
+</head>
+
+<body class="dialog_body" onload="new ConvertTBX();">
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="tbxFile">Fichier TBX</label></td>
+            <td class="middle fill_width"><input type="text" id="tbxFile" class="fill_width"></td>
+            <td><button id="browseTbxFiles">Parcourir</button></td>
+        </tr>
+        <tr>
+            <td class="middle noWrap"><label for="tmxFile">Fichier TMX</label></td>
+            <td class="middle fill_width"><input type="text" id="tmxFile" class="fill_width"></td>
+            <td class="middle"><button id="browseTmxFiles">Parcourir</button></td>
+        </tr>
+    </table>
+    <div style="padding: 4px; margin:4px 8px;">
+        <input type="checkbox" id="openTMX" checked><label for="openTMX">Ouvrir le fichier TMX généré</label>
+    </div>
+    <div class="buttonArea">
+        <button id="convert">Convertir le fichier en TMX</button>
+    </div>
+
+    <script src="../../js/convertTBX.js"></script>
+</body>
+
+</html>

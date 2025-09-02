@@ -18,8 +18,8 @@ module tmxserver {
 	requires java.base;
 	requires java.xml;
 	requires java.sql;
-	requires transitive javabcp47;
 	requires tmxvalidator;
+	requires transitive bcp47j;
 	requires transitive jdk.httpserver;
 	requires transitive json;
 	requires transitive xmljava;

@@ -2,7 +2,7 @@
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="search_replace">
     <title>Search &amp; Replace Text</title>
-    <shortdesc>Follow these steps perform a global search &amp; replace operation.</shortdesc>
+    <shortdesc>Follow these steps to perform a global search &amp; replace operation.</shortdesc>
     <taskbody>
         <steps>
             <step>
@@ -37,7 +37,7 @@
             </step>
             <step>
                 <cmd>Select the <uicontrol>Regular Expression</uicontrol> checkbox if you want to
-                    use regular expressions for specifying the text to search</cmd>
+                    use regular expressions for specifying the text to search.</cmd>
             </step>
             <step>
                 <cmd>Click the <uicontrol>Replace Text</uicontrol> button.</cmd>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="maintenanceDashboard">
+  <title>Tableau de bord de maintenance</title>
+  <shortdesc>Marche à suivre pour optimiser un fichier TMX en une seule passe.</shortdesc>
+  <taskbody>
+    <context>
+      <p>
+          <uicontrol>
+        Le tableau de bord de maintenance</uicontrol> regroupe plusieurs tâches du menu <uicontrol>Tâches</uicontrol> en une boîte de dialogue unique en vue de simplifier la maintenance de vos fichiers TMX.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Ouvrez le fichier TMX à traiter.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Tâches</uicontrol>
+            <uicontrol>Tableau de bord de maintenance</uicontrol>
+          </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/maintenance.svg" placement="inline"/>&nbsp;<uicontrol>Tableau de bord de maintenance</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Tableau de bord de maintenance" s’ouvre&nbsp;:<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Tableau de bord de maintenance"</alt>
+          </image></stepresult>
+      </step>
+      <step>
+        <cmd>Sélectionnez les tâches à effectuer sur le fichier en cochant les cases correspondantes&nbsp;:</cmd>
+        <choices>
+          <choice>
+          <uicontrol>
+        Supprimer toutes les balises</uicontrol>, pour enlever toutes les balises inline du fichier.</choice>
+          <choice>
+          <uicontrol>
+        Supprimer les unités en doublon</uicontrol>, pour retirer les unités de traduction dupliquées.</choice>
+          <choice>
+          <uicontrol>
+        Supprimer les unités non traduites</uicontrol>, pour retirer les unités de traduction non traduites.</choice>
+          <choice>
+          <uicontrol>
+        Supprimer les espaces à gauche et à droite</uicontrol>, pour enlever tous les espaces qui se trouvent au début ou à la fin des segments.</choice>
+          <choice>
+          <uicontrol>
+        Consolider les unités de traduction</uicontrol>, pour fusionner les unités de traductions issues du même segment source.</choice>
+        </choices>
+      </step>
+      <step>
+        <cmd>Si vous avez sélectionné la tâche <uicontrol>Supprimer les unités non traduites</uicontrol> ou la tâche <uicontrol>Consolider les unités de traduction</uicontrol>, sélectionnez également la <xref href="../glossaries/source_language.dita">langue source</xref> à l’aide de la liste déroulante <uicontrol>Langue source</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Exécuter la maintenance</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Un indicateur permet de suivre la progression du traitement des différentes tâches sélectionnées.</result>
+  </taskbody>
+</task>

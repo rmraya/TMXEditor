@@ -60,7 +60,7 @@ class MergeFiles {
             return;
         }
         if (this.files.length === 0) {
-            this.electron.ipcRenderer.send('show-message', { type: 'warning', message: 'Add TMX files', parent: 'mergeFiles' });
+            this.electron.ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'addTmxFiles', parent: 'mergeFiles' });
             return;
         }
         if (this.files.length < 2) {
@@ -97,6 +97,7 @@ class MergeFiles {
             remove.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" style="margin-top:4px"><path d="m400-325 80-80 80 80 51-51-80-80 80-80-51-51-80 80-80-80-51 51 80 80-80 80 51 51Zm-88 181q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480Zm-336 0v480-480Z"/></svg>' +
                 '<span class="tooltiptext bottomTooltip">' + this.removeText + '</span>';
             remove.classList.add('tooltip');
+            remove.classList.add('bottomTooltip');
             remove.addEventListener('click', () => {
                 this.deleteFiles(file);
             });

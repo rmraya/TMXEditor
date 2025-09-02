@@ -34,9 +34,6 @@ class Licenses {
         document.getElementById('sdltm').addEventListener('click', () => {
             this.openLicense('sdltm');
         });
-        document.getElementById('SLF4J').addEventListener('click', () => {
-            this.openLicense('SLF4J');
-        });
         document.getElementById('SQLite').addEventListener('click', () => {
             this.openLicense('SQLite');
         });

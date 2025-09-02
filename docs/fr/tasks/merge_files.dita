@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="merge_files">
+  <title>Fusionner des fichiers TMX</title>
+  <shortdesc>Voici les étapes à suivre pour fusionner plusieurs fichiers TMX en un seul gros fichier.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Fusionner des fichiers TMX</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>La boîte de dialogue "Fusionner des fichiers TMX" s’ouvre&nbsp;:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Fusionner des fichiers TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier TMX résultat</uicontrol>, saisissez le chemin du gros fichier à générer, ou sélectionnez le fichier à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Sélectionner les fichiers TMX à fusionner à l’aide du bouton <uicontrol>Ajouter des fichiers</uicontrol>.</cmd>
+        <stepresult>Voici à quoi ressemble la boîte de dialogue une fois que des fichiers ont été ajoutés&nbsp;:<image href="../images/merge_dialog.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Fusionner des fichiers TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Pour enlever un fichier de la liste, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline"/> <uicontrol>Retirer le fichier</uicontrol> en regard du fichier à retirer.</cmd>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Fusionner les fichiers</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <result>Un petit message s’affiche pendant le traitement. Le fichier TMX résultat est généré à l’emplacement défini. Il contient les données de tous les fichiers de la liste.</result>
+  </taskbody>
+</task>

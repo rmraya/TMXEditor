@@ -40,13 +40,6 @@
       <li>Publicado bajo la <xref href="https://www.eclipse.org/org/documents/epl-v10.html" scope="external" format="html">Licencia Pública Eclipse 1.0</xref></li>
     </ul>
     <p>
-      <b>SL4J</b>
-    </p>
-    <ul>
-      <li>Disponible en <xref href="https://slf4j.org" scope="external" format="html">https://slf4j.org</xref></li>
-      <li>Publicado bajo la <xref href="https://slf4j.org/license.html" scope="external" format="html">Licencia MIT</xref></li>
-    </ul>
-    <p>
       <b>SQLite JDBC Driver</b>
     </p>
     <ul>

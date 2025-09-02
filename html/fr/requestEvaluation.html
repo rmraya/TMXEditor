@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Demandez votre période d’essai gratuite</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
+</head>
+
+<body class="dialog_body" onload="new RequestEvaluation();">
+
+    <table class="fill_width">
+        <tr>
+            <td class="middle">
+                <label for="firstName" class="noWrap">Prénom</label>
+            </td>
+            <td class="middle"><input type="text" id="firstName" class="table_input" /></td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <label for="lastName" class="noWrap">Nom</label>
+            </td>
+            <td class="middle"><input type="text" id="lastName" class="table_input" /></td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <label for="email" class="noWrap">Adresse mail</label>
+            </td>
+            <td class="middle"><input type="text" id="email" class="table_input" /></td>
+        </tr>
+        <tr>
+            <td class="middle">
+                <label for="repeat" class="noWrap">Saisir à nouveau votre adresse mail</label>
+            </td>
+            <td class="middle"><input type="text" id="repeat" class="table_input" /></td>
+        </tr>
+    </table>
+    <div class="buttonArea">
+        <button id="requestEvaluationKey">Demander une clé d’évaluation</button>
+    </div>
+    <script src="../../js/requestEvaluation.js"></script>
+</body>
+
+</html>

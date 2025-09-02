@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/concept.dtd">
+<concept xml:lang="fr-FR" id="license_management">
+  <title>Abonnements</title>
+  <shortdesc/>
+  <conbody>
+    <p>TMXEditor est disponible&nbsp;:</p>
+    <ul>
+      <li>sous forme de code source, ou</li>
+      <li>en abonnement annuel avec programme d’installation et support technique.</li>
+    </ul>
+    <section>
+      <title>Code source</title>
+      <p>Le code source de TMXEditor est libre. Vous pouvez le télécharger sur <xref href="https://github.com/rmraya/TMXEditor" scope="external" format="html">Github.com</xref>, le compiler, le modifier et l’utiliser gratuitement, conformément aux termes de la licence qui l’accompagne.</p>
+    </section>
+    <section>
+      <title>Abonnement</title>
+      <p>La <xref href="https://www.maxprograms.com/store/buy.html" scope="external" format="html">boutique en ligne de Maxprograms</xref> vend sous forme d’abonnement annuel un programme d’installation prêt à l’emploi ainsi que du support technique pour TMXEditor</p>
+      <p>Vous pouvez demander une période d’essai et utiliser gratuitement pendant 7&nbsp;jours la version de TMXEditor incluse dans le programme d’installation officiel. </p>
+      <p>Les clés d’abonnement ne peuvent pas être partagées ni transférées d’un ordinateur à l’autre.</p>
+    </section>
+    <section>
+      <title>Différences entre les deux formats</title>
+      <table rowsep="1" colsep="1" frame="all" id="table_vyn_pwz_vkb">
+        <tgroup cols="3">
+          <colspec colnum="1" colname="c1" colwidth="1*"/>
+          <colspec colnum="2" colname="c2" colwidth="1.51*"/>
+          <colspec colnum="3" colname="c3" colwidth="1.91*"/>
+          <thead>
+            <row>
+              <entry/>
+              <entry align="center">Code source</entry>
+              <entry align="center">Abonnement</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Programme d’installation prêt à l’emploi</entry>
+              <entry align="center">Non</entry>
+              <entry align="center">Oui</entry>
+            </row>
+            <row>
+              <entry>App macOS authentifiée par Apple</entry>
+              <entry align="center">Non</entry>
+              <entry align="center">Oui</entry>
+            </row>
+            <row>
+              <entry>Installeur et programme Windows signés numériquement</entry>
+              <entry align="center">Non</entry>
+              <entry align="center">Oui</entry>
+            </row>
+            <row>
+              <entry>Association de l’extension de fichier <codeph>.tmx</codeph> sur Windows et macOS</entry>
+              <entry align="center">Non</entry>
+              <entry align="center">Oui</entry>
+            </row>
+            <row>
+              <entry>Limitation fonctionnelle</entry>
+              <entry align="center">Aucune</entry>
+              <entry align="center">Aucune</entry>
+            </row>
+            <row>
+              <entry>Support technique</entry>
+              <entry>
+                <ul>
+                  <li>Par la communauté sur <xref href="https://groups.io/g/maxprograms/" scope="external" format="html">Groups.io
+          </xref>
+        </li>
+                </ul>
+              </entry>
+              <entry>
+                <ul>
+                  <li>Par l’éditeur à l’adresse mail <xref href="mailto:tech@maxprograms.com" scope="external" format="html">tech@maxprograms.com
+          </xref>
+        </li>
+                  <li>Par la communauté sur <xref href="https://groups.io/g/maxprograms/" scope="external" format="html">Groups.io
+          </xref>
+        </li>
+                </ul>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </conbody>
+</concept>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Trier les unités de traduction</title>
+    <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
+<meta charset="utf-8">
+</head>
+
+<body class="dialog_body" onload="new SortUnits();">
+    <table class="fill_width">
+        <tr>
+            <td class="middle noWrap"><label for="sortLanguage">Langue sur laquelle trier</label></td>
+            <td class="middle fill_width">
+                <select id="sortLanguage" class="table_select">
+                </select>
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td class="middle"><input type="checkbox" id="descending"></td>
+            <td class="middle noWrap fill_width"><label for="descending" checked style="margin-top: 2px;">Par ordre décroissant</label></td>
+        </tr>
+    </table>
+
+    <div class="buttonArea">
+        <button id="sort">Trier les unités de traduction</button>
+        <button id="clearSort">Annuler le tri</button>
+    </div>
+    <script src="../../js/sortUnits.js"></script>
+</body>
+
+</html>

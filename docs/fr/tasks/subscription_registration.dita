@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="untitled1">
+  <title>Premier abonnement / Demande d’évaluation</title>
+  <shortdesc/>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Si vous avez installé TMXEditor à l’aide du programme d’installation officiel, la boîte de dialogue suivante s’ouvre lorsque vous lancez TMXEditor pour la première fois et tant qu’aucune <xref href="../glossaries/subscription_key.dita">clé d’abonnement</xref> n’est enregistrée.<image href="../images/license_registration.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue "Abonnement"</alt>
+          </image> </cmd>
+      </step>
+      <step>
+        <cmd>Si vous avez une clé d’abonnement, saisissez-la dans le champ <uicontrol>Clé d’abonnement</uicontrol>, puis cliquez sur le bouton <uicontrol>Enregistrer l’abonnement</uicontrol>.</cmd>
+        <stepresult>Si la clé est acceptée, la fenêtre principale de TMXEditor apparaît.</stepresult>
+      </step>
+      <step>
+        <cmd>Si vous n’avez pas de clé d’abonnement, vous pouvez demander une période d’essai de 7&nbsp;jours en cliquant sur le bouton <uicontrol>Demander une clé d’évaluation</uicontrol>.</cmd>
+        <stepresult> La boîte de dialogue suivante apparaît alors&nbsp;:<image href="../images/trial_request.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Demandez votre période d’essai gratuite"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Saisissez les informations demandées, puis cliquez sur le bouton <uicontrol>Demander une clé d’évaluation</uicontrol>.</cmd>
+        <stepresult>Si votre demande est acceptée, la clé d’évaluation vous est envoyée par mail, et la boîte de dialogue suivante apparaît. <image href="../images/request_received.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue confirmant la demande de période d’essai</alt>
+          </image> Allez dans votre messagerie, ouvrez le mail, puis enregistrez la clé d’évaluation comme indiqué ci-dessus. </stepresult>
+      </step>
+    </steps>
+  </taskbody>
+</task>

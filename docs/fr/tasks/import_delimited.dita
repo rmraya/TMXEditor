@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr-FR" id="import_delimited">
+  <title>Convertir un fichier CSV ou TSV en TMX</title>
+  <shortdesc>Marche à suivre pour convertir un fichier CSV ou TSV (séparateur Tab) en une feuille Excel.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Les fichiers CSV (Comma-Separated Values) sont des fichiers texte brut contenant des données tabulaires. La virgule est utilisée comme séparateur de colonnes, et les valeurs sont entre guillemets.</p>
+      <p>Les fichiers TSV (Tab-Separated Values) sont similaires aux fichiers CSV, sauf que le séparateur de colonnes est le caractère Tab et qu’il n’y a pas de guillemets en général.</p>
+      <p>TMXEditor permet de convertir ces types de fichiers en fichiers TMX. Plusieurs séparateurs de colonne et délimiteurs de texte sont pris en charge.</p>
+      <note>Par défaut, Microsoft Excel applique les réglages suivants lors de l’export&nbsp;: <ul>
+          <li>Jeu de caractères&nbsp;: UTF-16LE</li>
+          <li>Séparateur de colonnes&nbsp;: Tab</li>
+          <li>Délimiteur de texte&nbsp;: aucun</li>
+        </ul> </note>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Fichier</uicontrol>
+            <uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol>
+          </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importDelimited.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Convertir un fichier CSV ou TSV en TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue "Convertir un fichier CSV ou TSV en TMX"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier CSV/TSV</uicontrol>, saisissez le chemin du fichier à convertir, ou sélectionnez le fichier à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Dans le champ <uicontrol>Fichier TMX</uicontrol>, saisissez le nom fichier TMX à générer, ou indiquez son emplacement et son nom à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Effectuez les réglages de format à l’aide des listes déroulantes <uicontrol>Jeu de caractères</uicontrol>, <uicontrol>Séparateur de colonnes</uicontrol> et <uicontrol>Délimiteur de texte</uicontrol>. Vérifiez que vos réglages sont corrects à l’aide de l’aperçu. Au besoin, personnalisez les réglages en saisissant les valeurs adéquates dans les champs <uicontrol>Autre séparateur</uicontrol> et <uicontrol>Autre délimiteur</uicontrol>.</cmd>
+        <stepresult>Les données de votre fichier devraient apparaître sous forme tabulaire dans la zone d’aperçu. Si les codes de langues sont indiqués dans la première ligne de votre fichier et qu’ils sont correctement reconnus, ils apparaissent dans l’en-tête des colonnes dans l’aperçu, comme sur l’image ci-dessous&nbsp;: <image href="../images/correctSettings.png" placement="break" scale="60" align="center">
+            <alt>Zone d’aperçu lorsque les réglages sont corrects</alt>
+          </image> </stepresult>
+        <steptroubleshooting>
+          <p>Si des caractères illisibles apparaissent comme sur l’image ci-dessous, c’est probablement que le <xref href="../glossaries/character_set.dita">jeu de caractère</xref> est incorrect.</p>
+          <image href="../images/wrongCharacterSet.png" placement="break" scale="60" align="center">
+            <alt>Zone d’aperçu lorsque le jeu de caractères est mal réglé</alt>
+          </image>
+          <p>Si le texte est lisible mais ne s’affiche pas sous forme de tableau, c’est probablement que le séparateur de colonnes ou le délimiteur de texte est incorrect. Utilisez l’aperçu pour ajuster les réglages.</p>
+          <image href="../images/wrongDelimiters.png" placement="break" scale="60" align="center">
+            <alt>Zone d’aperçu lorsque le séparateur de colonne est incorrect</alt>
+          </image>
+        </steptroubleshooting>
+      </step>
+      <step>
+        <cmd>Si les codes de langue ne sont pas présents dans le fichier, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
+        <stepresult>La boîte de dialogue "Langues du fichier CSV ou TSV" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
+            <alt>Boîte de dialogue "Langues du fichier CSV ou TSV"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Dans la boîte de dialogue <uicontrol>Langues du fichier CSV ou TSV</uicontrol>, sélectionnez la langue pour chacune des colonnes du fichier à convertir. Puis, cliquez sur <uicontrol>Enregistrer</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Si le fichier a été exporté à partir d’Excel avec des guillemets doubles comme délimiteur de texte, cochez la case <uicontrol>Corriger les guillemets doubles d’Excel</uicontrol>. Cela évitera que les guillemets soient dupliqués durant la conversion.</cmd>
+      </step>
+      <step>
+        <cmd>Si le délimiteur de texte n’est pas systématiquement présent, cochez la case <uicontrol>Tolérer les délimiteurs de texte manquants</uicontrol>. (Certains outils ne délimitent le texte qui s’il contient le caractère du séparateur de colonne.)</cmd>
+      </step>
+      <step>
+        <cmd>Enfin, cliquez sur le bouton <uicontrol>Convertir le fichier en TMX</uicontrol> pour lancer le traitement.</cmd>
+      </step>
+    </steps>
+    <result>Le fichier TMX est généré à l’emplacement défini. Si la case <uicontrol>Ouvrir le fichier TMX généré</uicontrol> est cochée, ce fichier s’ouvre dans la fenêtre principale.</result>
+  </taskbody>
+</task>
