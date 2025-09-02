@@ -73,6 +73,4 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
   npm start
 ```
 
-This video shows how to build and launch TMXEditor: [https://maxprograms.com/tutorials/TMXEditor_build.mp4](https://maxprograms.com/tutorials/TMXEditor_build.mp4)
-
 Compile once and then simply run `npm start` to start TMXEditor
