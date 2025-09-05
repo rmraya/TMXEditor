@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
-<glossentry xml:lang="fr-FR" id="character_set">
+<glossentry xml:lang="fr" id="character_set">
   <glossterm>Jeu de caractères</glossterm>
   <glossdef>Un jeu de caractères (parfois appelé page de code) est un ensemble de caractères qui sont associés à une séquence de nombres naturels afin de faciliter le stockage de texte dans les ordinateurs ainsi que leur transmission par les réseaux de télécommunication.</glossdef>
 </glossentry>

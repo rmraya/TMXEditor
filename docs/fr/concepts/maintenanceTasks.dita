@@ -1,89 +1,73 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="maintenanceTasks">
+<concept xml:lang="fr" id="maintenanceTasks">
   <title>Tâches de maintenance</title>
   <conbody>
-    <p>Voici la liste des tâches de maintenance que TMXEditor peut effectuer&nbsp;: </p>
+    <p>Voici la liste des tâches de maintenance que TMXEditor peut effectuer&nbsp;:</p>
     <ul>
       <li>
         <image height="16" href="../images/fileInfo.svg" placement="inline"/>
-        <xref href="../tasks/fileMetadata.dita">Définir des attributs, des propriétés et des notes au niveau du fichier
-          </xref>
+        <xref href="../tasks/fileMetadata.dita">Définir des attributs, des propriétés et des notes au niveau du fichier</xref>
       </li>
       <li>
         <image height="16" href="../images/maintenance.svg" placement="inline"/>
-        <xref href="../tasks/maintenanceDashboard.dita">Effectuer plusieurs tâches en une seule passe à l’aide du tableau de bord de maintenance
-          </xref>
+        <xref href="../tasks/maintenanceDashboard.dita">Effectuer plusieurs tâches en une seule passe à l’aide du tableau de bord de maintenance</xref>
       </li>
       <li>
         <image height="16" href="../images/sortUnits.svg" placement="inline"/>
-        <xref href="../tasks/sortData.dita">Trier les unités de traduction
-          </xref>
+        <xref href="../tasks/sortData.dita">Trier les unités de traduction</xref>
       </li>
       <li>
         <image height="16" href="../images/filterUnits.svg" placement="inline"/>
-        <xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction
-          </xref>
+        <xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction</xref>
       </li>
       <li>
         <image height="16" href="../images/replaceTexts.svg" placement="inline"/>
-        <xref href="../tasks/search_replace.dita">Remplacer toutes les occurrences d’un texte
-          </xref>
+        <xref href="../tasks/search_replace.dita">Remplacer toutes les occurrences d’un texte</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/change_language.dita">Modifier une langue
-          </xref>
+        <xref href="../tasks/change_language.dita">Modifier une langue</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/add_language.dita">Ajouter une langue
-          </xref>
+        <xref href="../tasks/add_language.dita">Ajouter une langue</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/remove_language.dita">Supprimer une langue
-          </xref>
+        <xref href="../tasks/remove_language.dita">Supprimer une langue</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/change_src_language.dita">Changer de langue source
-          </xref>
+        <xref href="../tasks/change_src_language.dita">Changer de langue source</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/remove_tags.dita">Supprimer les balises inline
-          </xref>
+        <xref href="../tasks/remove_tags.dita">Supprimer les balises inline</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/remove_duplicates.dita">Supprimer les unités en doublon
-          </xref>
+        <xref href="../tasks/remove_duplicates.dita">Supprimer les unités en doublon</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/remove_sameAsSource.dita">Supprimer les traductions identiques à la source
-          </xref>
+        <xref href="../tasks/remove_sameAsSource.dita">Supprimer les traductions identiques à la source</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/remove_spaces.dita">Supprimer les espaces à gauche et à droite
-          </xref>
+        <xref href="../tasks/remove_spaces.dita">Supprimer les espaces à gauche et à droite</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/consolidate_units.dita">Consolider les unités de traduction
-          </xref>
+        <xref href="../tasks/consolidate_units.dita">Consolider les unités de traduction</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/split_file.dita">Découper un fichier TMX
-          </xref>
+        <xref href="../tasks/split_file.dita">Découper un fichier TMX</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>
-        <xref href="../tasks/merge_files.dita">Fusionner des fichiers TMX
-          </xref>
+        <xref href="../tasks/merge_files.dita">Fusionner des fichiers TMX</xref>
       </li>
     </ul>
   </conbody>

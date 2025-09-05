@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="remove_duplicates">
+<task xml:lang="fr" id="remove_duplicates">
   <title>Supprimer les unités en doublon</title>
   <shortdesc>Marche à suivre pour supprimer les unités de traduction en doublon dans un fichier TMX.</shortdesc>
   <taskbody>
@@ -9,7 +9,7 @@
     </context>
     <steps>
       <step>
-        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
       </step>
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>

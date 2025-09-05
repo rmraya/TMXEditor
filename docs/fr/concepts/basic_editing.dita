@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="basic_editing">
+<concept xml:lang="fr" id="basic_editing">
   <title>Éditer un fichier TMX existant</title>
   <shortdesc/>
   <conbody>
@@ -28,10 +28,8 @@
               <uicontrol>Supprimer les unités sélectionnées</uicontrol>
             </menucascade> dans le menu, ou cliquez sur le bouton <image height="16" href="../images/deleteUnits.svg" placement="inline"/>&nbsp;<uicontrol>Supprimer les unités sélectionnées</uicontrol> dans la barre d’outils.</li>
         </ol> <note>Pour sélectionner ou désélectionner toutes les unités de traductions du fichier, cochez la case en haut à gauche.</note></li>
-      <li>
-          <xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction</xref> pour effectuer une recherche de texte dans le fichier.</li>
-      <li>
-          <xref href="../tasks/sortData.dita">Trier les unités de traduction</xref> pour afficher les unités de traduction selon une des langues du fichier.</li>
+      <li><xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction</xref> pour effectuer une recherche de texte dans le fichier.</li>
+      <li><xref href="../tasks/sortData.dita">Trier les unités de traduction</xref> pour afficher les unités de traduction selon une des langues du fichier.</li>
     </ul>
     <p>Pour enregistrer vos modifications dans le fichier TMX, sélectionnez <menucascade>
         <uicontrol>Fichier</uicontrol>

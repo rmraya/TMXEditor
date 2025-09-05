@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="remove_untranslated">
+<task xml:lang="fr" id="remove_untranslated">
   <title>Supprimer les unités non traduites</title>
   <shortdesc>Marche à suivre pour supprimer les unités non traduites d’un fichier TMX.</shortdesc>
   <taskbody>
@@ -16,7 +16,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer les unités non traduites.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer les unités non traduites" s’ouvre&nbsp;:<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/remove_untranslated.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer les unités non traduites"</alt>
           </image> </stepresult>
       </step>

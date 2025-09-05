@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="untitled1">
+<task xml:lang="fr" id="untitled1">
   <title>Renouvellement d’un abonnement</title>
   <shortdesc/>
   <taskbody>
@@ -11,7 +11,7 @@
             <uicontrol>Aide</uicontrol>
             <uicontrol>Abonnement.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue suivante apparaît alors&nbsp;:<image href="../images/register_subscription.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/register_subscription.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Abonnement"</alt>
           </image> </stepresult>
       </step>

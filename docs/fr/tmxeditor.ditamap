@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
-<bookmap xml:lang="fr-FR">
+<bookmap xml:lang="fr">
   <booktitle>
     <mainbooktitle>
       <image href="images/cover.png" placement="break" scalefit="yes"/>
     </mainbooktitle>
-    <booktitlealt>Copyright © 2018-2025 Maxprograms
-          </booktitlealt>
+    <booktitlealt>Copyright © 2018-2025 Maxprograms</booktitlealt>
   </booktitle>
   <frontmatter>
     <booklists>

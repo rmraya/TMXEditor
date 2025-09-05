@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
-<glossentry xml:lang="fr-FR" id="translation_unit">
+<glossentry xml:lang="fr" id="translation_unit">
   <glossterm>Unité de traduction</glossterm>
   <glossdef>Une unité de traduction (représentée par la balise &lt;tu&gt; dans un fichier TMX) contient un fragment de texte source, souvent accompagné de sa traduction dans une ou plusieurs langues et de métadonnées associées.</glossdef>
 </glossentry>

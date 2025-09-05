@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="consolidate_units">
+<task xml:lang="fr" id="consolidate_units">
   <title>Consolider les unités de traduction</title>
   <shortdesc>Marche à suivre pour consolider les unités de traduction dans un fichier TMX contenant au moins trois langues.</shortdesc>
   <taskbody>
@@ -23,7 +23,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Consolider les unités de traduction.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Consolider les unités de traduction" s’ouvre&nbsp;:<image href="../images/consolidate_units.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/consolidate_units.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Consolider les unités de traduction"</alt>
           </image> </stepresult>
       </step>

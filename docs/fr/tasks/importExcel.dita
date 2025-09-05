@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="importExcel">
+<task xml:lang="fr" id="importExcel">
   <title>Convertir un fichier Excel en TMX</title>
   <taskbody>
     <context>
@@ -12,13 +12,13 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Convertir un fichier Excel en TMX</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importExcel.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier Excel en TMX</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Convertir un fichier Excel en TMX" s’ouvre&nbsp;:<image href="../images/convertExcel.png" placement="break" scale="60" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/convertExcel.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Convertir un fichier Excel en TMX"</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Dans le champ <uicontrol>Fichier Excel</uicontrol>, saisissez le chemin du fichier Excel à convertir, ou sélectionnez le fichier à l’aide du bouton <uicontrol>Parcourir</uicontrol>.</cmd>
-        <stepresult>Si vous avez utilisé le bouton <uicontrol>Parcourir</uicontrol>, les dix premières lignes de la feuille de calcul sont automatiquement chargées dans la zone d’aperçu&nbsp;: <image href="../images/excelPreviewLoaded.png" placement="break" scale="60" align="center">
+        <stepresult>Si vous avez utilisé le bouton <uicontrol>Parcourir</uicontrol>, les dix premières lignes de la feuille de calcul sont automatiquement chargées dans la zone d’aperçu&nbsp;:<image href="../images/excelPreviewLoaded.png" placement="break" scale="60" align="center">
             <alt>Zone d’aperçu du fichier Excel</alt>
           </image></stepresult>
       </step>
@@ -33,7 +33,7 @@
       </step>
       <step>
         <cmd>Si les codes de langue ne sont pas présents dans la feuille de calcul, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
-        <stepresult>La boîte de dialogue "Langues du fichier Excel" s’ouvre&nbsp;:<image href="../images/excelLanguages.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/excelLanguages.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Langues du fichier Excel"</alt>
           </image> </stepresult>
       </step>

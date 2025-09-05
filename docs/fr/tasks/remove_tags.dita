@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="remove_tags">
+<task xml:lang="fr" id="remove_tags">
   <title>Supprimer les balises inline</title>
   <shortdesc>Marche à suivre pour supprimer toutes les balises inline d’un fichier TMX.</shortdesc>
   <taskbody>

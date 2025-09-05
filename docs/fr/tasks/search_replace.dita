@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="search_replace">
-  <title>Remplacer du texte</title>
+<task xml:lang="fr" id="search_replace">
+  <title>Remplacer toutes les occurrences d’un texte</title>
   <shortdesc>Voici les étapes à suivre pour remplacer toutes les occurrences d’un texte dans un fichiers TMX.</shortdesc>
   <taskbody>
     <steps>
       <step>
-        <cmd>Ouvrez le fichier TMX.</cmd>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
       </step>
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Édition</uicontrol>
-            <uicontrol>Remplacer du texte
-          </uicontrol>
+            <uicontrol>Remplacer du texte </uicontrol>
           </menucascade> ([<userinput>Ctrl+F</userinput>] sur Windows/Linux, [<userinput>Cmd+F</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/replaceTexts.svg" placement="inline"/>&nbsp;<uicontrol>Remplacer du texte</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Remplacer du texte" s’ouvre&nbsp;:<image href="../images/replace_text.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/replace_text.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Remplacer du texte"</alt>
           </image> </stepresult>
       </step>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="split_file">
+<task xml:lang="fr" id="split_file">
   <title>Découper un fichier TMX</title>
   <shortdesc>Marche à suivre pour découper un fichier TMX en plusieurs morceaux.</shortdesc>
   <taskbody>

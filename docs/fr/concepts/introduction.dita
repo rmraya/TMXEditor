@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="introduction">
+<concept xml:lang="fr" id="introduction">
   <title>Introduction</title>
   <shortdesc>TMXEditor est une application de bureau multiplateforme conçue pour éditer des fichiers <xref href="../glossaries/TMX.dita#TMX">TMX</xref> (Translation Memory eXchange) sur macOS, Linux et Microsoft Windows.</shortdesc>
   <conbody>

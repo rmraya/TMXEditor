@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/glossary.dtd">
-<glossentry xml:lang="fr-FR" id="translation_memory">
+<glossentry xml:lang="fr" id="translation_memory">
   <glossterm>Mémoire de traduction</glossterm>
   <glossdef>La mémoire de traduction est une technologie linguistique qui permet de traduire des segments (paragraphes, phrases ou expressions) de documents en recherchant des segments similaires dans une base de données, puis en proposant les correspondances trouvées.</glossdef>
 </glossentry>

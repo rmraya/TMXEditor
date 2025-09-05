@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="gettingStarted">
+<concept xml:lang="fr" id="gettingStarted">
   <title>Premiers pas</title>
   <shortdesc>Vous pouvez utiliser TMXEditor pour éditer des fichiers TMX existants ou pour créer de nouveau fichiers TMX, soit vides, soit à partir de fichiers CSV ou TSV.</shortdesc>
   <conbody>
     <ul>
       <li>
         <image height="16" href="../images/openFile.svg" placement="inline"/>
-        <xref href="basic_editing.dita">Éditer un fichier TMX existant
-          </xref>
+        <xref href="basic_editing.dita">Éditer un fichier TMX existant</xref>
       </li>
       <li>
         <image height="16" href="../images/newFile.svg" placement="inline"/>
-        <xref href="../tasks/create_file.dita">Créer un fichier TMX
-          </xref>
+        <xref href="../tasks/create_file.dita">Créer un fichier TMX</xref>
       </li>
       <li>
-        <image height="16" href="../images/importDelimited.svg" placement="inline"/><!-- Manual href fix by Japotrad -->
-        <xref href="../tasks/import_delimited.dita">Convertir un fichier CSV ou TSV (séparateur Tab) en TMX
-          </xref>
+        <image height="16" href="../images/convertCSV.svg" placement="inline"/>
+        <xref href="../tasks/import_delimited.dita">Convertir un fichier CSV ou TSV (séparateur Tab) en TMX</xref>
       </li>
     </ul>
   </conbody>

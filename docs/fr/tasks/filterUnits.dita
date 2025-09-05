@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="filterUnits">
+<task xml:lang="fr" id="filterUnits">
   <title>Filtrer les unités de traduction</title>
   <shortdesc>Voici les étapes à suivre pour n’afficher que les unités non traduites, ou celles contenant un texte donné.</shortdesc>
   <taskbody>
@@ -10,7 +10,7 @@
             <uicontrol>Affichage</uicontrol>
             <uicontrol>Filtrez les unités de traduction</uicontrol>
           </menucascade> (touche [<userinput>F3</userinput>]), ou cliquez sur le bouton <image height="16" href="../images/filterUnits.svg" placement="inline"/>&nbsp;<uicontrol>Filtrer les unités de traduction</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Filtrer les unités de traduction" s’ouvre&nbsp;:<image href="../images/filter_units.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/filter_units.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Filtrer les unités de traduction"</alt>
           </image></stepresult>
       </step>

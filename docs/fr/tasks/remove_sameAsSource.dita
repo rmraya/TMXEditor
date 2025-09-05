@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="sameAsSource">
+<task xml:lang="fr" id="sameAsSource">
   <title>Supprimer les traductions identiques à la source</title>
   <shortdesc>Marche à suivre pour supprimer les traductions qui sont identiques au texte source dans un fichier TMX.</shortdesc>
   <taskbody>
@@ -9,14 +9,14 @@
     </context>
     <steps>
       <step>
-        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
       </step>
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer les traductions identiques à la source</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer les traductions identiques à la source" s’ouvre&nbsp;:<image href="../images/sameAsSource.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/sameAsSource.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer les traductions identiques à la source"</alt>
           </image> </stepresult>
       </step>

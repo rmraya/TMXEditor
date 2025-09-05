@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="supported_platforms">
+<concept xml:lang="fr" id="supported_platforms">
   <title>Plateformes compatibles</title>
   <conbody>
     <p>Le logiciel TMXEditor fonctionne sur les OS suivants&nbsp;: <ul>

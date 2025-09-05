@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="clean_characters">
+<task xml:lang="fr" id="clean_characters">
   <title>Supprimer les caractères invalides</title>
   <shortdesc>Marche à suivre pour supprimer les caractères invalides d’un fichier TMX.</shortdesc>
   <taskbody>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="preferences">
+<task xml:lang="fr" id="preferences">
   <title>Paramètres du programme</title>
   <shortdesc/>
   <taskbody>
@@ -14,12 +14,11 @@
             </menucascade> dans le menu.</choice>
           <choice> Sur macOS, sélectionnez <menucascade>
               <uicontrol>TMXEditor</uicontrol>
-              <uicontrol>Préférences utilisateur
-          </uicontrol>
+              <uicontrol>Préférences utilisateur </uicontrol>
               <uicontrol>Paramètres</uicontrol>
             </menucascade> dans le menu.</choice>
         </choices>
-        <stepresult>La boîte de dialogue "Préférences utilisateur" s’ouvre&nbsp;:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
       </step>
       <step>
         <cmd>Sélectionnez la langue de l’interface graphique de TMXEditor à l’aide de la liste déroulante <uicontrol>Langue de l’application</uicontrol>.</cmd>
@@ -28,25 +27,15 @@
       <step>
         <cmd>Sélectionnez le jeu de couleur de l’interface graphique à l’aide de la liste déroulante <uicontrol>Thème</uicontrol>. Les quatre thèmes disponibles sont les suivants&nbsp;: </cmd>
         <choices>
-          <choice>
-          <b>
-        Automatique</b>&nbsp;: sombre ou clair selon ce qui a été défini au niveau du système d’exploitation.</choice>
-          <choice>
-          <b>
-        Sombre</b>&nbsp;: texte blanc sur fond gris foncé.</choice>
-          <choice>
-          <b>
-        Clair</b>&nbsp;: texte noir sur fond gris clair.</choice>
-          <choice>
-          <b>
-        Contraste élevé</b>&nbsp;: sombre avec un contraste renforcé.</choice>
+          <choice><b>Automatique</b>&nbsp;: sombre ou clair selon ce qui a été défini au niveau du système d’exploitation.</choice>
+          <choice><b>Sombre</b>&nbsp;: texte blanc sur fond gris foncé.</choice>
+          <choice><b>Clair</b>&nbsp;: texte noir sur fond gris clair.</choice>
+          <choice><b>Contraste élevé</b>&nbsp;: sombre avec un contraste renforcé.</choice>
         </choices>
       </step>
       <step>
         <cmd>Concernant le formatage des fichiers TMX, réglez la largeur du retrait des balises XML imbriquées en saisissant dans le champ <uicontrol>Indentation</uicontrol> le nombre d’espaces à insérer.</cmd>
-        <info>
-          <i>
-        Remarque</i>&nbsp;: L’indentation aide visuellement à comprendre la structure des fichiers XML lorsqu’on les ouvre dans un éditeur de texte. Elle n’a par contre aucun effet sur les traitements des fichiers TMX effectués par les outils de traduction.</info>
+        <info><i>Remarque</i>&nbsp;: L’indentation aide visuellement à comprendre la structure des fichiers XML lorsqu’on les ouvre dans un éditeur de texte. Elle n’a par contre aucun effet sur les traitements des fichiers TMX effectués par les outils de traduction.</info>
       </step>
       <step>
         <cmd>Cochez la case <uicontrol>Mettre à jour les attributs changeid et changedate</uicontrol> si vous souhaitez activer l’enregistrement du nom de l’utilisateur ayant effectué la dernière modification d’un élément ou d’un fichier, ainsi que la date de cette modification.</cmd>

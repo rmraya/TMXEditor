@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
-<concept xml:lang="fr-FR" id="fetures">
+<concept xml:lang="fr" id="fetures">
   <title>Fonctions de l’application</title>
   <shortdesc/>
   <conbody>
@@ -25,7 +25,7 @@
           <li>des fichiers TBX (TermBase eXchange)</li>
         </ul> </li>
       <li>Exporter un fichier TMX en<ul>
-          <li>fichier Excel</li>
+          <li>des fichiers Excel</li>
           <li>fichier TSV (séparateur Tab)</li>
         </ul> </li>
     </ul>

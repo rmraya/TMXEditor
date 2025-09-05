@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary//EN" "glossary.dtd">
-<glossentry xml:lang="fr-FR" id="untitled1">
+<glossentry xml:lang="fr" id="untitled1">
   <glossterm>Code de langue</glossterm>
-  <glossdef>Un code de langue est une convention attribuant des codes alphanumériques aux langues et aux variétés régionales pour les identifier. Dans le fichiers TMX, les codes utilisés pour les langues doivent être ceux de la norme <xref href="https://tools.ietf.org/html/bcp47" scope="external" format="html">BCP&nbsp;47 - Étiquettes pour identifier les langues
-          </xref>
-        </glossdef>
+  <glossdef>Un code de langue est une convention attribuant des codes alphanumériques aux langues et aux variétés régionales pour les identifier. Dans le fichiers TMX, les codes utilisés pour les langues doivent être ceux de la norme <xref href="https://tools.ietf.org/html/bcp47" scope="external" format="html">BCP&nbsp;47 - Étiquettes pour identifier les langues</xref></glossdef>
 </glossentry>

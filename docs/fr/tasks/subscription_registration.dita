@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="untitled1">
+<task xml:lang="fr" id="untitled1">
   <title>Premier abonnement / Demande d’évaluation</title>
   <shortdesc/>
   <taskbody>
@@ -16,7 +16,7 @@
       </step>
       <step>
         <cmd>Si vous n’avez pas de clé d’abonnement, vous pouvez demander une période d’essai de 7&nbsp;jours en cliquant sur le bouton <uicontrol>Demander une clé d’évaluation</uicontrol>.</cmd>
-        <stepresult> La boîte de dialogue suivante apparaît alors&nbsp;:<image href="../images/trial_request.png" placement="break" scale="80" align="center">
+        <stepresult> La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/trial_request.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Demandez votre période d’essai gratuite"</alt>
           </image> </stepresult>
       </step>

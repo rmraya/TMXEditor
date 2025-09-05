@@ -3,7 +3,7 @@
 <concept id="maintenanceTasks">
     <title>Maintenance Tasks</title>
     <conbody>
-        <p>TMXEditor maintenance options are </p>
+        <p>TMXEditor maintenance options are:</p>
         <ul>
             <li><image href="../images/fileInfo.svg" placement="inline" height="16"/> 
                 <xref href="../tasks/fileMetadata.dita">Set Attributes, Properties and Notes at File Level</xref></li>

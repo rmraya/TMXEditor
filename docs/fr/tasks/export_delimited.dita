@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="export_delimited">
+<task xml:lang="fr" id="export_delimited">
   <title>Exporter un fichier TMX en fichier TSV (séparateur Tab)</title>
   <shortdesc>Marche à suivre pour convertir un fichier TMX en un format tabulaire (séparateur Tab) lisible par Microsoft Excel et les autres tableurs.</shortdesc>
   <taskbody>

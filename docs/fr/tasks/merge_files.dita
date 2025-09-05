@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="merge_files">
+<task xml:lang="fr" id="merge_files">
   <title>Fusionner des fichiers TMX</title>
   <shortdesc>Voici les étapes à suivre pour fusionner plusieurs fichiers TMX en un seul gros fichier.</shortdesc>
   <taskbody>
@@ -10,7 +10,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Fusionner des fichiers TMX</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Fusionner des fichiers TMX" s’ouvre&nbsp;:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Fusionner des fichiers TMX"</alt>
           </image> </stepresult>
       </step>
@@ -24,7 +24,7 @@
           </image> </stepresult>
       </step>
       <step>
-        <cmd>Pour enlever un fichier de la liste, cliquez sur le bouton <image height="16" href="../images/remove.svg" placement="inline"/> <uicontrol>Retirer le fichier</uicontrol> en regard du fichier à retirer.</cmd>
+        <cmd>Pour enlever un fichier de la liste, cliquez sur le bouton <uicontrol/>Retirer le fichier<image height="16" href="../images/remove.svg" placement="inline"/> en regard du fichier à retirer.</cmd>
       </step>
       <step>
         <cmd>Cliquez sur le bouton <uicontrol>Fusionner les fichiers</uicontrol>.</cmd>

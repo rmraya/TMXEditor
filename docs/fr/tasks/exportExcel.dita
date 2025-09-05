@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="exportExcel">
+<task xml:lang="fr" id="exportExcel">
   <title>Exporter un fichier TMX en fichier Excel</title>
   <shortdesc>Marche à suivre pour convertir un fichier TMX en une feuille Excel.</shortdesc>
   <taskbody>

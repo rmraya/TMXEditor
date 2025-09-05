@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="import_delimited">
+<task xml:lang="fr" id="import_delimited">
   <title>Convertir un fichier CSV ou TSV en TMX</title>
   <shortdesc>Marche à suivre pour convertir un fichier CSV ou TSV (séparateur Tab) en une feuille Excel.</shortdesc>
   <taskbody>
@@ -20,7 +20,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importDelimited.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Convertir un fichier CSV ou TSV en TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Convertir un fichier CSV ou TSV en TMX"</alt>
           </image> </stepresult>
       </step>
@@ -47,8 +47,8 @@
         </steptroubleshooting>
       </step>
       <step>
-        <cmd>Si les codes de langue ne sont pas présents dans le fichier, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
-        <stepresult>La boîte de dialogue "Langues du fichier CSV ou TSV" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
+        <cmd>Si les codes de langue ne sont pas présents dans la feuille de calcul, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Langues du fichier CSV ou TSV"</alt>
           </image> </stepresult>
       </step>

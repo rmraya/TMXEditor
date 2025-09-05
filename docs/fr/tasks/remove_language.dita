@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task xml:lang="fr-FR" id="remove_language">
+<task xml:lang="fr" id="remove_language">
   <title>Supprimer une langue</title>
   <shortdesc>Voici les étapes à suivre pour supprimer tous les textes d’une langue dans un fichier TMX.</shortdesc>
   <taskbody>
     <steps>
       <step>
-        <cmd>Ouvrez le fichier TMX à modifier.</cmd>
+        <cmd>Ouvrez le fichier TMX à nettoyer.</cmd>
       </step>
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Supprimer une langue</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Supprimer une langue" s’ouvre&nbsp;:<image href="../images/remove_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/remove_language.png" placement="break" scale="80" align="center">
             <alt>Boîte de dialogue "Supprimer une langue"</alt>
           </image> </stepresult>
       </step>
