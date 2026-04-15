@@ -1,12 +1,21 @@
 # TMXEditor
 
-![TMXEditor logo](icons/tmxeditor.png)
+TMXEditor is an open source desktop application for viewing and editing TMX (Translation Memory eXchange) files.
 
-TMXEditor is an open source desktop application designed for editing TMX (Translation Memory eXchange) files on macOS, Linux or Microsoft Windows.
+It supports multilingual translation memories and is designed to handle very large TMX files, including files with millions of translation units.
 
-TMX is a standard XML-based format used for exchanging Translation Memories used by CAT (Computer Assisted Translation) tools. TMXEditor allows editing the content of multilingual TMX files.
+## Capabilities
 
-## Convert Excel to TMX with TMXEditor
+- Open and edit TMX files
+- Handle large TMX files efficiently
+- Validate TMX structure and content
+- Merge and split TMX files
+- Manage languages in multilingual memories
+- Convert Excel or CSV files to TMX
+
+## Convert Excel or CSV to TMX
+
+TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format, allowing you to build translation memories from existing data.
 
 <a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
 
