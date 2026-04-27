@@ -1,6 +1,6 @@
 # TMXEditor
 
-TMXEditor is an open source desktop application for viewing and editing TMX (Translation Memory eXchange) files.
+TMXEditor is an open source desktop application for editing TMX (Translation Memory eXchange) files.
 
 It supports multilingual translation memories and is designed to handle very large TMX files, including files with millions of translation units.
 
@@ -8,7 +8,7 @@ TMXEditor is actively maintained and used in real-world translation workflows.
 
 ## Who is this for
 
-For translators and engineers working with large TMX files who need reliable editing, validation, and conversion tools without size limitations.
+For translators and engineers working with large TMX files who need reliable tools for editing, validating, and converting TMX data without size limitations.
 
 ## Features
 
@@ -17,22 +17,23 @@ For translators and engineers working with large TMX files who need reliable edi
 - Validate TMX structure and content
 - Merge and split TMX files
 - Manage languages in multilingual memories
-- Convert Excel or CSV data to TMX
 
 ## Convert Excel or CSV to TMX
 
-A common use case is building translation memories from existing data: TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format, allowing you to build translation memories from existing data.
+A common use case is building translation memories from existing data.
+
+TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format.
 
 <a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
 
 ## Quick Start
 
-- Download ready-to-use installers from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
+- Download ready-to-use installers (recommended) from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
 - Or build from source following the instructions below
 
 ## Licenses
 
-TMXEditor is open source. Prebuilt installers and support are available via subscription.
+TMXEditor is open source. Prebuilt installers and technical support are available via subscription.
 
 TMXEditor is available in two modes:
 
@@ -57,7 +58,7 @@ Installers may occasionally be updated before the corresponding source code chan
 
 Subscription version includes unlimited email support at <tech@maxprograms.com>
 
-### Differences sumary
+### Differences summary
 
 Differences | Source Code | Subscription Based
 -|----------- | -------------
@@ -92,11 +93,11 @@ Building from source is only required if you want to modify the application.
 ### Steps for building
 
 ``` bash
-  git clone https://github.com/rmraya/TMXEditor.git
-  cd TMXEditor
-  gradle
-  npm install
-  npm start
+git clone https://github.com/rmraya/TMXEditor.git
+cd TMXEditor
+gradle
+npm install
+npm start
 ```
 
 Compile once and then simply run `npm start` to start TMXEditor
