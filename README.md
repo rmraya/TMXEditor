@@ -4,11 +4,11 @@ TMXEditor is an open source desktop application for editing TMX (Translation Mem
 
 It supports multilingual translation memories and is designed to handle very large TMX files, including files with millions of translation units.
 
-TMXEditor is actively maintained and used in real-world translation workflows.
+TMXEditor is actively maintained and used in real-world translation workflows, including large-scale TMX datasets.
 
 ## Who is this for
 
-For translators and engineers working with large TMX files who need reliable tools for editing, validating, and converting TMX data without size limitations.
+For translators and engineers working with large TMX files who need reliable tools to edit, validate, and convert TMX data without size limitations.
 
 ## Features
 
@@ -29,7 +29,7 @@ TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format.
 ## Quick Start
 
 - Download ready-to-use installers (recommended) from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
-- Or build from source following the instructions below
+- Or build from source following the instructions below:
 
 ## Licenses
 
@@ -69,11 +69,6 @@ Associate app with `.tmx` extension | No | Yes
 Restricted Features | None | None
 Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at <tech@maxprograms.com>  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
 
-## Related Projects
-
-- [XMLJava](https://github.com/rmraya/XMLJava)
-- [TMXValidator](https://github.com/rmraya/TMXValidator)
-
 ## Requirements
 
 - JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
@@ -84,7 +79,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 
 Building from source is only required if you want to modify the application.
 
-- Checkout this repository
+- Clone this repository
 - Point your `JAVA_HOME` environment variable to JDK 21
 - Run `gradle` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
@@ -101,3 +96,7 @@ npm start
 ```
 
 Compile once and then simply run `npm start` to start TMXEditor
+
+## Related Projects
+
+- [TMXValidator](https://github.com/rmraya/TMXValidator)
