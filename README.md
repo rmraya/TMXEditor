@@ -8,7 +8,7 @@ TMXEditor is actively maintained and used in real-world translation workflows, i
 
 ## Who is this for
 
-For translators and engineers working with large TMX files who need reliable tools to edit, validate, and convert TMX data without size limitations.
+For translators and engineers working with large TMX files who need reliable tools to edit, validate, and convert TMX files without size limitations.
 
 ## Features
 
@@ -34,8 +34,6 @@ TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format.
 ## Licenses
 
 TMXEditor is open source. Prebuilt installers and technical support are available via subscription.
-
-TMXEditor is available in two modes:
 
 - Source Code
 - Yearly Subscriptions for installers and support
