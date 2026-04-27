@@ -4,18 +4,24 @@ TMXEditor is an open source desktop application for viewing and editing TMX (Tra
 
 It supports multilingual translation memories and is designed to handle very large TMX files, including files with millions of translation units.
 
-## Capabilities
+TMXEditor is actively maintained and used in real-world translation workflows.
+
+## Who is this for
+
+For translators and engineers working with large TMX files who need reliable editing, validation, and conversion tools without size limitations.
+
+## Feaures
 
 - Open and edit TMX files
 - Handle large TMX files efficiently
 - Validate TMX structure and content
 - Merge and split TMX files
 - Manage languages in multilingual memories
-- Convert Excel or CSV files to TMX
+- Convert Excel or CSV data to TMX
 
 ## Convert Excel or CSV to TMX
 
-TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format, allowing you to build translation memories from existing data.
+A common use case is building translation memories from existing data: TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format, allowing you to build translation memories from existing data.
 
 <a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
 
@@ -64,6 +70,11 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 - [TypesBCP47](https://github.com/rmraya/TypesBCP47)
 - [sdltm](https://github.com/rmraya/sdltm)
 
+## Quick Start
+
+- Download ready-to-use installers from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
+- Or build from source following the instructions below
+
 ## Requirements
 
 - JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
@@ -71,6 +82,8 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 - Node.js 24.13.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
 
 ## Building
+
+Building from source is only required if you want to modify the application.
 
 - Checkout this repository
 - Point your `JAVA_HOME` environment variable to JDK 21
