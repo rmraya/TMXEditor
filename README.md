@@ -10,10 +10,10 @@ TMXEditor is actively maintained and used in real-world translation workflows.
 
 For translators and engineers working with large TMX files who need reliable editing, validation, and conversion tools without size limitations.
 
-## Feaures
+## Features
 
 - Open and edit TMX files
-- Handle large TMX files efficiently
+- Handle very large TMX files (millions of translation units)
 - Validate TMX structure and content
 - Merge and split TMX files
 - Manage languages in multilingual memories
@@ -25,7 +25,14 @@ A common use case is building translation memories from existing data: TMXEditor
 
 <a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
 
+## Quick Start
+
+- Download ready-to-use installers from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
+- Or build from source following the instructions below
+
 ## Licenses
+
+TMXEditor is open source. Prebuilt installers and support are available via subscription.
 
 TMXEditor is available in two modes:
 
@@ -64,16 +71,7 @@ Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprogram
 ## Related Projects
 
 - [XMLJava](https://github.com/rmraya/XMLJava)
-- [BCP47J](https://github.com/rmraya/BCP47J)
 - [TMXValidator](https://github.com/rmraya/TMXValidator)
-- [TypesXML](https://github.com/rmraya/TypesXML)
-- [TypesBCP47](https://github.com/rmraya/TypesBCP47)
-- [sdltm](https://github.com/rmraya/sdltm)
-
-## Quick Start
-
-- Download ready-to-use installers from the [TMXEditor Home Page](https://maxprograms.com/products/tmxeditor.html)
-- Or build from source following the instructions below
 
 ## Requirements
 
