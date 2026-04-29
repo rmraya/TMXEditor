@@ -86,7 +86,7 @@ Building from source is only required if you want to modify the application.
 ### Steps for building
 
 ``` bash
-git clone https://github.com/rmraya/TMXEditor.git
+git clone https://github.com/maxprograms-com/TMXEditor.git
 cd TMXEditor
 gradle
 npm install
