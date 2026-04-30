@@ -17,15 +17,15 @@
     "license": "EPL-1.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/rmraya/TMXEditor.git"
+        "url": "https://github.com/maxprograms-com/TMXEditor.git"
     },
     "devDependencies": {
         "electron": "^40.6.1",
         "typescript": "^5.9.3"
     },
     "dependencies": {
-        "typesxml": "^1.17.0",
-        "typesbcp47": "^1.18.0",
-        "sdltm": "^2.0.0"
+        "typesxml": "^2.0.0",
+        "typesbcp47": "^1.21.0",
+        "sdltm": "^2.3.0"
     }
 }
