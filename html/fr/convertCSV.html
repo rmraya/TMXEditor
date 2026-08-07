@@ -31,6 +31,10 @@
         <tr>
             <td>
                 <select id="charSets" class="table_select">
+                    <option value="utf8">UTF-8</option>
+                    <option value="utf16le" selected>UTF-16LE</option>
+                    <option value="utf16be">UTF-16BE</option>
+                    <option value="latin1">Latin-1</option>
                 </select>
             </td>
             <td>
@@ -64,8 +68,7 @@
     </div>
     <div class="right" style="padding: 4px; margin:4px 8px;">Nombre de colonnes détecté&nbsp;:&nbsp<span id="columns">0</span></div>
     <div style="padding: 4px; margin:4px 8px;">
-        <input type="checkbox" style="padding-top:4px;" id="fixQuotes"><label for="fixQuotes" class="noWrap">Corriger les guillemets doubles d’Excel</label><br><input type="checkbox" style="padding-top:4px;" id="optionalDelims"><label for="optionalDelims"
-            class="noWrap">Tolérer les délimiteurs de texte manquants</label><br><input type="checkbox" style="padding-top:4px;" id="openTMX" checked><label for="openTMX">Ouvrir le fichier TMX généré</label>
+        <input type="checkbox" style="padding-top:4px;" id="openTMX" checked><label for="openTMX">Ouvrir le fichier TMX généré</label>
     </div>
     <div class="buttonArea">
         <button id="refreshPreview">Actualiser l’aperçu</button>

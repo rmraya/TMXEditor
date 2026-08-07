@@ -23,7 +23,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Consolider les unités de traduction.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/consolidate_units.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Consolider les unités de traduction" s’ouvre&nbsp;:<image href="../images/consolidate_units.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Consolider les unités de traduction"</alt>
           </image> </stepresult>
       </step>

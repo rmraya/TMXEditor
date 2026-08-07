@@ -22,10 +22,6 @@ export class ConvertCSV {
         ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
             (document.getElementById('theme') as HTMLLinkElement).href = css;
         });
-        ipcRenderer.send('get-charsets');
-        ipcRenderer.on('set-charsets', (event: Electron.IpcRendererEvent, arg: string[]) => {
-            this.setCharsets(arg);
-        });
         ipcRenderer.on('set-csvfile', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setCsvFile(arg);
         });
@@ -53,12 +49,6 @@ export class ConvertCSV {
         (document.getElementById('textDelim') as HTMLSelectElement).addEventListener('change', () => {
             this.refreshPreview();
         });
-        (document.getElementById('fixQuotes') as HTMLInputElement).addEventListener('change', () => {
-            this.refreshPreview();
-        });
-        (document.getElementById('optionalDelims') as HTMLInputElement).addEventListener('change', () => {
-            this.refreshPreview();
-        });
         (document.getElementById('refreshPreview') as HTMLButtonElement).addEventListener('click', () => {
             this.refreshPreview();
         });
@@ -73,7 +63,9 @@ export class ConvertCSV {
                 ipcRenderer.send('close-convertCsv');
             }
         });
-        ipcRenderer.send('convertCsv-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'convertCsv', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     setCharsets(charsets: string[]): void {
@@ -81,10 +73,10 @@ export class ConvertCSV {
         for (let charset of charsets) {
             options = options + '<option value="' + charset + '">' + charset + '</option>';
         }
-        let charSets = (document.getElementById('charSets') as HTMLSelectElement);
+        let charSets: HTMLSelectElement = (document.getElementById('charSets') as HTMLSelectElement);
         charSets.innerHTML = options;
-        charSets.value = 'UTF-16LE';
-        let colSeps = (document.getElementById('colSeps') as HTMLSelectElement);
+        charSets.value = 'utf16le';
+        let colSeps: HTMLSelectElement = (document.getElementById('colSeps') as HTMLSelectElement);
         colSeps.value = 'TAB';
     }
 
@@ -92,17 +84,17 @@ export class ConvertCSV {
         ipcRenderer.send('get-csvfile');
     }
 
-    setCsvFile(arg: string): void {
-        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
-        csvFile.value = arg;
+    setCsvFile(file: string): void {
+        let csvFile: HTMLInputElement = (document.getElementById('csvFile') as HTMLInputElement);
+        csvFile.value = file;
 
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            let index: number = arg.lastIndexOf('.');
+            let index: number = file.lastIndexOf('.');
             if (index !== -1) {
-                tmxFile.value = arg.substring(0, index) + '.tmx';
+                tmxFile.value = file.substring(0, index) + '.tmx';
             } else {
-                tmxFile.value = arg + '.tmx';
+                tmxFile.value = file + '.tmx';
             }
         }
         this.refreshPreview();
@@ -121,48 +113,80 @@ export class ConvertCSV {
         ipcRenderer.send('get-converted-tmx', { default: value });
     }
 
+    private columnSeparator(): string {
+        let customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
+        if (customSep !== '') {
+            return customSep;
+        }
+        let columnsSeparator: string = (document.getElementById('colSeps') as HTMLSelectElement).value;
+        if (columnsSeparator === 'TAB') {
+            return '\t';
+        }
+        return columnsSeparator;
+    }
+
+    private textDelimiter(): string {
+        let customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
+        if (customDel !== '') {
+            return customDel;
+        }
+        return (document.getElementById('textDelim') as HTMLSelectElement).value;
+    }
+
     refreshPreview(): void {
-        let csvFile = (document.getElementById('csvFile') as HTMLInputElement);
+        let csvFile: HTMLInputElement = (document.getElementById('csvFile') as HTMLInputElement);
         if (csvFile.value === '') {
             return;
         }
-
-        let columnsSeparator: string = '';
-        let customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
-        if (customSep !== '') {
-            columnsSeparator = customSep;
-        } else {
-            columnsSeparator = (document.getElementById('colSeps') as HTMLSelectElement).value;
-            if (columnsSeparator === 'TAB') {
-                columnsSeparator = '\t';
-            }
-        }
-
-        let textDelimiter: string = '';
-        let customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
-        if (customDel !== '') {
-            textDelimiter = customDel;
-        } else {
-            textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
-        }
         let arg = {
             csvFile: csvFile.value,
-            langs: this.langs,
             charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
-            columnsSeparator: columnsSeparator,
-            textDelimiter: textDelimiter,
-            fixQuotes: (document.getElementById('fixQuotes') as HTMLInputElement).checked,
-            optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked
+            columnsSeparator: this.columnSeparator(),
+            textDelimiter: this.textDelimiter()
         }
         ipcRenderer.send('get-csv-preview', arg);
     }
 
-    setPreview(arg: any): void {
-        this.columns = arg.cols;
-        if (arg.langCodes.length > 0) {
-            this.langs = arg.langCodes.splice(0);
+    setPreview(arg: { columns: number, rows: number, data: string[][], langs?: string[] }): void {
+        this.columns = arg.columns;
+        if (arg.langs && arg.langs.length > 0) {
+            this.langs = arg.langs;
+        } else {
+            this.langs = [];
         }
-        (document.getElementById('preview') as HTMLDivElement).innerHTML = arg.preview;
+        let preview: HTMLDivElement = document.getElementById('preview') as HTMLDivElement;
+        if (arg.data.length === 0) {
+            preview.innerHTML = '<pre id="preview" style="width: 100%;">Preview not available</pre>';
+            (document.getElementById('columns') as HTMLSpanElement).innerHTML = '0';
+            return;
+        }
+        let table: HTMLTableElement = document.createElement('table');
+        table.classList.add('stripes');
+        if (this.langs.length > 0) {
+            let thead: HTMLTableSectionElement = document.createElement('thead');
+            let headRow: HTMLTableRowElement = document.createElement('tr');
+            for (let i = 0; i < this.columns; i++) {
+                let th: HTMLTableCellElement = document.createElement('th');
+                th.id = 'col_' + i;
+                th.innerText = this.langs[i];
+                headRow.appendChild(th);
+            }
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+        }
+        let tbody: HTMLTableSectionElement = document.createElement('tbody');
+        for (let row of arg.data) {
+            let tr: HTMLTableRowElement = document.createElement('tr');
+            for (let cell of row) {
+                let td: HTMLTableCellElement = document.createElement('td');
+                td.innerText = cell;
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+        preview.innerHTML = '';
+        preview.appendChild(table);
         (document.getElementById('columns') as HTMLSpanElement).innerHTML = '' + this.columns;
     }
 
@@ -181,7 +205,12 @@ export class ConvertCSV {
 
     csvLanguages(arg: string[]): void {
         this.langs = arg;
-        this.refreshPreview();
+        for (let i = 0; i < this.langs.length; i++) {
+            let th: HTMLTableCellElement | null = document.getElementById('col_' + i) as HTMLTableCellElement | null;
+            if (th) {
+                th.innerText = this.langs[i];
+            }
+        }
         (document.getElementById('convert') as HTMLButtonElement).focus();
     }
 
@@ -204,34 +233,13 @@ export class ConvertCSV {
             ipcRenderer.send('show-message', { type: 'warning', group: 'convertCSV', key: 'setAllLanguages', parent: 'convertCSV' });
             return;
         }
-
-        let columnsSeparator: string = '';
-        let customSep: string = (document.getElementById('customSep') as HTMLInputElement).value;
-        if (customSep !== '') {
-            columnsSeparator = customSep;
-        } else {
-            columnsSeparator = (document.getElementById('colSeps') as HTMLSelectElement).value;
-            if (columnsSeparator === 'TAB') {
-                columnsSeparator = '\t';
-            }
-        }
-
-        let textDelimiter: string = '';
-        let customDel: string = (document.getElementById('customDel') as HTMLInputElement).value;
-        if (customDel !== '') {
-            textDelimiter = customDel;
-        } else {
-            textDelimiter = (document.getElementById('textDelim') as HTMLSelectElement).value;
-        }
         let arg = {
             csvFile: csvFile.value,
             tmxFile: tmxFile.value,
             langs: this.langs,
             charSet: (document.getElementById('charSets') as HTMLSelectElement).value,
-            columnsSeparator: columnsSeparator,
-            textDelimiter: textDelimiter,
-            fixQuotes: (document.getElementById('fixQuotes') as HTMLInputElement).checked,
-            optionalDelims: (document.getElementById('optionalDelims') as HTMLInputElement).checked,
+            columnsSeparator: this.columnSeparator(),
+            textDelimiter: this.textDelimiter(),
             openTMX: (document.getElementById('openTMX') as HTMLInputElement).checked
         }
         ipcRenderer.send('convert-csv-tmx', arg);

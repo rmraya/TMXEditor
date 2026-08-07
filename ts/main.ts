@@ -21,12 +21,28 @@ export class Main {
 
     topBar: HTMLDivElement;
     mainPanel: HTMLDivElement;
-    bottomBar: HTMLDivElement;
+
+    UNITSLOAD: number = 200;
+    SAFETYUNITS: number = 40;
+    AVERAGE: number = 0;
+    unitsCount: number = 0;
+    start: number = 0;
+    count: number = this.UNITSLOAD;
+    scroll: boolean = false;
+    firstRow: number = 0;
+    lastRow: number = this.UNITSLOAD - 1;
+
+    fetchingData: boolean = false;
+    fetchingTop: boolean = false;
+    fetchingBottom: boolean = false;
+    checkingScroll: boolean = false;
+
+    scrollToFirst: boolean = false;
+    scrollToLast: boolean = false;
 
     currentPage: number = 0;
     maxPage: number = 0;
     unitsPage: number = 500;
-    unitsCount: number = 0;
 
     attributes: Array<string[]> = [];
     attributesType: string | undefined;
@@ -39,6 +55,9 @@ export class Main {
     currentContent: string | undefined;
     selectedUnits: string[] = [];
     lastClickedRow: HTMLTableRowElement | undefined;
+    pendingEditId: string | undefined;
+    pendingMatch: { id: string, lang: string, searchText: string, caseSensitive: boolean, useRegex: boolean } | undefined;
+    lastMatchEnd: number = -1;
 
     static readonly EDIT: string = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
         '<path d="M2.25 15.75H5.0625L13.3575 7.45502L10.545 4.64252L2.25 12.9375V15.75ZM3.75 13.56L10.545 6.76502L11.235 7.45502L4.44 14.25H3.75V13.56Z" />' +
@@ -53,9 +72,6 @@ export class Main {
         this.mainPanel = document.getElementById('mainPanel') as HTMLDivElement;
         this.mainPanel.classList.add('lighter');
         this.createCenterPanel();
-
-        this.bottomBar = document.getElementById('bottomBar') as HTMLDivElement;
-        this.createBottomToolbar();
 
         setTimeout(() => {
             this.resize();
@@ -119,32 +135,49 @@ export class Main {
         ipcRenderer.on('file-closed', () => {
             this.fileClosed();
         });
+        ipcRenderer.on('segments-reset', (event: Electron.IpcRendererEvent, arg: { count: number, start: number }) => {
+            this.segmentsReset(arg);
+        });
+        ipcRenderer.on('get-search-start', (event: Electron.IpcRendererEvent, args: { searchText: string, caseSensitive: boolean, useRegex: boolean }) => {
+            if (this.continueMatchInCurrentCell(args)) {
+                ipcRenderer.send('match-found-notification', true);
+                return;
+            }
+            let position: number = 0;
+            let langIndex: number = 0;
+            if (this.currentId) {
+                let tr: HTMLElement | null = document.getElementById(this.currentId);
+                position = tr ? Number.parseInt(tr.getAttribute('data-position') || '0') : 0;
+            }
+            if (this.currentLang) {
+                let idx: number = this.languages.findIndex((lang: Language) => lang.code === this.currentLang);
+                if (idx >= 0) {
+                    langIndex = idx;
+                }
+            }
+            ipcRenderer.send('search-start', { searchText: args.searchText, caseSensitive: args.caseSensitive, useRegex: args.useRegex, position: position, langIndex: langIndex });
+        });
+        ipcRenderer.on('select-match', (event: Electron.IpcRendererEvent, data: { id: string, position: number, lang: string, searchText: string, caseSensitive: boolean, useRegex: boolean }) => {
+            this.selectMatch(data);
+        });
+        ipcRenderer.on('replace-selected-text', (event: Electron.IpcRendererEvent, replaceText: string) => {
+            this.replaceSelectedText(replaceText);
+        });
         ipcRenderer.on('update-segments', (event: Electron.IpcRendererEvent, arg: any) => {
             this.updateSegments(arg);
         });
         ipcRenderer.on('update-properties', (event: Electron.IpcRendererEvent, arg: any) => {
             this.updateProperties(arg);
         });
-        ipcRenderer.on('set-first-page', () => {
-            this.setFirstPage();
-        });
-        ipcRenderer.on('first-page', () => {
-            this.firstPage();
-        });
-        ipcRenderer.on('previous-page', () => {
-            this.previousPage();
-        });
-        ipcRenderer.on('next-page', () => {
-            this.nextPage();
-        });
-        ipcRenderer.on('last-page', () => {
-            this.lastPage();
-        });
-        ipcRenderer.on('unit-inserted', (event: Electron.IpcRendererEvent, id: string) => {
-            this.unitInserted(id);
+        ipcRenderer.on('unit-inserted', (event: Electron.IpcRendererEvent, arg: { id: string, count: number }) => {
+            this.unitInserted(arg);
         });
         ipcRenderer.on('force-save', () => {
             this.saveEdit();
+        });
+        ipcRenderer.on('query-edit-changed', () => {
+            let changed: boolean = this.currentCell !== undefined && this.currentCell.innerHTML !== this.currentContent;
+            ipcRenderer.send('edit-changed-response', changed);
         });
         ipcRenderer.on('edit-attributes', () => {
             this.editAttributes();
@@ -161,11 +194,11 @@ export class Main {
         let height: number = document.body.clientHeight;
         let width: number = document.body.clientWidth;
 
-        this.mainPanel.style.height = (height - this.topBar.clientHeight - this.bottomBar.clientHeight) + 'px';
+        this.mainPanel.style.height = (height - this.topBar.clientHeight) + 'px';
         this.mainPanel.style.width = width + 'px';
     }
 
-    createTopToolbar() {
+    createTopToolbar(): void {
         let openFile: HTMLAnchorElement = document.createElement('a');
         openFile.classList.add('tooltip');
         openFile.classList.add('bottomTooltip');
@@ -376,6 +409,21 @@ export class Main {
         });
         this.topBar.appendChild(convertTBX);
 
+        let unitsLabel: HTMLSpanElement = document.createElement('span');
+        unitsLabel.id = 'unitsLabel';
+        unitsLabel.innerText = 'Units: ';
+        unitsLabel.style.marginLeft = '10px';
+        unitsLabel.style.marginTop = '4px';
+        this.topBar.appendChild(unitsLabel);
+
+        let unitsCount: HTMLSpanElement = document.createElement('span');
+        unitsCount.id = 'units';
+        unitsCount.innerText = '0';
+        unitsCount.style.marginLeft = '10px';
+        unitsCount.style.marginTop = '4px';
+        unitsCount.style.minWidth = '100px';
+        this.topBar.appendChild(unitsCount);
+
         let filler: HTMLSpanElement = document.createElement('span');
         filler.classList.add('fill_width');
         filler.innerHTML = '&nbsp;';
@@ -402,19 +450,15 @@ export class Main {
         this.mainPanel.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'PageUp' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                this.firstPage();
             }
             if (event.key === 'PageUp' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                this.previousPage();
             }
             if (event.key === 'PageDown' && (event.ctrlKey || event.metaKey) && !event.shiftKey) {
                 event.preventDefault();
-                this.nextPage();
             }
             if (event.key === 'PageDown' && (event.ctrlKey || event.metaKey) && event.shiftKey) {
                 event.preventDefault();
-                this.lastPage();
             }
             if (this.currentCell && (event.key === 'PageDown' || event.key === 'PageUp') && !(event.ctrlKey || event.metaKey)) {
                 // prevent scrolling while editing
@@ -424,9 +468,15 @@ export class Main {
     }
 
     buildTable(leftPanel: HTMLDivElement): void {
-
         let tableContainer: HTMLDivElement = document.createElement('div');
         tableContainer.classList.add('leftPaddedPanel');
+        tableContainer.id = 'tableContainer';
+        tableContainer.addEventListener('scroll', (e) => {
+            this.checkScroll(e);
+        });
+        tableContainer.addEventListener('scrollend', (e) => {
+            this.checkScrollend(e);
+        });
         leftPanel.appendChild(tableContainer);
 
         let mainTable: HTMLTableElement = document.createElement('table');
@@ -482,16 +532,7 @@ export class Main {
         (document.getElementById('convertSDLTM') as HTMLSpanElement).innerText = tooltips.convertSDLTM;
         (document.getElementById('convertTBX') as HTMLSpanElement).innerText = tooltips.convertTBX;
         (document.getElementById('userGuide') as HTMLSpanElement).innerText = tooltips.userGuide;
-        (document.getElementById('firstPage') as HTMLSpanElement).innerText = tooltips.firstPage;
-        (document.getElementById('previousPage') as HTMLSpanElement).innerText = tooltips.previousPage;
-        (document.getElementById('pageTooltip') as HTMLSpanElement).innerText = tooltips.pageTooltip;
-        (document.getElementById('nextPage') as HTMLSpanElement).innerText = tooltips.nextPage;
-        (document.getElementById('lastPage') as HTMLSpanElement).innerText = tooltips.lastPage;
-        (document.getElementById('unitsPage') as HTMLSpanElement).innerText = tooltips.unitsPage;
-        (document.getElementById('pageSpan') as HTMLSpanElement).innerText = tooltips.pageSpan;
-        (document.getElementById('ofSpan') as HTMLSpanElement).innerText = tooltips.ofSpan;
         (document.getElementById('unitsLabel') as HTMLSpanElement).innerText = tooltips.unitsLabel;
-        (document.getElementById('unitsTooltip') as HTMLSpanElement).innerText = tooltips.unitsTooltip;
         (document.getElementById('attributesSpan') as HTMLSpanElement).innerHTML = tooltips.tuAttributes;
         (document.getElementById('propertiesSpan') as HTMLSpanElement).innerHTML = tooltips.tuProperties;
         (document.getElementById('notesSpan') as HTMLSpanElement).innerHTML = tooltips.tuNotes;
@@ -506,7 +547,7 @@ export class Main {
         rightPanel.appendChild(panelsContainer);
 
         let config: any = { attributes: true, childList: false, subtree: false };
-        let observer = new MutationObserver((mutationsList) => {
+        let observer: MutationObserver = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
                     panelsContainer.style.height = rightPanel.clientHeight + 'px';
@@ -530,7 +571,7 @@ export class Main {
         panelsContainer.classList.add('topPaddedPanel');
         topPanel.appendChild(panelsContainer);
 
-        let titlePanel:  HTMLDivElement = document.createElement('div');
+        let titlePanel: HTMLDivElement = document.createElement('div');
         titlePanel.classList.add('titlePanel');
         titlePanel.classList.add('row');
         titlePanel.classList.add('noWrap');
@@ -594,7 +635,7 @@ export class Main {
         panelsContainer.classList.add('centerPaddedPanel');
         centerPanel.appendChild(panelsContainer);
 
-        let titlePanel:  HTMLDivElement = document.createElement('div');
+        let titlePanel: HTMLDivElement = document.createElement('div');
         titlePanel.classList.add('titlePanel');
         titlePanel.classList.add('row');
         titlePanel.classList.add('noWrap');
@@ -657,7 +698,7 @@ export class Main {
         panelsContainer.classList.add('bottomPaddedPanel');
         bottomPanel.appendChild(panelsContainer);
 
-        let titlePanel:  HTMLDivElement = document.createElement('div');
+        let titlePanel: HTMLDivElement = document.createElement('div');
         titlePanel.classList.add('titlePanel');
         titlePanel.classList.add('row');
         titlePanel.classList.add('noWrap');
@@ -713,142 +754,6 @@ export class Main {
         observer.observe(bottomPanel, config);
     }
 
-    createBottomToolbar(): void {
-
-        let first: HTMLAnchorElement = document.createElement('a');
-        first.id = 'first';
-        first.classList.add('tooltip');
-        first.classList.add('topTooltip');
-        first.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" /></svg>' +
-            '<span class="tooltiptext topTooltip" id="firstPage"></span>';
-        first.addEventListener('click', () => {
-            this.firstPage();
-        });
-        this.bottomBar.appendChild(first);
-
-        let previous: HTMLAnchorElement = document.createElement('a');
-        previous.id = 'previous';
-        previous.classList.add('tooltip');
-        previous.classList.add('topTooltip');
-        previous.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>' +
-            '<span class="tooltiptext topTooltip" id="previousPage"></span>';
-        previous.addEventListener('click', () => {
-            this.previousPage();
-        });
-        this.bottomBar.appendChild(previous);
-
-        let span: HTMLSpanElement = document.createElement('span');
-        span.id = 'pageSpan';
-        span.innerText = 'Page';
-        span.style.marginLeft = '10px';
-        span.style.marginTop = '4px';
-        this.bottomBar.appendChild(span);
-
-        let pageDiv: HTMLDivElement = document.createElement('div');
-        pageDiv.classList.add('tooltip');
-        pageDiv.classList.add('topTooltip');
-        this.bottomBar.appendChild(pageDiv);
-
-        let page: HTMLInputElement = document.createElement('input');
-        page.id = 'page';
-        page.type = 'number';
-        page.value = '0';
-        page.style.marginLeft = '10px';
-        page.style.marginTop = '4px';
-        page.style.width = '50px';
-        page.addEventListener('keydown', (ev: KeyboardEvent) => {
-            this.setPage(ev);
-        });
-        pageDiv.appendChild(page);
-
-        let pageTooltip: HTMLSpanElement = document.createElement('span');
-        pageTooltip.classList.add('tooltiptext');
-        pageTooltip.classList.add('topTooltip');
-        pageTooltip.id = 'pageTooltip';
-        pageDiv.appendChild(pageTooltip);
-
-        let ofSpan: HTMLSpanElement = document.createElement('span');
-        ofSpan.id = 'ofSpan';
-        ofSpan.innerText = 'of ';
-        ofSpan.style.marginLeft = '10px';
-        ofSpan.style.marginTop = '4px';
-        this.bottomBar.appendChild(ofSpan);
-
-        let pages: HTMLSpanElement = document.createElement('span');
-        pages.id = 'pages';
-        pages.innerText = '0';
-        pages.style.marginLeft = '10px';
-        pages.style.marginTop = '4px';
-        pages.style.width = '60px';
-        this.bottomBar.appendChild(pages);
-
-        let next: HTMLAnchorElement = document.createElement('a');
-        next.id = 'next';
-        next.classList.add('tooltip');
-        next.classList.add('topTooltip');
-        next.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" /></svg>' +
-            '<span class="tooltiptext topTooltip" id="nextPage"></span>';
-        next.addEventListener('click', () => {
-            this.nextPage();
-        });
-        this.bottomBar.appendChild(next);
-
-        let last: HTMLAnchorElement = document.createElement('a');
-        last.id = 'last';
-        last.classList.add('tooltip');
-        last.classList.add('topTooltip');
-        last.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24"><path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" /></svg>' +
-            '<span class="tooltiptext topTooltip" id="lastPage"></span>';
-        last.addEventListener('click', () => {
-            this.lastPage();
-        });
-        this.bottomBar.appendChild(last);
-
-        let unitsPage: HTMLSpanElement = document.createElement('span');
-        unitsPage.id = 'unitsPage';
-        unitsPage.style.marginLeft = '10px';
-        unitsPage.style.marginTop = '4px';
-        this.bottomBar.appendChild(unitsPage);
-
-        let unitsDiv: HTMLDivElement = document.createElement('div');
-        unitsDiv.classList.add('tooltip');
-        unitsDiv.classList.add('topTooltip');
-        this.bottomBar.appendChild(unitsDiv);
-
-        let units: HTMLInputElement = document.createElement('input');
-        units.id = 'units_page';
-        units.type = 'number';
-        units.value = '500';
-        units.style.marginLeft = '10px';
-        units.style.marginTop = '4px';
-        units.style.width = '50px';
-        units.addEventListener('keydown', (ev: KeyboardEvent) => {
-            this.setUnitsPage(ev);
-        });
-        unitsDiv.appendChild(units);
-
-        let unitsTooltip: HTMLSpanElement = document.createElement('span');
-        unitsTooltip.id = 'unitsTooltip';
-        unitsTooltip.classList.add('tooltiptext');
-        unitsTooltip.classList.add('topTooltip');
-        unitsDiv.appendChild(unitsTooltip);
-
-        let unitsLabel: HTMLSpanElement = document.createElement('span');
-        unitsLabel.id = 'unitsLabel';
-        unitsLabel.innerText = 'Units: ';
-        unitsLabel.style.marginLeft = '10px';
-        unitsLabel.style.marginTop = '4px';
-        this.bottomBar.appendChild(unitsLabel);
-
-        let unitsCount: HTMLSpanElement = document.createElement('span');
-        unitsCount.id = 'units';
-        unitsCount.innerText = '0';
-        unitsCount.style.marginLeft = '10px';
-        unitsCount.style.marginTop = '4px';
-        unitsCount.style.minWidth = '100px';
-        this.bottomBar.appendChild(unitsCount);
-    }
-
     openFile(): void {
         ipcRenderer.send('open-file');
     }
@@ -878,6 +783,7 @@ export class Main {
             this.currentContent = this.currentCell.innerHTML;
             this.currentCell.contentEditable = 'false';
             this.currentCell.classList.remove('editing');
+            this.currentCell.style.width = '';
             ipcRenderer.send('saved-edit', { id: this.currentId, lang: this.currentLang });
             this.currentCell = undefined;
         }
@@ -894,7 +800,7 @@ export class Main {
                     result = result + node.nodeValue;
                 }
                 if (node.nodeType === Node.ELEMENT_NODE) {
-                    let element = node as HTMLElement;
+                    let element: HTMLElement = node as HTMLElement;
                     if (element.tagName === 'SPAN') {
                         result = result + element.innerText;
                     } else {
@@ -907,11 +813,14 @@ export class Main {
     }
 
     dataSaved(arg: any): void {
+        if (arg.status !== 'Success') {
+            return;
+        }
         let tr: HTMLElement | null = document.getElementById(arg.id);
         if (tr) {
             let children: HTMLCollection = tr.children;
             let length: number = children.length;
-            for (let i = 0; i < length; i++) {
+            for (let i: number = 0; i < length; i++) {
                 let td: HTMLElement = children.item(i) as HTMLElement;
                 if (td.lang === arg.lang) {
                     td.innerHTML = arg.data;
@@ -925,11 +834,129 @@ export class Main {
         if (!this.isLoaded) {
             return;
         }
-        if (this.currentCell && this.currentContent) {
+        if (this.currentCell && this.currentContent !== undefined) {
             this.currentCell.innerHTML = this.currentContent;
             this.currentCell.contentEditable = 'false';
             this.currentCell.classList.remove('editing');
+            this.currentCell.style.width = '';
             ipcRenderer.send('cancel-editing');
+        }
+    }
+
+    selectMatch(data: { id: string, position: number, lang: string, searchText: string, caseSensitive: boolean, useRegex: boolean }): void {
+        if (this.currentCell?.isContentEditable) {
+            this.saveEdit();
+        }
+        let tr: HTMLElement | null = document.getElementById(data.id);
+        if (tr) {
+            let cell: HTMLTableCellElement | null = tr.querySelector('td.lang[lang="' + data.lang + '"]') as HTMLTableCellElement | null;
+            if (cell) {
+                this.startEditingCell(data.id, data.lang, cell);
+                this.lastMatchEnd = -1;
+                let match = this.findMatchInCell(cell, data.searchText, data.caseSensitive, data.useRegex, 0);
+                if (match) {
+                    this.applyRangeHighlight(match.node, match.start, match.end);
+                }
+            }
+            return;
+        }
+        this.pendingMatch = { id: data.id, lang: data.lang, searchText: data.searchText, caseSensitive: data.caseSensitive, useRegex: data.useRegex };
+        this.count = this.UNITSLOAD > this.unitsCount ? this.unitsCount : this.UNITSLOAD;
+        this.start = data.position - Math.floor(this.UNITSLOAD / 2);
+        if (this.start < 0) {
+            this.start = 0;
+        }
+        if (this.start + this.count >= this.unitsCount) {
+            this.start = Math.max(0, this.unitsCount - this.count);
+        }
+        this.scroll = true;
+        this.getSegments(this.start, this.count);
+    }
+
+    replaceSelectedText(replaceText: string): void {
+        if (!this.currentCell?.isContentEditable) {
+            return;
+        }
+        let selection: Selection | null = window.getSelection();
+        if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+            return;
+        }
+        let range: Range = selection.getRangeAt(0);
+        let originalLength: number = range.toString().length;
+        range.deleteContents();
+        range.insertNode(document.createTextNode(replaceText));
+        selection.removeAllRanges();
+        this.currentCell.normalize();
+        this.lastMatchEnd = this.lastMatchEnd - originalLength + replaceText.length;
+        this.saveEdit();
+    }
+
+    private continueMatchInCurrentCell(args: { searchText: string, caseSensitive: boolean, useRegex: boolean }): boolean {
+        if (!this.currentCell || this.lastMatchEnd < 0) {
+            return false;
+        }
+        let match = this.findMatchInCell(this.currentCell, args.searchText, args.caseSensitive, args.useRegex, this.lastMatchEnd);
+        if (!match) {
+            return false;
+        }
+        this.applyRangeHighlight(match.node, match.start, match.end);
+        return true;
+    }
+
+    private collectTextNodes(cell: HTMLElement): { node: Text, start: number, end: number }[] {
+        let result: { node: Text, start: number, end: number }[] = [];
+        let offset: number = 0;
+        let walker: TreeWalker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT);
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+            let text: string = node.nodeValue || '';
+            result.push({ node: node as Text, start: offset, end: offset + text.length });
+            offset += text.length;
+        }
+        return result;
+    }
+
+    private findMatchInCell(cell: HTMLElement, searchText: string, caseSensitive: boolean, useRegex: boolean, fromOffset: number): { node: Text, start: number, end: number } | null {
+        let pattern: string = useRegex ? searchText : searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        let regex: RegExp;
+        try {
+            regex = new RegExp(pattern, caseSensitive ? '' : 'i');
+        } catch (error: unknown) {
+            return null;
+        }
+        let segments: { node: Text, start: number, end: number }[] = this.collectTextNodes(cell);
+        let flatText: string = segments.map((s) => s.node.nodeValue || '').join('');
+        let match: RegExpMatchArray | null = flatText.substring(fromOffset).match(regex);
+        if (!match || match.index === undefined) {
+            return null;
+        }
+        let start: number = fromOffset + match.index;
+        let end: number = start + match[0].length;
+        for (let seg of segments) {
+            if (start >= seg.start && end <= seg.end) {
+                return { node: seg.node, start: start - seg.start, end: end - seg.start };
+            }
+        }
+        return null;
+    }
+
+    private applyRangeHighlight(node: Text, start: number, end: number): void {
+        let range: Range = document.createRange();
+        range.setStart(node, start);
+        range.setEnd(node, end);
+        let selection: Selection | null = window.getSelection();
+        if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        if (this.currentCell) {
+            let segments: { node: Text, start: number, end: number }[] = this.collectTextNodes(this.currentCell);
+            for (let seg of segments) {
+                if (seg.node === node) {
+                    this.lastMatchEnd = seg.start + end;
+                    break;
+                }
+            }
         }
     }
 
@@ -950,10 +977,13 @@ export class Main {
         this.selectedUnits = [];
         let collection: HTMLCollection = document.getElementsByClassName('rowCheck');
         let length: number = collection.length
-        for (let i = 0; i < length; i++) {
-            let check = collection[i] as HTMLInputElement;
+        for (let i: number = 0; i < length; i++) {
+            let check: HTMLInputElement = collection[i] as HTMLInputElement;
             if (check.checked) {
-                this.selectedUnits.push(check.parentElement?.parentElement?.id || '');
+                let id: string | undefined = check.parentElement?.parentElement?.id;
+                if (id) {
+                    this.selectedUnits.push(id);
+                }
             }
         }
     }
@@ -1034,15 +1064,13 @@ export class Main {
         if (arg.status === 'Success') {
             if (arg.count != undefined) {
                 (document.getElementById('units') as HTMLSpanElement).innerText = arg.count;
-                this.maxPage = Math.ceil(arg.count / this.unitsPage);
-                (document.getElementById('pages') as HTMLSpanElement).innerText = '' + this.maxPage;
             }
         }
     }
 
     updateLanguages(langs: Language[]): void {
         this.languages = langs;
-        let row = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
+        let row: string = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
         let length: number = this.languages.length;
         for (let index = 0; index < length; ++index) {
             row = row + '<th>' + this.languages[index].code + ' - ' + langs[index].name + '</th>';
@@ -1057,20 +1085,27 @@ export class Main {
         if (arg.count != undefined) {
             this.unitsCount = arg.count;
             (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
-            this.maxPage = Math.ceil(this.unitsCount / this.unitsPage);
-            (document.getElementById('pages') as HTMLSpanElement).innerText = '' + this.maxPage;
         }
         document.getElementById('filterUnits')?.classList.remove('active');
         document.getElementById('sortUnits')?.classList.remove('active');
         this.isLoaded = true;
-        this.firstPage();
+
+        this.count = this.UNITSLOAD > this.unitsCount ? this.unitsCount : this.UNITSLOAD;
+        this.start = 0;
+        this.scroll = false;
+        let tableContainer: HTMLElement | null = document.getElementById('tableContainer');
+        if (tableContainer) {
+            tableContainer.scrollTop = 0;
+        }
+        ipcRenderer.send('get-segments', {
+            start: this.start,
+            count: this.count
+        });
     }
 
     fileClosed(): void {
         (document.getElementById("tableBody") as HTMLTableSectionElement).innerHTML = '';
         (document.getElementById("tableHeader") as HTMLTableSectionElement).innerHTML = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th><th>&nbsp;</th><th>&nbsp;</th></tr>';
-        (document.getElementById('page') as HTMLInputElement).value = '0';
-        (document.getElementById('pages') as HTMLSpanElement).innerText = '0';
         (document.getElementById('units') as HTMLSpanElement).innerText = '';
         (document.getElementById('attributesTable') as HTMLTableSectionElement).innerHTML = '';
         (document.getElementById('propertiesTable') as HTMLTableSectionElement).innerHTML = '';
@@ -1080,8 +1115,7 @@ export class Main {
         (document.getElementById('selectAll') as HTMLInputElement).addEventListener('click', () => {
             this.toggleSelectAll();
         });
-        this.currentPage = 0;
-        this.maxPage = 0;
+
         this.isLoaded = false;
 
         this.currentId = undefined;
@@ -1091,17 +1125,345 @@ export class Main {
         this.selectedUnits = [];
     }
 
+    getSegments(start: number, count: number): void {
+        ipcRenderer.send('get-segments', {
+            start: start,
+            count: count
+        });
+    }
+
     updateSegments(arg: any): void {
         this.setStatus('Preparing...');
+
+        if (this.fetchingTop) {
+            this.updateTopSegments(arg);
+            return;
+        }
+        if (this.fetchingBottom) {
+            this.updateBottomSegments(arg);
+            return;
+        }
+
         let rows: string = '';
         let length: number = arg.units.length;
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             rows = rows + arg.units[i];
         }
         let tableBody: HTMLTableSectionElement = document.getElementById('tableBody') as HTMLTableSectionElement;
         tableBody.innerHTML = rows;
+
+        this.firstRow = this.start;
+        this.lastRow = this.start + this.count - 1;
+
+        if (this.firstRow < 0) {
+            this.firstRow = 0;
+        }
+        if (this.lastRow > this.unitsCount - 1) {
+            this.lastRow = this.unitsCount - 1;
+        }
+
+        let loadHeight: number = tableBody.clientHeight;
+        if (length > 0) {
+            this.AVERAGE = loadHeight / length;
+        }
+        let totalHeight: number = this.AVERAGE * this.unitsCount;
+        let topHeight: number = this.firstRow * this.AVERAGE;
+        let bottomHeight: number = totalHeight - topHeight - loadHeight;
+
+        let fillerTop: HTMLTableRowElement = document.createElement('tr');
+        fillerTop.id = "fillerTop";
+        fillerTop.style.height = '0px';
+
+        let fillerBottom: HTMLTableRowElement = document.createElement('tr');
+        fillerBottom.id = "fillerBottom";
+        fillerBottom.style.height = '0px';
+
+        tableBody.prepend(fillerTop);
+        tableBody.appendChild(fillerBottom);
+
+        fillerTop.style.height = topHeight + 'px';
+        fillerBottom.style.height = bottomHeight + 'px';
+
+        if (this.firstRow === 0) {
+            fillerTop.style.height = '0px';
+        }
+
+        if (this.lastRow === this.unitsCount - 1) {
+            fillerBottom.style.height = '0px';
+        }
+
         this.lastClickedRow = undefined;
+
         let tableRows: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        for (let i: number = 0; i < tableRows.length; i++) {
+            let row: HTMLTableRowElement = tableRows[i];
+            row.addEventListener('click', () => {
+                if (this.lastClickedRow) {
+                    this.lastClickedRow.classList.remove('currentRow');
+                }
+                row.classList.add('currentRow');
+                this.lastClickedRow = row;
+            });
+        }
+        let cells: HTMLCollectionOf<Element> = document.getElementsByClassName('lang');
+        length = cells.length;
+        for (let i: number = 0; i < length; i++) {
+            (cells[i] as HTMLTableCellElement).addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
+        }
+        let fixed: HTMLCollectionOf<Element> = document.getElementsByClassName('fixed');
+        length = fixed.length;
+        for (let i = 0; i < length; i++) {
+            (fixed[i] as HTMLTableCellElement).addEventListener('click', (ev: MouseEvent) => this.fixedListener(ev));
+        }
+
+        (document.getElementById('attributesTable') as HTMLTableSectionElement).innerHTML = '';
+        (document.getElementById('propertiesTable') as HTMLTableSectionElement).innerHTML = '';
+        (document.getElementById('notesTable') as HTMLTableSectionElement).innerHTML = '';
+        this.currentId = undefined;
+        this.setStatus('');
+
+        setTimeout(() => {
+            if (this.firstRow === 0 && this.scrollToFirst && this.scroll) {
+                let rowOne: HTMLTableRowElement = tableRows[0] as HTMLTableRowElement;
+                rowOne.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" });
+                (document.getElementById('tableContainer') as HTMLElement).scrollTop = 0; // reset scroll position to the top
+                this.scrollToFirst = false; // reset scroll to first
+            }
+            if (this.lastRow === (this.unitsCount - 1) && this.scrollToLast && this.scroll) {
+                let rowMax: HTMLTableRowElement = tableRows[tableRows.length - 1] as HTMLTableRowElement;
+                rowMax.scrollIntoView({ behavior: "smooth", block: "end", inline: "start" });
+                (document.getElementById('tableContainer') as HTMLElement).scrollTop = totalHeight; // set scroll position to the bottom
+                this.scrollToLast = false; // reset scroll to last
+            }
+            if (this.firstRow !== 0 && this.lastRow !== this.unitsCount - 1 && this.scroll) {
+                let middleRow: HTMLTableRowElement = tableRows[Math.floor(tableRows.length / 2)] as HTMLTableRowElement;
+                middleRow.scrollIntoView({ behavior: "smooth", block: "center", inline: "start" });
+            }
+            if (this.pendingEditId) {
+                let newId: string = this.pendingEditId;
+                this.pendingEditId = undefined;
+                let tr: HTMLElement | null = document.getElementById(newId);
+                let cell: HTMLTableCellElement | null = tr?.querySelector('td.lang') as HTMLTableCellElement | null;
+                if (cell) {
+                    this.startEditingCell(newId, cell.lang, cell);
+                }
+            }
+            if (this.pendingMatch) {
+                let match = this.pendingMatch;
+                this.pendingMatch = undefined;
+                let tr: HTMLElement | null = document.getElementById(match.id);
+                let cell: HTMLTableCellElement | null = tr?.querySelector('td.lang[lang="' + match.lang + '"]') as HTMLTableCellElement | null;
+                if (cell) {
+                    this.startEditingCell(match.id, match.lang, cell);
+                    this.lastMatchEnd = -1;
+                    let found = this.findMatchInCell(cell, match.searchText, match.caseSensitive, match.useRegex, 0);
+                    if (found) {
+                        this.applyRangeHighlight(found.node, found.start, found.end);
+                    }
+                }
+            }
+            this.fetchingData = false;
+            document.body.style.cursor = 'default';
+            this.checkingScroll = false;
+        }, 500);
+    }
+
+    updateTopSegments(arg: any): void {
+        let tableBody: HTMLTableSectionElement = document.getElementById('tableBody') as HTMLTableSectionElement;
+        let trs: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        let array: HTMLTableRowElement[] = Array.from(trs);
+
+        let newRows: string[] = arg.units;
+        let length: number = newRows.length;
+
+        this.firstRow = this.firstRow - length - 1;
+        this.lastRow = this.lastRow - length - 1;
+
+        if (this.firstRow < 0) {
+            this.firstRow = 0;
+        }
+        if (this.lastRow > this.unitsCount - 1) {
+            this.lastRow = this.unitsCount - 1;
+        }
+
+        let removedHeight: number = 0;
+        for (let i = Math.max(0, array.length - 2 - length); i < array.length - 1; i++) {
+            let row: HTMLTableRowElement = trs[i];
+            let height: number = row.clientHeight;
+            removedHeight = removedHeight + height;
+        }
+
+        let holder: HTMLTableSectionElement = document.createElement('tbody');
+        holder.style.width = tableBody.clientWidth + 'px';
+        let html: string = '';
+        for (let i = 0; i < length; i++) {
+            html = html + newRows[i];
+        }
+        holder.innerHTML = html;
+        let addedRows: HTMLTableRowElement[] = Array.from(holder.getElementsByTagName('tr'));
+
+        array.splice(1, 0, ...addedRows); // add rows to the top
+        array.splice(array.length - 1 - addedRows.length, addedRows.length); // remove rows from the bottom
+
+        html = '';
+        length = array.length;
+        for (let i = 0; i < length; i++) {
+            html = html + array[i].outerHTML;
+        }
+        tableBody.innerHTML = html;
+
+        let realHeight: number = 0;
+        let tableRows: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        for (let i = 1; i < array.length - 1; i++) {
+            let row: HTMLTableRowElement = tableRows[i] as HTMLTableRowElement;
+            let height: number = row.clientHeight;
+            realHeight = realHeight + height;
+        }
+
+        let addedHeight: number = 0;
+        for (let i = 0; i < addedRows.length; i++) {
+            let row: HTMLTableRowElement = tableRows[i + 1] as HTMLTableRowElement;
+            let height: number = row.clientHeight;
+            addedHeight = addedHeight + height;
+        }
+
+        if (array.length > 2) {
+            this.AVERAGE = realHeight / (array.length - 2);
+        }
+
+        let fillerTop: HTMLTableRowElement = document.getElementById('fillerTop') as HTMLTableRowElement;
+        let fillerBottom: HTMLTableRowElement = document.getElementById('fillerBottom') as HTMLTableRowElement;
+        let currentTop: number = fillerTop.clientHeight;
+        let currentBottom: number = fillerBottom.clientHeight;
+        let topHeight: number = currentTop - addedHeight;
+        let bottomHeight: number = currentBottom + removedHeight;
+
+        fillerTop.style.height = topHeight + 'px';
+        fillerBottom.style.height = bottomHeight + 'px';
+
+        if (this.firstRow === 0) {
+            fillerTop.style.height = '0px';
+        }
+
+        if (this.lastRow === this.unitsCount - 1) {
+            fillerBottom.style.height = '0px';
+        }
+
+        this.lastClickedRow = undefined;
+        for (let i = 0; i < tableRows.length; i++) {
+            let row: HTMLTableRowElement = tableRows[i];
+            row.addEventListener('click', () => {
+                if (this.lastClickedRow) {
+                    this.lastClickedRow.classList.remove('currentRow');
+                }
+                row.classList.add('currentRow');
+                this.lastClickedRow = row;
+            });
+        }
+        let cells = document.getElementsByClassName('lang');
+        length = cells.length;
+        for (let i: number = 0; i < length; i++) {
+            (cells[i] as HTMLTableCellElement).addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
+        }
+        let fixed: HTMLCollectionOf<Element> = document.getElementsByClassName('fixed');
+        length = fixed.length;
+        for (let i: number = 0; i < length; i++) {
+            (fixed[i] as HTMLTableCellElement).addEventListener('click', (ev: MouseEvent) => this.fixedListener(ev));
+        }
+
+        (document.getElementById('attributesTable') as HTMLTableSectionElement).innerHTML = '';
+        (document.getElementById('propertiesTable') as HTMLTableSectionElement).innerHTML = '';
+        (document.getElementById('notesTable') as HTMLTableSectionElement).innerHTML = '';
+        this.currentId = undefined;
+        this.setStatus('');
+
+        this.fetchingTop = false;
+        document.body.style.cursor = 'default';
+        this.checkingScroll = false;
+    }
+
+    updateBottomSegments(arg: any): void {
+        let tableBody: HTMLTableSectionElement = document.getElementById('tableBody') as HTMLTableSectionElement;
+        let trs: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        let array: HTMLTableRowElement[] = Array.from(trs);
+
+        let newRows: string[] = arg.units;
+        let length: number = newRows.length;
+
+        this.firstRow = this.firstRow + length;
+        this.lastRow = this.lastRow + length;
+
+        if (this.firstRow < 0) {
+            this.firstRow = 0;
+        }
+        if (this.lastRow > this.unitsCount - 1) {
+            this.lastRow = this.unitsCount - 1;
+        }
+
+        let removedHeight: number = 0;
+        for (let i: number = 0; i < length && i + 1 < trs.length; i++) {
+            let row: HTMLTableRowElement = trs[i + 1];
+            let height: number = row.clientHeight;
+            removedHeight = removedHeight + height;
+        }
+
+        let holder: HTMLTableSectionElement = document.createElement('tbody');
+        holder.style.width = tableBody.clientWidth + 'px';
+        let html: string = '';
+        for (let i: number = 0; i < length; i++) {
+            html = html + newRows[i];
+        }
+        holder.innerHTML = html;
+        let addedRows: HTMLTableRowElement[] = Array.from(holder.getElementsByTagName('tr'));
+
+        array.splice(array.length - 1, 0, ...addedRows); // add rows to the bottom
+        array.splice(1, addedRows.length); // remove rows from the top 
+
+        html = '';
+        length = array.length;
+        for (let i: number = 0; i < length; i++) {
+            html = html + array[i].outerHTML;
+        }
+        tableBody.innerHTML = html;
+
+        let realHeight: number = 0;
+        let tableRows: HTMLCollectionOf<HTMLTableRowElement> = tableBody.getElementsByTagName('tr');
+        for (let i: number = 1; i < array.length - 1; i++) {
+            let row: HTMLTableRowElement = tableRows[i] as HTMLTableRowElement;
+            let height: number = row.clientHeight;
+            realHeight = realHeight + height;
+        }
+
+        let addedHeight: number = 0;
+        for (let i: number = array.length - 1 - addedRows.length; i < array.length - 1; i++) {
+            let row: HTMLTableRowElement = tableRows[i] as HTMLTableRowElement;
+            let height: number = row.clientHeight;
+            addedHeight = addedHeight + height;
+        }
+
+        if (array.length > 2) {
+            this.AVERAGE = realHeight / (array.length - 2);
+        }
+
+        let fillerTop: HTMLTableRowElement = document.getElementById('fillerTop') as HTMLTableRowElement;
+        let fillerBottom: HTMLTableRowElement = document.getElementById('fillerBottom') as HTMLTableRowElement;
+        let currentTop: number = fillerTop.clientHeight;
+        let currentBottom: number = fillerBottom.clientHeight;
+        let topHeight: number = currentTop + removedHeight;
+        let bottomHeight: number = currentBottom - addedHeight;
+
+        fillerTop.style.height = topHeight + 'px';
+        fillerBottom.style.height = bottomHeight + 'px';
+
+        if (this.firstRow === 0) {
+            fillerTop.style.height = '0px';
+        }
+
+        if (this.lastRow === this.unitsCount - 1) {
+            fillerBottom.style.height = '0px';
+        }
+
+        this.lastClickedRow = undefined;
         for (let i = 0; i < tableRows.length; i++) {
             let row: HTMLTableRowElement = tableRows[i];
             row.addEventListener('click', () => {
@@ -1122,11 +1484,146 @@ export class Main {
         for (let i = 0; i < length; i++) {
             (fixed[i] as HTMLTableCellElement).addEventListener('click', (ev: MouseEvent) => this.fixedListener(ev));
         }
+
         (document.getElementById('attributesTable') as HTMLTableSectionElement).innerHTML = '';
         (document.getElementById('propertiesTable') as HTMLTableSectionElement).innerHTML = '';
         (document.getElementById('notesTable') as HTMLTableSectionElement).innerHTML = '';
         this.currentId = undefined;
         this.setStatus('');
+
+        this.fetchingBottom = false;
+        document.body.style.cursor = 'default';
+        this.checkingScroll = false;
+    }
+
+    checkScroll(e: Event): void {
+        if (this.fetchingData || this.fetchingBottom || this.fetchingTop) {
+            e.preventDefault();
+            return;
+        }
+        if (this.checkingScroll) {
+            e.preventDefault();
+            return;
+        }
+    }
+
+    checkScrollend(e: Event): void {
+        if (this.fetchingData || this.fetchingBottom || this.fetchingTop) {
+            e.preventDefault();
+            return;
+        }
+
+        this.checkingScroll = true;
+        if (this.checkingScroll) {
+            e.preventDefault();
+        }
+
+        let tableBody: HTMLTableSectionElement = document.getElementById('tableBody') as HTMLTableSectionElement;
+        let fillerTop: HTMLTableRowElement = document.getElementById('fillerTop') as HTMLTableRowElement;
+        let fillerBottom: HTMLTableRowElement = document.getElementById('fillerBottom') as HTMLTableRowElement;
+
+        let topHeight: number = fillerTop.clientHeight;
+        let bottomHeight: number = fillerBottom.clientHeight;
+        let contentHeight: number = tableBody.clientHeight - topHeight - bottomHeight;
+        let tableBottom: number = topHeight + contentHeight;
+        let fileHeight: number = tableBody.clientHeight;
+        let safetyHeight: number = this.SAFETYUNITS * this.AVERAGE;
+
+        let tableContainer = document.getElementById('tableContainer') as HTMLDivElement;
+        let tableScroll: number = tableContainer.scrollTop;
+        let scrollRow: number = Math.floor(tableScroll / this.AVERAGE);
+
+        if (tableScroll <= this.AVERAGE * 15) {
+            this.scrollToFirst = true;
+        }
+
+        if (tableScroll >= fileHeight - this.AVERAGE * 15) {
+            this.scrollToLast = true;
+        }
+
+        if (scrollRow >= this.unitsCount) {
+            scrollRow = this.unitsCount;
+        }
+        if (scrollRow < 0) {
+            scrollRow = 0;
+        }
+
+        if (tableScroll < topHeight || tableScroll > tableBottom) {
+            this.fetchingData = true;
+            document.body.style.cursor = 'wait';
+
+            this.start = scrollRow - (this.UNITSLOAD / 2);
+            if (this.start < 0) {
+                this.start = 0;
+            }
+
+            this.count = this.UNITSLOAD;
+            if (this.count + this.start >= this.unitsCount) {
+                this.start = this.unitsCount - this.UNITSLOAD;
+                if (this.start < 0) {
+                    this.start = 0;
+                }
+                this.count = this.unitsCount - this.start;
+            }
+
+            this.scroll = true;
+
+            this.getSegments(this.start, this.count);
+
+            return;
+        }
+
+        if (tableScroll > topHeight && tableScroll < topHeight + safetyHeight && tableScroll > safetyHeight) {
+
+            if (this.firstRow === 0) {
+                return;
+            }
+
+            this.fetchingTop = true;
+            document.body.style.cursor = 'wait';
+
+            this.start = this.firstRow - 1 - this.SAFETYUNITS;
+            this.count = this.SAFETYUNITS;
+
+            if (this.start < this.SAFETYUNITS) {
+                this.start = 0;
+                this.count = this.firstRow - 1;
+            }
+
+            this.scroll = true;
+
+            this.getSegments(this.start, this.count);
+
+            return;
+        }
+
+        if (tableScroll > tableBottom - safetyHeight && tableScroll < tableBottom) {
+            if (this.lastRow === this.unitsCount - 1) {
+                return;
+            }
+
+            this.fetchingBottom = true;
+            document.body.style.cursor = 'wait';
+
+            this.start = this.lastRow + 1;
+
+            this.count = this.SAFETYUNITS;
+
+            if (this.unitsCount - (this.start + this.count) < this.SAFETYUNITS) {
+                this.count = this.unitsCount - this.start;
+            }
+
+            this.scroll = true;
+
+            this.getSegments(this.start, this.count);
+
+            return;
+        }
+
+        if (tableScroll > topHeight + safetyHeight && tableScroll < tableBottom - safetyHeight) {
+            this.checkingScroll = false;
+            return;
+        }
     }
 
     fixedListener(event: MouseEvent): void {
@@ -1144,7 +1641,7 @@ export class Main {
         let x: string = element.tagName;
         let id: string | undefined;
         if ('TD' === x || 'INPUT' === x) {
-            let composed = event.composedPath();
+            let composed: EventTarget[] = event.composedPath();
             if ('TR' === (composed[0] as Element).tagName) {
                 id = (composed[0] as Element).id;
             } else if ('TR' === (composed[1] as Element).tagName) {
@@ -1172,7 +1669,7 @@ export class Main {
         let id: string | undefined;
         let lang: string | undefined;
         if ('TD' === x || 'INPUT' === x) {
-            let composed = event.composedPath();
+            let composed: EventTarget[] = event.composedPath();
             if ('TR' === (composed[0] as Element).tagName) {
                 id = (composed[0] as Element).id;
             } else if ('TR' === (composed[1] as Element).tagName) {
@@ -1193,25 +1690,31 @@ export class Main {
                 this.currentContent = undefined;
             }
             if (lang) {
-                this.currentLang = lang;
-                this.currentCell = (event.target as HTMLTableCellElement);
-                this.currentContent = this.currentCell.innerHTML;
-                if (this.currentCell.contentEditable !== 'true') {
-                    this.replaceSpan(this.currentCell);
-                }
-                this.currentCell.contentEditable = 'true';
-                this.currentCell.classList.add('editing');
-                this.currentCell.focus();
-                ipcRenderer.send('get-cell-properties', { id: this.currentId, lang: this.currentLang });
-                ipcRenderer.send('editing-started', { id: this.currentId, lang: this.currentLang });
+                this.startEditingCell(id, lang, event.target as HTMLTableCellElement);
             }
         }
+    }
+
+    startEditingCell(id: string, lang: string, cell: HTMLTableCellElement): void {
+        this.currentId = id;
+        this.currentLang = lang;
+        this.currentCell = cell;
+        this.currentContent = cell.innerHTML;
+        cell.style.width = getComputedStyle(cell).width;
+        if (cell.contentEditable !== 'true') {
+            this.replaceSpan(cell);
+        }
+        cell.contentEditable = 'true';
+        cell.classList.add('editing');
+        cell.focus();
+        ipcRenderer.send('get-cell-properties', { id: this.currentId, lang: this.currentLang });
+        ipcRenderer.send('editing-started', { id: this.currentId, lang: this.currentLang });
     }
 
     replaceSpan(cell: HTMLTableCellElement): void {
         let nodes: NodeListOf<ChildNode> = cell.childNodes;
         let length: number = nodes.length;
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             let node: Node = nodes[i];
             if (node.nodeType === Node.ELEMENT_NODE) {
                 if (node.nodeName === 'SPAN') {
@@ -1231,15 +1734,15 @@ export class Main {
         table.innerHTML = '';
         this.attributes = arg.attributes;
         let length: number = this.attributes.length;
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             let pair = this.attributes[i];
             let tr = document.createElement('tr');
             table.appendChild(tr);
-            let left = document.createElement('td');
+            let left: HTMLTableCellElement = document.createElement('td');
             left.style.whiteSpace = 'nowrap';
             left.textContent = pair[0];
             tr.appendChild(left);
-            let right = document.createElement('td');
+            let right: HTMLTableCellElement = document.createElement('td');
             right.textContent = pair[1];
             right.className = 'noWrap';
             right.classList.add('leftBorder');
@@ -1252,15 +1755,15 @@ export class Main {
         table.innerHTML = '';
         this.properties = arg.properties;
         length = this.properties.length
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             let pair = this.properties[i];
             let tr = document.createElement('tr');
             table.appendChild(tr);
-            let left = document.createElement('td');
+            let left: HTMLTableCellElement = document.createElement('td');
             left.textContent = pair[0];
             left.style.whiteSpace = 'nowrap';
             tr.appendChild(left);
-            let right = document.createElement('td');
+            let right: HTMLTableCellElement = document.createElement('td');
             right.textContent = pair[1];
             right.className = 'noWrap';
             right.classList.add('leftBorder');
@@ -1273,107 +1776,13 @@ export class Main {
         table.innerHTML = '';
         this.notes = arg.notes;
         length = this.notes.length;
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             let tr = document.createElement('tr');
             table.appendChild(tr);
-            let n = document.createElement('td');
+            let n: HTMLTableCellElement = document.createElement('td');
             n.textContent = this.notes[i];
             n.className = 'fill_width';
             tr.appendChild(n);
-        }
-    }
-
-    getSegments(): void {
-        ipcRenderer.send('get-segments', {
-            start: this.currentPage * this.unitsPage,
-            count: this.unitsPage
-        });
-    }
-
-    setFirstPage(): void {
-        this.currentPage = 0;
-        (document.getElementById('page') as HTMLInputElement).value = '1';
-    }
-
-    firstPage(): void {
-        if (this.currentCell?.isContentEditable) {
-            this.saveEdit();
-        }
-        this.currentPage = 0;
-        (document.getElementById('page') as HTMLInputElement).value = '1';
-        this.getSegments();
-    }
-
-    previousPage(): void {
-        if (this.currentPage > 0) {
-            if (this.currentCell?.isContentEditable) {
-                this.saveEdit();
-            }
-            this.currentPage--;
-            (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);
-            this.getSegments();
-        }
-    }
-
-    nextPage(): void {
-        if (this.currentPage < this.maxPage - 1) {
-            if (this.currentCell?.isContentEditable) {
-                this.saveEdit();
-            }
-            this.currentPage++;
-            (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);
-            this.getSegments();
-        }
-    }
-
-    lastPage(): void {
-        if (this.currentCell?.isContentEditable) {
-            this.saveEdit();
-        }
-        this.currentPage = this.maxPage - 1;
-        (document.getElementById('page') as HTMLInputElement).value = '' + this.maxPage;
-        this.getSegments();
-    }
-
-    setUnitsPage(event: KeyboardEvent): void {
-        if (!this.isLoaded) {
-            return;
-        }
-        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-            this.unitsPage = Number.parseInt((document.getElementById('units_page') as HTMLInputElement).value);
-            if (this.unitsPage < 1) {
-                this.unitsPage = 1;
-            }
-            if (this.unitsPage > this.unitsCount) {
-                this.unitsPage = this.unitsCount;
-            }
-            (document.getElementById('units_page') as HTMLInputElement).value = '' + this.unitsPage;
-            this.maxPage = Math.ceil(this.unitsCount / this.unitsPage);
-            (document.getElementById('pages') as HTMLSpanElement).innerText = '' + this.maxPage;
-            if (this.currentCell?.isContentEditable) {
-                this.saveEdit();
-            }
-            this.firstPage();
-        }
-    }
-
-    setPage(event: KeyboardEvent): void {
-        if (!this.isLoaded) {
-            return;
-        }
-        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-            this.currentPage = Number.parseInt((document.getElementById('page') as HTMLInputElement).value) - 1;
-            if (this.currentPage < 0) {
-                this.currentPage = 0;
-            }
-            if (this.currentPage > this.maxPage - 1) {
-                this.currentPage = this.maxPage - 1;
-            }
-            if (this.currentCell?.isContentEditable) {
-                this.saveEdit();
-            }
-            (document.getElementById('page') as HTMLInputElement).value = '' + (this.currentPage + 1);
-            this.getSegments();
         }
     }
 
@@ -1381,45 +1790,45 @@ export class Main {
         if (!this.isLoaded) {
             return;
         }
-        let selectAll = (document.getElementById('selectAll') as HTMLInputElement);
+        let selectAll: HTMLInputElement = (document.getElementById('selectAll') as HTMLInputElement);
         let collection: HTMLCollection = document.getElementsByClassName('rowCheck');
         let length: number = collection.length;
         for (let i = 0; i < length; i++) {
-            let check = collection[i] as HTMLInputElement;
+            let check: HTMLInputElement = collection[i] as HTMLInputElement;
             check.checked = selectAll.checked;
         }
     }
 
-    unitInserted(id: string): void {
-        let tr: HTMLTableRowElement = document.createElement('tr');
-        tr.id = id;
+    unitInserted(arg: { id: string, count: number }): void {
+        this.unitsCount = arg.count;
+        (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
+        this.count = this.UNITSLOAD > this.unitsCount ? this.unitsCount : this.UNITSLOAD;
+        this.start = this.unitsCount - this.count;
+        this.scroll = true;
+        this.scrollToLast = true;
+        this.pendingEditId = arg.id;
+        this.getSegments(this.start, this.count);
+    }
 
-        let td1: HTMLTableCellElement = document.createElement('td');
-        td1.classList.add('fixed');
-        td1.addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
-        tr.appendChild(td1);
+    segmentsReset(arg: { count: number, start: number }): void {
+        this.unitsCount = arg.count;
+        (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
 
-        let check: HTMLInputElement = document.createElement('input');
-        check.type = 'checkbox';
-        check.classList.add('rowCheck');
-        td1.appendChild(check);
-
-        let td2: HTMLTableCellElement = document.createElement('td');
-        td2.classList.add('fixed');
-        td2.innerText = '0';
-        td1.addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
-        tr.appendChild(td2);
-
-        let length: number = this.languages.length;
-        for (let index = 0; index < length; ++index) {
-            let td: HTMLTableCellElement = document.createElement('td');
-            td.lang = this.languages[index].code;
-            td.classList.add("lang");
-            td.contentEditable = 'false';
-            td.addEventListener('click', (ev: MouseEvent) => this.clickListener(ev));
-            tr.appendChild(td);
+        this.count = this.UNITSLOAD > this.unitsCount ? this.unitsCount : this.UNITSLOAD;
+        this.start = arg.start - (this.UNITSLOAD / 2);
+        if (this.start < 0) {
+            this.start = 0;
+        }
+        if (this.count + this.start >= this.unitsCount) {
+            this.start = this.unitsCount - this.count;
+            if (this.start < 0) {
+                this.start = 0;
+            }
         }
 
-        (document.getElementById('tableBody') as HTMLTableSectionElement).insertBefore(tr, (document.getElementById('tableBody') as HTMLTableSectionElement).firstChild);
+        this.scroll = true;
+        this.scrollToFirst = this.start === 0;
+        this.scrollToLast = this.start + this.count >= this.unitsCount;
+        this.getSegments(this.start, this.count);
     }
 }

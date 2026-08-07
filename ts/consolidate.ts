@@ -41,7 +41,9 @@ export class Consolidate {
             }
         });
         (document.getElementById('sourceLanguage') as HTMLSelectElement).focus();
-        ipcRenderer.send('consolidate-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'consolidate', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     filterLanguages(langs: Language[]): void {
@@ -56,6 +58,6 @@ export class Consolidate {
 
     consolidate(): void {
         let srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-        ipcRenderer.send('consolidate-units', { srcLang: srcLang });
+        ipcRenderer.send('consolidate-units', srcLang);
     }
 }

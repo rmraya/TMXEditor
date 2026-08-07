@@ -13,7 +13,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Découper un fichier TMX</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/split_file.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/split_file.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Découper un fichier TMX"</alt>
           </image> </stepresult>
       </step>

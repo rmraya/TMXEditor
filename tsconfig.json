@@ -10,10 +10,10 @@
         "sourceMap": true,
         "declaration": true,
         "outDir": "./js",
-        "baseUrl": ".",
+        "rootDir": "./ts",
         "paths": {
             "*": [
-                "node_modules/*"
+                "./node_modules/*"
             ]
         },
         "strict": true

@@ -41,7 +41,9 @@ export class RemoveSameAsSource {
             }
         });
         (document.getElementById('sourceLanguage') as HTMLSelectElement).focus();
-        ipcRenderer.send('removeSameAsSource-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'removeSameAsSource', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     filterLanguages(langs: Language[]): void {
@@ -56,6 +58,6 @@ export class RemoveSameAsSource {
 
     removeSameAsSource(): void {
         let srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-        ipcRenderer.send('remove-sameAsSource', { srcLang: srcLang });
+        ipcRenderer.send('remove-sameAsSource', srcLang);
     }
 }

@@ -1,6 +1,0 @@
-// Disable build cache globally
-buildCache {
-    local {
-        enabled = false
-    }
-}

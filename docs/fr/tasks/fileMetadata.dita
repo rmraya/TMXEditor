@@ -13,7 +13,7 @@
         <uicontrol>Fichier</uicontrol>
         <uicontrol>Métadonnées du fichier</uicontrol>
       </menucascade> dans le menu (ou cliquez sur le bouton <image height="16" href="../images/fileInfo.svg" placement="inline"/>&nbsp;<uicontrol>Métadonnées du fichier</uicontrol> dans la barre d’outils).</p>
-    <p>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/fileAttributes.png" placement="break" scale="80" align="center">
+    <p>La boîte de dialogue "Métadonnées du fichier" s’ouvre&nbsp;:<image href="../images/fileAttributes.png" placement="break" scale="60" align="center">
         <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
       </image></p>
     <section>
@@ -22,7 +22,7 @@
     </section>
     <section>
       <title>Propriétés du fichier</title>
-      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Propriétés</uicontrol> pour accéder aux propriétés du fichier. La boîte de dialogue affiche alors les propriétés du fichier.<image href="../images/fileProperties.png" placement="break" scale="80" align="center">
+      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Propriétés</uicontrol> pour accéder aux propriétés du fichier. La boîte de dialogue affiche alors les propriétés du fichier.<image href="../images/fileProperties.png" placement="break" scale="60" align="center">
           <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
         </image></p>
       <ul>
@@ -33,7 +33,7 @@
     </section>
     <section>
       <title>Notes sur le fichier</title>
-      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Notes</uicontrol> pour accéder aux notes relatives au fichier. La boîte de dialogue affiche alors les notes attachées au fichier.<image href="../images/fileNotes.png" placement="break" scale="80" align="center">
+      <p>Dans la boîte de dialogue <uicontrol>Métadonnées du fichier</uicontrol>, cliquez sur l’onglet <uicontrol>Notes</uicontrol> pour accéder aux notes relatives au fichier. La boîte de dialogue affiche alors les notes attachées au fichier.<image href="../images/fileNotes.png" placement="break" scale="60" align="center">
           <alt>Boîte de dialogue "Métadonnées du fichier"</alt>
         </image></p>
       <ul>

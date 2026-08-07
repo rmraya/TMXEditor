@@ -10,8 +10,12 @@
         <xref href="../tasks/fileMetadata.dita">Définir des attributs, des propriétés et des notes au niveau du fichier</xref>
       </li>
       <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/unitMetadata.dita">Définir des attributs, des propriétés et des notes au niveau de l’unité de traduction</xref>
+      </li>
+      <li>
         <image height="16" href="../images/maintenance.svg" placement="inline"/>
-        <xref href="../tasks/maintenanceDashboard.dita">Effectuer plusieurs tâches en une seule passe à l’aide du tableau de bord de maintenance</xref>
+        <xref href="../tasks/maintenanceDashboard.dita">Tableau de bord de maintenance</xref>
       </li>
       <li>
         <image height="16" href="../images/sortUnits.svg" placement="inline"/>
@@ -23,7 +27,7 @@
       </li>
       <li>
         <image height="16" href="../images/replaceTexts.svg" placement="inline"/>
-        <xref href="../tasks/search_replace.dita">Remplacer toutes les occurrences d’un texte</xref>
+        <xref href="../tasks/search_replace.dita">Rechercher et remplacer</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>

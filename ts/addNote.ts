@@ -31,7 +31,9 @@ export class AddNote {
                 ipcRenderer.send('close-addNote');
             }
         });
-        ipcRenderer.send('addNote-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'addNote', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     saveNote(): void {

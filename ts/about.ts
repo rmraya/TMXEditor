@@ -16,12 +16,15 @@ export class About {
 
     constructor() {
         ipcRenderer.send('get-theme');
-        ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, arg: any) => {
-            (document.getElementById('theme') as HTMLLinkElement).href = arg;
+        ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
+            (document.getElementById('theme') as HTMLLinkElement).href = css;
+            ipcRenderer.send('get-version');
         });
-        ipcRenderer.send('get-version');
-        ipcRenderer.on('set-version', (event: Electron.IpcRendererEvent, arg: any) => {
-            (document.getElementById('version') as HTMLTitleElement).innerHTML = arg;
+        ipcRenderer.on('set-version', (event: Electron.IpcRendererEvent, version: string) => {
+            (document.getElementById('version') as HTMLTitleElement).innerHTML = version;
+            setTimeout(() => {
+                ipcRenderer.send('set-height', { window: 'about', width: document.body.clientWidth, height: document.body.clientHeight });
+            }, 200);
         });
         (document.getElementById('system') as HTMLButtonElement).addEventListener('click', () => {
             ipcRenderer.send('system-info-clicked');
@@ -36,6 +39,5 @@ export class About {
                 ipcRenderer.send('close-about');
             }
         });
-        ipcRenderer.send('about-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 }

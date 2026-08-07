@@ -13,7 +13,7 @@
         <uicontrol>Archivo</uicontrol>
         <uicontrol>Propiedades del Archivo</uicontrol>
       </menucascade> en el menú principal o haga clic en el botón <image height="16" href="../images/fileInfo.svg" placement="inline"/> <uicontrol>Propiedades del Archivo</uicontrol> de la barra de herramientas superior.</p>
-    <p>Aparece el siguiente cuadro de diálogo:<image href="../images/fileAttributes.png" placement="break" scale="80" align="center">
+    <p>Aparece el siguiente cuadro de diálogo:<image href="../images/fileAttributes.png" placement="break" scale="60" align="center">
         <alt>Cuadro de diálogo Propiedades del Archivo</alt>
       </image></p>
     <section>
@@ -22,7 +22,7 @@
     </section>
     <section>
       <title>Propiedades a Nivel de Archivo</title>
-      <p>Para editar las propiedades a nivel de archivo, haga clic en la pestaña <uicontrol>Propiedades</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileProperties.png" placement="break" scale="80" align="center">
+      <p>Para editar las propiedades a nivel de archivo, haga clic en la pestaña <uicontrol>Propiedades</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileProperties.png" placement="break" scale="60" align="center">
           <alt>Cuadro de diálogo Propiedades del Archivo</alt>
         </image></p>
       <ul>
@@ -33,7 +33,7 @@
     </section>
     <section>
       <title>Notas a Nivel de Archivo</title>
-      <p>Para editar notas a nivel de archivo, haga clic en la pestaña <uicontrol>Notas</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileNotes.png" placement="break" scale="80" align="center">
+      <p>Para editar notas a nivel de archivo, haga clic en la pestaña <uicontrol>Notas</uicontrol> del cuadro de diálogo <uicontrol>Propiedades del Archivo</uicontrol>. El diálogo muestra esta vista:<image href="../images/fileNotes.png" placement="break" scale="60" align="center">
           <alt>Cuadro de diálogo Propiedades del Archivo</alt>
         </image></p>
       <ul>

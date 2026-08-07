@@ -35,7 +35,9 @@ export class NewFile {
                 ipcRenderer.send('close-newFile');
             }
         });
-        ipcRenderer.send('newFile-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'newFile', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     languagesList(langs: Language[]): void {

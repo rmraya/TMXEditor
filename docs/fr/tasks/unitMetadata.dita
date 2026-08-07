@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic xml:lang="fr" id="unitMetadata">
+  <title>Définir des attributs, des propriétés et des notes au niveau de l’unité de traduction</title>
+  <body>
+    <p>Chaque élément <codeph>&lt;tu&gt;</codeph> d’un document TMX peut posséder ses propres attributs, propriétés et notes, indépendamment des métadonnées au niveau du fichier décrites dans <xref href="fileMetadata.dita">Définir des attributs, des propriétés et des notes au niveau du fichier</xref>.</p>
+    <p>Cliquez sur n’importe quelle cellule de l’unité de traduction à modifier pour la sélectionner, puis utilisez l’une des options suivantes du menu <uicontrol>Édition</uicontrol>.</p>
+    <section>
+      <title>Attributs de l’unité de traduction</title>
+      <p>Sélectionnez <menucascade>
+          <uicontrol>Édition</uicontrol>
+          <uicontrol>Modifier les attributs</uicontrol>
+        </menucascade> dans le menu.</p>
+      <p>La boîte de dialogue "Attributs de l’unité de traduction" s’ouvre&nbsp;:<image href="../images/unitAttributes.png" placement="break" scale="60" align="center">
+          <alt>Boîte de dialogue "Attributs de l’unité de traduction"</alt>
+        </image></p>
+      <p>Modifiez le texte affiché dans les champs, sélectionnez les valeurs appropriées dans les listes déroulantes, puis cliquez sur le bouton <uicontrol>Enregistrer les attributs</uicontrol>.</p>
+    </section>
+    <section>
+      <title>Propriétés de l’unité de traduction</title>
+      <p>Sélectionnez <menucascade>
+          <uicontrol>Édition</uicontrol>
+          <uicontrol>Modifier les propriétés</uicontrol>
+        </menucascade> dans le menu.</p>
+      <p>La boîte de dialogue "Propriétés de l’unité de traduction" s’ouvre&nbsp;:<image href="../images/unitProperties.png" placement="break" scale="60" align="center">
+          <alt>Boîte de dialogue "Propriétés de l’unité de traduction"</alt>
+        </image></p>
+      <ul>
+        <li>Pour ajouter une propriété, cliquez sur le bouton <uicontrol>Ajouter une propriété</uicontrol>, puis saisissez le type et la valeur de la propriété à ajouter.</li>
+        <li>Pour supprimer une propriété, cliquez sur le bouton <uicontrol/>Supprimer la propriété<image height="16" href="../images/remove.svg" placement="inline"/> en regard de la propriété à supprimer.</li>
+        <li>Pour enregistrer vos modifications, cliquez sur le bouton <uicontrol>Enregistrer les propriétés</uicontrol>.</li>
+      </ul>
+    </section>
+    <section>
+      <title>Notes sur l’unité de traduction</title>
+      <p>Sélectionnez <menucascade>
+          <uicontrol>Édition</uicontrol>
+          <uicontrol>Modifier les notes</uicontrol>
+        </menucascade> dans le menu.</p>
+      <p>La boîte de dialogue "Notes sur l’unité de traduction" s’ouvre&nbsp;:<image href="../images/unitNotes.png" placement="break" scale="60" align="center">
+          <alt>Boîte de dialogue "Notes sur l’unité de traduction"</alt>
+        </image></p>
+      <ul>
+        <li>Pour ajouter une note, cliquez sur le bouton <uicontrol>Ajouter une note</uicontrol>, puis saisissez la note à ajouter.</li>
+        <li>Pour supprimer une note, cliquez sur le bouton <uicontrol/>Supprimer la note<image height="16" href="../images/remove.svg" placement="inline"/> en regard de la note à supprimer.</li>
+        <li>Pour enregistrer vos modifications, cliquez sur le bouton <uicontrol>Enregistrer les notes</uicontrol>.</li>
+      </ul>
+    </section>
+  </body>
+</topic>

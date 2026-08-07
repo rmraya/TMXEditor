@@ -81,6 +81,7 @@
     "Save": "Guardar",
     "tuAttributes": "Atributos UT",
     "openTmxFile": "Abrir archivo TMX",
+    "untitled": "Sin título.tmx",
     "Merging": "Combinando...",
     "fileNeeds3Languages": "El archivo necesita al menos 3 idiomas",
     "Yes": "Si",
@@ -143,7 +144,7 @@
     "InsertUnit": "Insertar Unidad de Traducción",
     "CancelEdit": "Cancelar Cambios",
     "Settings": "Configuración",
-    "SaveAs": "Guardar Como",
+    "SaveAs": "Guardar Como...",
     "ConfirmEdit": "Confirmar Cambios",
     "Cut": "Cortar",
     "HelpMenu": "A&yuda",
@@ -183,7 +184,7 @@
     "ConvertCSV": "Convertir Archivo CSV/Texto Delimitado a TMX",
     "DeleteSelected": "Eliminar Unidades Seleccionadas",
     "ChangeSourceLanguage": "Cambiar Idioma Origen...",
-    "ReplaceText": "Reemplazar Texto...",
+    "ReplaceText": "Buscar/Reemplazar Texto",
     "RemoveDuplicates": "Eliminar Unidades Duplicadas",
     "EditProperties": "Editar Propiedades",
     "EditNotes": "Editar Notas",
@@ -217,7 +218,7 @@
   },
   "requestEvaluation": {
     "enterEmail": "Introduzca email",
-    "enterLasttName": "Introduzca apellido",
+    "enterLastName": "Introduzca apellido",
     "repeatEmail": "Repetir Email",
     "differentEmails": "Los emails son diferentes",
     "validEmail": "Introduzca un email válido",
@@ -230,9 +231,19 @@
     "invalidXML": "Error al analizar el archivo TBX: XML no válido",
     "noRootElement": "Error al analizar el archivo TBX: No se encontró un elemento raíz"
   },
+  "excel2tmx": {
+    "sheetNotFound": "Hoja '{0}' no encontrada en el archivo Excel"
+  },
+  "csv2tmx": {
+    "columnMismatch": "La fila no tiene el mismo número de columnas que los idiomas seleccionados"
+  },
   "searchReplace": {
     "enterReplaceText": "Introduzca texto de sustitución",
-    "enterSearchText": "Introduzca el texto a buscar"
+    "enterSearchText": "Introduzca el texto a buscar",
+    "textNotFound": "Texto no encontrado",
+    "invalidRegex": "Expresión regular no válida",
+    "confirmReplaceAll": "¿Reemplazar todas las ocurrencias del texto de búsqueda? Esta acción no se puede deshacer.",
+    "replacementsMade": "{0} reemplazo(s) realizado(s)"
   },
   "addLanguage": {"selectLanguageWarning": "Seleccione idioma"},
   "convertCSV": {
@@ -246,5 +257,37 @@
   "convertTBX": {
     "selectTbx": "Seleccione archivo TBX",
     "selectTmx": "Seleccione archivo TMX"
+  },
+  "versionhandler": {
+    "unexpectedroot": "Elemento raíz inesperado: {0}"
+  },
+  "tmxvalidator": {
+    "noversion": "Falta el atributo de versión en el elemento raíz",
+    "invalidversion": "Versión de TMX no válida: {0}"
+  },
+  "validatinghandler": {
+    "dtdnotresolved": "No se puede resolver la DTD con publicId='{0}' systemId='{1}'",
+    "missingversion": "Falta versión de TMX",
+    "incorrectversion": "Versión incorrecta de TMX: {0}",
+    "notmxdoc": "El archivo seleccionado no es un documento TMX",
+    "nosrclang": "Idioma origen no declarado",
+    "invalidsrclang": "Idioma de origen no válido '{0}'",
+    "invalidxattr": "Valor incorrecto para el atributo \"x\": '{0}'",
+    "duplicatexattr": "Valor duplicado para el atributo \"x\": '{0}' en '{1}'",
+    "invalidlang": "Código de idioma no válido '{0}'",
+    "invalidusagecount": "Valor incorrecto para \"usagecount\": '{0}'",
+    "invaliddateformat": "Formato de fecha no válido '{0}'",
+    "unbalancedbptept": "Número desequilibrado de elementos <bpt>/<ept>\n\n{0}",
+    "unmatchedbptept": "Elemento <bpt>/<ept> sin coincidencia <ept>/<bpt>\n\n{0}",
+    "incorrectxmatching": "Correspondencia \"x\" incorrecta",
+    "tuvnolang": "<tuv> sin atributo de idioma",
+    "tuvmissingsrclang": "<tu> no tiene <tuv> con idioma establecido en '{0}'",
+    "invalidibpt": "Valor incorrecto para el atributo 'i' en un elemento <bpt>\n\n{0}",
+    "duplicateibpt": "Valor duplicado para el atributo 'i' en un elemento <bpt>\n\n{0}",
+    "invalidiept": "Valor incorrecto para el atributo 'i' en un elemento <ept>\n\n{0}",
+        "mismatchedi": "Valor no coincidente para el atributo 'i' en un elemento <bpt>/<ept>\n\n{0}",
+        "invalidbodyelement": "Elemento <{0}> no válido en <body>",
+        "bodybeforeheader": "El elemento <body> no puede aparecer antes de <header>",
+        "missingbody": "El documento <tmx> no tiene el elemento <body>"
   }
 }

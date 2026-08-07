@@ -18,7 +18,7 @@
               <uicontrol>Configuración</uicontrol>
             </menucascade>.</choice>
         </choices>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/preferences.png" placement="break" scale="80" align="center"/> </stepresult>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/preferences.png" placement="break" scale="60" align="center"/> </stepresult>
       </step>
       <step>
         <cmd>Utilice la lista desplegable <uicontrol>Idioma de la Aplicación</uicontrol> para seleccionar el idioma utilizado en la interfaz gráfica de usuario de TMXEditor.</cmd>
@@ -44,7 +44,6 @@
         <cmd>Haga clic en el botón <uicontrol>Guardar Preferencias</uicontrol> para guardar y activar la configuración seleccionada.</cmd>
       </step>
     </steps>
-    <result>Los cambios de tema se aplican inmediatamente. Cambiar el idioma de la aplicación
-      requiere un reinicio. La sangría se aplica la próxima vez que se guarda un archivo.</result>
+    <result>Los cambios de tema se aplican inmediatamente. Cambiar el idioma de la aplicación requiere un reinicio. La configuración de uso de memoria se aplica cuando se abre un nuevo archivo TMX. La sangría se aplica la próxima vez que se guarda un archivo.</result>
   </taskbody>
 </task>

@@ -3,7 +3,8 @@
 <bookmap xml:lang="fr">
   <booktitle>
     <mainbooktitle>
-      <image href="images/cover.png" placement="break" scalefit="yes"/>
+      <ph>Guide de l'utilisateur TMXEditor</ph>
+      <image href="images/cover.png" placement="break"/>
     </mainbooktitle>
     <booktitlealt>Copyright © 2018-2026 Maxprograms</booktitlealt>
   </booktitle>
@@ -13,7 +14,6 @@
     </booklists>
   </frontmatter>
   <chapter href="concepts/introduction.dita">
-    <topicref href="concepts/features.dita"/>
     <topicref href="concepts/supported_platforms.dita"/>
   </chapter>
   <chapter href="concepts/gettingStarted.dita">
@@ -22,6 +22,7 @@
   </chapter>
   <chapter href="concepts/maintenanceTasks.dita">
     <topicref href="tasks/fileMetadata.dita"/>
+    <topicref href="tasks/unitMetadata.dita"/>
     <topicref href="tasks/maintenanceDashboard.dita"/>
     <topicref href="tasks/sortData.dita"/>
     <topicref href="tasks/filterUnits.dita"/>
@@ -51,6 +52,7 @@
     <topicref href="tasks/clean_characters.dita"/>
   </chapter>
   <chapter href="tasks/preferences.dita"/>
+  <chapter href="tasks/checkForUpdates.dita"/>
   <chapter href="concepts/opensource_subscription.dita">
     <topicref href="tasks/subscription_registration.dita"/>
     <topicref href="tasks/subscription_renewal.dita"/>

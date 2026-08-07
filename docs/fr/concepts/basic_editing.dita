@@ -30,10 +30,16 @@
         </ol> <note>Pour sélectionner ou désélectionner toutes les unités de traductions du fichier, cochez la case en haut à gauche.</note></li>
       <li><xref href="../tasks/filterUnits.dita">Filtrer les unités de traduction</xref> pour effectuer une recherche de texte dans le fichier.</li>
       <li><xref href="../tasks/sortData.dita">Trier les unités de traduction</xref> pour afficher les unités de traduction selon une des langues du fichier.</li>
+      <li><xref href="../tasks/search_replace.dita">Rechercher et remplacer</xref> pour rechercher ou remplacer du texte dans le fichier.</li>
+      <li><xref href="../tasks/unitMetadata.dita">Modifier les attributs, Modifier les propriétés et Modifier les notes</xref> dans le menu <uicontrol>Édition</uicontrol> permettent de modifier les métadonnées associées à l’unité de traduction actuellement sélectionnée.</li>
     </ul>
-    <p>Pour enregistrer vos modifications dans le fichier TMX, sélectionnez <menucascade>
+    <p>La barre d’outils supérieure affiche un compteur <uicontrol>Unités</uicontrol> indiquant le nombre total d’unités de traduction du fichier. Ce compteur est mis à jour automatiquement lors de l’ajout ou de la suppression d’unités.</p>
+    <p>Une fois les modifications apportées au fichier TMX, sélectionnez <menucascade>
         <uicontrol>Fichier</uicontrol>
         <uicontrol>Enregistrer</uicontrol>
-      </menucascade> dans le menu ([<userinput>Ctrl+S</userinput>] sur Windows/Linux, [<userinput>Cmd+S</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/saveFile.svg" placement="inline"/>&nbsp;<uicontrol>Enregistrer</uicontrol> dans la barre d’outils.</p>
+      </menucascade> dans le menu ([<userinput>Ctrl+S</userinput>] sur Windows/Linux, [<userinput>Cmd+S</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/saveFile.svg" placement="inline"/> <uicontrol>Enregistrer</uicontrol> dans la barre d’outils, pour enregistrer vos modifications. Sélectionnez <menucascade>
+        <uicontrol>Fichier</uicontrol>
+        <uicontrol>Enregistrer sous...</uicontrol>
+      </menucascade> si vous voulez enregistrer les modifications sous un autre nom ou à un autre emplacement.</p>
   </conbody>
 </concept>

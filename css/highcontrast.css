@@ -392,6 +392,18 @@ button:hover {
 	transition-delay: 0s;
 }
 
+button:disabled {
+	background: var(--gray160);
+	border: 1px solid var(--gray160);
+	color: var(--gray30);
+}
+
+button:disabled:hover {
+	background: var(--gray160);
+	border: 1px solid var(--gray160);
+	color: var(--gray30);
+}
+
 .row {
 	display: flex;
 	flex-direction: row;

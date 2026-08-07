@@ -48,13 +48,15 @@ export class Notes {
                 ipcRenderer.send('close-notes');
             }
         });
-        ipcRenderer.send('notes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'notes', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     drawNotes(): void {
         let table: HTMLTableElement = document.getElementById('notesTable') as HTMLTableElement;
         table.innerHTML = '';
-        let length = this.notes.length
+        let length: number = this.notes.length;
         for (let i = 0; i < length; i++) {
             let tr: HTMLTableRowElement = document.createElement('tr');
             table.appendChild(tr);
@@ -81,7 +83,7 @@ export class Notes {
     }
 
     saveNotes(): void {
-        let lang = this.currentType === 'TU' ? '' : this.currentType;
+        let lang: string = this.currentType === 'TU' ? '' : this.currentType;
         let arg = {
             id: this.currentId,
             lang: lang,
@@ -102,7 +104,7 @@ export class Notes {
 
     removeNote(id: string): void {
         let copy: string[] = [];
-        let length = this.notes.length
+        let length: number = this.notes.length;
         for (let i = 0; i < length; i++) {
             if (id !== 'note_' + i) {
                 copy.push(this.notes[i]);

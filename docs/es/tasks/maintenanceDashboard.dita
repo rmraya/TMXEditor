@@ -16,7 +16,7 @@
             <uicontrol>Tareas</uicontrol>
             <uicontrol>Panel de Mantenimiento</uicontrol>
           </menucascade>  o haga clic en el botón <image height="16" href="../images/maintenance.svg" placement="inline"/> <uicontrol>Panel de Mantenimiento</uicontrol> de la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/maintenance_dashboard.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Panel de Mantenimiento</alt>
           </image></stepresult>
       </step>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="fr" id="checkForUpdates">
+  <title>Vérifier les mises à jour</title>
+  <shortdesc>Marche à suivre pour vérifier si une nouvelle version de TMXEditor est disponible.</shortdesc>
+  <taskbody>
+    <context>
+      <p>TMXEditor vérifie automatiquement l’existence de nouvelles versions au démarrage de l’application. Vous pouvez également lancer cette vérification manuellement à tout moment.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>Dans le menu, sélectionnez <menucascade>
+            <uicontrol>Aide</uicontrol>
+            <uicontrol>Vérifier les mises à jour...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Si une nouvelle version est disponible, la boîte de dialogue "Mise à jour de l’application" s’ouvre&nbsp;:<image href="../images/updates.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue "Mise à jour de l’application"</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Cliquez sur le bouton <uicontrol>Historique des versions</uicontrol> pour consulter le détail des modifications apportées dans la nouvelle version, ou cliquez sur le bouton <uicontrol>Télécharger la mise à jour</uicontrol> pour la télécharger.</cmd>
+      </step>
+    </steps>
+    <result>Une fois la mise à jour téléchargée, suivez les instructions fournies pour votre plateforme afin d’installer la nouvelle version.</result>
+  </taskbody>
+</task>

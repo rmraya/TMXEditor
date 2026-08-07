@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task xml:lang="es" id="checkForUpdates">
+  <title>Buscar Actualizaciones</title>
+  <shortdesc>Siga estos pasos para comprobar si hay una nueva versión de TMXEditor disponible.</shortdesc>
+  <taskbody>
+    <context>
+      <p>TMXEditor busca nuevas versiones automáticamente cuando se inicia la aplicación. También puede buscar actualizaciones manualmente en cualquier momento.</p>
+    </context>
+    <steps>
+      <step>
+        <cmd>En el menú principal, seleccione <menucascade>
+            <uicontrol>Ayuda</uicontrol>
+            <uicontrol>Buscar Actualizaciones...</uicontrol>
+          </menucascade>.</cmd>
+        <stepresult>Si hay una nueva versión disponible, aparece el siguiente cuadro de diálogo:<image href="../images/updates.png" placement="break" scale="60" align="center">
+            <alt>Cuadro de diálogo de Actualizaciones de Software</alt>
+          </image> </stepresult>
+      </step>
+      <step>
+        <cmd>Haga clic en el botón <uicontrol>Ver Historial</uicontrol> para revisar lo que cambió en la nueva versión, o haga clic en el botón <uicontrol>Descargar Actualización</uicontrol> para descargarlo.</cmd>
+      </step>
+    </steps>
+    <result>Una vez descargada la actualización, siga las instrucciones proporcionadas para su plataforma para instalar la nueva versión.</result>
+  </taskbody>
+</task>

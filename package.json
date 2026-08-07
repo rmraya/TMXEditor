@@ -1,7 +1,7 @@
 {
     "name": "tmxeditor",
     "productName": "TMXEditor",
-    "version": "3.7.0",
+    "version": "4.0.0",
     "description": "TMX Editor",
     "main": "js/app.js",
     "scripts": {
@@ -20,12 +20,16 @@
         "url": "https://github.com/maxprograms-com/TMXEditor.git"
     },
     "devDependencies": {
-        "electron": "^40.6.1",
-        "typescript": "^5.9.3"
+        "electron": "^43.3.0",
+        "typescript": "^6.0.3"
     },
     "dependencies": {
-        "typesxml": "^2.0.0",
-        "typesbcp47": "^1.21.0",
-        "sdltm": "^2.3.0"
+        "sdltm": "^2.5.1",
+        "typesbcp47": "^1.24.2",
+        "typesexcel": "^1.2.0",
+        "typesxml": "^2.4.1"
+    },
+    "allowScripts": {
+        "electron@43.2.0": true
     }
 }

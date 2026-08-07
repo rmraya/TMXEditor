@@ -41,7 +41,9 @@ export class RemoveUntranslated {
             }
         });
         (document.getElementById('sourceLanguage') as HTMLSelectElement).focus();
-        ipcRenderer.send('removeUntranslated-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'removeUntranslated', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     filterLanguages(langs: Language[]): void {
@@ -56,6 +58,6 @@ export class RemoveUntranslated {
 
     removeUntranslated(): void {
         let srcLang: string = (document.getElementById('sourceLanguage') as HTMLSelectElement).value;
-        ipcRenderer.send('remove-untranslated', { srcLang: srcLang });
+        ipcRenderer.send('remove-untranslated', srcLang);
     }
 }

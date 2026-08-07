@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="checkForUpdates">
+    <title>Check for Updates</title>
+    <shortdesc>Follow these steps to check if a new version of TMXEditor is available.</shortdesc>
+    <taskbody>
+        <context>
+            <p>TMXEditor checks for new versions automatically when the application starts. You
+                can also check for updates manually at any time.</p>
+        </context>
+        <steps>
+            <step>
+                <cmd>In main menu, select <menucascade>
+                        <uicontrol>Help</uicontrol>
+                        <uicontrol>Check for Updates...</uicontrol>
+                    </menucascade>.</cmd>
+                <stepresult>If a new version is available, the following dialog appears:<image
+                        href="../images/updates.png" placement="break" scale="60" align="center">
+                        <alt>Software Updates Dialog</alt>
+                    </image>
+                </stepresult>
+            </step>
+            <step>
+                <cmd>Click the <uicontrol>View Release History</uicontrol> button to review what
+                    changed in the new version, or click the <uicontrol>Download
+                        Update</uicontrol> button to download it.</cmd>
+            </step>
+        </steps>
+        <result>Once the update is downloaded, follow the instructions provided for your platform
+            to install the new version.</result>
+    </taskbody>
+</task>

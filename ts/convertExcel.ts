@@ -58,20 +58,22 @@ export class ConvertExcel {
         (document.getElementById('setLanguages') as HTMLButtonElement).addEventListener('click', () => {
             this.getLanguages();
         });
-        ipcRenderer.send('convertExcel-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'convertExcel', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
-    setExcelFile(arg: string): void {
-        let excelFile = (document.getElementById('excelFile') as HTMLInputElement);
-        excelFile.value = arg;
+    setExcelFile(file: string): void {
+        let excelFile: HTMLInputElement = (document.getElementById('excelFile') as HTMLInputElement);
+        excelFile.value = file;
 
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            let index: number = arg.lastIndexOf('.');
+            let index: number = file.lastIndexOf('.');
             if (index !== -1) {
-                tmxFile.value = arg.substring(0, index) + '.tmx';
+                tmxFile.value = file.substring(0, index) + '.tmx';
             } else {
-                tmxFile.value = arg + '.tmx';
+                tmxFile.value = file + '.tmx';
             }
         }
         this.refreshPreview();
@@ -95,10 +97,7 @@ export class ConvertExcel {
         if (excelFile.value === '') {
             return;
         }
-        let arg = {
-            excelFile: excelFile.value,
-        }
-        ipcRenderer.send('get-excel-preview', arg);
+        ipcRenderer.send('get-excel-preview', excelFile.value);
     }
 
     setPreview(data: any[]): void {
@@ -113,11 +112,11 @@ export class ConvertExcel {
             return;
         }
         let options: string = '';
-        for (let i = 0; i < data.length; i++) {
+        for (let i: number = 0; i < data.length; i++) {
             options = options + '<option value="' + i + '">' + data[i].name + '</option>';
         }
         sheetSelect.innerHTML = options;
-        for (let i = 0; i < data.length; i++) {
+        for (let i: number = 0; i < data.length; i++) {
             let sheet: any = data[i];
             let sheetData: any = sheet.data;
             let previewTable: HTMLTableElement = document.createElement('table');
@@ -126,16 +125,16 @@ export class ConvertExcel {
             let headRow: HTMLTableRowElement = document.createElement('tr');
             thead.appendChild(headRow);
             previewTable.appendChild(thead);
-            for (let h = 0; h < sheet.columns; h++) {
+            for (let h: number = 0; h < sheet.columns; h++) {
                 let th: HTMLTableCellElement = document.createElement('th');
                 th.id = sheetData[0][h];
                 th.innerText = sheetData[0][h];
                 headRow.appendChild(th);
             }
-            for (let h = 1; h < sheetData.length; h++) {
+            for (let h: number = 1; h < sheetData.length; h++) {
                 let tr: HTMLTableRowElement = document.createElement('tr');
                 previewTable.appendChild(tr);
-                for (let j = 0; j < sheet.columns; j++) {
+                for (let j: number = 0; j < sheet.columns; j++) {
                     let td: HTMLTableCellElement = document.createElement('td');
                     td.innerText = sheetData[h][j];
                     tr.appendChild(td);
@@ -205,7 +204,7 @@ export class ConvertExcel {
         }
         let sheetSelect: HTMLSelectElement = document.getElementById('sheetSelect') as HTMLSelectElement;
         let selected: string = sheetSelect.selectedOptions[0].text;
-        let arg = {
+        let arg: any = {
             excelFile: excelFile.value,
             tmxFile: tmxFile.value,
             sheet: selected,

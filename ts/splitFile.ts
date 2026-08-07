@@ -37,7 +37,9 @@ export class SplitFile {
             }
         });
         (document.getElementById('file') as HTMLInputElement).focus();
-        ipcRenderer.send('splitFile-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'splitFile', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     splitFile(): void {
@@ -46,7 +48,7 @@ export class SplitFile {
             ipcRenderer.send('show-message', { type: 'warning', group: 'splitFile', key: 'selectTmx', parent: 'splitFile' });
             return;
         }
-        let parts = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
+        let parts: number = Number.parseInt((document.getElementById('parts') as HTMLInputElement).value);
         ipcRenderer.send('split-tmx', { file: file, parts: parts });
     }
 

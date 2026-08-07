@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="untitled1">
+<task id="subscription_renewal">
     <title>Subscription Renewal</title>
     <shortdesc></shortdesc>
     <taskbody>
@@ -14,7 +14,7 @@
                         Subscription...</uicontrol>
                 </menucascade>.</cmd>
                 <stepresult>The following dialog appears:<image
-                        href="../images/register_subscription.png" placement="break" scale="80"
+                        href="../images/register_subscription.png" placement="break" scale="60"
                         align="center"><alt>Register Subscription Dialog</alt></image>
                 </stepresult>
             </step>
@@ -30,7 +30,7 @@
                         Key</uicontrol> text box and click the <uicontrol>Register
                         Subscription</uicontrol> button.</cmd>
                 <stepresult>On registration success, The following dialog appears:<image
-                        href="../images/subscription_registered.png" placement="break" scale="80"
+                        href="../images/subscription_registered.png" placement="break" scale="60"
                         align="center">
                         <alt>Subscription Registered Dialog</alt>
                     </image>
