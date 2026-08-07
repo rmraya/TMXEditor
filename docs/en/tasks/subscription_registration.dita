@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
-<task id="untitled1">
+<task id="subscription_registration">
     <title>First Registration - Evaluation Request</title>
     <shortdesc/>
     <taskbody>
@@ -26,7 +26,7 @@
                 <cmd>If you don't have a subscription key and wish to test the program during 7
                     days, click the <uicontrol>Request Evaluation Key</uicontrol> button.</cmd>
                 <stepresult> The following dialog appears:<image href="../images/trial_request.png"
-                        placement="break" scale="80" align="center">
+                        placement="break" scale="60" align="center">
                         <alt>Request Evaluation Key Dialog</alt>
                     </image>
                 </stepresult>

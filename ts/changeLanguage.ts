@@ -44,7 +44,9 @@ export class ChangeLanguages {
             }
         });
         (document.getElementById('currentLanguage') as HTMLSelectElement).focus();
-        ipcRenderer.send('changeLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'changeLanguage', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     languageList(langs: Language[]): void {

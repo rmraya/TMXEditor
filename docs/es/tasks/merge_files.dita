@@ -10,7 +10,7 @@
             <uicontrol>Archivo</uicontrol>
             <uicontrol>Combinar Archivos TMX...</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/merge_files.png" placement="break" scale="80" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/merge_files.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Combinar Archivos TMX</alt>
           </image> </stepresult>
       </step>
@@ -19,7 +19,7 @@
       </step>
       <step>
         <cmd>Utilice el botón <uicontrol>Añadir Archivos</uicontrol> para seleccionar los archivos que se van a combinar desde el sistema de archivos.</cmd>
-        <stepresult>El dialogo muestra los archivos añadidos:<image href="../images/merge_dialog.png" placement="break" scale="80" align="center">
+        <stepresult>El dialogo muestra los archivos añadidos:<image href="../images/merge_dialog.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Combinar Archivos TMX</alt>
           </image> </stepresult>
       </step>
@@ -27,9 +27,12 @@
         <cmd>Si desea eliminar archivos de la lista, haga clic en los correspondientes botones <uicontrol>Eliminar Archivo</uicontrol> (<image height="16" href="../images/remove.svg" placement="inline"/>) de la columna situada más a la izquierda.</cmd>
       </step>
       <step>
+        <cmd>Seleccione la casilla de verificación <uicontrol>Abrir Archivo TMX Generado</uicontrol> si desea que el archivo combinado se abra automáticamente en el editor una vez que se complete la combinación.</cmd>
+      </step>
+      <step>
         <cmd>Haga clic en el botón <uicontrol>Combinar Archivos TMX</uicontrol>.</cmd>
       </step>
     </steps>
-    <result>Se muestra un indicador de progreso mientras se crea un archivo TMX que contiene datos de todos los archivos seleccionados en la ubicación indicada.</result>
+    <result>Se muestra un cuadro de diálogo de progreso mientras se crea un archivo TMX que contiene datos de todos los archivos seleccionados en la ubicación indicada. Si se seleccionó la casilla de verificación <uicontrol>Abrir Archivo TMX Generado</uicontrol>, el nuevo archivo se abre automáticamente en el editor.</result>
   </taskbody>
 </task>

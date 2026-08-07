@@ -42,7 +42,9 @@ export class SortUnits {
             }
         });
         (document.getElementById('sortLanguage') as HTMLSelectElement).focus();
-        ipcRenderer.send('sortUnits-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'sortUnits', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     filterLanguages(langs: Language[]): void {
@@ -62,12 +64,16 @@ export class SortUnits {
         if (arg.ascending != undefined) {
             (document.getElementById('descending') as HTMLInputElement).checked = !arg.ascending;
         }
+        if (arg.caseSensitiveSort != undefined) {
+            (document.getElementById('caseSensitiveSort') as HTMLInputElement).checked = arg.caseSensitiveSort;
+        }
     }
 
     sort(): void {
         let language: string = (document.getElementById('sortLanguage') as HTMLSelectElement).value;
         let desc: boolean = (document.getElementById('descending') as HTMLInputElement).checked;
-        ipcRenderer.send('set-sort', { sortLanguage: language, ascending: !desc });
+        let caseSensitiveSort: boolean = (document.getElementById('caseSensitiveSort') as HTMLInputElement).checked;
+        ipcRenderer.send('set-sort', { sortLanguage: language, ascending: !desc, caseSensitiveSort: caseSensitiveSort });
     }
 
     clearSort(): void {

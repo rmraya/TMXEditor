@@ -10,27 +10,36 @@
  *     Maxprograms - initial API and implementation
  *******************************************************************************/
 
-import { ChildProcessWithoutNullStreams, execFileSync, spawn } from "child_process";
-import { BrowserWindow, ClientRequest, IpcMainEvent, Menu, MenuItem, MessageBoxReturnValue, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, app, dialog, ipcMain, nativeTheme, net, session, shell } from "electron";
+import { BrowserWindow, IpcMainEvent, Menu, MenuItem, MessageBoxReturnValue, OpenDialogReturnValue, Rectangle, SaveDialogReturnValue, app, dialog, ipcMain, nativeTheme, net, session, shell } from "electron";
 import { IncomingMessage } from "electron/main";
 import { appendFileSync, existsSync, mkdirSync, readFile, readFileSync, rmSync, unlinkSync, writeFile, writeFileSync } from "fs";
+import { basename, join } from 'node:path';
 import path from "path";
-import { join } from 'node:path';
 import { TMReader, TMReaderResult } from "sdltm";
 import { LanguageUtils } from "typesbcp47";
+import { Csv2Tmx } from "./csv/csv2tmx.js";
+import { Tmx2Csv } from "./csv/tmx2csv.js";
+import { Excel2Tmx } from "./excel/excel2tmx.js";
+import { Tmx2Excel } from "./excel/tmx2excel.js";
 import { I18n } from "./i18n.js";
 import { Language } from "./language.js";
 import { Locations, Point } from "./locations.js";
 import { Preferences } from "./preferences.js";
-import { Tbx2Tmx } from "./tbx2tmx.js";
+import { Tbx2Tmx } from "./tbx/tbx2tmx.js";
+import { Tmx2Merge } from "./tmx/tmx2merge.js";
+import { Tmx2Split } from "./tmx/tmx2split.js";
+import { TmxCleaner } from "./tmx/tmxCleaner.js";
+import { SegmentFilter, TMXModel, TuData } from "./tmx/tmxModel.js";
+import { TmxUtils } from "./tmx/tmxUtils.js";
+import { Validator } from "./tmx/validator.js";
+import { copyFileSync } from "node:fs";
+
+interface SegmentsRequest {
+    start: number;
+    count: number;
+}
 
 const SUCCESS: string = 'Success';
-const LOADING: string = 'Loading';
-const COMPLETED: string = 'Completed';
-const ERROR: string = 'Error';
-const EXPIRED: string = 'Expired';
-const SAVING: string = 'Saving';
-const PROCESSING: string = 'Processing';
 
 class App {
 
@@ -67,20 +76,24 @@ class App {
     static excelLanguagesWindow: BrowserWindow;
     static systemInfoWindow: BrowserWindow;
 
-    ls: ChildProcessWithoutNullStreams;
     stopping: boolean = false;
     static shouldQuit: boolean = false;
 
-    static javapath: string = path.join(app.getAppPath(), 'bin', 'java');
     static iconPath: string;
 
     static saved: boolean = true;
     static shouldClose: boolean = false;
+    static onFileClosed: (() => void) | undefined = undefined;
+    static fileToOpen: string = '';
+    static fileToOpenNeedsName: boolean = false;
+    static waitingForEditCheck: boolean = false;
+    static waitingForEditFlush: boolean = false;
+    static pendingEditCheckResume: ((changed: boolean) => void) | undefined = undefined;
     static currentFile: string = '';
-    static currentDefaults: any;
+    static currentDefaults: { width: number, height: number, x: number, y: number };
     static currentPreferences: Preferences;
     static currentCss: string;
-    static currentStatus: any = {};
+    static model: TMXModel | null = null;
     static fileLanguages: Language[];
     static argFile: string = '';
     static isReady: boolean = false;
@@ -90,18 +103,18 @@ class App {
     static excelEvent: IpcMainEvent;
     static propertyEvent: IpcMainEvent;
 
-    static filterOptions: any = {};
-    static loadOptions: any = {
+    static filterOptions: SegmentFilter = {};
+    static loadOptions: SegmentsRequest = {
         start: 0,
         count: 200
     };
-    static sortOptions: any = {};
+    static sortOptions: SegmentFilter = {};
+    static preFilterStart: number = 0;
     static csvLangArgs: any;
     static excelLangArgs: any;
     static attributesArg: any;
     static propertiesArg: any;
     static notesArg: any;
-    static messageParam: any;
 
     static needsName: boolean = false;
 
@@ -111,7 +124,7 @@ class App {
     static locations: Locations;
 
     static i18n: I18n;
-    static lang = 'en';
+    static lang: string = 'en';
 
     constructor(args: string[]) {
 
@@ -141,28 +154,13 @@ class App {
             App.mainWindow.focus();
         }
 
-        if (process.platform == 'win32') {
-            App.javapath = path.join(app.getAppPath(), 'bin', 'java.exe');
-        }
-
         if (!existsSync(path.join(app.getPath('appData'), app.name))) {
             mkdirSync(path.join(app.getPath('appData'), app.name), { recursive: true });
         }
 
         App.loadPreferences();
 
-        this.ls = spawn(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.TMXServer', '-port', '8060', '-lang', App.lang], { cwd: app.getAppPath(), windowsHide: true });
-        execFileSync(App.javapath, ['--module-path', 'lib', '-m', 'tmxserver/com.maxprograms.tmxserver.CheckURL', 'http://localhost:8060/TMXServer'], { cwd: app.getAppPath(), windowsHide: true });
-
         App.locations = new Locations(path.join(app.getPath('appData'), app.name, 'locations.json'));
-
-        this.ls.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
-
-        this.ls.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-        });
 
         app.on('open-file', (event, filePath) => {
             event.preventDefault();
@@ -179,23 +177,10 @@ class App {
                 App.close();
                 return;
             }
-            if (!this.ls.killed) {
-                event.preventDefault();
-                this.stopServer();
-            }
-        });
-
-        app.on('quit', () => {
-            app.quit();
         });
 
         app.on('window-all-closed', () => {
             app.quit();
-        });
-
-        app.on('ready', () => {
-            App.isReady = true;
-            App.mainLoaded();
         });
 
         App.loadDefaults();
@@ -213,29 +198,18 @@ class App {
                 App.saveDefaults();
             });
             App.mainWindow.show();
-            App.mainWindow.on('close', (ev) => {
-                ev.preventDefault();
-                App.close();
-            });
             App.checkUpdates(true);
+            App.isReady = true;
+            App.mainLoaded();
             if (process.platform === 'darwin' && app.runningUnderARM64Translation) {
                 App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'm1Mac') });
             }
+            App.setLocation(App.mainWindow, 'index.html');
         });
 
         nativeTheme.on('updated', () => {
-            let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
-            let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
-            let highContrast: string = 'file://' + path.join(app.getAppPath(), 'css', 'highcontrast.css');
             if (App.currentPreferences.theme === 'system') {
-                if (nativeTheme.shouldUseDarkColors) {
-                    App.currentCss = dark;
-                } else {
-                    App.currentCss = light;
-                }
-                if (nativeTheme.shouldUseHighContrastColors) {
-                    App.currentCss = highContrast;
-                }
+                App.currentCss = App.resolveThemeCss(App.currentPreferences.theme);
             }
             let windows: BrowserWindow[] = BrowserWindow.getAllWindows();
             for (let window of windows) {
@@ -258,7 +232,7 @@ class App {
         ipcMain.on('open-file', () => {
             App.openFileDialog();
         });
-        ipcMain.on('get-segments', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('get-segments', (event: IpcMainEvent, arg: SegmentsRequest) => {
             App.loadOptions = arg;
             App.loadSegments();
         });
@@ -274,6 +248,21 @@ class App {
         ipcMain.on('saved-edit', (event: IpcMainEvent, arg: { id: string, lang: string }) => {
             if (arg.id === App.editingCell.id && arg.lang === App.editingCell.lang) {
                 App.editingCell = {};
+                if (App.waitingForEditFlush) {
+                    App.waitingForEditFlush = false;
+                    App.saveFile();
+                }
+            }
+        });
+        ipcMain.on('edit-changed-response', (event: IpcMainEvent, changed: boolean) => {
+            if (!App.waitingForEditCheck) {
+                return;
+            }
+            App.waitingForEditCheck = false;
+            let resume: ((changed: boolean) => void) | undefined = App.pendingEditCheckResume;
+            App.pendingEditCheckResume = undefined;
+            if (resume) {
+                resume(changed);
             }
         });
         ipcMain.on('get-row-properties', (event: IpcMainEvent, id: string) => {
@@ -335,8 +324,8 @@ class App {
         ipcMain.on('get-theme', (event: IpcMainEvent) => {
             event.sender.send('set-theme', App.currentCss);
         });
-        ipcMain.on('create-file', (event: IpcMainEvent, arg: any) => {
-            this.createFile(arg);
+        ipcMain.on('create-file', (event: IpcMainEvent, arg: { srcLang: string, tgtLang: string }) => {
+            this.createFile(arg.srcLang, arg.tgtLang);
         });
         ipcMain.on('new-file', () => {
             App.createNewFile();
@@ -377,9 +366,6 @@ class App {
         ipcMain.on('convert-excel-tmx', (event: IpcMainEvent, arg: any) => {
             this.convertExcelTmx(arg);
         });
-        ipcMain.on('get-charsets', (event: IpcMainEvent) => {
-            this.getCharsets(event);
-        });
         ipcMain.on('get-csvfile', (event: IpcMainEvent) => {
             this.getCsvFile(event);
         });
@@ -398,8 +384,8 @@ class App {
         ipcMain.on('get-csv-preview', (event: IpcMainEvent, arg: any) => {
             this.getCsvPreview(event, arg);
         });
-        ipcMain.on('get-excel-preview', (event: IpcMainEvent, arg: any) => {
-            this.getExcelPreview(event, arg);
+        ipcMain.on('get-excel-preview', (event: IpcMainEvent, excelFile: string) => {
+            this.getExcelPreview(event, excelFile);
         });
         ipcMain.on('get-csv-languages', (event: IpcMainEvent, arg: any) => {
             this.getCsvLanguages(event, arg);
@@ -449,8 +435,23 @@ class App {
         ipcMain.on('replace-text', () => {
             App.replaceText();
         });
-        ipcMain.on('replace-request', (event: IpcMainEvent, arg: any) => {
-            this.replaceRequest(arg);
+        ipcMain.on('find-text', (event: IpcMainEvent, args: { searchText: string, caseSensitive: boolean, useRegex: boolean }) => {
+            this.findText(args);
+        });
+        ipcMain.on('find-next-text', (event: IpcMainEvent, args: { searchText: string, caseSensitive: boolean, useRegex: boolean }) => {
+            this.findNextText(args);
+        });
+        ipcMain.on('match-found-notification', (event: IpcMainEvent, found: boolean) => {
+            App.replaceTextWindow?.webContents.send('match-found', found);
+        });
+        ipcMain.on('search-start', (event: IpcMainEvent, args: { searchText: string, caseSensitive: boolean, useRegex: boolean, position: number, langIndex: number }) => {
+            this.searchStartReceived(args);
+        });
+        ipcMain.on('replace-current', (event: IpcMainEvent, replaceText: string) => {
+            App.mainWindow.webContents.send('replace-selected-text', replaceText);
+        });
+        ipcMain.on('replace-all', (event: IpcMainEvent, args: { searchText: string, replaceText: string, caseSensitive: boolean, useRegex: boolean }) => {
+            this.replaceAllRequest(args);
         });
         ipcMain.on('sort-units', () => {
             App.sortUnits();
@@ -488,32 +489,32 @@ class App {
         ipcMain.on('delete-units', (event: IpcMainEvent, arg: any) => {
             this.deleteUnits(arg);
         });
-        ipcMain.on('change-language', (event: IpcMainEvent, arg: any) => {
-            this.changeLanguage(arg);
+        ipcMain.on('change-language', (event: IpcMainEvent, arg: { oldLanguage: string, newLanguage: string }) => {
+            this.changeLanguage(arg.oldLanguage, arg.newLanguage);
         });
         ipcMain.on('all-languages', (event: IpcMainEvent) => {
             this.allLanguages(event);
         });
-        ipcMain.on('remove-language', (event: IpcMainEvent, arg: any) => {
-            this.removeLanguage(arg);
+        ipcMain.on('remove-language', (event: IpcMainEvent, lang: string) => {
+            this.removeLanguage(lang);
         });
-        ipcMain.on('add-language', (event: IpcMainEvent, arg: any) => {
-            this.addLanguage(arg);
+        ipcMain.on('add-language', (event: IpcMainEvent, lang: string) => {
+            this.addLanguage(lang);
         });
         ipcMain.on('get-source-language', (event: IpcMainEvent) => {
             this.getSourceLanguage(event);
         });
-        ipcMain.on('change-source-language', (event: IpcMainEvent, arg: any) => {
-            this.changeSourceLanguage(arg);
+        ipcMain.on('change-source-language', (event: IpcMainEvent, srcLang: string) => {
+            this.changeSourceLanguage(srcLang);
         });
-        ipcMain.on('remove-untranslated', (event: IpcMainEvent, arg: any) => {
-            this.removeUntranslated(arg);
+        ipcMain.on('remove-untranslated', (event: IpcMainEvent, srcLang: string) => {
+            this.removeUntranslated(srcLang);
         });
-        ipcMain.on('remove-sameAsSource', (event: IpcMainEvent, arg: any) => {
-            this.removeSameAsSource(arg);
+        ipcMain.on('remove-sameAsSource', (event: IpcMainEvent, srcLang: string) => {
+            this.removeSameAsSource(srcLang);
         });
-        ipcMain.on('consolidate-units', (event: IpcMainEvent, arg: any) => {
-            this.consolidateUnits(arg);
+        ipcMain.on('consolidate-units', (event: IpcMainEvent, srcLang: string) => {
+            this.consolidateUnits(srcLang);
         });
         ipcMain.on('get-version', (event: IpcMainEvent) => {
             event.sender.send('set-version', app.name + ' ' + app.getVersion());
@@ -521,17 +522,11 @@ class App {
         ipcMain.on('show-message', (event: IpcMainEvent, arg: any) => {
             App.showMessage(arg);
         });
-        ipcMain.on('get-message-param', (event: IpcMainEvent) => {
-            event.sender.send('set-message', App.messageParam);
-        });
-        ipcMain.on('newFile-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.newFileWindow, arg);
+        ipcMain.on('set-height', (event: IpcMainEvent, arg: { window: string, width: number, height: number }) => {
+            App.setHeight(arg);
         });
         ipcMain.on('close-newFile', () => {
             App.newFileWindow.close();
-        });
-        ipcMain.on('about-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.aboutWindow, arg);
         });
         ipcMain.on('close-about', () => {
             App.aboutWindow.close();
@@ -542,74 +537,32 @@ class App {
         ipcMain.on('close-systemInfo', () => {
             App.systemInfoWindow.close();
         });
-        ipcMain.on('systemInfo-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.systemInfoWindow, arg);
-        });
         ipcMain.on('get-system-info', (event: IpcMainEvent) => {
             App.getSystemInformation(event);
-        });
-        ipcMain.on('fileInfo-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.fileInfoWindow, arg);
         });
         ipcMain.on('close-fileInfo', () => {
             App.fileInfoWindow.close();
         });
-        ipcMain.on('licenses-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.licensesWindow, arg);
-        });
         ipcMain.on('close-licenses', () => {
             App.licensesWindow.close();
-        });
-        ipcMain.on('preferences-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.settingsWindow, arg);
         });
         ipcMain.on('close-preferences', () => {
             App.settingsWindow.close();
         });
-        ipcMain.on('attributes-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.attributesWindow, arg);
-        });
         ipcMain.on('close-attributes', () => {
             App.attributesWindow.close();
-        });
-        ipcMain.on('properties-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.propertiesWindow, arg);
         });
         ipcMain.on('close-properties', () => {
             App.propertiesWindow.close();
         });
-        ipcMain.on('addProperty-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.addPropertyWindow, arg);
-        });
         ipcMain.on('close-addProperty', () => {
             App.addPropertyWindow.close();
-        });
-        ipcMain.on('notes-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.notesWindow, arg);
         });
         ipcMain.on('close-notes', () => {
             App.notesWindow.close();
         });
-        ipcMain.on('addNote-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.addNotesWindow, arg);
-        });
         ipcMain.on('close-addNote', () => {
             App.addNotesWindow.close();
-        });
-        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.convertTBXWindow, arg);
-        });
-        ipcMain.on('convertTbx-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.convertTBXWindow, arg);
-        });
-        ipcMain.on('convertSdltm-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.convertSDLTMWindow, arg);
-        });
-        ipcMain.on('convertCsv-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.convertCsvWindow, arg);
-        });
-        ipcMain.on('convertExcel-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.convertExcelWindow, arg);
         });
         ipcMain.on('close-convertSdltm', () => {
             App.convertSDLTMWindow.close();
@@ -623,71 +576,32 @@ class App {
         ipcMain.on('close-convertExcel', () => {
             App.convertExcelWindow.close();
         });
-        ipcMain.on('csvLanguages-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.csvLanguagesWindow, arg);
-        });
-        ipcMain.on('excelLanguages-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.excelLanguagesWindow, arg);
-        });
         ipcMain.on('close-csvLanguages', () => {
             App.csvLanguagesWindow.close();
         });
         ipcMain.on('close-excelLanguages', () => {
             App.excelLanguagesWindow.close();
         });
-        ipcMain.on('splitFile-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.splitFileWindow, arg);
-        });
         ipcMain.on('close-splitFile', () => {
             App.splitFileWindow.close();
-        });
-        ipcMain.on('mergeFiles-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.mergeFilesWindow, arg);
         });
         ipcMain.on('close-mergeFiles', () => {
             App.mergeFilesWindow.close();
         });
-        ipcMain.on('replaceText-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.replaceTextWindow, arg);
-        });
         ipcMain.on('close-replaceText', () => {
             App.replaceTextWindow.close();
-        });
-        ipcMain.on('sortUnits-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.sortUnitsWindow, arg);
-        });
-        ipcMain.on('filters-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.filtersWindow, arg);
-        });
-        ipcMain.on('addLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.addLanguageWindow, arg);
         });
         ipcMain.on('close-addLanguage', () => {
             App.addLanguageWindow.close();
         });
-        ipcMain.on('changeLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.changeLanguageWindow, arg);
-        });
         ipcMain.on('close-changeLanguage', () => {
             App.changeLanguageWindow.close();
-        });
-        ipcMain.on('removeLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.removeLanguageWindow, arg);
         });
         ipcMain.on('close-removeLanguage', () => {
             App.removeLanguageWindow.close();
         });
-        ipcMain.on('srcLanguage-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.srcLanguageWindow, arg);
-        });
         ipcMain.on('close-srcLanguage', () => {
             App.srcLanguageWindow.close();
-        });
-        ipcMain.on('removeUntranslated-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.removeUntranslatedWindow, arg);
-        });
-        ipcMain.on('removeSameAsSource-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.removeSameAsSourceWindow, arg);
         });
         ipcMain.on('close-removeSameAsSource', () => {
             App.removeSameAsSourceWindow.close();
@@ -695,26 +609,17 @@ class App {
         ipcMain.on('close-removeUntranslated', () => {
             App.removeUntranslatedWindow.close();
         });
-        ipcMain.on('consolidate-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.consolidateWindow, arg);
-        });
         ipcMain.on('close-consolidate', () => {
             App.consolidateWindow.close();
         });
         ipcMain.on('maintenance-dashboard', () => {
             App.showMaintenanceDashboard();
         });
-        ipcMain.on('maintenance-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.maintenanceWindow, arg);
-        });
         ipcMain.on('close-maintenance', () => {
             App.maintenanceWindow.close();
         });
-        ipcMain.on('maintanance-tasks', (event: IpcMainEvent, arg: any) => {
+        ipcMain.on('maintanance-tasks', (event: IpcMainEvent, arg: { tags: boolean, untranslated: boolean, duplicates: boolean, spaces: boolean, consolidate: boolean, sourceLanguage: string }) => {
             App.maintenanceTasks(arg);
-        });
-        ipcMain.on('updates-height', (event: IpcMainEvent, arg: { width: number, height: number }) => {
-            App.setHeight(App.updatesWindow, arg)
         });
         ipcMain.on('close-updates', () => {
             App.updatesWindow.close();
@@ -730,34 +635,107 @@ class App {
         });
     } // end constructor
 
-    stopServer(): void {
-        let instance: App = this;
-        App.sendRequest({ command: 'stop' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    instance.ls.kill();
-                    app.quit();
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
-    }
-
     static mainLoaded(): void {
         if (App.argFile !== '') {
-            setTimeout(() => {
-                App.openFile(App.argFile);
-                App.argFile = '';
-            }, 2000);
+            App.openFile(App.argFile);
+            App.argFile = '';
         }
     }
 
-    static setHeight(window: BrowserWindow, arg: { width: number, height: number }) {
-        window.setContentSize(arg.width, arg.height, true);
+    static setHeight(arg: { window: string, width: number, height: number }): void {
+        if (arg.window === 'newFile' && App.newFileWindow) {
+            App.newFileWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'about' && App.aboutWindow) {
+            App.aboutWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'systemInfo' && App.systemInfoWindow) {
+            App.systemInfoWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'fileInfo' && App.fileInfoWindow) {
+            App.fileInfoWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'licenses' && App.licensesWindow) {
+            App.licensesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'preferencesDialog' && App.settingsWindow) {
+            App.settingsWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'attributes' && App.attributesWindow) {
+            App.attributesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'properties' && App.propertiesWindow) {
+            App.propertiesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'addProperty' && App.addPropertyWindow) {
+            App.addPropertyWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'notes' && App.notesWindow) {
+            App.notesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'addNote' && App.addNotesWindow) {
+            App.addNotesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'convertTbx' && App.convertTBXWindow) {
+            App.convertTBXWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'convertSdltm' && App.convertSDLTMWindow) {
+            App.convertSDLTMWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'convertCsv' && App.convertCsvWindow) {
+            App.convertCsvWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'convertExcel' && App.convertExcelWindow) {
+            App.convertExcelWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'csvLanguages' && App.csvLanguagesWindow) {
+            App.csvLanguagesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'excelLanguages' && App.excelLanguagesWindow) {
+            App.excelLanguagesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'splitFile' && App.splitFileWindow) {
+            App.splitFileWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'mergeFiles' && App.mergeFilesWindow) {
+            App.mergeFilesWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'replaceText' && App.replaceTextWindow) {
+            App.replaceTextWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'sortUnits' && App.sortUnitsWindow) {
+            App.sortUnitsWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'filters' && App.filtersWindow) {
+            App.filtersWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'addLanguage' && App.addLanguageWindow) {
+            App.addLanguageWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'changeLanguage' && App.changeLanguageWindow) {
+            App.changeLanguageWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'removeLanguage' && App.removeLanguageWindow) {
+            App.removeLanguageWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'srcLanguage' && App.srcLanguageWindow) {
+            App.srcLanguageWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'removeUntranslated' && App.removeUntranslatedWindow) {
+            App.removeUntranslatedWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'removeSameAsSource' && App.removeSameAsSourceWindow) {
+            App.removeSameAsSourceWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'consolidate' && App.consolidateWindow) {
+            App.consolidateWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'maintenance' && App.maintenanceWindow) {
+            App.maintenanceWindow.setContentSize(arg.width, arg.height, true);
+        }
+        if (arg.window === 'updates' && App.updatesWindow) {
+            App.updatesWindow.setContentSize(arg.width, arg.height, true);
+        }
     }
 
     static sendTooltips(event: IpcMainEvent): void {
@@ -779,16 +757,7 @@ class App {
             'convertSDLTM': App.i18n.getString('menu', 'ConvertSDLTM'),
             'convertTBX': App.i18n.getString('menu', 'ConvertTBX'),
             'userGuide': App.i18n.getString('menu', 'UserGuide'),
-            'firstPage': App.i18n.getString('menu', 'FirstPage'),
-            'previousPage': App.i18n.getString('menu', 'PreviousPage'),
-            'pageTooltip': App.i18n.getString('App', 'pageTooltip'),
-            'nextPage': App.i18n.getString('menu', 'NextPage'),
-            'lastPage': App.i18n.getString('menu', 'LastPage'),
-            'unitsPage': App.i18n.getString('App', 'UnitsPage'),
-            'pageSpan': App.i18n.getString('App', 'pageSpan'),
-            'ofSpan': App.i18n.getString('App', 'ofSpan'),
             'unitsLabel': App.i18n.getString('App', 'UnitsLabel'),
-            'unitsTooltip': App.i18n.getString('App', 'UnitsTooltip'),
             'tuAttributes': App.i18n.getString('App', 'tuAttributes'),
             'tuProperties': App.i18n.getString('App', 'tuProperties'),
             'tuNotes': App.i18n.getString('App', 'tuNotes'),
@@ -858,7 +827,7 @@ class App {
     }
 
     static createWindow(): void {
-        App.iconPath = path.join(app.getAppPath(), 'icons', 'tmxeditor.png');
+        App.iconPath = path.join(app.getAppPath(), 'images', 'tmxeditor.png');
         App.mainWindow = new BrowserWindow({
             title: 'TMXEditor',
             width: App.currentDefaults.width,
@@ -871,6 +840,10 @@ class App {
             },
             show: false,
             icon: App.iconPath
+        });
+        App.mainWindow.on('close', (ev) => {
+            ev.preventDefault();
+            App.close();
         });
         App.createMenu();
     }
@@ -923,11 +896,6 @@ class App {
         let viewMenu: Menu = Menu.buildFromTemplate([
             { label: App.i18n.getString('menu', 'SortUnits'), accelerator: 'F5', click: () => { App.sortUnits(); }, icon: join(app.getAppPath(), 'images', iconFolder, 'sort.png') },
             { label: App.i18n.getString('menu', 'FilterUnits'), accelerator: 'F3', click: () => { App.showFilters() }, icon: join(app.getAppPath(), 'images', iconFolder, 'filter.png') },
-            new MenuItem({ type: 'separator' }),
-            { label: App.i18n.getString('menu', 'FirstPage'), accelerator: 'CmdOrCtrl+Shift+PageUp', click: () => { App.firstPage(); }, icon: join(app.getAppPath(), 'images', iconFolder, 'firstPage.png') },
-            { label: App.i18n.getString('menu', 'PreviousPage'), accelerator: 'CmdOrCtrl+PageUp', click: () => { App.previousPage(); }, icon: join(app.getAppPath(), 'images', iconFolder, 'previousPage.png') },
-            { label: App.i18n.getString('menu', 'NextPage'), accelerator: 'CmdOrCtrl+PageDown', click: () => { App.nextPage(); }, icon: join(app.getAppPath(), 'images', iconFolder, 'nextPage.png') },
-            { label: App.i18n.getString('menu', 'LastPage'), accelerator: 'CmdOrCtrl+Shift+PageDown', click: () => { App.lastPage(); }, icon: join(app.getAppPath(), 'images', iconFolder, 'lastPage.png') },
             new MenuItem({ type: 'separator' }),
             new MenuItem({ label: App.i18n.getString('menu', 'ToggleFullScreen'), role: 'togglefullscreen' })
         ]);
@@ -1008,10 +976,15 @@ class App {
         readFile(path.join(app.getPath('appData'), app.name, 'recent.json'), (err, buf: Buffer) => {
             if (err instanceof Error) {
                 Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+                App.clearSecondaryMenus();
                 return;
             }
-            let jsonData = JSON.parse(buf.toString());
-            let files = jsonData.files;
+            let files: string[] | undefined;
+            try {
+                files = JSON.parse(buf.toString()).files;
+            } catch (error) {
+                files = undefined;
+            }
             if (files !== undefined && files.length > 0) {
                 if (process.platform === 'darwin') {
                     let item: MenuItem = template[1];
@@ -1057,7 +1030,16 @@ class App {
                 }
             }
             Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+            App.clearSecondaryMenus();
         });
+    }
+
+    static clearSecondaryMenus(): void {
+        for (let window of BrowserWindow.getAllWindows()) {
+            if (window !== App.mainWindow) {
+                window.setMenu(null);
+            }
+        }
     }
 
     static close(): void {
@@ -1096,10 +1078,14 @@ class App {
     }
 
     static showAbout(): void {
+        if (App.aboutWindow && !App.aboutWindow.isDestroyed()) {
+            App.aboutWindow.focus();
+            return;
+        }
         App.aboutWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 620,
-            height: 370,
+            height: 340,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1123,43 +1109,11 @@ class App {
         App.setLocation(App.aboutWindow, 'about.html');
     }
 
-    static sendRequest(params: any, success: Function, error: Function): void {
-        let options: any = {
-            url: 'http://127.0.0.1:8060/TMXServer',
-            method: 'POST'
-        }
-        let request: ClientRequest = net.request(options);
-        let responseData: string = '';
-        request.setHeader('Content-Type', 'application/json');
-        request.setHeader('Accept', 'application/json');
-        request.on('response', (response: IncomingMessage) => {
-            response.on('error', (e: Error) => {
-                error(e.message);
-            });
-            response.on('aborted', () => {
-                error('Request aborted');
-            });
-            response.on('end', () => {
-                try {
-                    let json = JSON.parse(responseData);
-                    success(json);
-                } catch (reason: any) {
-                    error(JSON.stringify(reason));
-                }
-            });
-            response.on('data', (chunk: Buffer) => {
-                responseData += chunk.toString();
-            });
-        });
-        request.write(JSON.stringify(params));
-        request.end();
-    }
-
-    static showSystemInfo() {
+    static showSystemInfo(): void {
         this.systemInfoWindow = new BrowserWindow({
             parent: App.aboutWindow,
             width: 430,
-            height: 300,
+            height: 240,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1183,16 +1137,21 @@ class App {
         App.setLocation(App.systemInfoWindow, 'systemInfo.html');
     }
 
-    static getSystemInformation(event: IpcMainEvent) {
-        this.sendRequest({ command: 'systemInfo' },
-            (data: any) => {
-                data.electron = process.versions.electron;
-                event.sender.send('set-system-info', data);
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    static getSystemInformation(event: IpcMainEvent): void {
+        let data: Record<string, string> = {
+            tmxeditor: app.getVersion(),
+            electron: process.versions.electron
+        };
+        for (let name of ['sdltm', 'typesbcp47', 'typesexcel', 'typesxml']) {
+            data[name] = App.getModuleVersion(name);
+        }
+        event.sender.send('set-system-info', data);
+    }
+
+    static getModuleVersion(moduleName: string): string {
+        let packageFile: string = path.join(app.getAppPath(), 'node_modules', moduleName, 'package.json');
+        let json: { version: string } = JSON.parse(readFileSync(packageFile, 'utf8'));
+        return json.version;
     }
 
     static showLicenses(arg: any): void {
@@ -1203,7 +1162,7 @@ class App {
         App.licensesWindow = new BrowserWindow({
             parent: parent,
             width: 460,
-            height: 460,
+            height: 240,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1232,10 +1191,9 @@ class App {
         let title = '';
         switch (type) {
             case 'TMXEditor':
-            case "BCP47J":
-            case "XMLJava":
             case "sdltm":
-            case "TMXValidator":
+            case "typesbcp47":
+            case "typesexcel":
             case "typesxml":
                 licenseFile = 'EclipsePublicLicense1.0.html';
                 title = 'Eclipse Public License 1.0';
@@ -1243,14 +1201,6 @@ class App {
             case "electron":
                 licenseFile = 'electron.txt';
                 title = 'MIT License';
-                break;
-            case "SQLite":
-                licenseFile = 'Apache2.0.html';
-                title = 'Apache 2.0';
-                break;
-            case "Java":
-                licenseFile = 'java.html';
-                title = 'GPL2 with Classpath Exception';
                 break;
             default:
                 App.showMessage({ type: 'error', message: App.i18n.getString('app', 'unknownLicense') });
@@ -1289,10 +1239,31 @@ class App {
     }
 
     static showHelp(): void {
-        shell.openExternal('file://' + path.join(app.getAppPath(), 'tmxeditor_' + App.lang + '.pdf'),
-            { activate: true, workingDirectory: app.getAppPath() }
-        ).catch((error: Error) => {
-            App.showMessage({ type: 'error', message: error.message });
+        let path = join(app.getAppPath(), 'tmxeditor_' + App.lang + '.pdf');
+        if (process.platform === 'linux' && path.startsWith('/opt')) {
+            let tempFolder: string = join(app.getPath('home'), 'tmp', 'tmxeditor');
+            if (!existsSync(tempFolder)) {
+                mkdirSync(tempFolder, { recursive: true });
+            }
+            let tempFile: string = join(tempFolder, basename(path));
+            try {
+                copyFileSync(path, tempFile);
+                path = tempFile;
+            } catch (error: unknown) {
+                console.error('Error copying file:', error);
+                if (error instanceof Error) {
+                    App.showMessage({ type: 'error', message: error.message });
+                }
+                return;
+            }
+        }
+        shell.openExternal('file://' + path).catch(() => {
+            shell.openPath(path).catch((reason: any) => {
+                if (reason instanceof Error) {
+                    console.error(reason.message);
+                    App.showMessage({ type: 'error', message: reason.message });
+                }
+            });
         });
     }
 
@@ -1315,73 +1286,116 @@ class App {
         });
     }
 
-    static openFile(file: string): void {
-        App.mainWindow.webContents.send('start-waiting');
-        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'OpeningFile'));
-        App.sendRequest({ command: 'openFile', file: file },
-            (data: any) => {
-                App.currentStatus = data;
-                let intervalObject = setInterval(() => {
-                    let lastCount: number = 0;
-                    if (App.currentStatus.status === COMPLETED) {
-                        clearInterval(intervalObject);
-                        App.getFileLanguages();
-                        App.filterOptions = {};
-                        App.sortOptions = {};
-                        App.mainWindow.webContents.send('file-loaded', App.currentStatus);
-                        App.currentFile = file;
-                        App.mainWindow.setTitle(App.currentFile);
-                        App.saved = true;
-                        App.mainWindow.setDocumentEdited(false);
-                        App.mainWindow.webContents.send('end-waiting');
-                        return;
-                    } else if (App.currentStatus.status === LOADING) {
-                        // it's OK, keep waiting
-                        App.mainWindow.webContents.send('status-changed', App.currentStatus);
-                        if (App.currentStatus.Loaded !== lastCount) {
-                            App.mainWindow.webContents.send('set-status', App.i18n.format(App.i18n.getString('App', 'LoadedUnits'), ['' + App.currentStatus.Loaded]));
-                            lastCount = App.currentStatus.Loaded;
-                        }
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'openFile'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorLoading'));
-                        return;
-                    }
-                    App.getLoadingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    static modelDatabasePath(): string {
+        return path.join(app.getPath('appData'), app.name, 'tmxmodel.db');
     }
 
-    static getLoadingProgress(): void {
-        App.sendRequest({ command: 'loadingProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                console.error(reason);
+    static openModel(file: string, onProgress: (count: number) => void): Promise<TMXModel> {
+        let databasePath: string = App.modelDatabasePath();
+        for (let suffix of ['', '-wal', '-shm']) {
+            if (existsSync(databasePath + suffix)) {
+                unlinkSync(databasePath + suffix);
             }
-        );
+        }
+        TmxUtils.setWorkFolder(path.join(app.getPath('appData'), app.name));
+        TmxUtils.resetTags();
+        let workerPath: string = path.join(app.getAppPath(), 'js', 'tmx', 'tmxImportWorker.js');
+        let catalogFile: string = path.join(app.getAppPath(), 'catalog', 'catalog.xml');
+        return TMXModel.open(file, databasePath, workerPath, catalogFile, onProgress, App.currentPreferences.changeId);
     }
 
-    static closeFile(): void {
-        if (App.currentFile === '') {
+    static openFile(file: string, needsName: boolean = false): void {
+        if (App.currentFile !== '' && App.editingCell.id) {
+            App.waitingForEditCheck = true;
+            App.pendingEditCheckResume = (changed: boolean) => App.completeOpen(file, needsName, changed);
+            App.mainWindow.webContents.send('query-edit-changed');
             return;
         }
-        if (!App.saved) {
+        App.completeOpen(file, needsName, false);
+    }
+
+    static completeOpen(file: string, needsName: boolean, hasUnconfirmedEdit: boolean): void {
+        if (App.currentFile !== '' && (!App.saved || hasUnconfirmedEdit)) {
+            let clicked: number = dialog.showMessageBoxSync(App.mainWindow, {
+                type: 'question',
+                title: App.i18n.getString('App', 'SaveChanges'),
+                message: App.i18n.getString('App', 'UnsavedWarning'),
+                buttons: [
+                    App.i18n.getString('App', 'DontSave'),
+                    App.i18n.getString('App', 'Cancel'),
+                    App.i18n.getString('App', 'Save')
+                ],
+                defaultId: 2
+            });
+            if (clicked === 1) {
+                return;
+            }
+            if (clicked === 2) {
+                App.fileToOpen = file;
+                App.fileToOpenNeedsName = needsName;
+                if (hasUnconfirmedEdit) {
+                    App.waitingForEditFlush = true;
+                    App.mainWindow.webContents.send('force-save');
+                } else {
+                    App.saveFile();
+                }
+                return;
+            }
+        }
+        if (App.model) {
+            App.model.close();
+            App.model = null;
+        }
+        App.editingCell = {};
+        App.mainWindow.webContents.send('file-closed');
+        App.needsName = needsName;
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'OpeningFile'));
+        App.openModel(file, (count: number) => {
+            App.mainWindow.webContents.send('set-status', App.i18n.format(App.i18n.getString('App', 'LoadedUnits'), ['' + count]));
+        }).then((model: TMXModel) => {
+            App.model = model;
+            App.getFileLanguages();
+            App.filterOptions = {};
+            App.sortOptions = {};
+            App.currentFile = file;
+            if (App.needsName) {
+                App.mainWindow.setTitle(App.i18n.getString('App', 'untitled'));
+                App.saved = false;
+                App.mainWindow.setDocumentEdited(true);
+            } else {
+                App.mainWindow.setTitle(App.currentFile);
+                App.saved = true;
+                App.mainWindow.setDocumentEdited(false);
+            }
+            App.mainWindow.webContents.send('set-status', '');
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('file-loaded', { status: SUCCESS, count: model.getCount() });
+        }).catch((error: Error) => {
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            App.showMessage({ type: 'error', message: error.message });
+        });
+    }
+
+    static closeFile(onClosed?: () => void): void {
+        if (App.currentFile === '') {
+            if (onClosed) {
+                onClosed();
+            }
+            return;
+        }
+        if (App.editingCell.id) {
+            App.waitingForEditCheck = true;
+            App.pendingEditCheckResume = (changed: boolean) => App.completeClose(onClosed, changed);
+            App.mainWindow.webContents.send('query-edit-changed');
+            return;
+        }
+        App.completeClose(onClosed, false);
+    }
+
+    static completeClose(onClosed: (() => void) | undefined, hasUnconfirmedEdit: boolean): void {
+        if (!App.saved || hasUnconfirmedEdit) {
             let clicked: number = dialog.showMessageBoxSync(App.mainWindow, {
                 type: 'question',
                 title: App.i18n.getString('App', 'SaveChanges'),
@@ -1402,84 +1416,92 @@ class App {
             }
             if (clicked === 2) {
                 App.shouldClose = true;
-                App.saveFile();
+                App.onFileClosed = onClosed;
+                if (hasUnconfirmedEdit) {
+                    App.waitingForEditFlush = true;
+                    App.mainWindow.webContents.send('force-save');
+                } else {
+                    App.saveFile();
+                }
                 return;
             }
         }
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'ClosingFile'));
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'closeFile' },
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    App.mainWindow.webContents.send('file-closed');
-                    App.mainWindow.webContents.send('set-status', '');
-                    App.currentFile = '';
-                    App.mainWindow.setTitle(app.getName());
-                    App.saved = true;
-                    App.mainWindow.setDocumentEdited(false);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+        if (App.model) {
+            App.model.close();
+            App.model = null;
+        }
+        App.editingCell = {};
+        App.mainWindow.webContents.send('end-waiting');
+        App.mainWindow.webContents.send('file-closed');
+        App.mainWindow.webContents.send('set-status', '');
+        App.currentFile = '';
+        App.mainWindow.setTitle(app.getName());
+        App.saved = true;
+        App.mainWindow.setDocumentEdited(false);
+        if (onClosed) {
+            onClosed();
+        }
+    }
+
+    static describeLanguage(code: string): string {
+        let language = LanguageUtils.getLanguage(code, App.lang);
+        if (language) {
+            return language.getDescription();
+        }
+        let normalized: string = code.replace('_', '-');
+        if (normalized.indexOf('-') !== -1) {
+            let primary: string = normalized.split('-')[0];
+            let base = LanguageUtils.getLanguage(primary, App.lang);
+            if (base) {
+                return base.getDescription();
             }
-        );
+        }
+        return code;
     }
 
     static getFileLanguages(): void {
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'GettingLanguages'));
-        App.sendRequest({ command: 'getLanguages' },
-            (data: any) => {
-                App.mainWindow.webContents.send('set-status', '');
-                if (data.status === SUCCESS) {
-                    App.fileLanguages = data.languages;
-                    App.mainWindow.webContents.send('update-languages', App.fileLanguages);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('set-status', '');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            App.mainWindow.webContents.send('set-status', '');
+            return;
+        }
+        let codes: string[] = App.model.getLanguages();
+        let result: Language[] = [];
+        for (let code of codes) {
+            result.push({ code: code, name: App.describeLanguage(code) });
+        }
+        App.fileLanguages = result;
+        App.mainWindow.webContents.send('set-status', '');
+        App.mainWindow.webContents.send('update-languages', App.fileLanguages);
     }
 
     static saveDefaults(): void {
-        let defaults = App.mainWindow.getBounds();
+        let defaults: Electron.Rectangle = App.mainWindow.getBounds();
         writeFileSync(path.join(app.getPath('appData'), app.name, 'defaults.json'), JSON.stringify(defaults, undefined, 4));
     }
 
     static loadSegments(): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             return;
         }
-        let json: any = {
-            command: 'getSegments'
-        }
-        Object.assign(json, App.loadOptions);
-        Object.assign(json, App.filterOptions);
-        Object.assign(json, App.sortOptions);
+        let start: number = App.loadOptions.start ?? 0;
+        let count: number = App.loadOptions.count ?? 200;
+        let filter: SegmentFilter = {};
+        Object.assign(filter, App.filterOptions);
+        Object.assign(filter, App.sortOptions);
         App.mainWindow.webContents.send('start-waiting');
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'LoadingSegments'));
-        App.sendRequest(json,
-            (data: any) => {
-                App.mainWindow.webContents.send('set-status', '');
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    App.mainWindow.webContents.send('update-segments', data);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            let units: string[] = App.model.getSegments(start, count, filter);
+            App.mainWindow.webContents.send('set-status', '');
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('update-segments', { status: SUCCESS, units: units });
+        } catch (error: any) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.showMessage({ type: 'error', message: error.message });
+        }
     }
 
     static loadDefaults(): void {
@@ -1510,12 +1532,33 @@ class App {
             });
         }
         App.currentPreferences = preferences;
+        App.currentCss = App.resolveThemeCss(preferences.theme);
         BrowserWindow.getAllWindows().forEach((window: BrowserWindow) => {
-            window.webContents.send('set-themw', preferences.theme);
+            window.webContents.send('set-theme', App.currentCss);
         });
     }
 
-    static loadPreferences() {
+    static resolveThemeCss(theme: string): string {
+        let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
+        let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
+        let highContrast: string = 'file://' + path.join(app.getAppPath(), 'css', 'highcontrast.css');
+        if (theme === 'system') {
+            let css: string = nativeTheme.shouldUseDarkColors ? dark : light;
+            if (nativeTheme.shouldUseHighContrastColors) {
+                css = highContrast;
+            }
+            return css;
+        }
+        if (theme === 'dark') {
+            return dark;
+        }
+        if (theme === 'highcontrast') {
+            return highContrast;
+        }
+        return light;
+    }
+
+    static loadPreferences(): void {
         let dark: string = 'file://' + path.join(app.getAppPath(), 'css', 'dark.css');
         let light: string = 'file://' + path.join(app.getAppPath(), 'css', 'light.css');
         let highContrast: string = 'file://' + path.join(app.getAppPath(), 'css', 'highcontrast.css');
@@ -1548,25 +1591,7 @@ class App {
         } catch (err) {
             console.error(err);
         }
-        if (App.currentPreferences.theme === 'system') {
-            if (nativeTheme.shouldUseDarkColors) {
-                App.currentCss = dark;
-            } else {
-                App.currentCss = light;
-            }
-            if (nativeTheme.shouldUseHighContrastColors) {
-                App.currentCss = highContrast;
-            }
-        }
-        if (App.currentPreferences.theme === 'dark') {
-            App.currentCss = dark;
-        }
-        if (App.currentPreferences.theme === 'light') {
-            App.currentCss = light;
-        }
-        if (App.currentPreferences.theme === 'highcontrast') {
-            App.currentCss = highContrast;
-        }
+        App.currentCss = App.resolveThemeCss(App.currentPreferences.theme);
         if ((oldCss === dark || oldCss === light) && App.currentCss === highContrast) {
             App.deleteAllTags('#003e66;', '#ffffff');
         }
@@ -1593,7 +1618,15 @@ class App {
             if (err instanceof Error) {
                 return;
             }
-            let jsonData = JSON.parse(data.toString());
+            let jsonData: { files: string[] };
+            try {
+                jsonData = JSON.parse(data.toString());
+            } catch (error) {
+                jsonData = { files: [] };
+            }
+            if (!Array.isArray(jsonData.files)) {
+                jsonData.files = [];
+            }
             jsonData.files = jsonData.files.filter((f: string) => {
                 return f !== file;
             });
@@ -1611,53 +1644,58 @@ class App {
     }
 
     static getCellProperties(id: string, lang: string): void {
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'getTuvData', id: id, lang: lang },
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                data.type = lang;
-                let attributesLabel: string = App.i18n.getString('App', 'langAttributes');
-                let propertiesLabel: string = App.i18n.getString('App', 'langProperties');
-                let notesLabel: string = App.i18n.getString('App', 'langNotes');
-                data.attributesType = App.i18n.format(attributesLabel, [lang]);
-                data.propertiesType = App.i18n.format(propertiesLabel, [lang]);
-                data.notesType = App.i18n.format(notesLabel, [lang]);
-                App.mainWindow.webContents.send('update-properties', data);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            let data: any = App.model.getTuvData(id, lang);
+            data.status = SUCCESS;
+            App.mainWindow.webContents.send('end-waiting');
+            data.type = lang;
+            let attributesLabel: string = App.i18n.getString('App', 'langAttributes');
+            let propertiesLabel: string = App.i18n.getString('App', 'langProperties');
+            let notesLabel: string = App.i18n.getString('App', 'langNotes');
+            data.attributesType = App.i18n.format(attributesLabel, [lang]);
+            data.propertiesType = App.i18n.format(propertiesLabel, [lang]);
+            data.notesType = App.i18n.format(notesLabel, [lang]);
+            App.mainWindow.webContents.send('update-properties', data);
+        } catch (error) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     static getRowProperties(id: string): void {
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'getTuData', id: id },
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    data.type = 'TU';
-                    data.attributesType = App.i18n.getString('App', 'tuAttributes');
-                    data.propertiesType = App.i18n.getString('App', 'tuProperties');
-                    data.notesType = App.i18n.getString('App', 'tuNotes');
-                    App.mainWindow.webContents.send('update-properties', data);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+        try {
+            let tuData: TuData | undefined = App.model.getTuData(id);
+            App.mainWindow.webContents.send('end-waiting');
+            if (tuData) {
+                let data: any = tuData;
+                data.status = SUCCESS;
+                data.type = 'TU';
+                data.attributesType = App.i18n.getString('App', 'tuAttributes');
+                data.propertiesType = App.i18n.getString('App', 'tuProperties');
+                data.notesType = App.i18n.getString('App', 'tuNotes');
+                App.mainWindow.webContents.send('update-properties', data);
+            } else {
+                App.showMessage({ type: 'error', message: 'null tu' });
             }
-        );
+        } catch (error) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     editAttributes(arg: any): void {
         App.attributesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
-            height: 450,
+            height: 390,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1685,28 +1723,21 @@ class App {
     saveAttributes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
         App.attributesWindow.close();
-        arg.command = 'setAttributes';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    if (arg.lang === '') {
-                        App.getRowProperties(arg.id);
-                    } else {
-                        App.getCellProperties(arg.id, arg.lang);
-                    }
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
+        if (App.model) {
+            try {
+                App.model.setAttributes(arg.id, arg.lang, arg.attributes);
+                if (arg.lang === '') {
+                    App.getRowProperties(arg.id);
                 } else {
-                    App.mainWindow.webContents.send('end-waiting');
-                    App.showMessage({ type: 'error', message: data.reason });
+                    App.getCellProperties(arg.id, arg.lang);
                 }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+                App.saved = false;
+                App.mainWindow.setDocumentEdited(true);
+            } catch (error) {
+                App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
             }
-        );
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     editProperties(arg: any): void {
@@ -1744,7 +1775,7 @@ class App {
         App.addPropertyWindow = new BrowserWindow({
             parent: (parent === 'fileInfo' ? App.fileInfoWindow : App.propertiesWindow),
             width: 350,
-            height: 140,
+            height: 150,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1777,28 +1808,21 @@ class App {
     saveProperties(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
         App.propertiesWindow.close();
-        arg.command = 'setProperties';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    if (arg.lang === '') {
-                        App.getRowProperties(arg.id);
-                    } else {
-                        App.getCellProperties(arg.id, arg.lang);
-                    }
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
+        if (App.model) {
+            try {
+                App.model.setProperties(arg.id, arg.lang, arg.properties);
+                if (arg.lang === '') {
+                    App.getRowProperties(arg.id);
                 } else {
-                    App.mainWindow.webContents.send('end-waiting');
-                    App.showMessage({ type: 'error', message: data.reason });
+                    App.getCellProperties(arg.id, arg.lang);
                 }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+                App.saved = false;
+                App.mainWindow.setDocumentEdited(true);
+            } catch (error) {
+                App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
             }
-        );
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     static showNotesPanel(arg: any): void {
@@ -1835,7 +1859,7 @@ class App {
         App.addNotesWindow = new BrowserWindow({
             parent: parent === 'fileInfo' ? App.fileInfoWindow : App.notesWindow,
             width: 350,
-            height: 140,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1868,35 +1892,24 @@ class App {
     saveNotes(arg: any): void {
         App.mainWindow.webContents.send('start-waiting');
         App.notesWindow.close();
-        arg.command = 'setNotes';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.mainWindow.webContents.send('end-waiting');
-                if (data.status === SUCCESS) {
-                    if (arg.lang === '') {
-                        App.getRowProperties(arg.id);
-                    } else {
-                        App.getCellProperties(arg.id, arg.lang);
-                    }
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.mainWindow.webContents.send('end-waiting');
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+        if (App.model) {
+            App.model.setNotes(arg.id, arg.lang, arg.notes);
+            if (arg.lang === '') {
+                App.getRowProperties(arg.id);
+            } else {
+                App.getCellProperties(arg.id, arg.lang);
             }
-        );
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     static showSettings(): void {
         App.settingsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 500,
-            height: 250,
+            height: 220,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1925,10 +1938,14 @@ class App {
     }
 
     static createNewFile(): void {
+        if (App.newFileWindow && !App.newFileWindow.isDestroyed()) {
+            App.newFileWindow.focus();
+            return;
+        }
         App.newFileWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 480,
-            height: 160,
+            height: 150,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -1952,10 +1969,10 @@ class App {
         App.setLocation(App.newFileWindow, 'newFile.html');
     }
 
-    createFile(arg: any): void {
+    createFile(srcLang: string, tgtLang: string): void {
         App.newFileWindow.close();
         if (App.currentFile !== '' && !App.saved) {
-            let response = dialog.showMessageBoxSync(App.mainWindow, {
+            let response: number = dialog.showMessageBoxSync(App.mainWindow, {
                 type: 'question',
                 message: App.i18n.getString('App', 'SaveChanges'),
                 buttons: [App.i18n.getString('App', 'Yes'), App.i18n.getString('App', 'No')]
@@ -1964,20 +1981,14 @@ class App {
                 App.saveFile();
             }
         }
-        arg.command = 'createFile';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.openFile(data.path);
-                    App.needsName = true;
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            let content: string = TmxUtils.newFileContent(srcLang, tgtLang, app.name, app.getVersion());
+            let tempFile: string = path.join(app.getPath('temp'), 'temp' + Date.now() + '.tmx');
+            writeFileSync(tempFile, content, 'utf8');
+            App.openFile(tempFile, true);
+        } catch (error) {
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     static saveFile(): void {
@@ -1988,69 +1999,42 @@ class App {
             App.saveAs();
             return;
         }
-        if (App.editingCell.id) {
-            App.mainWindow.webContents.send('force-save');
-            let intervalObject = setInterval(() => {
-                if (App.editingCell.id === undefined) {
-                    clearInterval(intervalObject);
-                }
-            }, 300);
-        }
-        App.sendRequest({ command: 'saveFile', file: App.currentFile },
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Saving'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.saved = true;
-                        App.mainWindow.setDocumentEdited(false);
-                        if (App.shouldClose) {
-                            App.shouldClose = false;
-                            App.closeFile();
-                        }
-                        if (App.shouldQuit) {
-                            app.quit();
-                        }
-                        return;
-                    } else if (App.currentStatus.status === SAVING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'saveFile'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorSaving'));
-                        return;
-                    }
-                    App.getSavingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        App.writeFile();
     }
 
-    static getSavingProgress(): void {
-        App.sendRequest({ command: 'savingProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                console.error(reason);
+    static writeFile(): void {
+        if (!App.model) {
+            return;
+        }
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Saving'));
+        try {
+            App.model.saveFile(App.currentFile);
+            App.saved = true;
+            App.mainWindow.setDocumentEdited(false);
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            if (App.shouldClose) {
+                App.shouldClose = false;
+                let onClosed: (() => void) | undefined = App.onFileClosed;
+                App.onFileClosed = undefined;
+                App.closeFile(onClosed);
             }
-        );
+            if (App.fileToOpen !== '') {
+                let file: string = App.fileToOpen;
+                let needsName: boolean = App.fileToOpenNeedsName;
+                App.fileToOpen = '';
+                App.fileToOpenNeedsName = false;
+                App.openFile(file, needsName);
+            }
+            if (App.shouldQuit) {
+                app.quit();
+            }
+        } catch (error) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     static saveAs(): void {
@@ -2065,11 +2049,9 @@ class App {
             if (!value.canceled && value.filePath) {
                 App.currentFile = value.filePath;
                 App.needsName = false;
-                App.saveFile();
                 App.mainWindow.setTitle(App.currentFile);
                 App.saveRecent(App.currentFile);
-                App.saved = true;
-                App.mainWindow.setDocumentEdited(false);
+                App.saveFile();
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
@@ -2080,7 +2062,7 @@ class App {
         App.convertCsvWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
-            height: 600,
+            height: 530,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2108,7 +2090,7 @@ class App {
         App.convertTBXWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
-            height: 210,
+            height: 200,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2136,7 +2118,7 @@ class App {
         App.convertSDLTMWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
-            height: 210,
+            height: 200,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2164,7 +2146,7 @@ class App {
         App.convertExcelWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 700,
-            height: 460,
+            height: 450,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2190,26 +2172,25 @@ class App {
 
     convertCsvTmx(arg: any): void {
         App.convertCsvWindow.close();
-        arg.command = 'convertCsv';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    if (arg.openTMX) {
-                        if (App.currentFile !== '') {
-                            App.closeFile();
-                        }
-                        App.openFile(arg.tmxFile);
-                    } else {
-                        App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileConverted') });
-                    }
+        try {
+            let converter: Csv2Tmx = new Csv2Tmx(app.getName(), app.getVersion(), App.lang,
+                path.join(app.getAppPath(), 'i18n', 'tmxeditor_' + App.lang + '.json'));
+            converter.convert(arg.csvFile, arg.tmxFile, arg.langs, arg.charSet, arg.columnsSeparator, arg.textDelimiter);
+            if (arg.openTMX) {
+                if (App.currentFile !== '') {
+                    App.closeFile(() => App.openFile(arg.tmxFile));
                 } else {
-                    App.showMessage({ type: 'error', message: data.reason });
+                    App.openFile(arg.tmxFile);
                 }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+            } else {
+                App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileConverted') });
             }
-        );
+        } catch (err: unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
+            }
+        }
     }
 
     convertTbxTmx(arg: any): void {
@@ -2221,9 +2202,10 @@ class App {
             App.mainWindow.webContents.send('set-status', App.i18n.getString('App', ''));
             if (arg.openTMX) {
                 if (App.currentFile !== '') {
-                    App.closeFile();
+                    App.closeFile(() => App.openFile(arg.tmxFile));
+                } else {
+                    App.openFile(arg.tmxFile);
                 }
-                App.openFile(arg.tmxFile);
             }
         } catch (err: unknown) {
             App.mainWindow.webContents.send('set-status', App.i18n.getString('App', ''));
@@ -2244,9 +2226,10 @@ class App {
             if (result.status === SUCCESS) {
                 if (arg.openTMX) {
                     if (App.currentFile !== '') {
-                        App.closeFile();
+                        App.closeFile(() => App.openFile(arg.tmxFile));
+                    } else {
+                        App.openFile(arg.tmxFile);
                     }
-                    App.openFile(arg.tmxFile);
                 } else {
                     App.showMessage({
                         type: 'info',
@@ -2267,76 +2250,54 @@ class App {
 
     convertExcelTmx(arg: any): void {
         App.convertExcelWindow.close();
-        arg.command = 'convertExcel';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    if (arg.openTMX) {
-                        if (App.currentFile !== '') {
-                            App.closeFile();
-                        }
-                        App.openFile(arg.tmxFile);
-                    } else {
-                        App.showMessage({
-                            type: 'info',
-                            message: App.i18n.getString('App', 'fileConverted')
-                        });
-                    }
+        try {
+            let converter: Excel2Tmx = new Excel2Tmx(app.getName(), app.getVersion(), App.lang,
+                path.join(app.getAppPath(), 'i18n', 'tmxeditor_' + App.lang + '.json'));
+            converter.convert(arg.excelFile, arg.tmxFile, arg.sheet, arg.langs);
+            if (arg.openTMX) {
+                if (App.currentFile !== '') {
+                    App.closeFile(() => App.openFile(arg.tmxFile));
                 } else {
-                    App.showMessage({ type: 'error', message: data.reason });
+                    App.openFile(arg.tmxFile);
                 }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+            } else {
+                App.showMessage({
+                    type: 'info',
+                    message: App.i18n.getString('App', 'fileConverted')
+                });
             }
-        );
-    }
-
-    getCharsets(event: IpcMainEvent): void {
-        App.sendRequest({ command: 'getCharsets' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    event.sender.send('set-charsets', data.charsets);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+        } catch (err: unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
             }
-        );
+        }
     }
 
     getCsvPreview(event: IpcMainEvent, arg: any): void {
-        arg.command = 'previewCsv';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    event.sender.send('set-preview', data);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+        try {
+            let converter: Csv2Tmx = new Csv2Tmx(app.getName(), app.getVersion(), App.lang,
+                path.join(app.getAppPath(), 'i18n', 'tmxeditor_' + App.lang + '.json'));
+            event.sender.send('set-preview', converter.preview(arg.csvFile, arg.charSet, arg.columnsSeparator, arg.textDelimiter));
+        } catch (err: unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
             }
-        );
+        }
     }
 
-    getExcelPreview(event: IpcMainEvent, arg: any): void {
-        arg.command = 'previewExcel';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    event.sender.send('set-preview', data.sheets);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+    getExcelPreview(event: IpcMainEvent, excelFile: string): void {
+        try {
+            let converter: Excel2Tmx = new Excel2Tmx(app.getName(), app.getVersion(), App.lang,
+                path.join(app.getAppPath(), 'i18n', 'tmxeditor_' + App.lang + '.json'));
+            event.sender.send('set-preview', converter.preview(excelFile));
+        } catch (err: unknown) {
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
             }
-        );
+        }
     }
 
     getCsvFile(event: IpcMainEvent): void {
@@ -2438,7 +2399,7 @@ class App {
             parent: App.convertCsvWindow,
             modal: false,
             width: 520,
-            height: 300,
+            height: 280,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2479,7 +2440,7 @@ class App {
             parent: App.convertExcelWindow,
             modal: false,
             width: 520,
-            height: 300,
+            height: 280,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2525,41 +2486,20 @@ class App {
         }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 App.mainWindow.webContents.send('start-waiting');
-                App.sendRequest({ command: 'exportDelimited', file: value.filePath },
-                    (data: any) => {
-                        App.currentStatus = data;
-                        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Exporting'));
-                        let intervalObject = setInterval(() => {
-                            if (App.currentStatus.status === COMPLETED) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileExported') });
-                                return;
-                            } else if (App.currentStatus.status === ERROR) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                                return;
-                            } else if (App.currentStatus.status === SUCCESS) {
-                                // keep waiting
-                            } else {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                                    App.i18n.getString('App', 'ErrorExporting'));
-                                return;
-                            }
-                            App.getExportProgress();
-                        }, 500);
-                    },
-                    (reason: string) => {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.showMessage({ type: 'error', message: reason });
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Exporting'));
+                try {
+                    new Tmx2Csv(path.join(app.getAppPath(), 'catalog', 'catalog.xml')).convert(App.currentFile, value.filePath);
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileExported') });
+                } catch (err: unknown) {
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    console.error(err);
+                    if (err instanceof Error) {
+                        App.showMessage({ type: 'error', message: err.message });
                     }
-                );
+                }
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
@@ -2582,56 +2522,24 @@ class App {
         }).then((value: SaveDialogReturnValue) => {
             if (!value.canceled) {
                 App.mainWindow.webContents.send('start-waiting');
-                App.sendRequest({ command: 'exportExcel', file: value.filePath },
-                    (data: any) => {
-                        App.currentStatus = data;
-                        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Exporting'));
-                        let intervalObject = setInterval(() => {
-                            if (App.currentStatus.status === COMPLETED) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileExported') });
-                                return;
-                            } else if (App.currentStatus.status === ERROR) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                                return;
-                            } else if (App.currentStatus.status === SUCCESS) {
-                                // keep waiting
-                            } else {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                dialog.showErrorBox(App.i18n.getString('App', 'Error')
-                                    , App.i18n.getString('App', 'ErrorExporting'));
-                                return;
-                            }
-                            App.getExportProgress();
-                        }, 500);
-                    },
-                    (reason: string) => {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.showMessage({ type: 'error', message: reason });
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Exporting'));
+                try {
+                    new Tmx2Excel(path.join(app.getAppPath(), 'catalog', 'catalog.xml')).convert(App.currentFile, value.filePath);
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileExported') });
+                } catch (err: unknown) {
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    console.error(err);
+                    if (err instanceof Error) {
+                        App.showMessage({ type: 'error', message: err.message });
                     }
-                );
+                }
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
         });
-    }
-
-    static getExportProgress(): void {
-        App.sendRequest({ command: 'exportProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
     }
 
     static showFileInfo(): void {
@@ -2642,7 +2550,7 @@ class App {
         App.fileInfoWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 760,
-            height: 520,
+            height: 470,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -2666,80 +2574,51 @@ class App {
         App.setLocation(App.fileInfoWindow, 'fileInfo.html');
     }
 
-    static saveFileAttributes(arg: any) {
-        App.sendRequest({ command: 'saveFileAttributes', attributes: arg },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileAttributesSaved') });
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    static saveFileAttributes(arg: any): void {
+        if (!App.model) {
+            return;
+        }
+        App.model.setFileAttributes(arg);
+        App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileAttributesSaved') });
+        App.saved = false;
+        App.mainWindow.setDocumentEdited(true);
     }
 
-    static saveFileProperties(properties: Array<string[]>) {
-        App.sendRequest({ command: 'saveFileProperties', properties: properties },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'filePropertiesSaved') });
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    static saveFileProperties(properties: Array<string[]>): void {
+        if (!App.model) {
+            return;
+        }
+        App.model.setFileProperties(properties as [string, string][]);
+        App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'filePropertiesSaved') });
+        App.saved = false;
+        App.mainWindow.setDocumentEdited(true);
     }
 
-    static saveFileNotes(notes: string[]) {
-        App.sendRequest({ command: 'saveFileNotes', notes: notes },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileNotesSaved') });
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    static saveFileNotes(notes: string[]): void {
+        if (!App.model) {
+            return;
+        }
+        App.model.setFileNotes(notes);
+        App.showMessage({ parent: 'fileInfo', type: 'info', message: App.i18n.getString('App', 'fileNotesSaved') });
+        App.saved = false;
+        App.mainWindow.setDocumentEdited(true);
     }
 
     fileProperties(event: IpcMainEvent): void {
-        App.sendRequest({ command: 'getFileProperties' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    if (data.attributes.srclang && data.attributes.srclang !== '*all*') {
-                        data.attributes.srclang = LanguageUtils.normalizeCode(data.attributes.srclang);
-                    }
-                    if (data.attributes.adminlang) {
-                        data.attributes.adminlang = LanguageUtils.normalizeCode(data.attributes.adminlang);
-                    }
-                    data.fileLanguages = App.fileLanguages;
-                    data.fileLanguages.unshift({ code: '*all*', name: App.i18n.getString('App', 'anyLanguage') });
-                    data.removeProperties = App.i18n.getString('App', 'RemoveProperties');
-                    data.removeNotes = App.i18n.getString('App', 'RemoveNotes');
-                    event.sender.send('set-file-properties', data);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        let data: any = App.model.getFileProperties();
+        if (data.attributes.srclang && data.attributes.srclang !== '*all*') {
+            data.attributes.srclang = LanguageUtils.normalizeCode(data.attributes.srclang);
+        }
+        if (data.attributes.adminlang) {
+            data.attributes.adminlang = LanguageUtils.normalizeCode(data.attributes.adminlang);
+        }
+        data.fileLanguages = [{ code: '*all*', name: App.i18n.getString('App', 'anyLanguage') }, ...App.fileLanguages];
+        data.removeProperties = App.i18n.getString('App', 'RemoveProperties');
+        data.removeNotes = App.i18n.getString('App', 'RemoveNotes');
+        event.sender.send('set-file-properties', data);
     }
 
     static validateFile(): void {
@@ -2752,59 +2631,22 @@ class App {
         }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 App.mainWindow.webContents.send('start-waiting');
-                App.sendRequest({ command: 'validateFile', file: value.filePaths[0] },
-                    (data: any) => {
-                        App.currentStatus = data;
-                        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Validating'));
-                        let intervalObject = setInterval(() => {
-                            if (App.currentStatus.status === COMPLETED) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({
-                                    type: 'info',
-                                    message: App.i18n.getString('App', 'fileIsValid')
-                                });
-                                return;
-                            } else if (App.currentStatus.status === ERROR) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                                return;
-                            } else if (App.currentStatus.status === SUCCESS) {
-                                // keep waiting
-                            } else {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                                    App.i18n.getString('App', 'ErrorValidating'));
-                                return;
-                            }
-                            App.getValidatingProgress();
-                        }, 500);
-                    },
-                    (reason: string) => {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.showMessage({ type: 'error', message: reason });
-                    }
-                );
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Validating'));
+                try {
+                    let catalogFile: string = path.join(app.getAppPath(), 'catalog', 'catalog.xml');
+                    new Validator(catalogFile, App.i18n).validateFile(value.filePaths[0]);
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileIsValid') });
+                } catch (error: any) {
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'error', message: error.message });
+                }
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
         });
-    }
-
-    static getValidatingProgress(): void {
-        App.sendRequest({ command: 'validatingProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
     }
 
     static cleanCharacters(): void {
@@ -2817,66 +2659,28 @@ class App {
         }).then((value: OpenDialogReturnValue) => {
             if (!value.canceled) {
                 App.mainWindow.webContents.send('start-waiting');
-                App.sendRequest({ command: 'cleanCharacters', file: value.filePaths[0] },
-                    (data: any) => {
-                        App.currentStatus = data;
-                        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Cleaning'));
-                        let intervalObject = setInterval(() => {
-                            if (App.currentStatus.status === COMPLETED) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({
-                                    type: 'info',
-                                    message: App.i18n.getString('App', 'fileCleaned')
-                                });
-                                return;
-                            } else if (App.currentStatus.status === ERROR) {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                                return;
-                            } else if (App.currentStatus.status === SUCCESS) {
-                                // keep waiting
-                            } else {
-                                App.mainWindow.webContents.send('end-waiting');
-                                App.mainWindow.webContents.send('set-status', '');
-                                clearInterval(intervalObject);
-                                dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                                    App.i18n.getString('App', 'ErrorCleaning'));
-                                return;
-                            }
-                            App.getCleaningProgress();
-                        }, 500);
-                    },
-                    (reason: string) => {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.showMessage({ type: 'error', message: reason });
-                    }
-                );
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Cleaning'));
+                try {
+                    new TmxCleaner().clean(value.filePaths[0]);
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileCleaned') });
+                } catch (error: any) {
+                    App.mainWindow.webContents.send('end-waiting');
+                    App.mainWindow.webContents.send('set-status', '');
+                    App.showMessage({ type: 'error', message: error.message });
+                }
             }
         }).catch((error: Error) => {
             App.showMessage({ type: 'error', message: error.message });
         });
     }
 
-    static getCleaningProgress(): void {
-        App.sendRequest({ command: 'cleaningProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
-    }
-
     static splitFile(): void {
         App.splitFileWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 504,
-            height: 160,
+            width: 500,
+            height: 150,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -2902,54 +2706,21 @@ class App {
 
     splitTmx(arg: any): void {
         App.splitFileWindow.close();
-        arg.command = 'splitFile';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Splitting'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileSplit') });
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'replaceText'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorSplitting'));
-                        return;
-                    }
-                    App.getSplitProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Splitting'));
+        try {
+            new Tmx2Split(path.join(app.getAppPath(), 'catalog', 'catalog.xml')).split(arg.file, arg.parts);
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            App.showMessage({ type: 'info', message: App.i18n.getString('App', 'fileSplit') });
+        } catch (err: unknown) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
             }
-        );
-    }
-
-    static getSplitProgress(): void {
-        App.sendRequest({ command: 'getSplitProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                console.error(reason);
-            }
-        );
+        }
     }
 
     selectTmx(event: IpcMainEvent): void {
@@ -2973,7 +2744,7 @@ class App {
         App.mergeFilesWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 600,
-            height: 430,
+            height: 460,
             minimizable: false,
             maximizable: false,
             resizable: true,
@@ -3000,60 +2771,29 @@ class App {
     mergeTmxFiles(arg: any): void {
         App.mergeFilesWindow.close();
         App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'mergeFiles';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Merging'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({
-                            type: 'info',
-                            message: App.i18n.getString('App', 'filesMerged')
-                        });
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'mergeFiles'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({
-                            type: 'error',
-                            message: App.i18n.getString('App', 'unknownErrorMerging')
-                        });
-                        return;
-                    }
-                    App.getMergeProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Merging'));
+        try {
+            new Tmx2Merge(app.getName(), app.getVersion(), path.join(app.getAppPath(), 'catalog', 'catalog.xml'))
+                .merge(arg.merged, arg.files);
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            if (arg.openTMX) {
+                if (App.currentFile !== '') {
+                    App.closeFile(() => App.openFile(arg.merged));
+                } else {
+                    App.openFile(arg.merged);
+                }
+            } else {
+                App.showMessage({ type: 'info', message: App.i18n.getString('App', 'filesMerged') });
             }
-        );
-    }
-
-    static getMergeProgress(): void {
-        App.sendRequest({ command: 'getMergeProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                console.error(reason);
+        } catch (err: unknown) {
+            App.mainWindow.webContents.send('end-waiting');
+            App.mainWindow.webContents.send('set-status', '');
+            console.error(err);
+            if (err instanceof Error) {
+                App.showMessage({ type: 'error', message: err.message });
             }
-        );
+        }
     }
 
     static saveEdits(): void {
@@ -3105,21 +2845,20 @@ class App {
     }
 
     saveData(event: IpcMainEvent, arg: any): void {
-        arg.command = 'saveTuvData';
-        App.sendRequest(arg,
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.mainWindow.setDocumentEdited(true);
-                    App.saved = false;
-                    event.sender.send('data-saved', data);
-                    return;
-                }
-                App.showMessage({ type: 'error', message: data.reason });
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        try {
+            let updated: string = App.model.saveTuvData(arg.id, arg.lang, arg.data);
+            App.mainWindow.setDocumentEdited(true);
+            App.saved = false;
+            event.sender.send('data-saved', { status: SUCCESS, id: arg.id, lang: arg.lang, data: updated });
+        } catch (error: any) {
+            App.mainWindow.setDocumentEdited(true);
+            App.saved = false;
+            event.sender.send('data-saved', { status: 'Error', id: arg.id, lang: arg.lang });
+            App.showMessage({ type: 'error', message: error.message });
+        }
     }
 
     static replaceText(): void {
@@ -3129,8 +2868,8 @@ class App {
         }
         App.replaceTextWindow = new BrowserWindow({
             parent: App.mainWindow,
-            width: 450,
-            height: 230,
+            width: 550,
+            height: 210,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3154,66 +2893,94 @@ class App {
         App.setLocation(App.replaceTextWindow, 'searchReplace.html');
     }
 
-    replaceRequest(arg: any): void {
-        App.replaceTextWindow.close();
-        App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'replaceText';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Replacing'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'replaceText'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({
-                            type: 'error',
-                            message: App.i18n.getString('App', 'unknownErrorReplacing')
-                        });
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+    findText(args: { searchText: string, caseSensitive: boolean, useRegex: boolean }): void {
+        this.performSearch(args.searchText, 0, 0, args.caseSensitive, args.useRegex);
     }
 
-    static getProcessingProgress(): void {
-        App.sendRequest({ command: 'processingProgress' },
-            (data: any) => {
-                App.currentStatus = data;
-            },
-            (reason: string) => {
-                console.error(reason);
-            }
-        );
+    findNextText(args: { searchText: string, caseSensitive: boolean, useRegex: boolean }): void {
+        if (!App.model) {
+            return;
+        }
+        App.mainWindow.webContents.send('get-search-start', args);
     }
 
-    static sortUnits() {
+    searchStartReceived(args: { searchText: string, caseSensitive: boolean, useRegex: boolean, position: number, langIndex: number }): void {
+        if (!App.model) {
+            return;
+        }
+        let languages: string[] = App.model.getLanguages();
+        let nextLangIndex: number = args.langIndex + 1;
+        let nextPosition: number = args.position;
+        if (nextLangIndex >= languages.length) {
+            nextLangIndex = 0;
+            nextPosition = args.position + 1;
+        }
+        this.performSearch(args.searchText, nextPosition, nextLangIndex, args.caseSensitive, args.useRegex);
+    }
+
+    private isValidRegex(text: string, useRegex: boolean): boolean {
+        if (!useRegex) {
+            return true;
+        }
+        try {
+            new RegExp(text);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    private performSearch(text: string, position: number, langIndex: number, caseSensitive: boolean, useRegex: boolean): void {
+        if (!App.model) {
+            return;
+        }
+        if (!this.isValidRegex(text, useRegex)) {
+            App.replaceTextWindow?.webContents.send('match-found', false);
+            App.showMessage({ parent: 'searchReplace', type: 'error', message: App.i18n.getString('searchReplace', 'invalidRegex') });
+            return;
+        }
+        let match: { id: string, position: number, lang: string } | null = App.model.searchText(text, position, langIndex, caseSensitive, useRegex);
+        App.replaceTextWindow?.webContents.send('match-found', match !== null);
+        if (match) {
+            App.mainWindow.webContents.send('select-match', { id: match.id, position: match.position, lang: match.lang, searchText: text, caseSensitive: caseSensitive, useRegex: useRegex });
+        } else {
+            App.showMessage({ parent: 'searchReplace', type: 'info', message: App.i18n.getString('searchReplace', 'textNotFound') });
+        }
+    }
+
+    replaceAllRequest(args: { searchText: string, replaceText: string, caseSensitive: boolean, useRegex: boolean }): void {
+        if (!App.model) {
+            return;
+        }
+        if (!this.isValidRegex(args.searchText, args.useRegex)) {
+            App.showMessage({ parent: 'searchReplace', type: 'error', message: App.i18n.getString('searchReplace', 'invalidRegex') });
+            return;
+        }
+        let clicked: number = dialog.showMessageBoxSync(App.replaceTextWindow, {
+            type: 'question',
+            title: App.i18n.getString('menu', 'ReplaceText'),
+            message: App.i18n.getString('searchReplace', 'confirmReplaceAll'),
+            buttons: [App.i18n.getString('App', 'Yes'), App.i18n.getString('App', 'No')],
+            defaultId: 1,
+            cancelId: 1
+        });
+        if (clicked !== 0) {
+            return;
+        }
+        try {
+            let count: number = App.model.replaceAll(args.searchText, args.replaceText, args.caseSensitive, args.useRegex);
+            if (count > 0) {
+                App.saved = false;
+                App.mainWindow.setDocumentEdited(true);
+                App.loadSegments();
+            }
+            App.showMessage({ parent: 'searchReplace', type: 'info', message: App.i18n.format(App.i18n.getString('searchReplace', 'replacementsMade'), ['' + count]) });
+        } catch (error) {
+            App.showMessage({ parent: 'searchReplace', type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
+    }
+
+    static sortUnits(): void {
         if (App.currentFile === '') {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
@@ -3221,7 +2988,7 @@ class App {
         App.sortUnitsWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 520,
-            height: 160,
+            height: 200,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3245,7 +3012,7 @@ class App {
         App.setLocation(App.sortUnitsWindow, 'sortUnits.html');
     }
 
-    setSort(arg: any): void {
+    setSort(arg: SegmentFilter): void {
         App.sortOptions = arg;
         App.sortUnitsWindow.close();
         App.loadSegments();
@@ -3267,7 +3034,7 @@ class App {
         App.filtersWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 520,
-            height: 340,
+            height: 320,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3291,46 +3058,40 @@ class App {
         App.setLocation(App.filtersWindow, 'filters.html');
     }
 
-    setFilterOptions(arg: any): void {
+    setFilterOptions(arg: SegmentFilter): void {
+        if (!App.filterOptions || Object.keys(App.filterOptions).length === 0) {
+            App.preFilterStart = App.loadOptions.start ?? 0;
+        }
         App.filterOptions = arg;
         App.filtersWindow.close();
-        this.setFirstPage();
+        App.loadOptions.start = 0;
         App.loadSegments();
         App.mainWindow.webContents.send('filters-on');
-    }
-
-    setFirstPage(): void {
-        App.loadOptions.start = 0;
-        App.mainWindow.webContents.send('set-first-page');
     }
 
     clearFilterOptions(): void {
         App.filterOptions = {};
         App.filtersWindow.close();
-        this.setFirstPage();
-        App.loadSegments();
+        if (App.model) {
+            App.mainWindow.webContents.send('segments-reset', { count: App.model.getCount(), start: App.preFilterStart });
+        }
         App.mainWindow.webContents.send('filters-off');
     }
 
     static insertUnit(): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
         }
-        App.sendRequest({ command: 'insertUnit' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.mainWindow.webContents.send('unit-inserted', data.id);
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            let id: string = 'tmx' + Date.now();
+            App.model.insertUnit(id, app.name, app.getVersion());
+            App.mainWindow.webContents.send('unit-inserted', { id: id, count: App.model.getCount() });
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            App.showMessage({ type: 'error', message: error.message });
+        }
     }
 
     static requestDeleteUnits(): void {
@@ -3338,7 +3099,7 @@ class App {
     }
 
     deleteUnits(arg: any): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
         }
@@ -3347,38 +3108,16 @@ class App {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'selectUnits') });
             return;
         }
-        App.sendRequest({ command: 'deleteUnits', selected },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.getFileLanguages();
-                    App.getCount();
-                    App.loadSegments();
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
-    }
-
-    static firstPage(): void {
-        App.mainWindow.webContents.send('first-page');
-    }
-
-    static previousPage(): void {
-        App.mainWindow.webContents.send('previous-page');
-    }
-
-    static nextPage(): void {
-        App.mainWindow.webContents.send('next-page');
-    }
-
-    static lastPage(): void {
-        App.mainWindow.webContents.send('last-page');
+        try {
+            App.model.deleteUnits(selected);
+            App.getFileLanguages();
+            App.getCount();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            App.showMessage({ type: 'error', message: error.message });
+        }
     }
 
     static changeLanguageCode(): void {
@@ -3389,7 +3128,7 @@ class App {
         App.changeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 490,
-            height: 160,
+            height: 150,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3413,67 +3152,30 @@ class App {
         App.setLocation(App.changeLanguageWindow, 'changeLanguage.html');
     }
 
-    changeLanguage(arg: any): void {
+    changeLanguage(oldLanguage: string, newLanguage: string): void {
         App.changeLanguageWindow.close();
-        arg.command = 'changeLanguage';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Changing'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.getFileLanguages();
-                        App.loadSegments();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'replaceText'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({
-                            type: 'error',
-                            message: App.i18n.getString('App', 'errorChangingLanguage')
-                        });
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        App.mainWindow.webContents.send('start-waiting');
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Changing'));
+        try {
+            App.model.changeLanguage(oldLanguage, newLanguage);
+            App.getFileLanguages();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            App.showMessage({ type: 'error', message: App.i18n.getString('App', 'errorChangingLanguage') });
+        }
+        App.mainWindow.webContents.send('end-waiting');
+        App.mainWindow.webContents.send('set-status', '');
     }
 
     allLanguages(event: IpcMainEvent): void {
-        App.sendRequest({ command: 'getAllLanguages' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    let result: Language[] = data.languages.slice(0);
-                    result.unshift({ code: 'none', name: App.i18n.getString('App', 'selectLanguage') });
-                    event.sender.send('languages-list', result);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        let result: Language[] = LanguageUtils.getLanguages(App.lang).map((lang): Language => ({ code: lang.getCode(), name: lang.getDescription() }));
+        result.unshift({ code: 'none', name: App.i18n.getString('App', 'selectLanguage') });
+        event.sender.send('languages-list', result);
     }
 
     static showRemoveLanguage(): void {
@@ -3484,7 +3186,7 @@ class App {
         App.removeLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3508,23 +3210,20 @@ class App {
         App.setLocation(App.removeLanguageWindow, 'removeLanguage.html');
     }
 
-    removeLanguage(arg: any): void {
+    removeLanguage(lang: string): void {
         App.removeLanguageWindow.close();
-        App.sendRequest({ command: 'removeLanguage', lang: arg },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.getFileLanguages();
-                    App.loadSegments();
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        try {
+            App.model.removeLanguage(lang);
+            App.getFileLanguages();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     static showAddLanguage(): void {
@@ -3535,7 +3234,7 @@ class App {
         App.addLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3559,23 +3258,20 @@ class App {
         App.setLocation(App.addLanguageWindow, 'addLanguage.html');
     }
 
-    addLanguage(arg: any): void {
+    addLanguage(lang: string): void {
         App.addLanguageWindow.close();
-        App.sendRequest({ command: 'addLanguage', lang: arg },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    App.getFileLanguages();
-                    App.loadSegments();
-                    App.saved = false;
-                    App.mainWindow.setDocumentEdited(true);
-                } else {
-                    App.showMessage({ type: 'error', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        try {
+            App.model.addLanguage(lang);
+            App.getFileLanguages();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            App.showMessage({ type: 'error', message: error instanceof Error ? error.message : String(error) });
+        }
     }
 
     static showChangeSourceLanguage(): void {
@@ -3586,7 +3282,7 @@ class App {
         App.srcLanguageWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 420,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3611,140 +3307,73 @@ class App {
     }
 
     getSourceLanguage(event: IpcMainEvent): void {
-        App.sendRequest({ command: 'getSrcLanguage' },
-            (data: any) => {
-                if (data.status === SUCCESS) {
-                    event.sender.send('set-source-language', data);
-                } else {
-                    App.showMessage({ type: 'warning', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        let code: string = App.model.getSrcLanguage();
+        if (code === '*all*') {
+            event.sender.send('set-source-language', { status: SUCCESS, srcLang: code });
+            return;
+        }
+        let language = LanguageUtils.getLanguage(code, App.lang);
+        if (language) {
+            event.sender.send('set-source-language', { status: SUCCESS, srcLang: language.getCode() });
+        } else {
+            App.showMessage({ type: 'warning', message: 'Invalid source language: ' + code });
+        }
     }
 
     static removeTags(): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
         }
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'removeTags' },
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingTags'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'removeDuplicates'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorRemovingTags'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            App.model.removeTags();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorRemovingTags'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
-    changeSourceLanguage(arg: any): void {
+    changeSourceLanguage(srcLang: string): void {
         App.srcLanguageWindow.close();
-        App.sendRequest({ command: 'setSrcLanguage', lang: arg },
-            (data: any) => {
-                App.saved = false;
-                App.mainWindow.setDocumentEdited(true);
-                if (data.status !== SUCCESS) {
-                    App.showMessage({ type: 'warning', message: data.reason });
-                }
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        App.model.setSrcLanguage(srcLang);
+        App.saved = false;
+        App.mainWindow.setDocumentEdited(true);
     }
 
     static removeDuplicates(): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
         }
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'removeDuplicates' },
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingDuplicates'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'removeDuplicates'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorRemovingDuplicates'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            App.model.removeDuplicates();
+            App.loadSegments();
+            App.getCount();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorRemovingDuplicates'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     static getCount(): void {
-        App.sendRequest({ command: 'getCount' },
-            (data: any) => {
-                App.mainWindow.webContents.send('status-changed', data);
-            },
-            (reason: string) => {
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        if (!App.model) {
+            return;
+        }
+        let count: number = App.model.getCount();
+        App.mainWindow.webContents.send('status-changed', { status: SUCCESS, count: count });
     }
 
     static showRemoveUntranslated(): void {
@@ -3755,7 +3384,7 @@ class App {
         App.removeUntranslatedWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3787,7 +3416,7 @@ class App {
         App.removeSameAsSourceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3811,143 +3440,57 @@ class App {
         App.setLocation(App.removeSameAsSourceWindow, 'removeSameAsSource.html');
     }
 
-    removeUntranslated(arg: any): void {
+    removeUntranslated(srcLang: string): void {
         App.removeUntranslatedWindow.close();
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'removeUntranslated';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingUnits'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'removeUntranslated'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorRemovingUnits'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            App.model.removeUntranslated(srcLang);
+            App.loadSegments();
+            App.getCount();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorRemovingUnits'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
-    removeSameAsSource(arg: any): void {
+    removeSameAsSource(srcLang: string): void {
         App.removeSameAsSourceWindow.close();
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'removeSameAsSource';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingEntries'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'removeSameAsSource'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorRemovingEntries'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            App.model.removeSameAsSource(srcLang);
+            App.loadSegments();
+            App.getCount();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorRemovingEntries'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     static removeSpaces(): void {
-        if (App.currentFile === '') {
+        if (App.currentFile === '' || !App.model) {
             App.showMessage({ type: 'warning', message: App.i18n.getString('App', 'openTmxFile') });
             return;
         }
         App.mainWindow.webContents.send('start-waiting');
-        App.sendRequest({ command: 'removeSpaces' },
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingSpaces'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'removeSpaces'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorRemovingSpaces'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        try {
+            App.model.removeSpaces();
+            App.loadSegments();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorRemovingSpaces'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
     }
 
     static showConsolidateUnits(): void {
@@ -3962,7 +3505,7 @@ class App {
         App.consolidateWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            height: 120,
+            height: 100,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -3986,50 +3529,24 @@ class App {
         App.setLocation(App.consolidateWindow, 'consolidate.html');
     }
 
-    consolidateUnits(arg: any): void {
+    consolidateUnits(srcLang: string): void {
         App.consolidateWindow.close();
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'consolidateUnits';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Consolidating'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'consolidateUnits'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'ErrorConsolidating'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
-            }
-        );
+        App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Consolidating'));
+        try {
+            App.model.consolidateUnits(srcLang);
+            App.loadSegments();
+            App.getCount();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'ErrorConsolidating'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
+        App.mainWindow.webContents.send('set-status', '');
     }
 
     static showMaintenanceDashboard(): void {
@@ -4040,7 +3557,7 @@ class App {
         App.maintenanceWindow = new BrowserWindow({
             parent: App.mainWindow,
             width: 470,
-            height: 350,
+            height: 340,
             minimizable: false,
             maximizable: false,
             resizable: false,
@@ -4064,50 +3581,42 @@ class App {
         App.setLocation(App.maintenanceWindow, 'maintenance.html');
     }
 
-    static maintenanceTasks(arg: any): void {
+    static maintenanceTasks(arg: { tags: boolean, untranslated: boolean, duplicates: boolean, spaces: boolean, consolidate: boolean, sourceLanguage: string }): void {
         App.maintenanceWindow.close();
+        if (!App.model) {
+            return;
+        }
         App.mainWindow.webContents.send('start-waiting');
-        arg.command = 'processTasks';
-        App.sendRequest(arg,
-            (data: any) => {
-                App.currentStatus = data;
-                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Processing'));
-                let intervalObject = setInterval(() => {
-                    if (App.currentStatus.status === COMPLETED) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.loadSegments();
-                        App.getCount();
-                        App.saved = false;
-                        App.mainWindow.setDocumentEdited(true);
-                        return;
-                    } else if (App.currentStatus.status === PROCESSING) {
-                        // it's OK, keep waiting
-                    } else if (App.currentStatus.status === ERROR) {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        App.showMessage({ type: 'error', message: App.currentStatus.reason });
-                        return;
-                    } else if (App.currentStatus.status === SUCCESS) {
-                        // ignore status from 'consolidateUnits'
-                    } else {
-                        App.mainWindow.webContents.send('end-waiting');
-                        App.mainWindow.webContents.send('set-status', '');
-                        clearInterval(intervalObject);
-                        dialog.showErrorBox(App.i18n.getString('App', 'Error'),
-                            App.i18n.getString('App', 'MaintenanceError'));
-                        return;
-                    }
-                    App.getProcessingProgress();
-                }, 500);
-            },
-            (reason: string) => {
-                App.mainWindow.webContents.send('end-waiting');
-                App.showMessage({ type: 'error', message: reason });
+        try {
+            if (arg.tags) {
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingTags'));
+                App.model.removeTags();
             }
-        );
+            if (arg.spaces) {
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingSpaces'));
+                App.model.removeSpaces();
+            }
+            if (arg.untranslated) {
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingUnits'));
+                App.model.removeUntranslated(arg.sourceLanguage);
+            }
+            if (arg.duplicates) {
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'RemovingDuplicates'));
+                App.model.removeDuplicates();
+            }
+            if (arg.consolidate) {
+                App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Consolidating'));
+                App.model.consolidateUnits(arg.sourceLanguage);
+            }
+            App.loadSegments();
+            App.getCount();
+            App.saved = false;
+            App.mainWindow.setDocumentEdited(true);
+        } catch (error: any) {
+            dialog.showErrorBox(App.i18n.getString('App', 'Error'), App.i18n.getString('App', 'MaintenanceError'));
+        }
+        App.mainWindow.webContents.send('end-waiting');
+        App.mainWindow.webContents.send('set-status', '');
     }
 
     static showReleaseHistory(): void {
@@ -4134,7 +3643,7 @@ class App {
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'Downloading'));
         App.updatesWindow.close();
         request.on('response', (response: IncomingMessage) => {
-            let fileSize = Number.parseInt(response.headers['content-length'] as string);
+            let fileSize: number = Number.parseInt(response.headers['content-length'] as string);
             let received: number = 0;
             response.on('data', (chunk: Buffer) => {
                 received += chunk.length;
@@ -4200,7 +3709,7 @@ class App {
                 });
                 response.on('end', () => {
                     try {
-                        let parsedData = JSON.parse(responseData);
+                        let parsedData: any = JSON.parse(responseData);
                         if (app.getVersion() !== parsedData.version) {
                             App.latestVersion = parsedData.version;
                             switch (process.platform) {

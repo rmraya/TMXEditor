@@ -16,7 +16,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Tableau de bord de maintenance</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/maintenance.svg" placement="inline"/>&nbsp;<uicontrol>Tableau de bord de maintenance</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/maintenance_dashboard.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Tableau de bord de maintenance" s’ouvre&nbsp;:<image href="../images/maintenance_dashboard.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Tableau de bord de maintenance"</alt>
           </image></stepresult>
       </step>

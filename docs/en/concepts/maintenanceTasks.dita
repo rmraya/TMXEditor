@@ -5,8 +5,11 @@
     <conbody>
         <p>TMXEditor maintenance options are:</p>
         <ul>
-            <li><image href="../images/fileInfo.svg" placement="inline" height="16"/> 
+            <li><image href="../images/fileInfo.svg" placement="inline" height="16"/>
                 <xref href="../tasks/fileMetadata.dita">Set Attributes, Properties and Notes at File Level</xref></li>
+            <li><image href="../images/blank.svg" placement="inline" height="16"/>
+                <xref href="../tasks/unitMetadata.dita">Set Attributes, Properties and Notes at
+                    Translation Unit Level</xref></li>
             <li><image href="../images/maintenance.svg" placement="inline" height="16"/>
                 <xref href="../tasks/maintenanceDashboard.dita">Maintenance Dashboard</xref></li>
             <li><image href="../images/sortUnits.svg" placement="inline" height="16"/>
@@ -14,7 +17,7 @@
             <li><image href="../images/filterUnits.svg" placement="inline" height="16"/>
                 <xref href="../tasks/filterUnits.dita">Filter Translation Units</xref></li>
             <li><image href="../images/replaceTexts.svg" placement="inline" height="16"/>
-                <xref href="../tasks/search_replace.dita">Search &amp; Replace Text</xref></li>
+                <xref href="../tasks/search_replace.dita">Find and Replace Text</xref></li>
             <li><image href="../images/blank.svg" placement="inline" height="16"/>
                 <xref href="../tasks/change_language.dita">Change Language</xref></li>
             <li><image href="../images/blank.svg" placement="inline" height="16"/>

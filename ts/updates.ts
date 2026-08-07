@@ -23,7 +23,9 @@ export class Updates {
         ipcRenderer.on('set-versions', (event: Electron.IpcRendererEvent, arg: any) => {
             (document.getElementById('current') as HTMLTableCellElement).innerText = arg.current;
             (document.getElementById('latest') as HTMLTableCellElement).innerText = arg.latest;
-            ipcRenderer.send('updates-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+            setTimeout(() => {
+                ipcRenderer.send('set-height', { window: 'updates', width: document.body.clientWidth, height: document.body.clientHeight });
+            }, 200);
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Enter' || event.code === 'NumpadEnter') {

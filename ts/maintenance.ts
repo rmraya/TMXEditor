@@ -46,7 +46,9 @@ export class Maintenance {
         (document.getElementById('execute') as HTMLButtonElement).addEventListener('click', () => {
             this.execute();
         });
-        ipcRenderer.send('maintenance-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'maintenance', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     sourceLanguageEnabled(): void {

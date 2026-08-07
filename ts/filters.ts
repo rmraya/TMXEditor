@@ -55,7 +55,9 @@ export class Filters {
             }
         });
         (document.getElementById('filterText') as HTMLInputElement).focus();
-        ipcRenderer.send('filters-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'filters', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     togleSourceLanguage(): void {

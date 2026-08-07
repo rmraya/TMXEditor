@@ -14,8 +14,6 @@ import { ipcRenderer } from "electron";
 
 export class Properties {
 
-    electron = require('electron');
-
     currentId: string = '';
     currentType: string = '';
     properties: Array<string[]> = [];
@@ -45,7 +43,9 @@ export class Properties {
                 ipcRenderer.send('close-properties');
             }
         });
-        ipcRenderer.send('properties-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'properties', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     setUnitProperties(arg: any): void {
@@ -57,7 +57,7 @@ export class Properties {
     }
 
     saveProperties(): void {
-        let lang = this.currentType === 'TU' ? '' : this.currentType;
+        let lang: string = this.currentType === 'TU' ? '' : this.currentType;
         let arg = {
             id: this.currentId,
             lang: lang,

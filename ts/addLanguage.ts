@@ -36,14 +36,16 @@ export class AddLanguage {
             }
         });
         (document.getElementById('language') as HTMLSelectElement).focus();
-        ipcRenderer.send('addLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'addLanguage', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     languageList(langs: Language[]): void {
         let language: HTMLSelectElement = document.getElementById('language') as HTMLSelectElement;
         let options: string = '';
         for (let lang of langs) {
-            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>'
+            options = options + '<option value="' + lang.code + '">' + lang.name + '</option>';
         }
         language.innerHTML = options;
     }

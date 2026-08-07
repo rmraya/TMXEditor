@@ -18,40 +18,33 @@ export class Licenses {
         ipcRenderer.send('get-theme');
         ipcRenderer.on('set-theme', (event: Electron.IpcRendererEvent, css: string) => {
             (document.getElementById('theme') as HTMLLinkElement).href = css;
+            setTimeout(() => {
+                ipcRenderer.send('set-height', { window: 'licenses', width: document.body.clientWidth, height: document.body.clientHeight });
+            }, 200);
         });
         (document.getElementById('TMXEditor') as HTMLAnchorElement).addEventListener('click', () => {
             this.openLicense('TMXEditor');
         });
-        (document.getElementById('bcp47j') as HTMLAnchorElement).addEventListener('click', () => {
-            this.openLicense('BCP47J');
-        });
         (document.getElementById('electron') as HTMLAnchorElement).addEventListener('click', () => {
             this.openLicense('electron');
-        });
-        (document.getElementById('Java') as HTMLAnchorElement).addEventListener('click', () => {
-            this.openLicense('Java');
         });
         (document.getElementById('sdltm') as HTMLAnchorElement).addEventListener('click', () => {
             this.openLicense('sdltm');
         });
-        (document.getElementById('SQLite') as HTMLAnchorElement).addEventListener('click', () => {
-            this.openLicense('SQLite');
+        (document.getElementById('typesbcp47') as HTMLAnchorElement).addEventListener('click', () => {
+            this.openLicense('typesbcp47');
         });
-        (document.getElementById('TMXValidator') as HTMLAnchorElement).addEventListener('click', () => {
-            this.openLicense('TMXValidator');
+        (document.getElementById('typesexcel') as HTMLAnchorElement).addEventListener('click', () => {
+            this.openLicense('typesexcel');
         });
         (document.getElementById('typesxml') as HTMLAnchorElement).addEventListener('click', () => {
             this.openLicense('typesxml');
-        });
-        (document.getElementById('XMLJava') as HTMLAnchorElement).addEventListener('click', () => {
-            this.openLicense('XMLJava');
         });
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.code === 'Escape') {
                 ipcRenderer.send('close-licenses');
             }
         });
-        ipcRenderer.send('licenses-height', { width: document.body.clientWidth, height: document.body.clientHeight });
     }
 
     openLicense(type: string): void {

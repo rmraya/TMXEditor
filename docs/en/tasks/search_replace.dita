@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task id="search_replace">
-    <title>Search &amp; Replace Text</title>
-    <shortdesc>Follow these steps to perform a global search &amp; replace operation.</shortdesc>
+    <title>Find and Replace Text</title>
+    <shortdesc>Follow these steps to find text in the current TMX file and, optionally, replace
+        it.</shortdesc>
     <taskbody>
         <steps>
             <step>
@@ -11,40 +12,53 @@
             <step>
                 <cmd>In main menu, select <menucascade>
                         <uicontrol>Edit</uicontrol>
-                        <uicontrol>Replace Text...</uicontrol>
+                        <uicontrol>Search/Replace Text</uicontrol>
                     </menucascade> ([<userinput>Ctrl+F</userinput>] on Windows/Linux,
                         [<userinput>Cmd+F</userinput>] on macOS) or click the <image
                         href="../images/replaceTexts.svg" placement="inline" height="16"
-                        />&nbsp;<uicontrol>Replace Text...</uicontrol> button on the top
+                        />&nbsp;<uicontrol>Search/Replace Text</uicontrol> button on the top
                     toolbar.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/replace_text.png"
-                        placement="break" scale="80" align="center">
-                        <alt>Replace Text Dialog</alt>
+                        placement="break" scale="60" align="center">
+                        <alt>Find/Replace Dialog</alt>
                     </image>
                 </stepresult>
             </step>
             <step>
-                <cmd>Enter the text to replace in the <uicontrol>Text to Search</uicontrol> text
+                <cmd>Enter the text to look for in the <uicontrol>Text to Search</uicontrol> text
                     box.</cmd>
             </step>
             <step>
-                <cmd>Enter the replacement text in the <uicontrol>Replace With</uicontrol> text
-                    box.</cmd>
+                <cmd>Select the <uicontrol>Case Sensitive</uicontrol> checkbox if you want the
+                    search to match the exact case of the search text, and the
+                        <uicontrol>Regular Expression</uicontrol> checkbox if you want the search
+                    text to be interpreted as a regular expression.</cmd>
             </step>
             <step>
-                <cmd>Use the <uicontrol>Language</uicontrol> drop-down to select the language column
-                    where the replacement should be performed.</cmd>
+                <cmd>Click the <uicontrol>Find</uicontrol> button to locate and select the first
+                    match, or the <uicontrol>Find Next</uicontrol> button to move to the next
+                    match.</cmd>
+                <stepresult>The matching text is selected in the editing grid.</stepresult>
             </step>
             <step>
-                <cmd>Select the <uicontrol>Regular Expression</uicontrol> checkbox if you want to
-                    use regular expressions for specifying the text to search.</cmd>
+                <cmd>To replace only the currently selected match, enter the replacement text in the
+                        <uicontrol>Replace with</uicontrol> text box and click the
+                        <uicontrol>Replace</uicontrol> button.</cmd>
+                <info>The <uicontrol>Replace</uicontrol> button is enabled only after a match has
+                    been found with <uicontrol>Find</uicontrol> or <uicontrol>Find
+                    Next</uicontrol>.</info>
             </step>
             <step>
-                <cmd>Click the <uicontrol>Replace Text</uicontrol> button.</cmd>
+                <cmd>To replace every match in a single operation, enter the replacement text in the
+                        <uicontrol>Replace with</uicontrol> text box and click the
+                        <uicontrol>Replace All</uicontrol> button.</cmd>
+                <stepresult>A confirmation dialog is displayed before the replacement is performed,
+                    as this action cannot be undone.</stepresult>
             </step>
         </steps>
-        <result>All exact appearances of the text in <uicontrol>Text to Search</uicontrol>, or
-            fragments that match the given regular expression, are replaced with the text specified
-            in the <uicontrol>Replace With</uicontrol> text box.</result>
+        <result>Depending on the button used, either the currently selected match or every match
+            of the text entered in <uicontrol>Text to Search</uicontrol> (or of the given regular
+            expression) is replaced with the text entered in the <uicontrol>Replace With</uicontrol>
+            text box.</result>
     </taskbody>
 </task>

@@ -15,8 +15,6 @@ import { Language } from "./language.js";
 
 export class CsvLanguages {
 
-    electron = require('electron');
-
     columns: number = 0;
     options: string = '';
 
@@ -43,7 +41,9 @@ export class CsvLanguages {
                 ipcRenderer.send('close-csvLanguages');
             }
         });
-        ipcRenderer.send('csvLanguages-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'csvLanguages', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     setCsvLanguages(): void {

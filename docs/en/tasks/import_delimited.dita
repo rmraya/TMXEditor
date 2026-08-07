@@ -82,7 +82,7 @@
                     included in the file or you wish to change the automatically detected
                     ones.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/csvLanguages.png"
-                        placement="break" scale="80" align="center">
+                        placement="break" scale="60" align="center">
                         <alt>CSV/Text Languages Dialog</alt>
                     </image>
                 </stepresult>
@@ -91,16 +91,6 @@
                 <cmd>Use the drop-down controls in the <uicontrol>CSV/Text Languages</uicontrol>
                     dialog to select the languages in the CSV file. Click the <uicontrol>Set
                         Languages</uicontrol> button to confirm your selection.</cmd>
-            </step>
-            <step>
-                <cmd>Check the <uicontrol>Fix Excel Double Quotes</uicontrol> box if the file was
-                    exported by Excel using double quote characters as text delimiter. This option
-                    ensures that quotes are not duplicated during conversion.</cmd>
-            </step>
-            <step>
-                <cmd>Check the <uicontrol>Optional Text Delimiters</uicontrol> box if the file does
-                    not use the selected text delimiter in all cases (some tools only surround text
-                    in delimiters when the de column separator is part of the exported text).</cmd>
             </step>
             <step>
                 <cmd>Finally, click the <uicontrol>Convert CSV to TMX</uicontrol> button to generate

@@ -31,12 +31,15 @@ export class SystemInformation {
         });
     }
 
-    setInfo(info: any) {
+    setInfo(info: any): void {
         (document.getElementById('tmxeditor') as HTMLTableCellElement).innerText = info.tmxeditor;
-        (document.getElementById('bcp47j') as HTMLTableCellElement).innerText = info.bcp47j;
-        (document.getElementById('xmljava') as HTMLTableCellElement).innerText = info.xmljava;
-        (document.getElementById('java') as HTMLTableCellElement).innerText = info.java;
         (document.getElementById('electron') as HTMLTableCellElement).innerText = info.electron;
-        ipcRenderer.send('systemInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        (document.getElementById('sdltm') as HTMLTableCellElement).innerText = info.sdltm;
+        (document.getElementById('typesbcp47') as HTMLTableCellElement).innerText = info.typesbcp47;
+        (document.getElementById('typesexcel') as HTMLTableCellElement).innerText = info.typesexcel;
+        (document.getElementById('typesxml') as HTMLTableCellElement).innerText = info.typesxml;
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'systemInfo', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 }

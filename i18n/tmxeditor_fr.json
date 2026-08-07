@@ -81,6 +81,7 @@
     "Save": "Enregistrer",
     "tuAttributes": "Attributs de la TU",
     "openTmxFile": "Veuillez ouvrir un fichier TMX",
+    "untitled": "Sans titre.tmx",
     "Merging": "Fusion en cours...",
     "fileNeeds3Languages": "Il faut au moins 3 langues dans le fichier",
     "Yes": "Oui",
@@ -183,7 +184,7 @@
     "ConvertCSV": "Convertir un fichier CSV ou TSV en TMX",
     "DeleteSelected": "Supprimer les unités sélectionnées",
     "ChangeSourceLanguage": "Changer de langue source",
-    "ReplaceText": "Remplacer du texte",
+    "ReplaceText": "Rechercher/Remplacer du texte",
     "RemoveDuplicates": "Supprimer les unités en doublon",
     "EditProperties": "Modifier les propriétés",
     "EditNotes": "Modifier les notes",
@@ -217,7 +218,7 @@
   },
   "requestEvaluation": {
     "enterEmail": "Adresse mail",
-    "enterLasttName": "Nom",
+    "enterLastName": "Nom",
     "repeatEmail": "Saisir à nouveau votre adresse mail",
     "differentEmails": "Les deux adresses ne coïncident pas",
     "validEmail": "Saisir une adresse mail valide",
@@ -230,9 +231,19 @@
     "invalidXML": "Erreur lors de l'analyse du fichier TBX : XML invalide",
     "noRootElement": "Erreur lors de l'analyse du fichier TBX : Aucun élément racine trouvé"
   },
+  "excel2tmx": {
+    "sheetNotFound": "Feuille '{0}' introuvable dans le fichier Excel"
+  },
+  "csv2tmx": {
+    "columnMismatch": "La ligne n'a pas le même nombre de colonnes que les langues sélectionnées"
+  },
   "searchReplace": {
     "enterReplaceText": "Remplacer par",
-    "enterSearchText": "Recherche"
+    "enterSearchText": "Recherche",
+    "textNotFound": "Texte non trouvé",
+    "invalidRegex": "Expression régulière non valide",
+    "confirmReplaceAll": "Remplacer toutes les occurrences du texte recherché ? Cette action est irréversible.",
+    "replacementsMade": "{0} remplacement(s) effectué(s)"
   },
   "addLanguage": {"selectLanguageWarning": "Veuillez sélectionner une langue"},
   "convertCSV": {
@@ -246,5 +257,37 @@
   "convertTBX": {
     "selectTbx": "Sélectionner le fichier TBX",
     "selectTmx": "Sélectionner le fichier TMX"
+  },
+  "versionhandler": {
+    "unexpectedroot": "Élément racine inattendu : {0}"
+  },
+  "tmxvalidator": {
+    "noversion": "Il manque l'attribut de version dans l'élément racine",
+    "invalidversion": "Version de TMX non valide : {0}"
+  },
+  "validatinghandler": {
+    "dtdnotresolved": "Impossible de résoudre la DTD avec publicId='{0}' systemId='{1}'",
+    "missingversion": "Il manque la version TMX",
+    "incorrectversion": "Version TMX incorrecte : {0}",
+    "notmxdoc": "Le fichier sélectionné n'est pas un fichier TMX",
+    "nosrclang": "Il manque la déclaration de la langue source",
+    "invalidsrclang": "Langue source '{0}' incorrecte",
+    "invalidxattr": "Valeur de l'attribut \"x\" incorrecte : '{0}'",
+    "duplicatexattr": "Valeur de l'attribut \"x\" en doublon : '{0}' dans '{1}'",
+    "invalidlang": "Code langue '{0}' incorrect",
+    "invalidusagecount": "Valeur de l'attribut usagecount incorrecte : '{0}'",
+    "invaliddateformat": "Format de date incorrect '{0}'",
+    "unbalancedbptept": "Nombre de balises <bpt> et <ept> différent\n\n{0}",
+    "unmatchedbptept": "Balise <bpt>/<ept> sans balise <ept>/<bpt> correspondante\n\n{0}",
+    "incorrectxmatching": "Incohérence dans les valeurs des attributs \"x\"",
+    "tuvnolang": "Il manque l'attribut de langue dans la balise <tuv>",
+    "tuvmissingsrclang": "La balise <tu> n'a pas de <tuv> en langue '{0}'",
+    "invalidibpt": "Valeur incorrecte de l'attribut 'i' dans la balise <bpt>\n\n{0}",
+    "duplicateibpt": "Valeur de l'attribut 'i' en doublon dans la balise <bpt>\n\n{0}",
+    "invalidiept": "Valeur incorrecte de l'attribut 'i' dans la balise <ept>\n\n{0}",
+        "mismatchedi": "Incohérence dans la valeur de l'attribut 'i' dans les balises <bpt>/<ept>\n\n{0}",
+        "invalidbodyelement": "Élément <{0}> invalide dans <body>",
+        "bodybeforeheader": "L'élément <body> ne peut pas apparaître avant <header>",
+        "missingbody": "Le document <tmx> n'a pas d'élément <body>"
   }
 }

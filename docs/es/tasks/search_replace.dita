@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task xml:lang="es" id="search_replace">
-  <title>Buscar yRemplazar Texto</title>
-  <shortdesc>Siga estos pasos para realizar una operación global de búsqueda y reemplazo.</shortdesc>
+  <title>Buscar y Reemplazar Texto</title>
+  <shortdesc>Siga estos pasos para buscar texto en el archivo TMX actual y, si lo desea, reemplazarlo.</shortdesc>
   <taskbody>
     <steps>
       <step>
@@ -11,28 +11,31 @@
       <step>
         <cmd>En el menú principal, seleccione <menucascade>
             <uicontrol>Editar</uicontrol>
-            <uicontrol>Reemplazar Texto...</uicontrol>
-          </menucascade>  ([<userinput>Ctrl+F</userinput>] en Windows/Linux, [<userinput>Cmd+F</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/replaceTexts.svg" placement="inline"/> <uicontrol>Reemplazar Texto...</uicontrol> de la barra de herramientas superior.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/replace_text.png" placement="break" scale="80" align="center">
-            <alt>Cuadro de diálogo Reemplazar Texto</alt>
+            <uicontrol>Buscar/Reemplazar Texto</uicontrol>
+          </menucascade> ([<userinput>Ctrl+F</userinput>] en Windows/Linux, [<userinput>Cmd+F</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/replaceTexts.svg" placement="inline"/> <uicontrol>Buscar/Reemplazar Texto</uicontrol> de la barra de herramientas superior.</cmd>
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/replace_text.png" placement="break" scale="60" align="center">
+            <alt>Cuadro de diálogo Buscar y Reemplazar</alt>
           </image> </stepresult>
       </step>
       <step>
-        <cmd>Escriba el texto que desea reemplazar en el cuadro de texto <uicontrol>Texto a Buscar</uicontrol>.</cmd>
+        <cmd>Escriba el texto que desea buscar en el cuadro de texto <uicontrol>Texto a Buscar</uicontrol>.</cmd>
       </step>
       <step>
-        <cmd>Escriba el texto de reemplazo en el cuadro de texto <uicontrol>Reemplazar con</uicontrol>.</cmd>
+        <cmd>Seleccione la casilla de verificación <uicontrol>Distinguir Mayúsculas y Minúsculas</uicontrol> si desea que la búsqueda coincida con el uso exacto de mayúsculas y minúsculas del texto de búsqueda y la casilla de verificación <uicontrol>Expresión Regular</uicontrol> si desea que el texto de búsqueda se interprete como una expresión regular.</cmd>
       </step>
       <step>
-        <cmd>Utilice la lista desplegable <uicontrol>Idioma</uicontrol> para seleccionar la columna de idioma donde se debe realizar el reemplazo.</cmd>
+        <cmd>Haga clic en el botón <uicontrol>Buscar</uicontrol> para localizar y seleccione la primera coincidencia, o en el botón <uicontrol>Buscar Siguiente</uicontrol> para pasar a la siguiente coincidencia.</cmd>
+        <stepresult>El texto coincidente se selecciona en la cuadrícula de edición.</stepresult>
       </step>
       <step>
-        <cmd>Active la casilla <uicontrol>Expresión Regular</uicontrol> si desea utilizar expresiones regulares para especificar el texto que se va a buscar</cmd>
+        <cmd>Para reemplazar solo la coincidencia seleccionada, introduzca el texto de remplazo en el cuadro de texto <uicontrol>Reemplazar con</uicontrol> y haga clic en el botón <uicontrol>Reemplazar</uicontrol>.</cmd>
+        <info>El botón <uicontrol>Reemplazar</uicontrol> solo se activa después de haber encontrado una coincidencia con <uicontrol>Buscar</uicontrol> o <uicontrol>Buscar Siguiente</uicontrol>.</info>
       </step>
       <step>
-        <cmd>Haga clic en el botón <uicontrol>Reemplazar Texto</uicontrol>.</cmd>
+        <cmd>Para remplazar todas las coincidencias en una sola operación, introduzca el texto de remplazo en el cuadro de texto <uicontrol>Reemplazar con</uicontrol>  y haga clic en el botón <uicontrol>Reemplazar todo</uicontrol>.</cmd>
+        <stepresult>Se muestra un cuadro de diálogo de confirmación antes de realizar el reemplazo, ya que esta acción no se puede deshacer.</stepresult>
       </step>
     </steps>
-    <result>Todas las entradas exactas del texto en <uicontrol>Texto a buscar</uicontrol>, o fragmentos que coincidan con la expresión regular dada, se reemplazan con el texto especificado en el cuadro de texto <uicontrol>Reemplazar con</uicontrol>.</result>
+    <result>Según el botón utilizado, la coincidencia actualmente seleccionada o todas las coincidencias del texto introducido en <uicontrol>Texto a Buscar</uicontrol> (o de la expresión regular dada) se remplazan con el texto introducido en el cuadro de texto <uicontrol>Remplazar con</uicontrol>.</result>
   </taskbody>
 </task>

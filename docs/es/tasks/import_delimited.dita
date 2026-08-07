@@ -48,18 +48,12 @@
       </step>
       <step>
         <cmd>Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> si los códigos de idioma no están incluidos en el archivo o si desea cambiar los detectados automáticamente.</cmd>
-        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
+        <stepresult>Aparece el siguiente cuadro de diálogo:<image href="../images/csvLanguages.png" placement="break" scale="60" align="center">
             <alt>Cuadro de diálogo Idiomas del Archivo CSV/Texto</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Utilice las listas desplegables del cuadro de diálogo <uicontrol>Idiomas del Archivo CSV/Texto</uicontrol> para seleccionar los idiomas del archivo CSV. Haga clic en el botón <uicontrol>Seleccionar Idiomas</uicontrol> para confirmar su selección.</cmd>
-      </step>
-      <step>
-        <cmd>Active la casilla <uicontrol>Corregir Comillas Dobles de Excel</uicontrol> si Excel exportó el archivo con comillas dobles como delimitador de texto. Esta opción garantiza que las comillas no se dupliquen durante la conversión.</cmd>
-      </step>
-      <step>
-        <cmd>Marque la casilla <uicontrol>Delimitadores de Texto Opcionales</uicontrol> si el archivo no utiliza el delimitador de texto seleccionado en todos los casos (algunas herramientas solo rodean el texto en los delimitadores cuando el separador de columna forma parte del texto exportado).</cmd>
       </step>
       <step>
         <cmd>Finalmente, haga clic en el botón <uicontrol>Convertir Archivo CSV a TMX</uicontrol> para generar el archivo TMX.</cmd>

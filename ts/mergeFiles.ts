@@ -50,7 +50,9 @@ export class MergeFiles {
             this.removeText = text;
         });
         (document.getElementById('file') as HTMLInputElement).focus();
-        ipcRenderer.send('mergeFiles-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'mergeFiles', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     mergeFiles(): void {
@@ -67,7 +69,11 @@ export class MergeFiles {
             ipcRenderer.send('show-message', { type: 'warning', group: 'mergeFiles', key: 'addMoreTmx', parent: 'mergeFiles' });
             return;
         }
-        ipcRenderer.send('merge-tmx-files', { merged: file, files: this.files });
+        ipcRenderer.send('merge-tmx-files', {
+            merged: file,
+            files: this.files,
+            openTMX: (document.getElementById('openTMX') as HTMLInputElement).checked
+        });
     }
 
     tmxFiles(args: string[]): void {
@@ -89,7 +95,7 @@ export class MergeFiles {
             let row: HTMLTableRowElement = document.createElement('tr');
             table.appendChild(row);
 
-            let cell = document.createElement('td');
+            let cell: HTMLTableCellElement = document.createElement('td');
             cell.style.width = '24px';
             cell.classList.add('middle');
             cell.classList.add('center');

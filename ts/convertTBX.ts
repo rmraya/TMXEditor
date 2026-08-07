@@ -39,20 +39,22 @@ export class ConvertTBX {
                 ipcRenderer.send('close-convertTbx');
             }
         });
-        ipcRenderer.send('convertTbx-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'convertTbx', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
-    setTbxFile(arg: string): void {
-        let tbxFile = (document.getElementById('tbxFile') as HTMLInputElement);
-        tbxFile.value = arg;
+    setTbxFile(file: string): void {
+        let tbxFile: HTMLInputElement = (document.getElementById('tbxFile') as HTMLInputElement);
+        tbxFile.value = file;
 
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            let index: number = arg.lastIndexOf('.');
+            let index: number = file.lastIndexOf('.');
             if (index !== -1) {
-                tmxFile.value = arg.substring(0, index) + '.tmx';
+                tmxFile.value = file.substring(0, index) + '.tmx';
             } else {
-                tmxFile.value = arg + '.tmx';
+                tmxFile.value = file + '.tmx';
             }
         }
     }
@@ -71,18 +73,18 @@ export class ConvertTBX {
     }
 
     convertFile(): void {
-        let tbxFile = (document.getElementById('tbxFile') as HTMLInputElement);
+        let tbxFile: HTMLInputElement = (document.getElementById('tbxFile') as HTMLInputElement);
         if (tbxFile.value === '') {
             ipcRenderer.send('show-message', { type: 'warning', group: 'convertTBX', key: 'selectTbx', parent: 'convertTBX' });
             return;
         }
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
             ipcRenderer.send('show-message', { type: 'warning', group: 'convertTBX', key: 'selectTmx', parent: 'convertTBX' });
             return;
         }
 
-        let arg = {
+        let arg: any = {
             tbxFile: tbxFile.value,
             tmxFile: tmxFile.value,
             openTMX: (document.getElementById('openTMX') as HTMLInputElement).checked

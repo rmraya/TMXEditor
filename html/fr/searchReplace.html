@@ -2,10 +2,10 @@
 <html lang="fr">
 
 <head>
-    <title>Remplacer du texte</title>
+    <title>Rechercher et remplacer</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
-<meta charset="utf-8">
+    <meta charset="utf-8">
 </head>
 
 <body class="dialog_body">
@@ -19,24 +19,24 @@
             <td class="middle noWrap"><label for="replaceText">Remplacer par</label></td>
             <td class="middle fill_width"><input type="text" id="replaceText" class="table_input"></td>
         </tr>
-        <tr>
-            <td class="middle noWrap"><label for="language">Langue</label></td>
-            <td class="middle fill_width">
-                <select id="language" class="table_input">
-                </select>
-            </td>
-        </tr>
     </table>
 
     <div class="row">
+        <input type="checkbox" id="caseSensitive" style="margin-left: 10px;">
+        <label for="caseSensitive" class="middleLabel">Sensible &agrave; la casse</label>
+    </div>
+    <div class="row">
         <input type="checkbox" id="regularExpression" style="margin-left: 10px;">
-        <label for="regularExpression" class="middleLabel">Expression régulière</label>
+        <label for="regularExpression" class="middleLabel">Expression r&eacute;guli&egrave;re</label>
     </div>
 
     <div class="buttonArea">
-        <button id="replace">Remplacer toutes les occurrences</button>
+        <button id="find">Rechercher</button>
+        <button id="findNext">Rechercher suivant</button>
+        <button id="replace" disabled>Remplacer</button>
+        <button id="replaceAll">Tout remplacer</button>
     </div>
-    
+
     <script>
         const { SearchReplace } = require('../../js/searchReplace.js');
         new SearchReplace();

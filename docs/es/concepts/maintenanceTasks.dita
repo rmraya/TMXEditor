@@ -3,11 +3,15 @@
 <concept xml:lang="es" id="maintenanceTasks">
   <title>Tareas de Mantenimiento</title>
   <conbody>
-    <p>Las opciones de mantenimiento de TMXEditor son </p>
+    <p>Las opciones de mantenimiento de TMXEditor son:</p>
     <ul>
       <li>
         <image height="16" href="../images/fileInfo.svg" placement="inline"/>
         <xref href="../tasks/fileMetadata.dita">Establecer Atributos, Propiedades y Notas a Nivel de Archivo</xref>
+      </li>
+      <li>
+        <image height="16" href="../images/blank.svg" placement="inline"/>
+        <xref href="../tasks/unitMetadata.dita">Establecer Atributos, Propiedades y Notas a Nivel de Unidad de Traducción</xref>
       </li>
       <li>
         <image height="16" href="../images/maintenance.svg" placement="inline"/>
@@ -23,7 +27,7 @@
       </li>
       <li>
         <image height="16" href="../images/replaceTexts.svg" placement="inline"/>
-        <xref href="../tasks/search_replace.dita">Buscar y Remplazar Texto</xref>
+        <xref href="../tasks/search_replace.dita">Buscar y Reemplazar Texto</xref>
       </li>
       <li>
         <image height="16" href="../images/blank.svg" placement="inline"/>

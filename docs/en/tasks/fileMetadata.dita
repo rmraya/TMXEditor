@@ -17,7 +17,7 @@
                 placement="inline" height="16"/>&nbsp;<uicontrol>File Properties</uicontrol> button
             on the top toolbar.</p>
         <p>The following dialog appears:<image href="../images/fileAttributes.png" placement="break"
-                scale="80" align="center">
+                scale="60" align="center">
                 <alt>File Properties Dialog</alt>
             </image></p>
         <section>
@@ -30,7 +30,7 @@
             <title>File Level Properties</title>
             <p>To edit file-level properties, click on the <uicontrol>Properties</uicontrol> tab of
                 the <uicontrol>File Properties</uicontrol> dialog. The dialog displays this
-                    view:<image href="../images/fileProperties.png" placement="break" scale="80"
+                    view:<image href="../images/fileProperties.png" placement="break" scale="60"
                     align="center">
                     <alt>File Properties Dialog</alt>
                 </image></p>
@@ -49,7 +49,7 @@
             <title>File Level Notes</title>
             <p>To edit file-level notes, click on the <uicontrol>Notes</uicontrol> tab of the
                     <uicontrol>File Properties</uicontrol> dialog. The dialog displays this
-                    view:<image href="../images/fileNotes.png" placement="break" scale="80"
+                    view:<image href="../images/fileNotes.png" placement="break" scale="60"
                     align="center">
                     <alt>File Properties Dialog</alt>
                 </image></p>

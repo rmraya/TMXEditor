@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="unitMetadata">
+    <title>Set Attributes, Properties and Notes at Translation Unit Level</title>
+    <body>
+        <p>Each <codeph>&lt;tu&gt;</codeph> element in a TMX document can store its own
+            Attributes, Properties and Notes, independently of the file-level metadata described
+            in <xref href="fileMetadata.dita">Set Attributes, Properties and Notes at File
+                Level</xref>.</p>
+        <p>Click on any cell of the translation unit that you want to edit to select it, then use
+            one of the following options from the <uicontrol>Edit</uicontrol> menu.</p>
+        <section>
+            <title>Translation Unit Attributes</title>
+            <p>Select <menucascade>
+                    <uicontrol>Edit</uicontrol>
+                    <uicontrol>Edit Attributes</uicontrol>
+                </menucascade> from the main menu.</p>
+            <p>The following dialog appears:<image href="../images/unitAttributes.png"
+                    placement="break" scale="60" align="center">
+                    <alt>Translation Unit Attributes Dialog</alt>
+                </image></p>
+            <p>Adjust the text displayed in the text boxes, select the appropriate values from the
+                drop-down selectors, and click the <uicontrol>Save Attributes</uicontrol>
+                button.</p>
+        </section>
+        <section>
+            <title>Translation Unit Properties</title>
+            <p>Select <menucascade>
+                    <uicontrol>Edit</uicontrol>
+                    <uicontrol>Edit Properties</uicontrol>
+                </menucascade> from the main menu.</p>
+            <p>The following dialog appears:<image href="../images/unitProperties.png"
+                    placement="break" scale="60" align="center">
+                    <alt>Translation Unit Properties Dialog</alt>
+                </image></p>
+            <ul>
+                <li>Click the <uicontrol>Add Property</uicontrol> button to open a dialog for
+                    entering the type and value of the new property to be added.</li>
+                <li>If you want to remove properties from the list, click the corresponding
+                        <uicontrol>Remove Property</uicontrol> buttons (<image
+                        href="../images/remove.svg" placement="inline" height="16"/>) on the
+                    leftmost column.</li>
+                <li>Click the <uicontrol>Save Properties</uicontrol> button to save your
+                    changes.</li>
+            </ul>
+        </section>
+        <section>
+            <title>Translation Unit Notes</title>
+            <p>Select <menucascade>
+                    <uicontrol>Edit</uicontrol>
+                    <uicontrol>Edit Notes</uicontrol>
+                </menucascade> from the main menu.</p>
+            <p>The following dialog appears:<image href="../images/unitNotes.png"
+                    placement="break" scale="60" align="center">
+                    <alt>Translation Unit Notes Dialog</alt>
+                </image></p>
+            <ul>
+                <li>Click the <uicontrol>Add Note</uicontrol> button to open a dialog for entering
+                    the text of the new note to be added.</li>
+                <li>If you want to remove notes from the list, click the corresponding
+                        <uicontrol>Remove Note</uicontrol> buttons (<image
+                        href="../images/remove.svg" placement="inline" height="16"/>) on the
+                    leftmost column.</li>
+                <li>Click the <uicontrol>Save Notes</uicontrol> button to save your changes.</li>
+            </ul>
+        </section>
+    </body>
+</topic>

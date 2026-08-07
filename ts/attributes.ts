@@ -15,8 +15,6 @@ import { Language } from "./language.js";
 
 export class Attributes {
 
-    electron = require('electron');
-
     currentId: string = '';
     currentType: string = '';
     langAttributesText: string = 'Attributes';
@@ -49,7 +47,7 @@ export class Attributes {
             this.langAttributesText = text;
         });
         setTimeout(() => {
-            ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+            ipcRenderer.send('set-height', { window: 'attributes', width: document.body.clientWidth, height: document.body.clientHeight });
         }, 150);
     }
 
@@ -78,7 +76,7 @@ export class Attributes {
             (document.getElementById('topRow') as HTMLTableRowElement).style.display = 'none';
         }
         setTimeout(() => {
-            ipcRenderer.send('attributes-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+            ipcRenderer.send('set-height', { window: 'attributes', width: document.body.clientWidth, height: document.body.clientHeight });
         }, 150);
     }
 
@@ -95,72 +93,72 @@ export class Attributes {
     saveAttributes(): void {
         let lang = this.currentType === 'TU' ? '' : this.currentType;
         let array: Array<string[]> = [];
-        let oencoding = (document.getElementById('o-encoding') as HTMLInputElement).value;
+        let oencoding: string = (document.getElementById('o-encoding') as HTMLInputElement).value;
         if (oencoding) {
             const pair: string[] = ['o-encoding', oencoding];
             array.push(pair);
         }
-        let datatype = (document.getElementById('datatype') as HTMLInputElement).value;
+        let datatype: string = (document.getElementById('datatype') as HTMLInputElement).value;
         if (datatype) {
             const pair: string[] = ['datatype', datatype];
             array.push(pair);
         }
-        let usagecount = (document.getElementById('usagecount') as HTMLInputElement).value;
+        let usagecount: string = (document.getElementById('usagecount') as HTMLInputElement).value;
         if (usagecount) {
             const pair: string[] = ['usagecount', usagecount];
             array.push(pair);
         }
-        let lastusagedate = (document.getElementById('lastusagedate') as HTMLInputElement).value;
+        let lastusagedate: string = (document.getElementById('lastusagedate') as HTMLInputElement).value;
         if (lastusagedate) {
             const pair: string[] = ['lastusagedate', lastusagedate];
             array.push(pair);
         }
-        let creationtool = (document.getElementById('creationtool') as HTMLInputElement).value;
+        let creationtool: string = (document.getElementById('creationtool') as HTMLInputElement).value;
         if (creationtool) {
             const pair: string[] = ['creationtool', creationtool];
             array.push(pair);
         }
-        let creationtoolversion = (document.getElementById('creationtoolversion') as HTMLInputElement).value;
+        let creationtoolversion: string = (document.getElementById('creationtoolversion') as HTMLInputElement).value;
         if (creationtoolversion) {
             const pair: string[] = ['creationtoolversion', creationtoolversion];
             array.push(pair);
         }
-        let creationdate = (document.getElementById('creationdate') as HTMLInputElement).value;
+        let creationdate: string = (document.getElementById('creationdate') as HTMLInputElement).value;
         if (creationdate) {
             const pair: string[] = ['creationdate', creationdate];
             array.push(pair);
         }
-        let creationid = (document.getElementById('creationid') as HTMLInputElement).value;
+        let creationid: string = (document.getElementById('creationid') as HTMLInputElement).value;
         if (creationid) {
             const pair: string[] = ['creationid', creationid];
             array.push(pair);
         }
-        let changedate = (document.getElementById('changedate') as HTMLInputElement).value;
+        let changedate: string = (document.getElementById('changedate') as HTMLInputElement).value;
         if (changedate) {
             const pair: string[] = ['changedate', changedate];
             array.push(pair);
         }
-        let segtype = (document.getElementById('segtype') as HTMLSelectElement).value;
+        let segtype: string = (document.getElementById('segtype') as HTMLSelectElement).value;
         if (segtype) {
             const pair: string[] = ['segtype', segtype];
             array.push(pair);
         }
-        let changeid = (document.getElementById('changeid') as HTMLInputElement).value;
+        let changeid: string = (document.getElementById('changeid') as HTMLInputElement).value;
         if (changeid) {
             const pair: string[] = ['changeid', changeid];
             array.push(pair);
         }
-        let otmf = (document.getElementById('o-tmf') as HTMLInputElement).value;
+        let otmf: string = (document.getElementById('o-tmf') as HTMLInputElement).value;
         if (otmf) {
             const pair: string[] = ['o-tmf', otmf];
             array.push(pair);
         }
-        let srclang = (document.getElementById('srclang') as HTMLSelectElement).value;
+        let srclang: string = (document.getElementById('srclang') as HTMLSelectElement).value;
         if (srclang) {
             const pair: string[] = ['srclang', srclang];
             array.push(pair);
         }
-        let tuid = (document.getElementById('tuid') as HTMLInputElement).value;
+        let tuid: string = (document.getElementById('tuid') as HTMLInputElement).value;
         if (tuid) {
             const pair: string[] = ['tuid', tuid];
             array.push(pair);

@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <title>Reemplazar Texto</title>
+    <title>Buscar y Reemplazar</title>
     <link id="theme" rel="stylesheet" type="text/css" href="../../css/light.css">
     <link rel="stylesheet" type="text/css" href="../../css/fonts.css">
 </head>
@@ -18,24 +18,24 @@
             <td class="middle noWrap"><label for="replaceText">Reemplazar con</label></td>
             <td class="middle fill_width"><input type="text" id="replaceText" class="table_input"></td>
         </tr>
-        <tr>
-            <td class="middle noWrap"><label for="language">Idioma</label></td>
-            <td class="middle fill_width">
-                <select id="language" class="table_input">
-                </select>
-            </td>
-        </tr>
     </table>
 
+    <div class="row">
+        <input type="checkbox" id="caseSensitive" style="margin-left: 10px;">
+        <label for="caseSensitive" class="middleLabel">Distinguir May&uacute;sculas y Min&uacute;sculas</label>
+    </div>
     <div class="row">
         <input type="checkbox" id="regularExpression" style="margin-left: 10px;">
         <label for="regularExpression" class="middleLabel">Expresi&oacute;n Regular</label>
     </div>
 
     <div class="buttonArea">
-        <button id="replace">Reemplazar Texto</button>
+        <button id="find">Buscar</button>
+        <button id="findNext">Buscar Siguiente</button>
+        <button id="replace" disabled>Reemplazar</button>
+        <button id="replaceAll">Reemplazar Todo</button>
     </div>
-    
+
     <script>
         const { SearchReplace } = require('../../js/searchReplace.js');
         new SearchReplace();

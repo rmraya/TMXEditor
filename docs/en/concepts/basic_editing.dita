@@ -45,7 +45,16 @@
                 option to locate text in the file.</li>
             <li>Use the <xref href="../tasks/sortData.dita">Sort Translation Units</xref> option to
                 display file entries sorted on a selected language.</li>
+            <li>Use the <xref href="../tasks/search_replace.dita">Find and Replace Text</xref>
+                option to locate or replace text across the file.</li>
+            <li>Use the <xref href="../tasks/unitMetadata.dita">Edit Attributes, Edit Properties
+                    and Edit Notes</xref> options in the <uicontrol>Edit</uicontrol> menu to
+                change the metadata stored in the currently selected translation unit.</li>
         </ul>
+
+        <p>The top toolbar displays a <uicontrol>Units</uicontrol> counter with the total number
+            of translation units in the file. The counter updates automatically as you insert or
+            delete units.</p>
 
         <p>After making changes to the TMX file, select <menucascade>
                 <uicontrol>File</uicontrol>
@@ -54,7 +63,11 @@
                 [<userinput>Cmd+S</userinput>] on macOS) or click the <image
                 href="../images/saveFile.svg" placement="inline" height="16"
                 />&nbsp;<uicontrol>Save</uicontrol> button on the top toolbar to save your
-            modifications.</p>
+            modifications. Select <menucascade>
+                <uicontrol>File</uicontrol>
+                <uicontrol>Save As...</uicontrol>
+            </menucascade> if you want to save the changes under a different name or
+            location.</p>
 
     </conbody>
 </concept>

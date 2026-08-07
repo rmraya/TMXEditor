@@ -41,7 +41,9 @@ export class ExcelLanguages {
                 ipcRenderer.send('close-excelLanguages');
             }
         });
-        ipcRenderer.send('excelLanguages-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'excelLanguages', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     languagesList(langs: Language[]): void {
@@ -54,19 +56,19 @@ export class ExcelLanguages {
     setExcelLangArgs(arg: any): void {
         this.columns = arg.columns;
         let rows: string = '';
-        for (let i = 0; i < this.columns.length; i++) {
+        for (let i: number = 0; i < this.columns.length; i++) {
             rows = rows + '<tr><td class="noWrap middle">' + arg.labels[i] + '</td><td class="middle"><select id="lang_' + i + '" class="table_select">' + this.options + '</select></td></tr>'
         }
         (document.getElementById('langsTable') as HTMLTableElement).innerHTML = rows;
         let langs: string[] = arg.languages;
-        for (let i = 0; i < langs.length; i++) {
+        for (let i: number = 0; i < langs.length; i++) {
             (document.getElementById('lang_' + i) as HTMLSelectElement).value = langs[i];
         }
     }
 
     setExcelLanguages(): void {
         let langs: string[] = [];
-        for (let i = 0; i < this.columns.length; i++) {
+        for (let i: number = 0; i < this.columns.length; i++) {
             let lang: string = (document.getElementById('lang_' + i) as HTMLSelectElement).value;
             if (lang !== 'none') {
                 langs.push(lang);

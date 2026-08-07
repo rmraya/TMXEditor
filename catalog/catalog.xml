@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <public publicId="-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" uri="tmx14.dtd" />
+	<uri name="http://www.lisa.org/tmx14" uri="tmx14.dtd" />
+	<system systemId="tmx14.dtd" uri="tmx14.dtd" />
+	<system systemId="tmx13.dtd" uri="tmx13.dtd" />
+	<system systemId="tmx12.dtd" uri="tmx12.dtd" />
+	<system systemId="tmx11.dtd" uri="tmx11.dtd" />
+	<uri name="http://www.lisa.org/tmx" uri="tmx13.dtd" />
+</catalog>

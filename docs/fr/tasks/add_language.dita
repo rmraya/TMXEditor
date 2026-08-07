@@ -13,7 +13,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Ajouter une langue</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/add_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Ajouter une langue" s’ouvre&nbsp;:<image href="../images/add_language.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Ajouter une langue"</alt>
           </image> </stepresult>
       </step>

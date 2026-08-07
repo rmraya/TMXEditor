@@ -49,7 +49,7 @@ export class VerticalSplit {
         parent.appendChild(this.right);
 
         let config: any = { attributes: true, childList: false, subtree: false };
-        let observer = new MutationObserver((mutationsList) => {
+        let observer: MutationObserver = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
                     this.resize(parent)
@@ -67,7 +67,7 @@ export class VerticalSplit {
         this.right.style.height = parent.clientHeight + 'px';
         let width = parent.clientWidth - this.divider.clientWidth;
         let leftWidth: number = Math.round(width * this.weights[0] / (this.weights[0] + this.weights[1]));
-        let rightWidth = width - leftWidth;
+        let rightWidth: number = width - leftWidth;
         this.left.style.width = leftWidth + 'px';
         this.right.style.width = rightWidth + 'px';
     }
@@ -174,7 +174,7 @@ export class ThreeHorizontalPanels {
         parent.appendChild(this.bottom);
 
         let config: any = { attributes: true, childList: false, subtree: false };
-        let observer = new MutationObserver((mutationsList) => {
+        let observer: MutationObserver = new MutationObserver((mutationsList) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'attributes') {
                     setTimeout(() => {
@@ -193,7 +193,7 @@ export class ThreeHorizontalPanels {
         this.top.style.width = parent.clientWidth + 'px';
         this.center.style.width = parent.clientWidth + 'px';
         this.bottom.style.width = parent.clientWidth + 'px';
-        let height = parent.clientHeight - this.topDivider.clientHeight - this.bottomDivider.clientHeight;
+        let height: number = parent.clientHeight - this.topDivider.clientHeight - this.bottomDivider.clientHeight;
         let top: number = Math.round(height * this.weights[0] / (this.weights[0] + this.weights[1] + this.weights[2]));
         let center: number = Math.round(height * this.weights[1] / (this.weights[0] + this.weights[1] + this.weights[2]));
         let bottom: number = height - top - center;
@@ -231,7 +231,7 @@ export class ThreeHorizontalPanels {
         if (event.clientX === 0 && event.clientY === 0) {
             return;
         }
-        let sum = this.topHeight + this.centerHeight + this.bottomHeight;
+        let sum: number = this.topHeight + this.centerHeight + this.bottomHeight;
         this.topHeight = this.topHeight + event.offsetY;
         this.centerHeight = sum - this.topHeight - this.bottomHeight;
         this.top.style.height = this.topHeight + 'px';
@@ -240,7 +240,7 @@ export class ThreeHorizontalPanels {
     }
 
     topDragEnd(event: DragEvent): void {
-        let sum = this.topHeight + this.centerHeight + this.bottomHeight;
+        let sum: number = this.topHeight + this.centerHeight + this.bottomHeight;
         this.topHeight = this.topHeight + event.offsetY;
         this.centerHeight = sum - this.topHeight - this.bottomHeight;
         this.top.style.height = this.topHeight + 'px';
@@ -252,7 +252,7 @@ export class ThreeHorizontalPanels {
         if (event.clientX === 0 && event.clientY === 0) {
             return;
         }
-        let sum = this.topHeight + this.centerHeight + this.bottomHeight;
+        let sum: number = this.topHeight + this.centerHeight + this.bottomHeight;
         this.centerHeight = this.centerHeight + event.offsetY;
         this.bottomHeight = sum - this.topHeight - this.centerHeight;
         this.center.style.height = this.centerHeight + 'px';
@@ -261,7 +261,7 @@ export class ThreeHorizontalPanels {
     }
 
     bottomDragEnd(event: DragEvent): void {
-        let sum = this.topHeight + this.centerHeight + this.bottomHeight;
+        let sum: number = this.topHeight + this.centerHeight + this.bottomHeight;
         this.centerHeight = this.centerHeight + event.offsetY;
         this.bottomHeight = sum - this.topHeight - this.centerHeight;
         this.center.style.height = this.centerHeight + 'px';

@@ -30,7 +30,9 @@ export class AddProperty {
                 ipcRenderer.send('close-addProperty');
             }
         });
-        ipcRenderer.send('addProperty-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'addProperty', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     saveProperty(): void {
@@ -53,7 +55,7 @@ export class AddProperty {
 
     validateType(type: string): boolean {
         let length: number = type.length;
-        for (let i = 0; i < length; i++) {
+        for (let i: number = 0; i < length; i++) {
             let c: string = type.charAt(i);
             if (c === ' ' || c === '<' || c === '&') {
                 return false;

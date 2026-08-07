@@ -36,7 +36,9 @@ export class RemoveLanguage {
             }
         });
         (document.getElementById('language') as HTMLSelectElement).focus();
-        ipcRenderer.send('removeLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'removeLanguage', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     filterLanguages(langs: Language[]): void {

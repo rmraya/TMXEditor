@@ -39,7 +39,9 @@ export class SourceLanguage {
             }
         });
         (document.getElementById('language') as HTMLSelectElement).focus();
-        ipcRenderer.send('srcLanguage-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'srcLanguage', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
     adminLanguages(langs: Language[]): void {

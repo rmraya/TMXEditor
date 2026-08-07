@@ -54,32 +54,28 @@ Subscription Keys cannot be shared or transferred to different machines.
 
 Installers may occasionally be updated before the corresponding source code changes appear in this repository. Source code updates are published later, once they are ready for release. This timing difference is expected and does not affect the availability or completeness of the open source code.
 
-Subscription version includes unlimited email support at <tech@maxprograms.com>
+Subscription version includes email support at <tech@maxprograms.com>
 
 ### Differences summary
 
-Differences | Source Code | Subscription Based
--|----------- | -------------
-Ready To Use Installers| No | Yes
-Notarized macOS launcher| No | Yes
-Signed launcher and installer for Windows | No | Yes
-Associate app with `.tmx` extension | No | Yes
-Restricted Features | None | None
-Technical Support |  Peer support at  [Groups.io](https://groups.io/g/maxprograms/)| - Direct email at <tech@maxprograms.com>  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/)
+| Differences | Source Code | Subscription Based |
+| ----------- | ----------- | ------------------ |
+| Ready To Use Installers | No | Yes |
+| Notarized macOS launcher | No | Yes |
+| Signed launcher and installer for Windows | No | Yes |
+| Associate app with `.tmx` extension | No | Yes |
+| Restricted Features | None | None |
+| Technical Support | Peer support at  [Groups.io](https://groups.io/g/maxprograms/) | - Direct email at <tech@maxprograms.com>  <br> - Peer support at [Groups.io](https://groups.io/g/maxprograms/) |
 
 ## Requirements
 
-- JDK 21 or newer is required for compiling and building. Get it from [Adoptium](https://adoptium.net/).
-- Gradle 9.2 or newer. Get it from [https://gradle.org/](https://gradle.org/)
-- Node.js 24.13.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- Node.js 24.18.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
 
 ## Building
 
 Building from source is only required if you want to modify the application.
 
 - Clone this repository
-- Point your `JAVA_HOME` environment variable to JDK 21
-- Run `gradle` to compile the Java code
 - Run `npm install` to download and install NodeJS dependencies
 - Run `npm start` to launch TMXEditor
 
@@ -88,7 +84,6 @@ Building from source is only required if you want to modify the application.
 ``` bash
 git clone https://github.com/maxprograms-com/TMXEditor.git
 cd TMXEditor
-gradle
 npm install
 npm start
 ```
@@ -97,4 +92,4 @@ Compile once and then simply run `npm start` to start TMXEditor
 
 ## Related Projects
 
-- [TMXValidator](https://github.com/rmraya/TMXValidator)
+- [TMXValidator](https://github.com/maxprograms-com/TMXValidator)

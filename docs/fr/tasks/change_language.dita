@@ -17,7 +17,7 @@
             <uicontrol>Tâches</uicontrol>
             <uicontrol>Modifier une langue.</uicontrol>
           </menucascade>.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/change_language.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Modifier une langue" s’ouvre&nbsp;:<image href="../images/change_language.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Modifier une langue"</alt>
           </image> </stepresult>
       </step>

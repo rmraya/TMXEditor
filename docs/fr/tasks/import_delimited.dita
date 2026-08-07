@@ -20,7 +20,7 @@
             <uicontrol>Fichier</uicontrol>
             <uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol>
           </menucascade>, ou cliquez sur le bouton <image height="16" href="../images/importDelimited.svg" placement="inline"/>&nbsp;<uicontrol>Convertir un fichier CSV ou TSV en TMX</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
+        <stepresult>La boîte de dialogue "Convertir un fichier CSV ou TSV en TMX" s’ouvre&nbsp;:<image href="../images/convertCSV.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Convertir un fichier CSV ou TSV en TMX"</alt>
           </image> </stepresult>
       </step>
@@ -48,18 +48,12 @@
       </step>
       <step>
         <cmd>Si les codes de langue ne sont pas présents dans la feuille de calcul, ou si vous souhaitez modifier les langues suggérées, cliquez sur le bouton <uicontrol>Définir les langues</uicontrol>.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Langues du fichier CSV ou TSV" s’ouvre&nbsp;:<image href="../images/csvLanguages.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Langues du fichier CSV ou TSV"</alt>
           </image> </stepresult>
       </step>
       <step>
         <cmd>Dans la boîte de dialogue <uicontrol>Langues du fichier CSV ou TSV</uicontrol>, sélectionnez la langue pour chacune des colonnes du fichier à convertir. Puis, cliquez sur <uicontrol>Enregistrer</uicontrol>.</cmd>
-      </step>
-      <step>
-        <cmd>Si le fichier a été exporté à partir d’Excel avec des guillemets doubles comme délimiteur de texte, cochez la case <uicontrol>Corriger les guillemets doubles d’Excel</uicontrol>. Cela évitera que les guillemets soient dupliqués durant la conversion.</cmd>
-      </step>
-      <step>
-        <cmd>Si le délimiteur de texte n’est pas systématiquement présent, cochez la case <uicontrol>Tolérer les délimiteurs de texte manquants</uicontrol>. (Certains outils ne délimitent le texte qui s’il contient le caractère du séparateur de colonne.)</cmd>
       </step>
       <step>
         <cmd>Enfin, cliquez sur le bouton <uicontrol>Convertir le fichier en TMX</uicontrol> pour lancer le traitement.</cmd>

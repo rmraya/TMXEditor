@@ -298,7 +298,7 @@ th {
 /* inputs */
 
 input {
-	background-color: var(--gray20);
+	background-color: var(--gray10);
 	color: var(--gray190);
 	border: 1px solid var(--gray190);
 	height: 22px;
@@ -334,7 +334,7 @@ input[type=number] {
 }
 
 select {
-	background-color: var(--gray20);
+	background-color: var(--gray10);
 	color: var(--gray190);
 	border: 1px solid var(--gray190);
 	font-size: 14px;
@@ -350,7 +350,7 @@ select:focus {
 
 option {
 	font-size: 14px;
-	background-color: var(--gray20);
+	background-color: var(--gray10);
 	color: var(--gray190);
 }
 
@@ -379,6 +379,18 @@ button:hover {
 	transition-duration: 0.5s;
 	transition-timing-function: cubic-bezier(0.14, 0.71, 0.38, 1);
 	transition-delay: 0s;
+}
+
+button:disabled {
+	background: var(--gray60);
+	border: 1px solid var(--gray60);
+	color: var(--gray190);
+}
+
+button:disabled:hover {
+	background: var(--gray60);
+	border: 1px solid var(--gray60);
+	color: var(--gray190);
 }
 
 .row {

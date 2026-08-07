@@ -42,20 +42,22 @@ export class ConvertSDLTM {
                 ipcRenderer.send('close-convertSdltm');
             }
         });
-        ipcRenderer.send('convertSdltm-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+        setTimeout(() => {
+            ipcRenderer.send('set-height', { window: 'convertSdltm', width: document.body.clientWidth, height: document.body.clientHeight });
+        }, 200);
     }
 
-    setSdltmFile(arg: string): void {
-        let sdltmFile = (document.getElementById('sdltmFile') as HTMLInputElement);
-        sdltmFile.value = arg;
+    setSdltmFile(file: string): void {
+        let sdltmFile: HTMLInputElement = (document.getElementById('sdltmFile') as HTMLInputElement);
+        sdltmFile.value = file;
 
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
-            let index: number = arg.lastIndexOf('.');
+            let index: number = file.lastIndexOf('.');
             if (index !== -1) {
-                tmxFile.value = arg.substring(0, index) + '.tmx';
+                tmxFile.value = file.substring(0, index) + '.tmx';
             } else {
-                tmxFile.value = arg + '.tmx';
+                tmxFile.value = file + '.tmx';
             }
         }
     }
@@ -74,18 +76,18 @@ export class ConvertSDLTM {
     }
 
     convertFile(): void {
-        let sdltmFile = (document.getElementById('sdltmFile') as HTMLInputElement);
+        let sdltmFile: HTMLInputElement = (document.getElementById('sdltmFile') as HTMLInputElement);
         if (sdltmFile.value === '') {
             ipcRenderer.send('show-message', { type: 'warning', group: 'convertSDLTM', key: 'selectSDLTM', parent: 'convertSDLTM' });
             return;
         }
-        let tmxFile = (document.getElementById('tmxFile') as HTMLInputElement);
+        let tmxFile: HTMLInputElement = (document.getElementById('tmxFile') as HTMLInputElement);
         if (tmxFile.value === '') {
             ipcRenderer.send('show-message', { type: 'warning', group: 'convertSDLTM', key: 'selectTmx', parent: 'convertSDLTM' });
             return;
         }
 
-        let arg = {
+        let arg: any = {
             sdltmFile: sdltmFile.value,
             tmxFile: tmxFile.value,
             openTMX: (document.getElementById('openTMX') as HTMLInputElement).checked

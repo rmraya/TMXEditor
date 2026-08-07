@@ -12,7 +12,7 @@
                         <uicontrol>Merge TMX Files...</uicontrol>
                     </menucascade>.</cmd>
                 <stepresult>The following dialog appears:<image href="../images/merge_files.png"
-                        placement="break" scale="80" align="center">
+                        placement="break" scale="60" align="center">
                         <alt>Merge TMX Files Dialog</alt>
                     </image>
                 </stepresult>
@@ -27,7 +27,7 @@
                 <cmd>Use the <uicontrol>Add Files</uicontrol> button to select the files to be
                     merged from the file system.</cmd>
                 <stepresult>The dialog shows added files:<image href="../images/merge_dialog.png"
-                        placement="break" scale="80" align="center">
+                        placement="break" scale="60" align="center">
                         <alt>Merge TMX Files Dialog</alt>
                     </image>
                 </stepresult>
@@ -39,11 +39,18 @@
                     leftmost column.</cmd>
             </step>
             <step>
+                <cmd>Select the <uicontrol>Open Generated TMX File</uicontrol> checkbox if you
+                    want the merged file to open automatically in the editor once merging
+                    completes.</cmd>
+            </step>
+            <step>
                 <cmd>Click the <uicontrol>Merge TMX Files</uicontrol> button.</cmd>
 
             </step>
         </steps>
         <result>A progress dialog is displayed while a TMX file containing data from all selected
-            files is created in the indicated location.</result>
+            files is created in the indicated location. If the <uicontrol>Open Generated TMX
+                File</uicontrol> checkbox was selected, the new file opens automatically in the
+            editor.</result>
     </taskbody>
 </task>

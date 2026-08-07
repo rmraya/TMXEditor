@@ -37,7 +37,7 @@ export class PreferencesDialog {
         });
         (document.getElementById('appLangSelect') as HTMLSelectElement).focus();
         setTimeout(() => {
-            ipcRenderer.send('preferences-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+            ipcRenderer.send('set-height', { window: 'preferencesDialog', width: document.body.clientWidth, height: document.body.clientHeight });
         }, 200);
     }
 

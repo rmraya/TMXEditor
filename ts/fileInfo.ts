@@ -75,7 +75,7 @@ export class FileInfo {
         });
     }
 
-    setAdminLanguages(langs: Language[]) {
+    setAdminLanguages(langs: Language[]): void {
         let adminLangSelect: HTMLSelectElement = document.getElementById('adminlang') as HTMLSelectElement;
         adminLangSelect.innerHTML = '';
         for (let lang of langs) {
@@ -87,7 +87,7 @@ export class FileInfo {
         adminLangSelect.value = this.adminLang;
 
         setTimeout(() => {
-            ipcRenderer.send('fileInfo-height', { width: document.body.clientWidth, height: document.body.clientHeight });
+            ipcRenderer.send('set-height', { window: 'fileInfo', width: document.body.clientWidth, height: document.body.clientHeight });
             (document.getElementById('properties') as HTMLDivElement).style.height = (document.getElementById('attributes') as HTMLDivElement).clientHeight + 'px';
             (document.getElementById('notes') as HTMLDivElement).style.height = (document.getElementById('attributes') as HTMLDivElement).clientHeight + 'px';
             (document.getElementById('attributes') as HTMLDivElement).style.height = (document.getElementById('attributes') as HTMLDivElement).clientHeight + 'px';
@@ -163,7 +163,7 @@ export class FileInfo {
         }
     }
 
-    drawNotes() {
+    drawNotes(): void {
         let notesTableBody: HTMLTableSectionElement = document.getElementById('notesTable') as HTMLTableSectionElement;
         notesTableBody.innerHTML = '';
         this.notesChecks = [];

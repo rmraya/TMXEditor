@@ -30,10 +30,16 @@
         </ol> <note>Puede utilizar la casilla de verificación superior izquierda para seleccionar/anular la selección de todas las unidades a la vez.</note></li>
       <li>Utilice la opción <xref href="../tasks/filterUnits.dita">Filtrar Unidades de Traducción</xref> para localizar texto en el archivo.</li>
       <li>Utilice la opción <xref href="../tasks/sortData.dita">Ordenar Unidades de Traducción</xref> para mostrar las entradas de archivo ordenadas en un idioma seleccionado.</li>
+      <li>Utilice la opción <xref href="../tasks/search_replace.dita">Buscar/Reemplazar Texto</xref> para localizar o reemplazar texto en el archivo.</li>
+      <li>Utilice las opciones <xref href="../tasks/unitMetadata.dita">Editar Atributos, Editar Propiedades y Editar Notas</xref> en el menú <uicontrol>Editar</uicontrol> para cambiar los metadatos almacenados en la unidad de traducción actualmente seleccionada.</li>
     </ul>
+    <p>La barra de herramientas superior muestra un contador de <uicontrol>Unidades</uicontrol> con el número total de unidades de traducción en el archivo. El contador se actualiza automáticamente a medida que inserta o elimina unidades.</p>
     <p>Después de realizar cambios en el archivo TMX, seleccione <menucascade>
         <uicontrol>Archivo</uicontrol>
         <uicontrol>Guardar</uicontrol>
-      </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/saveFile.svg" placement="inline"/>&nbsp;<uicontrol>Guardar</uicontrol> en la barra de herramientas superior para guardar sus modificaciones.</p>
+      </menucascade> en el menú principal ([<userinput>Ctrl+S</userinput>] en Windows/Linux, [<userinput>Cmd+S</userinput>] en macOS) o haga clic en el botón <image height="16" href="../images/saveFile.svg" placement="inline"/> <uicontrol>Guardar</uicontrol> en la barra de herramientas superior para guardar sus modificaciones. Seleccione <menucascade>
+        <uicontrol>Archivo</uicontrol>
+        <uicontrol>Guardar Como...</uicontrol>
+      </menucascade> si desea guardar los cambios con un nombre o ubicación diferente.</p>
   </conbody>
 </concept>

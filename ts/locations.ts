@@ -56,7 +56,7 @@ export class Locations {
             text = text + '"' + key + '": {"x":' + value.x + ', "y":' + value.y + '},';
         });
         text = text.substring(0, text.length - 1) + '}'
-        let json = JSON.parse(text);
+        let json: any = JSON.parse(text);
         writeFile(this.file, JSON.stringify(json, undefined, 4), (err: any) => {
             if (err) {
                 throw err;
@@ -64,7 +64,7 @@ export class Locations {
         });
     }
 
-    getLocation(window: string): Point | undefined{
+    getLocation(window: string): Point | undefined {
         if (this.locations.has(window)) {
             return this.locations.get(window);
         }

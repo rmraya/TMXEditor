@@ -14,7 +14,7 @@
             <uicontrol>Affichage</uicontrol>
             <uicontrol>Trier les unités de traduction</uicontrol>
           </menucascade> (touche [<userinput>F5</userinput>]), ou cliquez sur le bouton <image height="16" href="../images/sortUnits.svg" placement="inline"/>&nbsp;<uicontrol>Trier les unités de traduction</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/sort_units.png" placement="break" scale="80" align="center">
+        <stepresult>La boîte de dialogue "Trier les unités de traduction" s’ouvre&nbsp;:<image href="../images/sort_units.png" placement="break" scale="60" align="center">
             <alt>Boîte de dialogue "Trier les unités de traduction"</alt>
           </image> </stepresult>
       </step>
@@ -23,6 +23,9 @@
       </step>
       <step>
         <cmd>Cochez la case <uicontrol>Par ordre décroissant</uicontrol> si vous souhaitez afficher les unités de traduction par ordre alphabétique inverse. Laissez la case décochée si vous voulez juste l’ordre alphabétique normal.</cmd>
+      </step>
+      <step>
+        <cmd>Cochez la case <uicontrol>Respecter la casse pour le tri</uicontrol> si vous voulez que l’ordre de tri tienne compte de la casse des caractères. Dans le cas contraire, laissez la case décochée.</cmd>
       </step>
       <step>
         <cmd>Cliquez sur le bouton <uicontrol>Trier les unités de traduction</uicontrol>.</cmd>

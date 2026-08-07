@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
 <task xml:lang="fr" id="search_replace">
-  <title>Remplacer toutes les occurrences d’un texte</title>
-  <shortdesc>Voici les étapes à suivre pour remplacer toutes les occurrences d’un texte dans un fichiers TMX.</shortdesc>
+  <title>Rechercher et remplacer</title>
+  <shortdesc>Marche à suivre pour rechercher du texte dans le fichier TMX en cours et, éventuellement, le remplacer.</shortdesc>
   <taskbody>
     <steps>
       <step>
@@ -11,28 +11,31 @@
       <step>
         <cmd>Dans le menu, sélectionnez <menucascade>
             <uicontrol>Édition</uicontrol>
-            <uicontrol>Remplacer du texte </uicontrol>
-          </menucascade> ([<userinput>Ctrl+F</userinput>] sur Windows/Linux, [<userinput>Cmd+F</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/replaceTexts.svg" placement="inline"/>&nbsp;<uicontrol>Remplacer du texte</uicontrol> dans la barre d’outils.</cmd>
-        <stepresult>La boîte de dialogue "Découper un fichier TMX" s’ouvre&nbsp;:<image href="../images/replace_text.png" placement="break" scale="80" align="center">
-            <alt>Boîte de dialogue "Remplacer du texte"</alt>
+            <uicontrol>Rechercher/Remplacer du texte</uicontrol>
+          </menucascade> ([<userinput>Ctrl+F</userinput>] sur Windows/Linux, [<userinput>Cmd+F</userinput>] sur macOS), ou cliquez sur le bouton <image height="16" href="../images/replaceTexts.svg" placement="inline"/> <uicontrol>Rechercher/Remplacer du texte</uicontrol> dans la barre d’outils.</cmd>
+        <stepresult>La boîte de dialogue "Rechercher et remplacer" s’ouvre&nbsp;:<image href="../images/replace_text.png" placement="break" scale="60" align="center">
+            <alt>Boîte de dialogue "Rechercher et remplacer"</alt>
           </image> </stepresult>
       </step>
       <step>
-        <cmd>Saisissez le texte à remplacer dans le champ <uicontrol>Recherche</uicontrol>.</cmd>
+        <cmd>Saisissez le texte à rechercher dans le champ <uicontrol>Recherche</uicontrol>.</cmd>
       </step>
       <step>
-        <cmd>Saisissez le texte à mettre à la place dans le champ <uicontrol>Remplacer par</uicontrol>.</cmd>
+        <cmd>Cochez la case <uicontrol>Sensible à la casse</uicontrol> si vous voulez que la recherche respecte la casse du texte recherché, et la case <uicontrol>Expression régulière</uicontrol> si vous voulez que le texte recherché soit interprété comme une expression régulière.</cmd>
       </step>
       <step>
-        <cmd>Sélectionnez la langue des textes dans laquelle l’opération doit s’effectuer à l’aide de la liste déroulante <uicontrol>Langue</uicontrol>.</cmd>
+        <cmd>Cliquez sur le bouton <uicontrol>Rechercher</uicontrol> pour localiser et sélectionner la première occurrence trouvée, ou sur le bouton <uicontrol>Rechercher suivant</uicontrol> pour passer à l’occurrence suivante.</cmd>
+        <stepresult>Le texte correspondant est sélectionné dans la grille d’édition.</stepresult>
       </step>
       <step>
-        <cmd>Cochez la case <uicontrol>Expression régulière</uicontrol> si votre critère de recherche est une expression régulière.</cmd>
+        <cmd>Pour ne remplacer que l’occurrence actuellement sélectionnée, saisissez le texte de remplacement dans le champ <uicontrol>Remplacer par</uicontrol> et cliquez sur le bouton <uicontrol>Remplacer</uicontrol>.</cmd>
+        <info>Le bouton <uicontrol>Remplacer</uicontrol> n’est activé qu’après qu’une occurrence a été trouvée à l’aide de <uicontrol>Rechercher</uicontrol> ou <uicontrol>Rechercher suivant</uicontrol>.</info>
       </step>
       <step>
-        <cmd>Cliquez sur le bouton <uicontrol>Remplacer toutes les occurrences</uicontrol>.</cmd>
+        <cmd>Pour remplacer toutes les occurrences en une seule opération, saisissez le texte de remplacement dans le champ <uicontrol>Remplacer par</uicontrol> et cliquez sur le bouton <uicontrol>Tout remplacer</uicontrol>.</cmd>
+        <stepresult>Une boîte de dialogue de confirmation s’affiche avant que le remplacement ne soit effectué, car cette action est irréversible.</stepresult>
       </step>
     </steps>
-    <result>Toutes les occurrences du texte du champ <uicontrol>Recherche</uicontrol>, ou tous les fragments correspondant à l’expression régulière, sont remplacés par le texte du champ <uicontrol>Remplacer par</uicontrol>.</result>
+    <result>Selon le bouton utilisé, seule l’occurrence actuellement sélectionnée, ou bien toutes les occurrences du texte saisi dans <uicontrol>Recherche</uicontrol> (ou de l’expression régulière indiquée), sont remplacées par le texte saisi dans le champ <uicontrol>Remplacer par</uicontrol>.</result>
   </taskbody>
 </task>

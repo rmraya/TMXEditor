@@ -8,6 +8,7 @@
         "fileConverted": "File converted",
         "convertedEntries": "Converted {0} entries",
         "openTmxFile": "Open a TMX file",
+        "untitled": "Untitled.tmx",
         "fileExported": "File exported",
         "fileIsValid": "File is valid",
         "fileCleaned": "File cleaned",
@@ -135,7 +136,7 @@
         "SelectAll": "Select All",
         "ConfirmEdit": "Confirm Edit",
         "CancelEdit": "Cancel Edit",
-        "ReplaceText": "Replace Text...",
+        "ReplaceText": "Search/Replace Text",
         "InsertUnit": "Insert Translation Unit",
         "DeleteSelected": "Delete Selected Units",
         "ViewMenu": "&View",
@@ -241,7 +242,7 @@
     },
     "requestEvaluation": {
         "enterFirstName": "Enter first name",
-        "enterLasttName": "Enter last name",
+        "enterLastName": "Enter last name",
         "enterEmail": "Enter email",
         "repeatEmail": "Repeat email",
         "differentEmails": "Emails are different",
@@ -249,7 +250,11 @@
     },
     "searchReplace": {
         "enterSearchText": "Enter text to search",
-        "enterReplaceText": "Enter replacement text"
+        "enterReplaceText": "Enter replacement text",
+        "textNotFound": "Text not found",
+        "invalidRegex": "Invalid regular expression",
+        "confirmReplaceAll": "Replace all occurrences of the search text? This action cannot be undone.",
+        "replacementsMade": "{0} replacement(s) made"
     },
     "splitFile": {
         "selectTmx": "Select TMX file"
@@ -266,5 +271,43 @@
     "tbx2tmx": {
         "noRootElement": "Error parsing TBX file: No root element found",
         "invalidXML": "Error parsing TBX file: Invalid XML"
+    },
+    "excel2tmx": {
+        "sheetNotFound": "Sheet '{0}' not found in Excel file"
+    },
+    "csv2tmx": {
+        "columnMismatch": "Row does not have the same number of columns as selected languages"
+    },
+    "versionhandler": {
+        "unexpectedroot": "Unexpected root element: {0}"
+    },
+    "tmxvalidator": {
+        "noversion": "No version attribute found in the root element",
+        "invalidversion": "Invalid TMX version: {0}"
+    },
+    "validatinghandler": {
+        "dtdnotresolved": "Unable to resolve DTD with publicId='{0}' systemId='{1}'",
+        "missingversion": "TMX version is missing",
+        "incorrectversion": "Incorrect TMX version: {0}",
+        "notmxdoc": "Selected file is not a TMX document",
+        "nosrclang": "Source language not declared",
+        "invalidsrclang": "Invalid source language '{0}'",
+        "invalidxattr": "Invalid value for \"x\" attribute: '{0}'",
+        "duplicatexattr": "Duplicated value for \"x\" attribute: '{0}' in '{1}'",
+        "invalidlang": "Invalid language code '{0}'",
+        "invalidusagecount": "Invalid value for \"usagecount\": '{0}'",
+        "invaliddateformat": "Invalid date format '{0}'",
+        "unbalancedbptept": "Unbalanced number of <bpt>/<ept> elements\n\n{0}",
+        "unmatchedbptept": "<bpt>/<ept> element without matching <ept>/<bpt>\n\n{0}",
+        "incorrectxmatching": "Incorrect \"x\" matching",
+        "tuvnolang": "<tuv> without language attribute",
+        "tuvmissingsrclang": "<tu> element lacks <tuv> with language set to '{0}'",
+        "invalidibpt": "Invalid value for attribute 'i' in a <bpt> element\n\n{0}",
+        "duplicateibpt": "Duplicated value for attribute 'i' in a <bpt> element\n\n{0}",
+        "invalidiept": "Invalid value for attribute 'i' in an <ept> element\n\n{0}",
+        "mismatchedi": "Mismatched value for attribute 'i' in a <bpt>/<ept> element\n\n{0}",
+        "invalidbodyelement": "Invalid element <{0}> in <body>",
+        "bodybeforeheader": "<body> element cannot appear before <header>",
+        "missingbody": "<tmx> document is missing the <body> element"
     }
 }
