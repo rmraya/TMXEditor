@@ -24,7 +24,11 @@ A common use case is building translation memories from existing data.
 
 TMXEditor can convert spreadsheet data (Excel or CSV) into TMX format.
 
-<a href="https://www.maxprograms.com/tutorials/CSVtoTMX.mp4"><img src="https://www.maxprograms.com/images/CSVtoTMX.png"></a>
+<p style="text-align:center;"><a href="https://www.maxprograms.com/tutorials/videos/TMXEditor/Convert_Excel.mp4"><img src="https://maxprograms.com/tutorials/img/Convert_Excel.png" width="300"></a><br>
+Convert Excel to TMX</p>
+
+<p style="text-align:center;"><a href="https://www.maxprograms.com/tutorials/videos/TMXEditor/Convert_CSV.mp4"><img src="https://maxprograms.com/tutorials/img/Convert_CSV.png" width="300"></a><br>
+Convert CSV to TMX</p>
 
 ## Quick Start
 
@@ -87,6 +91,8 @@ cd TMXEditor
 npm install
 npm start
 ```
+<p style="text-align:center;"><a href="https://www.maxprograms.com/tutorials/videos/TMXEditor/TMXEditor_Build.mp4"><img src="https://maxprograms.com/tutorials/img/TMXEditor_build.png" width="300"></a><br>
+Build from Source</p>
 
 Compile once and then simply run `npm start` to start TMXEditor
 
