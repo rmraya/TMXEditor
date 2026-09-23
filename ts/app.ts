@@ -1370,7 +1370,7 @@ class App {
             }
             App.mainWindow.webContents.send('set-status', '');
             App.mainWindow.webContents.send('end-waiting');
-            App.mainWindow.webContents.send('file-loaded', { status: SUCCESS, count: model.getCount() });
+            App.mainWindow.webContents.send('file-loaded', model.getCount());
         }).catch((error: Error) => {
             App.mainWindow.webContents.send('end-waiting');
             App.mainWindow.webContents.send('set-status', '');
@@ -1495,9 +1495,10 @@ class App {
         App.mainWindow.webContents.send('set-status', App.i18n.getString('App', 'LoadingSegments'));
         try {
             let units: string[] = App.model.getSegments(start, count, filter);
+            let total: number = Object.keys(App.filterOptions).length === 0 ? App.model.getCount() : App.model.getFilteredCount(App.filterOptions);
             App.mainWindow.webContents.send('set-status', '');
             App.mainWindow.webContents.send('end-waiting');
-            App.mainWindow.webContents.send('update-segments', { status: SUCCESS, units: units });
+            App.mainWindow.webContents.send('update-segments', { units: units, count: total, start: start });
         } catch (error: any) {
             App.mainWindow.webContents.send('end-waiting');
             App.showMessage({ type: 'error', message: error.message });
@@ -3312,12 +3313,12 @@ class App {
         }
         let code: string = App.model.getSrcLanguage();
         if (code === '*all*') {
-            event.sender.send('set-source-language', { status: SUCCESS, srcLang: code });
+            event.sender.send('set-source-language', code);
             return;
         }
         let language = LanguageUtils.getLanguage(code, App.lang);
         if (language) {
-            event.sender.send('set-source-language', { status: SUCCESS, srcLang: language.getCode() });
+            event.sender.send('set-source-language', language.getCode());
         } else {
             App.showMessage({ type: 'warning', message: 'Invalid source language: ' + code });
         }
@@ -3372,8 +3373,7 @@ class App {
         if (!App.model) {
             return;
         }
-        let count: number = App.model.getCount();
-        App.mainWindow.webContents.send('status-changed', { status: SUCCESS, count: count });
+        App.mainWindow.webContents.send('status-changed', App.model.getCount());
     }
 
     static showRemoveUntranslated(): void {

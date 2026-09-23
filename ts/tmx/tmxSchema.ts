@@ -33,8 +33,8 @@ export class TmxSchema {
 
         let columns: string = languages.map((lang: string) => {
             let prefix: string = TmxSchema.columnPrefix(lang);
-            return `${prefix}_pure TEXT, ${prefix}_tuv TEXT`;
+            return prefix+ '_pure TEXT, ' + prefix + '_tuv TEXT';
         }).join(', ');
-        database.exec(`CREATE TABLE IF NOT EXISTS tuv (id TEXT NOT NULL, ${columns}, PRIMARY KEY(id));`);
+        database.exec('CREATE TABLE IF NOT EXISTS tuv (id TEXT NOT NULL, ' + columns + ', PRIMARY KEY(id));');
     }
 }

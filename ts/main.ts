@@ -123,14 +123,14 @@ export class Main {
         ipcRenderer.on('set-status', (event: Electron.IpcRendererEvent, value: string) => {
             this.setStatus(value);
         });
-        ipcRenderer.on('status-changed', (event: Electron.IpcRendererEvent, arg: any) => {
-            this.statusChanged(arg);
+        ipcRenderer.on('status-changed', (event: Electron.IpcRendererEvent, count: number) => {
+            (document.getElementById('units') as HTMLSpanElement).innerText = '' + count;
         });
         ipcRenderer.on('update-languages', (event: Electron.IpcRendererEvent, langs: Language[]) => {
             this.updateLanguages(langs);
         });
-        ipcRenderer.on('file-loaded', (event: Electron.IpcRendererEvent, fileInfo: any) => {
-            this.fileLoaded(fileInfo);
+        ipcRenderer.on('file-loaded', (event: Electron.IpcRendererEvent, count: number) => {
+            this.fileLoaded(count);
         });
         ipcRenderer.on('file-closed', () => {
             this.fileClosed();
@@ -1060,14 +1060,6 @@ export class Main {
         }
     }
 
-    statusChanged(arg: any): void {
-        if (arg.status === 'Success') {
-            if (arg.count != undefined) {
-                (document.getElementById('units') as HTMLSpanElement).innerText = arg.count;
-            }
-        }
-    }
-
     updateLanguages(langs: Language[]): void {
         this.languages = langs;
         let row: string = '<tr><th class="fixed"><input type="checkbox" id="selectAll"></th><th class="fixed">#</th>';
@@ -1081,11 +1073,9 @@ export class Main {
         });
     }
 
-    fileLoaded(arg: any): void {
-        if (arg.count != undefined) {
-            this.unitsCount = arg.count;
-            (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
-        }
+    fileLoaded(count: number): void {
+        this.unitsCount = count;
+        (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
         document.getElementById('filterUnits')?.classList.remove('active');
         document.getElementById('sortUnits')?.classList.remove('active');
         this.isLoaded = true;
@@ -1143,6 +1133,11 @@ export class Main {
             this.updateBottomSegments(arg);
             return;
         }
+
+        this.unitsCount = arg.count;
+        (document.getElementById('units') as HTMLSpanElement).innerText = '' + this.unitsCount;
+        this.start = arg.start;
+        this.count = arg.units.length;
 
         let rows: string = '';
         let length: number = arg.units.length;

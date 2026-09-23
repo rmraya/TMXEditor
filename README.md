@@ -73,7 +73,7 @@ Subscription version includes email support at <tech@maxprograms.com>
 
 ## Requirements
 
-- Node.js 24.18.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
+- Node.js 24.21.0 LTS or newer. Get it from [https://nodejs.org/](https://nodejs.org/)
 
 ## Building
 

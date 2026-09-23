@@ -10,12 +10,13 @@
  *     Maxprograms - initial API and implementation
  *******************************************************************************/
 
-import { parentPort, workerData } from 'node:worker_threads';
 import { DatabaseSync, StatementSync } from 'node:sqlite';
+import { parentPort, workerData } from 'node:worker_threads';
+import { LanguageUtils } from 'typesbcp47';
 import { Catalog, SAXParser, XMLAttribute, XMLElement } from 'typesxml';
 import { TmxLanguagesHandler } from './tmxLanguagesHandler.js';
-import { TmxUnitHandler } from './tmxUnitHandler.js';
 import { TmxSchema } from './tmxSchema.js';
+import { TmxUnitHandler } from './tmxUnitHandler.js';
 import { TmxUtils } from './tmxUtils.js';
 
 interface WorkerData {
@@ -40,7 +41,34 @@ export class TmxImportWorker {
         parser.setCatalog(new Catalog(catalogFile));
         parser.setContentHandler(handler);
         parser.parseFile(sourceFile);
-        return Array.from(handler.languages).sort();
+        // detect duplicates
+        let groups: Map<string, string[]> = new Map();
+        for (let lang of handler.languages) {
+            let prefix: string = TmxSchema.columnPrefix(lang);
+            let raw: string[] | undefined = groups.get(prefix);
+            if (raw) {
+                raw.push(lang);
+            } else {
+                groups.set(prefix, [lang]);
+            }
+        }
+        // normalize duplicated codes
+        let result: string[] = [];
+        for (let [prefix, raw] of groups) {
+            if (raw.length === 1) {
+                result.push(raw[0]);
+                continue;
+            }
+            let code: string | undefined;
+            for (let lang of raw) {
+                code = LanguageUtils.normalizeCode(lang);
+                if (code) {
+                    break;
+                }
+            }
+            result.push(code ?? prefix);
+        }
+        return result.sort();
     }
 
     static importUnits(sourceFile: string, catalogFile: string, database: DatabaseSync, languages: string[]): ImportResult {
@@ -49,8 +77,8 @@ export class TmxImportWorker {
         let updateTUV: Map<string, StatementSync> = new Map();
         for (let lang of languages) {
             let prefix: string = TmxSchema.columnPrefix(lang);
-            insertTUV.set(lang, database.prepare(`INSERT INTO tuv (id, ${prefix}_pure, ${prefix}_tuv) VALUES (?, ?, ?)`));
-            updateTUV.set(lang, database.prepare(`UPDATE tuv SET ${prefix}_pure=?, ${prefix}_tuv=? WHERE id=?`));
+            insertTUV.set(lang, database.prepare('INSERT INTO tuv (id, ' + prefix + '_pure, ' + prefix + '_tuv) VALUES (?, ?, ?)'));
+            updateTUV.set(lang, database.prepare('UPDATE tuv SET ' + prefix + '_pure=?, ' + prefix + '_tuv=? WHERE id=?'));
         }
 
         let headerText: string = '';
@@ -69,6 +97,12 @@ export class TmxImportWorker {
                 for (let tuv of tuvs) {
                     let langAttr: XMLAttribute | undefined = tuv.getAttribute('xml:lang') ?? tuv.getAttribute('lang');
                     let lang: string = langAttr ? langAttr.getValue() : '';
+                    if (lang !== '' && !languages.includes(lang)) {
+                        let code: string | undefined = LanguageUtils.normalizeCode(lang);
+                        if (code) {
+                            lang = code;
+                        }
+                    }
                     if (lang === '' || !insertTUV.has(lang)) {
                         continue;
                     }

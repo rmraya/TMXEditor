@@ -24,8 +24,8 @@ export class SourceLanguage {
         ipcRenderer.on('admin-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.adminLanguages(arg);
         });
-        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
-            (document.getElementById('language') as HTMLSelectElement).value = arg.srcLang;
+        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, srcLang: string) => {
+            (document.getElementById('language') as HTMLSelectElement).value = srcLang;
         });
         (document.getElementById('change') as HTMLButtonElement).addEventListener('click', () => {
             this.changeSrcLanguage();

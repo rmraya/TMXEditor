@@ -24,9 +24,9 @@ export class Maintenance {
         ipcRenderer.on('file-languages', (event: Electron.IpcRendererEvent, arg: Language[]) => {
             this.filterLanguages(arg);
         });
-        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
-            if (arg.srcLang !== '*all*') {
-                (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, srcLang: string) => {
+            if (srcLang !== '*all*') {
+                (document.getElementById('sourceLanguage') as HTMLSelectElement).value = srcLang;
             }
         });
         (document.getElementById('untranslated') as HTMLInputElement).addEventListener('click', () => {

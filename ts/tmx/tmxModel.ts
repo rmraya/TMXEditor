@@ -772,6 +772,55 @@ export class TMXModel {
         return Number(row.count);
     }
 
+    getFilteredCount(filter: SegmentFilter): number {
+        let filterText: string | undefined = filter.filterText;
+        let filterLanguage: string | undefined = filter.filterLanguage;
+        let caseSensitiveFilter: boolean = filter.caseSensitiveFilter ?? false;
+        let regExp: boolean = filter.regExp ?? false;
+        let filterUntranslated: boolean = filter.filterUntranslated ?? false;
+        let filterSrcLanguage: string | undefined = filter.filterSrcLanguage;
+
+        let where: string = '';
+        let whereParams: (string | number)[] = [];
+        if (filterText) {
+            let prefix: string = TmxSchema.columnPrefix(filterLanguage as string);
+            if (regExp) {
+                where = ' WHERE TEXT_MATCHES(tuv.' + prefix + '_pure, ?, ?)';
+                whereParams = [filterText, caseSensitiveFilter ? 1 : 0];
+            } else {
+                where = ' WHERE TEXT_CONTAINS(tuv.' + prefix + '_pure, ?, ?, ?)';
+                whereParams = [filterText, caseSensitiveFilter ? 1 : 0, filterLanguage as string];
+            }
+        }
+
+        if (!filterUntranslated) {
+            let sql: string = 'SELECT COUNT(*) AS count FROM tuv' + where;
+            let row: Record<string, unknown> = this.database.prepare(sql).get(...whereParams) as Record<string, unknown>;
+            return Number(row.count);
+        }
+
+        let sql: string = 'SELECT id FROM tuv' + where;
+        let rows: unknown[] = this.database.prepare(sql).all(...whereParams);
+        let total: number = 0;
+        for (let row of rows as Record<string, unknown>[]) {
+            let id: string = String(row.id);
+            let translated: boolean = false;
+            for (let lang of this.languages) {
+                if (filterSrcLanguage && lang === filterSrcLanguage) {
+                    continue;
+                }
+                if (this.getPureText(id, lang) !== '') {
+                    translated = true;
+                    break;
+                }
+            }
+            if (!translated) {
+                total++;
+            }
+        }
+        return total;
+    }
+
     getSegments(start: number, count: number, filter?: SegmentFilter): string[] {
         let filterText: string | undefined = filter?.filterText;
         let filterLanguage: string | undefined = filter?.filterLanguage;

@@ -26,9 +26,9 @@ export class Filters {
         ipcRenderer.on('set-filter-options', (event: Electron.IpcRendererEvent, arg: any) => {
             this.setFilterOptions(arg);
         });
-        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, arg: any) => {
-            if (arg.srcLang !== '*all*') {
-                (document.getElementById('sourceLanguage') as HTMLSelectElement).value = arg.srcLang;
+        ipcRenderer.on('set-source-language', (event: Electron.IpcRendererEvent, srcLang: string) => {
+            if (srcLang !== '*all*') {
+                (document.getElementById('sourceLanguage') as HTMLSelectElement).value = srcLang;
             }
         });
         (document.getElementById('filterText') as HTMLInputElement).addEventListener('keydown', (event: KeyboardEvent) => {
